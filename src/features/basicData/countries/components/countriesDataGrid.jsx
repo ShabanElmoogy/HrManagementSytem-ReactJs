@@ -15,6 +15,7 @@ import {
   renderDate,
   renderPhoneCode,
 } from "@/shared/components";
+import { MyContentsWrapper } from "@/layouts";
 
 const CountriesDataGrid = ({
   countries,
@@ -152,19 +153,21 @@ const CountriesDataGrid = ({
 
   return (
     // @ts-ignore
-    <MyDataGrid
-      rows={countries}
-      columns={columns}
-      loading={loading}
-      apiRef={apiRef}
-      filterMode="client"
-      sortModel={[{ field: "id", sort: "asc" }]}
-      addNewRow={onAdd}
-      pagination
-      pageSizeOptions={[5, 10, 25]}
-      fileName={t("countries.title")}
-      reportPdfHeader={t("countries.title")}
-    />
+    <MyContentsWrapper>
+      <MyDataGrid
+        rows={countries}
+        columns={columns}
+        loading={loading}
+        apiRef={apiRef}
+        filterMode="client"
+        sortModel={[{ field: "id", sort: "asc" }]}
+        addNewRow={onAdd}
+        pagination
+        pageSizeOptions={[5, 10, 25]}
+        fileName={t("countries.title")}
+        reportPdfHeader={t("countries.title")}
+      />
+    </MyContentsWrapper>
   );
 };
 

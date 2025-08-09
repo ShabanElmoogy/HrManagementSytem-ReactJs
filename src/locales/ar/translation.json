@@ -262,7 +262,26 @@
       "withAlphaCodes": "مع كود الدولة",
       "withPhoneCodes": "مع كود الهاتف",
       "withCurrencies": "مع كود العملة",
-      "dataQuality": "جودة البيانات"
+      "dataQuality": "جودة البيانات",
+      "regions": "المناطق",
+      "currencies": "العملات",
+      "avgPerRegion": "متوسط/المنطقة"
+    },
+    "views": {
+      "grid": "الشبكة",
+      "cards": "البطاقات",
+      "map": "الخريطة",
+      "chart": "الرسم البياني"
+    },
+    "charts": {
+      "byRegion": "الدول حسب المنطقة",
+      "regionDistribution": "توزيع المناطق",
+      "topCurrencies": "أهم العملات",
+      "timeline": "الدول المضافة عبر الوقت"
+    },
+    "mapView": {
+      "title": "عرض الخريطة العالمية",
+      "description": "سيتم عرض الخريطة العالمية التفاعلية هنا"
     },
     "fetched": "تم تحميل قائمة الدول بنجاح",
     "title": "الدول",
@@ -296,7 +315,11 @@
     "deletingCountry": "جارى حذف  بيانات الدولة",
     "savingCountry": "جارى حفظ بيانات الدولة",
     "nameArPlaceholder": "أحرف عربية فقط : مصر , السعودية",
-    "nameEnPlaceholder": "أحرف انجليزية فقط : Egypt , Saudi Arabia"
+    "nameEnPlaceholder": "أحرف انجليزية فقط : Egypt , Saudi Arabia",
+    "viewTitle": "إدارة الدول",
+    "total": "الإجمالي",
+    "noData": "لا توجد دول متاحة",
+    "noDataDescription": "ابدأ بإضافة أول دولة"
   },
   "states": {
     "dashboard": {

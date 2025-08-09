@@ -19,7 +19,12 @@
     "supportedFormats": "Supported Formats",
     "value": "Value",
     "key": "Key",
-    "country": "Country"
+    "country": "Country",
+    "loading": "Loading...",
+    "found": "found",
+    "noResults": "No results found",
+    "tryDifferentSearch": "Try a different search term",
+    "created": "Created"
   },
   "menu": {
     "dashboard": "Dashboard",
@@ -267,11 +272,31 @@
       "withAlphaCodes": "With Alpha Codes",
       "withPhoneCodes": "With Phone Codes",
       "withCurrencies": "With Currencies",
-      "dataQuality": "Data Quality"
+      "dataQuality": "Data Quality",
+      "regions": "Regions",
+      "currencies": "Currencies",
+      "avgPerRegion": "Avg/Region"
+    },
+    "views": {
+      "grid": "Grid",
+      "cards": "Cards",
+      "map": "Map",
+      "chart": "Chart"
+    },
+    "charts": {
+      "byRegion": "Countries by Region",
+      "regionDistribution": "Region Distribution",
+      "topCurrencies": "Top Currencies",
+      "timeline": "Countries Added Over Time"
+    },
+    "mapView": {
+      "title": "World Map View",
+      "description": "Interactive world map would be displayed here"
     },
     "fetched": "Country list fetched successfully",
     "title": "Countries",
     "subTitle": "List of countries",
+    "viewTitle": "Countries Management",
     "viewSubtitle": "View country details",
     "editSubtitle": "Edit country details",
     "addSubtitle": "Add new country",
@@ -288,6 +313,7 @@
     "delete": "Delete Country",
     "list": "Country List",
     "details": "Country Details",
+    "total": "Total",
     "created": "Country created successfully",
     "updated": "Country updated successfully",
     "deleted": "Country deleted successfully",
@@ -302,7 +328,9 @@
     "deletingCountry": "Deleting country",
     "savingCountry": "Saving country",
     "nameArPlaceholder": "Arabic only like : مصر , السعودية",
-    "nameEnPlaceholder": "English only like : Egypt , Saudi Arabia"
+    "nameEnPlaceholder": "English only like : Egypt , Saudi Arabia",
+    "noData": "No countries available",
+    "noDataDescription": "Start by adding your first country"
   },
   "states": {
     "dashboard": {

@@ -3,7 +3,7 @@ import { MyContentsWrapper } from "@/layouts/components";
 import { MyHeader } from "@/shared/components";
 import { useTranslation } from "react-i18next";
 import CountriesDashboardHeader from "./components/countriesDashboardHeader";
-import CountriesDataGrid from "./components/countriesDataGrid";
+import CountriesMultiView from "./components/countriesMultiView";
 import CountryDeleteDialog from "./components/countryDeleteDialog";
 import CountryForm from "./components/countryForm";
 import useCountryGridLogic from "./hooks/useCountryGridLogic";
@@ -30,20 +30,20 @@ const CountriesPage = () => {
 
   return (
     <>
-      <MyContentsWrapper>
-        <MyHeader
+
+        {/* <MyHeader
           title={t("countries.title")}
           subTitle={t("countries.subTitle")}
-        />
+        /> */}
 
-        {/* Dashboard Header with Statistics */}
+        {/* Dashboard Header with Statistics
         <CountriesDashboardHeader
           countries={countries}
           loading={loading}
           t={t}
-        />
+        /> */}
 
-        <CountriesDataGrid
+        <CountriesMultiView
           countries={countries}
           loading={loading}
           apiRef={apiRef}
@@ -53,7 +53,7 @@ const CountriesPage = () => {
           onAdd={onAdd}
           t={t}
         />
-      </MyContentsWrapper>
+  
 
       <CountryForm
         open={["edit", "add", "view"].includes(dialogType)}

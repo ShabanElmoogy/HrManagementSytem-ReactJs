@@ -31,17 +31,17 @@ const StatesPage = () => {
   return (
     <>
  
-        <MyHeader
+        {/* <MyHeader
           title={t("states.title")}
           subTitle={t("states.subTitle")}
-        />
+        /> */}
 
         {/* Dashboard Header with Statistics */}
-        <StatesDashboardHeader
+        {/* <StatesDashboardHeader
           states={states}
           loading={loading}
           t={t}
-        />
+        /> */}
 
         <StatesMultiView
           states={states}
