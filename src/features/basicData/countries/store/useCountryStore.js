@@ -1,0 +1,121 @@
+import { apiRoutes } from "@/routes";
+import { apiService } from "@/shared/services";
+import { create } from "zustand";
+import { createJSONStorage, devtools, persist } from "zustand/middleware";
+
+// Helper function to extract value from API response
+const extractValue = (response) => {
+  // If response has a value property and it's successful, return the value
+  if (response?.value && response?.isSuccess) {
+    return response.value;
+  }
+  // If response has data property (fallback)
+  if (response?.data) {
+    return response.data;
+  }
+  // Otherwise return the response as-is
+  return response;
+};
+
+// Helper function to extract array of values from API response
+const extractValues = (response) => {
+  const extracted = extractValue(response);
+  // If it's an array of wrapped objects, extract values
+  if (Array.isArray(extracted) && extracted[0]?.value) {
+    return extracted.map((item) => extractValue(item));
+  }
+  return extracted;
+};
+
+const useCountryStore = create(
+  devtools(
+    persist(
+      (set, get) => ({
+        countries: [],
+        error: null,
+
+        fetchCountries: async () => {
+          set({ error: null });
+          const response = await apiService.get(apiRoutes.countries.getAll);
+          const allCountries = extractValues(response);
+          set({ countries: allCountries });
+          console.log("Fetched countries:", allCountries);
+          return allCountries;
+        },
+
+        getCountryById: async (id) => {
+          set({ error: null });
+          const country = get().countries.find((c) => c.id === id);
+          if (country) return country;
+
+          const response = await apiService.get(
+            apiRoutes.countries.getById(id)
+          );
+          const newCountry = extractValue(response);
+
+          if (newCountry && newCountry.id) {
+            set((state) => ({
+              countries: [...state.countries, newCountry],
+            }));
+          }
+          return newCountry;
+        },
+
+        addCountry: async (countryData) => {
+          set({ error: null });
+          const response = await apiService.post(
+            apiRoutes.countries.add,
+            countryData
+          );
+          const newCountry = extractValue(response);
+
+          set((state) => ({
+            countries: [...state.countries, newCountry],
+          }));
+
+          return newCountry;
+        },
+
+        updateCountry: async (countryData) => {
+          set({ error: null });
+          const response = await apiService.put(
+            apiRoutes.countries.update,
+            countryData
+          );
+          const updatedCountry = extractValue(response);
+
+          set((state) => ({
+            countries: state.countries.map((country) =>
+              country.id === countryData.id
+                ? { ...country, ...updatedCountry }
+                : country
+            ),
+          }));
+
+          return updatedCountry;
+        },
+
+        deleteCountry: async (id) => {
+          set({ error: null });
+          await apiService.delete(apiRoutes.countries.delete(id));
+
+          set((state) => ({
+            countries: state.countries.filter((c) => c.id !== id),
+          }));
+        },
+
+        resetCountryData: () =>
+          set({
+            countries: [],
+            error: null,
+          }),
+      }),
+      {
+        name: "country-storage",
+        storage: createJSONStorage(() => sessionStorage),
+      }
+    )
+  )
+);
+
+export default useCountryStore;
