@@ -11,8 +11,6 @@ import {
   CardContent,
   Chip,
   alpha,
-  TextField,
-  InputAdornment,
 } from "@mui/material";
 import { Search } from "@mui/icons-material";
 import {
@@ -26,8 +24,6 @@ import {
   PieChart,
   Pie,
   Cell,
-  LineChart,
-  Line,
   Area,
   AreaChart,
 } from "recharts";
@@ -167,8 +163,6 @@ const CountriesChartView = ({ countries, loading, t }) => {
     theme.palette.warning.main,
     theme.palette.info.main,
     theme.palette.error.main,
-    theme.palette.purple?.main || theme.palette.primary.dark,
-    theme.palette.orange?.main || theme.palette.warning.dark,
   ];
 
   const CustomTooltip = ({ active, payload, label }) => {
@@ -325,7 +319,7 @@ const CountriesChartView = ({ countries, loading, t }) => {
                   height={80}
                 />
                 <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} />
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={<CustomTooltip active={undefined} payload={undefined} label={undefined} />} />
                 <Bar
                   dataKey="value"
                   fill={theme.palette.primary.main}
@@ -365,7 +359,7 @@ const CountriesChartView = ({ countries, loading, t }) => {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={<CustomTooltip active={undefined} payload={undefined} label={undefined} />} />
               </PieChart>
             </ResponsiveContainer>
           </Paper>
@@ -398,7 +392,7 @@ const CountriesChartView = ({ countries, loading, t }) => {
                   tick={{ fontSize: 12, fill: theme.palette.text.secondary }}
                   width={60}
                 />
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={<CustomTooltip active={undefined} payload={undefined} label={undefined} />} />
                 <Bar
                   dataKey="value"
                   fill={theme.palette.secondary.main}
@@ -432,7 +426,7 @@ const CountriesChartView = ({ countries, loading, t }) => {
                     tick={{ fontSize: 12, fill: theme.palette.text.secondary }}
                   />
                   <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} />
-                  <Tooltip content={<CustomTooltip />} />
+                  <Tooltip content={<CustomTooltip active={undefined} payload={undefined} label={undefined} />} />
                   <Area
                     type="monotone"
                     dataKey="cumulative"

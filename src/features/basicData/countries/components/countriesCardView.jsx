@@ -180,6 +180,7 @@ const CountriesCardView = ({
           comparison = (a.currencyCode || "").localeCompare(b.currencyCode || "");
           break;
         case "created":
+          // @ts-ignore
           comparison = new Date(a.createdOn || 0) - new Date(b.createdOn || 0);
           break;
         case "rating":

@@ -63,9 +63,6 @@ export const appRoutes = {
     backups: "monitors/backups",
   },
 
-  reports: {
-    queryBuilder: "reports/query-builder",
-  },
   basicData: {
     countries: "basic-data/countries",
     states: "basic-data/states",

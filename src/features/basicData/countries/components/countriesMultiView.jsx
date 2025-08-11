@@ -1,32 +1,11 @@
+// @ts-nocheck
 /* eslint-disable react/prop-types */
 // components/CountriesMultiView.jsx
-import {
-  ViewModule,
-  TableChart,
-  Map,
-  BarChart,
-  Add,
-  Refresh,
-  FileDownload,
-  FilterList,
-} from "@mui/icons-material";
-import {
-  Box,
-  ToggleButton,
-  ToggleButtonGroup,
-  Paper,
-  Typography,
-  useTheme,
-  Button,
-  IconButton,
-  Tooltip,
-  Chip,
-  Divider,
-} from "@mui/material";
-import useViewLayout from "@/shared/hooks/useViewLayout";
+import { useState, useCallback } from "react";
+import { Box } from "@mui/material";
+import { MultiViewHeader } from "@/shared/components";
 import CountriesDataGrid from "./countriesDataGrid";
 import CountriesCardView from "./countriesCardView";
-import CountriesMapView from "./countriesMapView";
 import CountriesChartView from "./countriesChartView";
 
 const CountriesMultiView = ({
@@ -39,37 +18,8 @@ const CountriesMultiView = ({
   onAdd,
   t,
 }) => {
-  const theme = useTheme();
-  
-  // Use the useViewLayout hook for localStorage persistence
-  const [viewType, handleViewChange] = useViewLayout(
-    "countries-view-layout", // localStorage key
-    "grid", // default view
-    ["grid", "cards", "map", "chart"] // valid view types
-  );
-
-  const viewOptions = [
-    {
-      value: "grid",
-      label: t("countries.views.grid") || "Grid",
-      icon: <TableChart />,
-    },
-    {
-      value: "cards",
-      label: t("countries.views.cards") || "Cards",
-      icon: <ViewModule />,
-    },
-    {
-      value: "map",
-      label: t("countries.views.map") || "Map",
-      icon: <Map />,
-    },
-    {
-      value: "chart",
-      label: t("countries.views.chart") || "Chart",
-      icon: <BarChart />,
-    },
-  ];
+  // Initialize with default, will be updated by MultiViewHeader
+  const [currentViewType, setCurrentViewType] = useState("grid");
 
   const handleRefresh = () => {
     // Add refresh logic here
@@ -80,6 +30,10 @@ const CountriesMultiView = ({
     // Add export logic here
     console.log("Export countries data");
   };
+
+  const handleViewTypeChange = useCallback((newViewType) => {
+    setCurrentViewType(newViewType);
+  }, []);
 
   const renderView = () => {
     const commonProps = {
@@ -92,13 +46,11 @@ const CountriesMultiView = ({
       t,
     };
 
-    switch (viewType) {
+    switch (currentViewType) {
       case "grid":
         return <CountriesDataGrid {...commonProps} apiRef={apiRef} />;
       case "cards":
         return <CountriesCardView {...commonProps} />;
-      case "map":
-        return <CountriesMapView {...commonProps} />;
       case "chart":
         return <CountriesChartView {...commonProps} />;
       default:
@@ -107,8 +59,8 @@ const CountriesMultiView = ({
   };
 
   return (
-    <Box 
-      sx={{ 
+    <Box
+      sx={{
         display: "flex",
         flexDirection: "column",
         height: "100%",
@@ -116,325 +68,35 @@ const CountriesMultiView = ({
         position: "relative",
       }}
     >
-      {/* Fixed Header - Sticky on mobile */}
-      <Paper
-        elevation={2}
-        sx={{
-          mb: { xs: 2, md: 3 },
-          borderRadius: { xs: 1, md: 2 },
-          background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default} 100%)`,
-          border: `1px solid ${theme.palette.divider}`,
-          position: { xs: "sticky", md: "static" },
-          top: { xs: 0, md: "auto" },
-          zIndex: { xs: 100, md: "auto" },
-          flexShrink: 0,
+      {/* Shared Multi-View Header */}
+      <MultiViewHeader
+        title={t("countries.viewTitle") || "Countries Management"}
+        storageKey="countries-view-layout"
+        defaultView="grid"
+        availableViews={["grid", "cards", "chart"]}
+        viewLabels={{
+          grid: t("countries.views.grid") || "Grid",
+          cards: t("countries.views.cards") || "Cards",
+          chart: t("countries.views.chart") || "Chart",
         }}
-      >
-        {/* Desktop Layout */}
-        <Box
-          sx={{
-            p: { xs: 2, md: 3 },
-            display: { xs: "none", md: "flex" },
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 2,
-          }}
-        >
-          {/* Left Section - Title and Stats */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2, flex: 1 }}>
-            <Box>
-              <Typography 
-                variant="h5" 
-                color="text.primary"
-                sx={{ 
-                  fontWeight: 600,
-                  mb: 0.5,
-                }}
-              >
-                {t("countries.viewTitle") || "Countries Management"}
-              </Typography>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Chip
-                  label={`${countries?.length || 0} ${t("countries.total") || "Total"}`}
-                  size="small"
-                  color="primary"
-                  variant="outlined"
-                />
-                <Chip
-                  label={viewOptions.find(opt => opt.value === viewType)?.label || viewType}
-                  size="small"
-                  color="secondary"
-                  sx={{ 
-                    backgroundColor: theme.palette.secondary.main + "20",
-                    color: theme.palette.secondary.main,
-                  }}
-                />
-              </Box>
-            </Box>
-          </Box>
-
-          {/* Right Section - Actions and View Toggle */}
-          <Box 
-            sx={{ 
-              display: "flex", 
-              alignItems: "center", 
-              gap: 1.5,
-            }}
-          >
-            {/* Action Buttons */}
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Button
-                variant="contained"
-                startIcon={<Add />}
-                onClick={onAdd}
-                size="small"
-                sx={{
-                  borderRadius: 2,
-                  textTransform: "none",
-                  fontWeight: 500,
-                }}
-              >
-                {t("actions.add") || "Add"}
-              </Button>
-              
-              <Tooltip title={t("actions.refresh") || "Refresh"} arrow>
-                <IconButton
-                  size="small"
-                  onClick={handleRefresh}
-                  sx={{
-                    backgroundColor: theme.palette.action.hover,
-                    "&:hover": {
-                      backgroundColor: theme.palette.action.selected,
-                    },
-                  }}
-                >
-                  <Refresh />
-                </IconButton>
-              </Tooltip>
-
-              <Tooltip title={t("actions.export") || "Export"} arrow>
-                <IconButton
-                  size="small"
-                  onClick={handleExport}
-                  sx={{
-                    backgroundColor: theme.palette.action.hover,
-                    "&:hover": {
-                      backgroundColor: theme.palette.action.selected,
-                    },
-                  }}
-                >
-                  <FileDownload />
-                </IconButton>
-              </Tooltip>
-
-                          </Box>
-
-            <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
-            {/* TODO:fix overflow */}
-            {/* View Toggle */}
-            <ToggleButtonGroup
-              value={viewType}
-              exclusive
-              onChange={handleViewChange}
-              aria-label="view type"
-              size="small"
-              sx={{
-                backgroundColor: theme.palette.background.paper,
-                borderRadius: 2,
-                "& .MuiToggleButton-root": {
-                  border: `1px solid ${theme.palette.divider}`,
-                  borderRadius: "8px !important",
-                  mx: 0.25,
-                  px: 1.5,
-                  py: 0.75,
-                  transition: "all 0.2s ease-in-out",
-                  "&.Mui-selected": {
-                    backgroundColor: theme.palette.primary.main,
-                    color: theme.palette.primary.contrastText,
-                    boxShadow: `0 2px 8px ${theme.palette.primary.main}40`,
-                    "&:hover": {
-                      backgroundColor: theme.palette.primary.dark,
-                    },
-                  },
-                  "&:hover": {
-                    backgroundColor: theme.palette.action.hover,
-                  },
-                },
-              }}
-            >
-              {viewOptions.map((option) => (
-                <ToggleButton
-                  key={option.value}
-                  value={option.value}
-                  aria-label={option.label}
-                >
-                  {option.icon}
-                  <Box sx={{ ml: 1, display: "block" }}>
-                    {option.label}
-                  </Box>
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
-          </Box>
-        </Box>
-
-        {/* Mobile Layout */}
-        <Box
-          sx={{
-            p: 2,
-            display: { xs: "block", md: "none" },
-          }}
-        >
-          {/* Title and Stats */}
-          <Box sx={{ mb: 2 }}>
-            <Typography 
-              variant="h6" 
-              color="text.primary"
-              sx={{ 
-                fontWeight: 600,
-                mb: 1,
-                fontSize: "1.1rem",
-              }}
-            >
-              {t("countries.viewTitle") || "Countries Management"}
-            </Typography>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
-              <Chip
-                label={`${countries?.length || 0} ${t("countries.total") || "Total"}`}
-                size="small"
-                color="primary"
-                variant="outlined"
-              />
-              <Chip
-                label={viewOptions.find(opt => opt.value === viewType)?.label || viewType}
-                size="small"
-                color="secondary"
-                sx={{ 
-                  backgroundColor: theme.palette.secondary.main + "20",
-                  color: theme.palette.secondary.main,
-                }}
-              />
-            </Box>
-          </Box>
-
-          {/* Actions and View Toggle */}
-          <Box 
-            sx={{ 
-              display: "flex", 
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: 1,
-              flexWrap: "nowrap",
-            }}
-          >
-            {/* Action Buttons - Compact */}
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, flexShrink: 1 }}>
-              <Button
-                variant="contained"
-                startIcon={<Add />}
-                onClick={onAdd}
-                size="small"
-                sx={{
-                  borderRadius: 2,
-                  textTransform: "none",
-                  fontWeight: 500,
-                  fontSize: "0.75rem",
-                  minWidth: "auto",
-                  px: 1,
-                }}
-              >
-                Add
-              </Button>
-              
-              <Tooltip title={t("actions.refresh") || "Refresh"} arrow>
-                <IconButton
-                  size="small"
-                  onClick={handleRefresh}
-                  sx={{
-                    backgroundColor: theme.palette.action.hover,
-                    "&:hover": {
-                      backgroundColor: theme.palette.action.selected,
-                    },
-                    width: 32,
-                    height: 32,
-                  }}
-                >
-                  <Refresh fontSize="small" />
-                </IconButton>
-              </Tooltip>
-
-              <Tooltip title={t("actions.export") || "Export"} arrow>
-                <IconButton
-                  size="small"
-                  onClick={handleExport}
-                  sx={{
-                    backgroundColor: theme.palette.action.hover,
-                    "&:hover": {
-                      backgroundColor: theme.palette.action.selected,
-                    },
-                    width: 32,
-                    height: 32,
-                  }}
-                >
-                  <FileDownload fontSize="small" />
-                </IconButton>
-              </Tooltip>
-
-                          </Box>
-
-            {/* View Toggle - Always Visible */}
-            <Box sx={{ flexShrink: 0 }}>
-              <ToggleButtonGroup
-                value={viewType}
-                exclusive
-                onChange={handleViewChange}
-                aria-label="view type"
-                size="small"
-                sx={{
-                  backgroundColor: theme.palette.background.paper,
-                  borderRadius: 1,
-                  boxShadow: `0 1px 3px ${theme.palette.divider}`,
-                  "& .MuiToggleButton-root": {
-                    border: `1px solid ${theme.palette.divider}`,
-                    borderRadius: "4px !important",
-                    mx: 0.125,
-                    px: 0.5,
-                    py: 0.5,
-                    minWidth: 32,
-                    height: 32,
-                    transition: "all 0.2s ease-in-out",
-                    "&.Mui-selected": {
-                      backgroundColor: theme.palette.primary.main,
-                      color: theme.palette.primary.contrastText,
-                      boxShadow: `0 1px 3px ${theme.palette.primary.main}40`,
-                      "&:hover": {
-                        backgroundColor: theme.palette.primary.dark,
-                      },
-                    },
-                    "&:hover": {
-                      backgroundColor: theme.palette.action.hover,
-                    },
-                  },
-                }}
-              >
-                {viewOptions.map((option) => (
-                  <ToggleButton
-                    key={option.value}
-                    value={option.value}
-                    aria-label={option.label}
-                  >
-                    {option.icon}
-                  </ToggleButton>
-                ))}
-              </ToggleButtonGroup>
-            </Box>
-          </Box>
-        </Box>
-      </Paper>
+        onAdd={onAdd}
+        dataCount={countries?.length || 0}
+        totalLabel={t("countries.total") || "Total"}
+        onRefresh={handleRefresh}
+        onExport={handleExport}
+        onViewTypeChange={handleViewTypeChange}
+        t={t}
+        showActions={{
+          add: true,
+          refresh: true,
+          export: false,
+          filter: false,
+        }}
+      />
 
       {/* Scrollable View Content */}
-      <Box 
-        sx={{ 
+      <Box
+        sx={{
           flex: 1,
           minHeight: 0, // Important for flex child to allow shrinking
           overflow: "auto", // Allow content to scroll independently

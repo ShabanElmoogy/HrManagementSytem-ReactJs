@@ -1,8 +1,5 @@
 // CountriesPage.js
-import { MyContentsWrapper } from "@/layouts/components";
-import { MyHeader } from "@/shared/components";
 import { useTranslation } from "react-i18next";
-import CountriesDashboardHeader from "./components/countriesDashboardHeader";
 import CountriesMultiView from "./components/countriesMultiView";
 import CountryDeleteDialog from "./components/countryDeleteDialog";
 import CountryForm from "./components/countryForm";
@@ -30,19 +27,6 @@ const CountriesPage = () => {
 
   return (
     <>
-
-        {/* <MyHeader
-          title={t("countries.title")}
-          subTitle={t("countries.subTitle")}
-        /> */}
-
-        {/* Dashboard Header with Statistics
-        <CountriesDashboardHeader
-          countries={countries}
-          loading={loading}
-          t={t}
-        /> */}
-
         <CountriesMultiView
           countries={countries}
           loading={loading}

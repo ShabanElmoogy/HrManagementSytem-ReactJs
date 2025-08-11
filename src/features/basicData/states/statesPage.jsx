@@ -1,8 +1,5 @@
 // StatesPage.js
-import { MyContentsWrapper } from "@/layouts/components";
-import { MyHeader } from "@/shared/components";
 import { useTranslation } from "react-i18next";
-import StatesDashboardHeader from "./components/statesDashboardHeader";
 import StatesMultiView from "./components/statesMultiView";
 import StateDeleteDialog from "./components/stateDeleteDialog";
 import StateForm from "./components/stateForm";
@@ -30,29 +27,16 @@ const StatesPage = () => {
 
   return (
     <>
- 
-        {/* <MyHeader
-          title={t("states.title")}
-          subTitle={t("states.subTitle")}
-        /> */}
-
-        {/* Dashboard Header with Statistics */}
-        {/* <StatesDashboardHeader
-          states={states}
-          loading={loading}
-          t={t}
-        /> */}
-
-        <StatesMultiView
-          states={states}
-          loading={loading}
-          apiRef={apiRef}
-          onEdit={onEdit}
-          onView={onView}
-          onDelete={onDelete}
-          onAdd={onAdd}
-          t={t}
-        />
+      <StatesMultiView
+        states={states}
+        loading={loading}
+        apiRef={apiRef}
+        onEdit={onEdit}
+        onView={onView}
+        onDelete={onDelete}
+        onAdd={onAdd}
+        t={t}
+      />
 
       <StateForm
         open={["edit", "add", "view"].includes(dialogType)}

@@ -31,7 +31,6 @@ const MyContentsWrapper = ({ children }) => {
         },
         maxWidth: "100%",
         overflowX: "auto",
-        paddingRight: { xs: 1, md: 2 },
         transform: "translateZ(0)",
         // Skip transition on first render to avoid initial lag
         transition: isFirstRender
