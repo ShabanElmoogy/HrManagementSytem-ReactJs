@@ -1,5 +1,6 @@
 export { default as useApiHandler } from "./useApiHandler";
 export { default as useDataGridSelection } from "./useDataGridSelection";
+export { default as useDebounce } from "./useDebounce";
 export { default as useNotifications } from "./useNotifications";
 export { default as useSimpleNotifications } from "./useSimpleNotifications";
 export { default as usePagination } from "./usePagination";

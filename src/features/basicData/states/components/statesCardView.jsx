@@ -170,6 +170,7 @@ const StatesCardView = ({
           comparison = (a.code || "").localeCompare(b.code || "");
           break;
         case "created":
+          // @ts-ignore
           comparison = new Date(a.createdOn || 0) - new Date(b.createdOn || 0);
           break;
         case "rating":

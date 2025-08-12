@@ -1,26 +1,44 @@
-// hooks/useCountryGridLogic.js
+// hooks/useCountryGridLogic.js - TanStack Query Implementation
 import { useNotifications } from "@/shared/hooks";
-import useApiHandler from "@/shared/hooks/useApiHandler";
+import { extractErrorMessage } from "@/shared/utils";
 import { useGridApiRef } from "@mui/x-data-grid";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import useCountryStore from "../store/useCountryStore";
+import {
+  useCountries,
+  useCreateCountry,
+  useDeleteCountry,
+  useUpdateCountry,
+} from "./useCountryQueries";
 
 const useCountryGridLogic = () => {
   // Hooks
   const { t } = useTranslation();
   const { showError, showSuccess, SnackbarComponent } = useNotifications();
-  const { loading, handleApiCall } = useApiHandler({
-    showSuccess,
-    showError
+
+  // TanStack Query hooks - FIXED: Removed empty filters parameter
+  const {
+    data: countries = [],
+    isLoading: loading,
+    error,
+    refetch,
+    isFetching,
+  } = useCountries({
+    onError: (error) => {
+      console.error("Error fetching countries:", error);
+      showError(t("countries.fetchError") || "Failed to fetch countries");
+    },
   });
+
+  const createCountryMutation = useCreateCountry();
+  const updateCountryMutation = useUpdateCountry();
+  const deleteCountryMutation = useDeleteCountry();
 
   // State management
   const [dialogType, setDialogType] = useState(null);
   const [selectedCountry, setSelectedCountry] = useState(null);
-  const [fetchTriggered, setFetchTriggered] = useState(false);
 
-  // Navigation state variables (like company code)
+  // Navigation state variables
   const [newRowAdded, setNewRowAdded] = useState(false);
   const [lastAddedRowId, setLastAddedRowId] = useState(null);
 
@@ -30,31 +48,21 @@ const useCountryGridLogic = () => {
   const [rowDeleted, setRowDeleted] = useState(false);
   const [lastDeletedRowIndex, setLastDeletedRowIndex] = useState(null);
 
-  // Store access
-  const {
-    fetchCountries,
-    countries,
-    addCountry,
-    updateCountry,
-    deleteCountry,
-  } = useCountryStore();
-
   const apiRef = useGridApiRef();
+
+  // Refs to track mutation states to prevent infinite loops
+  const createSuccessRef = useRef(false);
+  const updateSuccessRef = useRef(false);
+  const deleteSuccessRef = useRef(false);
 
   // Memoized countries
   const stableCountries = useMemo(() => countries, [countries]);
 
-  // Fetch countries
-  const getAllCountries = useCallback(async () => {
-    if (loading || fetchTriggered) return;
-    setFetchTriggered(true);
-    await handleApiCall(async () => {
-      const response = await fetchCountries();
-      const filterData = response.filter((c) => !c.isDeleted);
-      useCountryStore.setState({ countries: filterData });
-      return filterData;
-    }, t("countries.fetched"));
-  }, [fetchCountries, handleApiCall, loading, fetchTriggered, t]);
+  // Check for any loading state from mutations
+  const isAnyLoading = loading || 
+    createCountryMutation.isPending || 
+    updateCountryMutation.isPending || 
+    deleteCountryMutation.isPending;
 
   // Dialog management
   const openDialog = useCallback((type, country = null) => {
@@ -67,29 +75,49 @@ const useCountryGridLogic = () => {
     setSelectedCountry(null);
   }, []);
 
-  // Scroll to the last added row (like company code)
+  // Scroll to the last added row
   useEffect(() => {
-    if (newRowAdded && countries.length > 0 && apiRef.current) {
-      const lastRowIndex = countries.length - 1;
-      const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
-      const newPage = Math.floor(lastRowIndex / pageSize);
+    if (newRowAdded && countries.length > 0 && apiRef.current && lastAddedRowId) {
+      console.log('Attempting to select new row with ID:', lastAddedRowId);
+      console.log('Available countries:', countries.map(c => ({ id: c.id, name: c.nameEn })));
+      
+      // Find the actual index of the newly added row
+      const newRowIndex = countries.findIndex(country => country.id === lastAddedRowId);
+      
+      if (newRowIndex >= 0) {
+        console.log('Found new row at index:', newRowIndex);
+        
+        const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
+        const newPage = Math.floor(newRowIndex / pageSize);
 
-      apiRef.current.setPage(newPage);
-      apiRef.current.setRowSelectionModel([lastAddedRowId]);
+        // Set the page first
+        apiRef.current.setPage(newPage);
+        
+        // Select the row
+        apiRef.current.setRowSelectionModel([lastAddedRowId]);
 
-      setTimeout(() => {
-        apiRef.current.scrollToIndexes({
-          rowIndex: lastRowIndex,
-          columnIndex: 0,
-          behavior: "smooth",
-        });
-      }, 300);
+        // Scroll to the row with a delay to ensure the page change has completed
+        setTimeout(() => {
+          apiRef.current.scrollToIndexes({
+            rowIndex: newRowIndex,
+            columnIndex: 0,
+            behavior: "smooth",
+          });
+        }, 500); // Increased delay to ensure data is loaded
+        
+        console.log('Row selection and scroll initiated for ID:', lastAddedRowId);
+      } else {
+        console.log('New row not found in countries list yet, will retry...');
+        // If the row is not found yet, it might be because the data is still loading
+        // The effect will run again when countries data updates
+        return;
+      }
 
       setNewRowAdded(false);
     }
-  }, [newRowAdded, countries, apiRef, lastAddedRowId]);
+  }, [newRowAdded, countries, lastAddedRowId]);
 
-  // Scroll to the last edited row (like company code)
+  // Scroll to the last edited row
   useEffect(() => {
     if (rowEdited && countries.length > 0 && apiRef.current) {
       const editedIndex = countries.findIndex(
@@ -108,9 +136,9 @@ const useCountryGridLogic = () => {
       }
       setRowEdited(false);
     }
-  }, [rowEdited, countries, apiRef, lastEditedRowId]);
+  }, [rowEdited, countries.length, lastEditedRowId]);
 
-  // Scroll to the previous row after deletion (like company code)
+  // Scroll to the previous row after deletion
   useEffect(() => {
     if (rowDeleted && countries.length > 0 && apiRef.current) {
       let prevRowIndex = lastDeletedRowIndex - 1;
@@ -130,40 +158,155 @@ const useCountryGridLogic = () => {
       }
       setRowDeleted(false);
     }
-  }, [rowDeleted, countries, apiRef, lastDeletedRowIndex]);
+  }, [rowDeleted, countries.length, lastDeletedRowIndex]);
+
+  // Handle create mutation success
+  useEffect(() => {
+    if (createCountryMutation.isSuccess && createCountryMutation.data && !createSuccessRef.current) {
+      createSuccessRef.current = true;
+      showSuccess(t("countries.created") || "Country created successfully");
+      
+      const newCountryId = createCountryMutation.data.id;
+      console.log('Country created with ID:', newCountryId);
+      
+      // Set the new row data immediately
+      setLastAddedRowId(newCountryId);
+      setNewRowAdded(true);
+      setDialogType(null);
+      setSelectedCountry(null);
+      
+      // Reset after a short delay
+      setTimeout(() => {
+        createCountryMutation.reset();
+        createSuccessRef.current = false;
+      }, 100);
+    }
+  }, [createCountryMutation.isSuccess, createCountryMutation.data]);
+
+  // Additional effect to handle row selection when data is refetched
+  useEffect(() => {
+    if (!isFetching && !loading && lastAddedRowId && newRowAdded && countries.length > 0 && apiRef.current) {
+      console.log('Data refetch completed, attempting to select row:', lastAddedRowId);
+      
+      // Find the newly added row
+      const newRowIndex = countries.findIndex(country => country.id === lastAddedRowId);
+      
+      if (newRowIndex >= 0) {
+        console.log('Found new row at index:', newRowIndex, 'for ID:', lastAddedRowId);
+        
+        // Use a timeout to ensure the grid has rendered the new data
+        setTimeout(() => {
+          if (apiRef.current) {
+            const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
+            const newPage = Math.floor(newRowIndex / pageSize);
+
+            // Set the page and select the row
+            apiRef.current.setPage(newPage);
+            apiRef.current.setRowSelectionModel([lastAddedRowId]);
+
+            // Scroll to the row
+            setTimeout(() => {
+              if (apiRef.current) {
+                apiRef.current.scrollToIndexes({
+                  rowIndex: newRowIndex,
+                  columnIndex: 0,
+                  behavior: "smooth",
+                });
+              }
+            }, 200);
+            
+            console.log('Successfully selected and scrolled to new row:', lastAddedRowId);
+          }
+        }, 300);
+        
+        // Reset the flags
+        setNewRowAdded(false);
+        setLastAddedRowId(null);
+      }
+    }
+  }, [isFetching, loading, lastAddedRowId, newRowAdded, countries]);
+
+  // Handle create mutation error
+  useEffect(() => {
+    if (createCountryMutation.isError && createCountryMutation.error) {
+      const errorMessage = extractErrorMessage(createCountryMutation.error);
+      showError(errorMessage);
+    }
+  }, [createCountryMutation.isError, createCountryMutation.error]);
+
+  // Handle update mutation success
+  useEffect(() => {
+    if (updateCountryMutation.isSuccess && updateCountryMutation.data && !updateSuccessRef.current) {
+      updateSuccessRef.current = true;
+      showSuccess(t("countries.updated") || "Country updated successfully");
+      setRowEdited(true);
+      setLastEditedRowId(updateCountryMutation.data.id);
+      setDialogType(null);
+      setSelectedCountry(null);
+      
+      // Reset after a short delay
+      setTimeout(() => {
+        updateCountryMutation.reset();
+        updateSuccessRef.current = false;
+      }, 100);
+    }
+  }, [updateCountryMutation.isSuccess, updateCountryMutation.data]);
+
+  // Handle update mutation error
+  useEffect(() => {
+    if (updateCountryMutation.isError && updateCountryMutation.error) {
+      const errorMessage = extractErrorMessage(updateCountryMutation.error);
+      showError(errorMessage);
+    }
+  }, [updateCountryMutation.isError, updateCountryMutation.error]);
+
+  // Handle delete mutation success
+  useEffect(() => {
+    if (deleteCountryMutation.isSuccess && !deleteSuccessRef.current) {
+      deleteSuccessRef.current = true;
+      showSuccess(t("countries.deleted") || "Country deleted successfully");
+      setRowDeleted(true);
+      setDialogType(null);
+      setSelectedCountry(null);
+      
+      // Reset after a short delay
+      setTimeout(() => {
+        deleteCountryMutation.reset();
+        deleteSuccessRef.current = false;
+      }, 100);
+    }
+  }, [deleteCountryMutation.isSuccess]);
+
+  // Handle delete mutation error
+  useEffect(() => {
+    if (deleteCountryMutation.isError && deleteCountryMutation.error) {
+      const errorMessage = extractErrorMessage(deleteCountryMutation.error);
+      showError(errorMessage);
+    }
+  }, [deleteCountryMutation.isError, deleteCountryMutation.error]);
 
   // Form submission handler
   const handleFormSubmit = useCallback(
     async (formdata) => {
       try {
         if (dialogType === "edit" && selectedCountry?.id) {
-          const result = await handleApiCall(
-            () => updateCountry({ ...formdata, id: selectedCountry.id }),
-            t("countries.updated")
-          );
-          setRowEdited(true);
-          setLastEditedRowId(result.id);
+          await updateCountryMutation.mutateAsync({
+            ...formdata,
+            id: selectedCountry.id,
+          });
         } else if (dialogType === "add") {
-          const response = await handleApiCall(
-            () => addCountry(formdata),
-            t("countries.created")
-          );
-          setNewRowAdded(true);
-          setLastAddedRowId(response.id);
+          await createCountryMutation.mutateAsync(formdata);
         }
-        closeDialog();
       } catch (error) {
         console.error("Form submission error:", error);
+        // Error handling is done in the mutation's onError callback
       }
     },
     [
       dialogType,
       selectedCountry,
-      updateCountry,
-      addCountry,
-      handleApiCall,
-      t,
-      closeDialog,
+      updateCountryMutation,
+      createCountryMutation,
     ]
   );
 
@@ -175,40 +318,24 @@ const useCountryGridLogic = () => {
       const deletedId = selectedCountry.id;
       const currentIndex = countries.findIndex((country) => country.id === deletedId);
 
-      await handleApiCall(
-        () => deleteCountry(deletedId),
-        t("countries.deleted")
-      );
+      await deleteCountryMutation.mutateAsync(deletedId);
 
+      // Update selected country for navigation
       let newSelectedCountry = null;
-      if (countries.length > 0) {
+      if (countries.length > 1) { // Will be length - 1 after deletion
         newSelectedCountry =
           currentIndex > 0
-            ? countries[Math.min(currentIndex - 1, countries.length - 1)]
-            : countries[0];
+            ? countries[Math.min(currentIndex - 1, countries.length - 2)]
+            : countries[1]; // Take the second item since first will be deleted
       }
 
       setSelectedCountry(newSelectedCountry);
       setLastDeletedRowIndex(currentIndex);
-      setRowDeleted(true);
-
-      closeDialog();
     } catch (error) {
       console.error("Delete error:", error);
+      // Error handling is done in the mutation's onError callback
     }
-  }, [
-    selectedCountry,
-    countries,
-    deleteCountry,
-    handleApiCall,
-    t,
-    closeDialog,
-  ]);
-
-  // Initial fetch
-  useEffect(() => {
-    getAllCountries();
-  }, [getAllCountries]);
+  }, [selectedCountry, countries, deleteCountryMutation]);
 
   // Action handlers
   const handleEdit = useCallback((country) => {
@@ -227,13 +354,20 @@ const useCountryGridLogic = () => {
     openDialog("add");
   }, [openDialog]);
 
+  // Refresh handler
+  const handleRefresh = useCallback(() => {
+    refetch();
+  }, [refetch]);
+
   return {
     // State
     dialogType,
     selectedCountry,
-    loading,
+    loading: isAnyLoading,
     countries: stableCountries,
     apiRef,
+    error,
+    isFetching,
 
     // Dialog methods
     openDialog,
@@ -242,12 +376,18 @@ const useCountryGridLogic = () => {
     // Form and action handlers
     handleFormSubmit,
     handleDelete,
+    handleRefresh,
 
     // Action methods
     onEdit: handleEdit,
     onView: handleView,
     onDelete: handleDeleteDialog,
     onAdd: handleAdd,
+
+    // Mutation states for advanced UI feedback
+    isCreating: createCountryMutation.isPending,
+    isUpdating: updateCountryMutation.isPending,
+    isDeleting: deleteCountryMutation.isPending,
 
     // Components
     SnackbarComponent,

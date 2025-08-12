@@ -5,6 +5,7 @@ const CountryDeleteDialog = ({
   onClose,
   onConfirm,
   selectedCountry,
+  loading = false,
   t,
 }) => {
   // Create the display name for the country being deleted
@@ -20,6 +21,7 @@ const CountryDeleteDialog = ({
       onClose={onClose}
       deletedField={deletedField}
       handleDelete={onConfirm}
+      loading={loading}
     />
   );
 };

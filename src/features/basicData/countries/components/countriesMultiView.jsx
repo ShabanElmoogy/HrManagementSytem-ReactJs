@@ -2,28 +2,51 @@
 /* eslint-disable react/prop-types */
 // components/CountriesMultiView.jsx
 import { useState, useCallback } from "react";
-import { Box } from "@mui/material";
+import { Box, TextField, InputAdornment } from "@mui/material";
+import { Search } from "@mui/icons-material";
 import { MultiViewHeader } from "@/shared/components";
 import CountriesDataGrid from "./countriesDataGrid";
 import CountriesCardView from "./countriesCardView";
 import CountriesChartView from "./countriesChartView";
+import { useCountrySearch } from "../hooks/useCountryQueries";
 
 const CountriesMultiView = ({
   countries,
   loading,
+  isFetching,
   apiRef,
   onEdit,
   onDelete,
   onView,
   onAdd,
+  onRefresh,
   t,
 }) => {
   // Initialize with default, will be updated by MultiViewHeader
   const [currentViewType, setCurrentViewType] = useState("grid");
+  const [searchTerm, setSearchTerm] = useState("");
+  
+  // Use search hook with TanStack Query
+  const { 
+    data: searchResults, 
+    isLoading: isSearching 
+  } = useCountrySearch(searchTerm, {
+    enabled: searchTerm.length > 0, // Only search when there's a search term
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+  
+  // Use search results if searching, otherwise use original countries
+  const displayCountries = searchTerm ? searchResults : countries;
+  const displayLoading = searchTerm ? isSearching : loading;
 
   const handleRefresh = () => {
-    // Add refresh logic here
-    window.location.reload();
+    // Use the refresh function passed from parent (TanStack Query refetch)
+    if (onRefresh) {
+      onRefresh();
+    } else {
+      // Fallback to page reload if no refresh function provided
+      window.location.reload();
+    }
   };
 
   const handleExport = () => {
@@ -37,8 +60,8 @@ const CountriesMultiView = ({
 
   const renderView = () => {
     const commonProps = {
-      countries,
-      loading,
+      countries: displayCountries,
+      loading: displayLoading,
       onEdit,
       onDelete,
       onView,
@@ -80,8 +103,8 @@ const CountriesMultiView = ({
           chart: t("countries.views.chart") || "Chart",
         }}
         onAdd={onAdd}
-        dataCount={countries?.length || 0}
-        totalLabel={t("countries.total") || "Total"}
+        dataCount={displayCountries?.length || 0}
+        totalLabel={searchTerm ? (t("countries.filtered") || "Filtered") : (t("countries.total") || "Total")}
         onRefresh={handleRefresh}
         onExport={handleExport}
         onViewTypeChange={handleViewTypeChange}
@@ -93,6 +116,38 @@ const CountriesMultiView = ({
           filter: false,
         }}
       />
+
+      {/* Search Input */}
+      <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
+        <TextField
+          size="small"
+          placeholder={t("countries.search.placeholder") || "Search countries by name, code, or phone..."}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search />
+              </InputAdornment>
+            ),
+          }}
+          sx={{
+            maxWidth: 400,
+            '& .MuiOutlinedInput-root': {
+              backgroundColor: 'background.paper',
+            }
+          }}
+        />
+        {searchTerm && (
+          <Box sx={{ mt: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
+            {isSearching 
+              ? (t("countries.search.searching") || "Searching...") 
+              : (t("countries.search.results", { count: displayCountries?.length || 0 }) || 
+                 `Found ${displayCountries?.length || 0} countries`)
+            }
+          </Box>
+        )}
+      </Box>
 
       {/* Scrollable View Content */}
       <Box

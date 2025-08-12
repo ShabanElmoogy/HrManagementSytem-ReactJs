@@ -66,6 +66,7 @@ import {
 import { format } from "date-fns";
 import { useState, useMemo, useEffect } from "react";
 import AuthorizeView from "../../../../shared/components/auth/authorizeView";
+import { useCountrySearch, useCountrySearchOptimized } from "../hooks/useCountryQueries";
 
 const CountriesCardView = ({
   countries,
@@ -84,6 +85,16 @@ const CountriesCardView = ({
   const [bookmarkedCountries, setBookmarkedCountries] = useState(new Set());
   const [ratedCountries, setRatedCountries] = useState(new Map());
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [useQuerySearch, setUseQuerySearch] = useState(false);
+  
+  // TanStack Query search (optional)
+  const { 
+    data: querySearchResults, 
+    isLoading: isQuerySearchLoading 
+  } = useCountrySearch(searchTerm, {
+    enabled: useQuerySearch && searchTerm.length > 0,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
   
   // Responsive breakpoints
   const isXs = useMediaQuery(theme.breakpoints.down('sm'));
@@ -539,37 +550,54 @@ const CountriesCardView = ({
 
           {/* Quick Actions */}
           <Grid size={{ xs: 12, md: 2 }}>
-            <Stack direction="row" spacing={1}>
-              <Button 
-                size="small" 
-                variant="outlined" 
-                onClick={() => setSearchTerm('')}
-                disabled={!searchTerm}
-              >
-                Clear
-              </Button>
-              <Button 
-                size="small" 
-                variant="outlined" 
-                onClick={() => {
-                  setSearchTerm('');
-                  setSortBy('name');
-                  setSortOrder('asc');
-                  setFilterBy('all');
-                  setPage(0);
+            <Stack direction="column" spacing={1}>
+              <Stack direction="row" spacing={1}>
+                <Button 
+                  size="small" 
+                  variant="outlined" 
+                  onClick={() => setSearchTerm('')}
+                  disabled={!searchTerm}
+                >
+                  Clear
+                </Button>
+                <Button 
+                  size="small" 
+                  variant="outlined" 
+                  onClick={() => {
+                    setSearchTerm('');
+                    setSortBy('name');
+                    setSortOrder('asc');
+                    setFilterBy('all');
+                    setPage(0);
+                  }}
+                >
+                  Reset
+                </Button>
+              </Stack>
+              
+              {/* Search Mode Toggle */}
+              <ToggleButtonGroup
+                value={useQuerySearch ? 'query' : 'local'}
+                exclusive
+                onChange={(e, value) => {
+                  if (value !== null) {
+                    setUseQuerySearch(value === 'query');
+                  }
                 }}
+                size="small"
+                fullWidth
               >
-                Reset
-              </Button>
-              {/* Debug Button */}
-              <Button 
-                size="small" 
-                variant="contained" 
-                color="secondary"
-                onClick={navigateToLastPage}
-              >
-                Last Page
-              </Button>
+                <ToggleButton value="local">
+                  <Tooltip title="Local Search (Client-side filtering)">
+                    <Speed sx={{ fontSize: 16 }} />
+                  </Tooltip>
+                </ToggleButton>
+                <ToggleButton value="query">
+                  <Tooltip title="TanStack Query Search (Shows in DevTools)">
+                    <DataUsage sx={{ fontSize: 16 }} />
+                  </Tooltip>
+                </ToggleButton>
+              </ToggleButtonGroup>
             </Stack>
           </Grid>
         </Grid>
