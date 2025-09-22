@@ -71,7 +71,6 @@ export const useCountries = (options = {}) => {
   return useQuery({
     queryKey: countryKeys.list(),
     queryFn: () => countryApi.getAll(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
     ...options,
   });
 };
@@ -84,7 +83,6 @@ export const useCountry = (id, options = {}) => {
     queryKey: countryKeys.detail(id),
     queryFn: () => countryApi.getById(id),
     enabled: !!id,
-    staleTime: 5 * 60 * 1000,
     ...options,
   });
 };
@@ -117,7 +115,6 @@ export const useCountrySearch = (searchTerm = '', options = {}) => {
       });
     },
     enabled: shouldSearch,
-    staleTime: 5 * 60 * 1000,
     ...queryOptions,
   });
 };

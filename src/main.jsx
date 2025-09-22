@@ -11,7 +11,7 @@ import PullToRefresh from 'pulltorefreshjs';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 20, // 20ms - data is fresh for 20ms
+      staleTime: 600, // 20ms - data is fresh for 20ms
       gcTime: 10 * 60 * 1000, // 5 minutes garbage collection
       retry: 1,
       refetchOnWindowFocus: false,
