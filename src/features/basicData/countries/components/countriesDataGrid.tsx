@@ -5,8 +5,8 @@ import { Delete, Edit, Visibility } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { GridActionsCellItem, GridColDef, GridApi } from "@mui/x-data-grid";
 
-// Import the new TypeScript permissions and hooks
-import Permissions, { PermissionEnum } from "@/constants/appPermissions";
+// Import the simplified permissions and hooks
+import Permissions from "@/constants/appPermissions";
 import { useCountriesPermissions } from "@/shared/hooks/usePermissions";
 import AuthorizeView from "../../../../shared/components/auth/authorizeView";
 import {

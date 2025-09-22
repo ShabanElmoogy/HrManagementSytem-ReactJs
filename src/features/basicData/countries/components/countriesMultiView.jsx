@@ -5,7 +5,7 @@ import { useState, useCallback } from "react";
 import { Box, TextField, InputAdornment } from "@mui/material";
 import { Search } from "@mui/icons-material";
 import { MultiViewHeader } from "@/shared/components";
-import CountriesDataGrid from "./countriesDataGrid";
+import CountriesDataGrid from "./countriesDataGrid.tsx";
 import CountriesCardView from "./countriesCardView";
 import CountriesChartView from "./countriesChartView";
 import { useCountrySearch } from "../hooks/useCountryQueries";

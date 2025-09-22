@@ -1,6 +1,6 @@
 export { default as appPermissions } from "./appPermissions";
-// Also export the TypeScript version for new components
-export { default as Permissions, PermissionEnum, hasPermission, hasAnyPermission, hasAllPermissions } from "./appPermissions";
+// Also export the simplified TypeScript version
+export { default as Permissions, hasPermission, hasAnyPermission, hasAllPermissions } from "./appPermissions";
 export {
   arabicOnly,
   email,
