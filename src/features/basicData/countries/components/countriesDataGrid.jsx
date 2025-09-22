@@ -152,7 +152,6 @@ const CountriesDataGrid = ({
   );
 
   return (
-    // @ts-ignore
     <MyContentsWrapper>
       <MyDataGrid
         rows={countries}
