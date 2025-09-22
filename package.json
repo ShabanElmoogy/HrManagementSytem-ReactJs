@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "tsc --noEmit --watch",
+    "type-check:strict": "tsc --noEmit -p tsconfig.strict.json",
+    "build:ts": "tsc && vite build"
   },
   "dependencies": {
     "@microsoft/signalr": "^8.0.17",
@@ -45,6 +49,11 @@
     "@mui/x-data-grid": "^7.25.0",
     "@mui/x-date-pickers": "^7.29.4",
     "@react-oauth/google": "^0.12.2",
+    "@types/crypto-js": "^4.2.2",
+    "@types/file-saver": "^2.0.7",
+    "@types/js-cookie": "^3.0.6",
+    "@types/lodash": "^4.17.20",
+    "@types/node": "^24.5.2",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
@@ -78,6 +87,7 @@
     "react-timeago": "^8.2.0",
     "react-virtualized": "^9.22.6",
     "stylis-plugin-rtl": "^2.1.1",
+    "typescript": "^5.9.2",
     "vite": "^6.3.5",
     "vite-plugin-pwa": "^1.0.0",
     "xlsx": "^0.18.5",
