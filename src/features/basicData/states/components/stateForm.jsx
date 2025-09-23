@@ -6,7 +6,7 @@ import { Box, TextField } from "@mui/material";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { getStateValidationSchema } from "../utils/validation";
-import useCountryStore from "../../countries/store/useCountryStore";
+import { useCountries } from "../../countries/hooks/useCountryQueries";
 
 const StateForm = ({
   open,
@@ -25,8 +25,15 @@ const StateForm = ({
   const isEditMode = dialogType === "edit";
   const isAddMode = dialogType === "add";
 
-  // Get countries for the dropdown
-  const { countries, fetchCountries } = useCountryStore();
+  // Get countries for the dropdown using TanStack Query
+  const { 
+    data: countries = [], 
+    isLoading: countriesLoading, 
+    error: countriesError 
+  } = useCountries({
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
+  });
 
   const schema = getStateValidationSchema(t);
 
@@ -45,13 +52,6 @@ const StateForm = ({
       countryId: null,
     },
   });
-
-  // Fetch countries when component mounts
-  useEffect(() => {
-    if (open && countries.length === 0) {
-      fetchCountries();
-    }
-  }, [open, countries.length, fetchCountries]);
 
   // Reset form when dialog opens or selected state changes
   useEffect(() => {
@@ -162,10 +162,11 @@ const StateForm = ({
           valueMember="id"
           displayMember="nameEn"
           placeholder={t("states.selectCountry") || "Select a country"}
-          loading={loading}
+          loading={loading || countriesLoading}
           disabled={isViewMode}
           errors={errors}
           showClearButton={!isViewMode}
+          helperText={countriesError ? `Error loading countries: ${countriesError.message}` : undefined}
         />
       </Box>
 

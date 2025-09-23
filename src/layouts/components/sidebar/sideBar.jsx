@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import DrawerHeader from "./drawerHeader";
 import { getNavigationConfig } from "./navigationConfig";
 import NavigationSection from "./navigationSection";
@@ -96,27 +97,6 @@ const ScrollableContent = styled(Box)(({ theme }) => ({
   },
 }));
 
-// Custom toggle button styled to match UserProfile width
-// const ToggleButton = styled(Button)(({ theme, open, expanded }) => ({
-//   display: open ? "flex" : "none",
-//   width: "100%",
-//   justifyContent: "flex-start",
-//   padding: theme.spacing(1, 2),
-//   textTransform: "none",
-//   borderRadius: 0,
-//   backgroundColor: expanded
-//     ? alpha(theme.palette.primary.main, 0.08)
-//     : "transparent",
-//   "&:hover": {
-//     backgroundColor: expanded
-//       ? alpha(theme.palette.primary.main, 0.12)
-//       : alpha(theme.palette.action.hover, 0.08),
-//   },
-//   fontWeight: 500,
-//   color: theme.palette.text.primary,
-//   borderBottom: `1px solid ${alpha(theme.palette.divider, 0.5)}`,
-// }));
-
 const ToggleButton = styled(Button)(({ theme, open }) => ({
   display: open ? "flex" : "none",
   width: "100%",
@@ -127,15 +107,15 @@ const ToggleButton = styled(Button)(({ theme, open }) => ({
   fontWeight: 500,
   color: theme.palette.text.primary,
   borderBottom: `1px solid ${alpha(theme.palette.divider, 0.5)}`,
-  
+
   // Use CSS classes instead of props
-  '&.expanded': {
+  "&.expanded": {
     backgroundColor: alpha(theme.palette.primary.main, 0.08),
     "&:hover": {
       backgroundColor: alpha(theme.palette.primary.main, 0.12),
     },
   },
-  '&:not(.expanded)': {
+  "&:not(.expanded)": {
     backgroundColor: "transparent",
     "&:hover": {
       backgroundColor: alpha(theme.palette.action.hover, 0.08),
@@ -143,11 +123,11 @@ const ToggleButton = styled(Button)(({ theme, open }) => ({
   },
 }));
 
-
 function SideBar({ open, handleDrawerClose }) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
 
   // Track expanded sections with an object
@@ -155,6 +135,15 @@ function SideBar({ open, handleDrawerClose }) {
 
   // Get navigation configuration
   const navigationSections = getNavigationConfig();
+
+  // Handle logout
+  const handleLogout = () => {
+    sessionStorage.clear();
+    navigate("/login", { replace: true });
+    if (isSmallScreen) {
+      handleDrawerClose();
+    }
+  };
 
   // Find which section contains a specific path
   const findSectionByPath = (path) => {
@@ -308,7 +297,7 @@ function SideBar({ open, handleDrawerClose }) {
 
         {/* User Profile - Hide when sections are expanded */}
         <Collapse in={!isAnySectionExpanded} timeout="auto">
-          <UserProfile open={open} />
+          <UserProfile open={open} onLogout={handleLogout} />
         </Collapse>
 
         <Divider />

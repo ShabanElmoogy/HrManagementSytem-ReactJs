@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["dom", "dom.iterable", "es2022"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "es2022"
+    ],
     "allowJs": true,
     "checkJs": true,
     "skipLibCheck": true,
@@ -9,8 +13,6 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
     "isolatedModules": false,
     "noEmit": true,
     "jsx": "react-jsx",
@@ -25,9 +27,15 @@
     "noUncheckedIndexedAccess": false,
     //i want suppress missing attribute errors
     "paths": {
-      "@/*": ["*"],
-      "@/components/*": ["components/*"],
-      "@/utils/*": ["utils/*"]
+      "@/*": [
+        "*"
+      ],
+      "@/components/*": [
+        "components/*"
+      ],
+      "@/utils/*": [
+        "utils/*"
+      ]
     }
   },
   "include": [

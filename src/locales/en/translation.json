@@ -44,7 +44,8 @@
     "rolesManagement": "Roles Management",
     "usersManagement": "Users Management",
     "chat": "Chat",
-    "chatInterface": "Chat Interface"
+    "chatInterface": "Chat Interface",
+    "employees": "Employees"
   },
   "actions": {
     "buttons": "Actions",

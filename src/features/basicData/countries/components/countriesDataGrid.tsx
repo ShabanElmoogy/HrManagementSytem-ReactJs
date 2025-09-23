@@ -1,14 +1,13 @@
 /* eslint-disable react/prop-types */
 // TypeScript version of CountriesDataGrid with enhanced permissions implementation
-import React, { useCallback, useMemo } from "react";
 import { Delete, Edit, Visibility } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
-import { GridActionsCellItem, GridColDef, GridApi } from "@mui/x-data-grid";
+import { GridActionsCellItem, GridApi, GridColDef } from "@mui/x-data-grid";
+import React, { useCallback, useMemo } from "react";
 
 // Import the simplified permissions and hooks
 import Permissions from "@/constants/appPermissions";
-import { useCountriesPermissions } from "@/shared/hooks/usePermissions";
-import AuthorizeView from "../../../../shared/components/auth/authorizeView";
+import { MyContentsWrapper } from "@/layouts";
 import {
   MyDataGrid,
   renderAlphaCode,
@@ -17,21 +16,11 @@ import {
   renderDate,
   renderPhoneCode,
 } from "@/shared/components";
-import { MyContentsWrapper } from "@/layouts";
+import { useCountriesPermissions } from "@/shared/hooks/usePermissions";
+import AuthorizeView from "../../../../shared/components/auth/authorizeView";
+import { Country } from "../types/Country";
 
 // Define interfaces for better type safety
-interface Country {
-  id: string | number;
-  nameAr: string;
-  nameEn: string;
-  alpha2Code: string;
-  alpha3Code: string;
-  phoneCode: string;
-  currencyCode: string;
-  createdOn: string;
-  updatedOn: string;
-}
-
 interface CountriesDataGridProps {
   countries: Country[];
   loading?: boolean;
@@ -234,4 +223,4 @@ const CountriesDataGrid: React.FC<CountriesDataGridProps> = ({
 export default CountriesDataGrid;
 
 // Export types for use in other components
-export type { Country, CountriesDataGridProps };
+export type { CountriesDataGridProps, Country };

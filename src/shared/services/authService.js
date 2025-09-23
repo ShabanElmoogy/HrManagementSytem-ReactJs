@@ -19,13 +19,64 @@ export default class AuthService {
     const decodedToken = this.getDecodedToken();
     if (!decodedToken) return null;
 
-    return {
-      id: decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"],
-      email: decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"],
-      userName: decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
-      roles: decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || [],
-      permissions: decodedToken["Permissions"] || [],
+    // Try different possible claim names
+    const getId = () => {
+      return decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] ||
+             decodedToken["sub"] ||
+             decodedToken["id"] ||
+             decodedToken["userId"] ||
+             "";
     };
+
+    const getEmail = () => {
+      return decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] ||
+             decodedToken["email"] ||
+             decodedToken["Email"] ||
+             "";
+    };
+
+    const getUserName = () => {
+      return decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] ||
+             decodedToken["name"] ||
+             decodedToken["username"] ||
+             decodedToken["userName"] ||
+             decodedToken["UserName"] ||
+             decodedToken["unique_name"] ||
+             "";
+    };
+
+    const getRoles = () => {
+      const roles = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] ||
+                   decodedToken["role"] ||
+                   decodedToken["roles"] ||
+                   decodedToken["Role"] ||
+                   decodedToken["Roles"] ||
+                   [];
+      
+      // Ensure it's always an array
+      return Array.isArray(roles) ? roles : [roles].filter(Boolean);
+    };
+
+    const getPermissions = () => {
+      const permissions = decodedToken["Permissions"] ||
+                         decodedToken["permissions"] ||
+                         decodedToken["Permission"] ||
+                         decodedToken["permission"] ||
+                         [];
+      
+      return Array.isArray(permissions) ? permissions : [permissions].filter(Boolean);
+    };
+
+    const user = {
+      id: getId(),
+      email: getEmail(),
+      userName: getUserName(),
+      roles: getRoles(),
+      permissions: getPermissions(),
+    };
+
+    console.log("AuthService.getCurrentUser result:", user);
+    return user;
   }
 
   static getUserClaims() {

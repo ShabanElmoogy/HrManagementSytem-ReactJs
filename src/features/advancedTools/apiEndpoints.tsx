@@ -15,5 +15,5 @@ const ApiEndpoints = () => {
     </div>
   );
 };
-//ddddd
+
 export default ApiEndpoints;

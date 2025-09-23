@@ -7,10 +7,11 @@ import * as React from "react";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
+import { ToastProvider } from "../../shared/components/common/feedback/Toast";
 import apiService from "../../shared/services/apiService";
 import useTokenRevocation from "../../shared/store/useTokenRevocation";
 import { useThemeSettings } from "../../theme/useThemeSettings";
-import SideBar from "../components/sideBar/sideBar";
+import SideBar from "../components/sidebar/SideBar";
 import SidebarContext from "../components/sidebar/sidebarContext"; // Import context
 import TopBar from "../components/topBar/topBar";
 // NotificationProvider removed - using simplified notification system
@@ -65,6 +66,7 @@ const MainLayout = () => {
             </Box>
           </Box>
         </SidebarContext.Provider>
+        <ToastProvider position="top-right" />
       </CacheProvider>
     </ThemeProvider>
   );

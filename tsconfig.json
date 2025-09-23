@@ -16,25 +16,25 @@
     "jsx": "react-jsx",
     "baseUrl": "src",
     
-    // TypeScript strict settings - start lenient for gradual migration
+    // TypeScript strict settings - gradually enable for better error detection
     "strict": false,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "strictNullChecks": false,
-    "strictFunctionTypes": false,
-    "strictBindCallApply": false,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
     "strictPropertyInitialization": false,
-    "noImplicitThis": false,
-    "noImplicitReturns": false,
-    "noFallthroughCasesInSwitch": false,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": false,
     "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": false,
     
-    // Additional helpful options for gradual migration
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
+    // Additional helpful options for better error detection
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "exactOptionalPropertyTypes": false,
-    "useUnknownInCatchVariables": false,
+    "useUnknownInCatchVariables": true,
     
     // Path mapping
     "paths": {

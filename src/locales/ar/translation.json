@@ -39,7 +39,8 @@
     "rolesManagement": "ادارة الصلاحيات",
     "usersManagement": "ادارة المستخدمين",
     "chat": "المحادثة",
-    "chatInterface": "واجهة المحادثة"
+    "chatInterface": "واجهة المحادثة",
+    "employees": "الموظفين"
   },
   "actions": {
     "buttons": "العمليات",
@@ -488,6 +489,6 @@
     "changedAt": "تاريخ التغيير",
     "changedByPc": "جهاز التغيير",
     "title": "تتبع تغييرات البيانات",
-    "subTitle" : "عرض تفاصيل التغيير فى البيانات"
+    "subTitle": "عرض تفاصيل التغيير فى البيانات"
   }
 }
