@@ -63,6 +63,9 @@ interface CountriesCardViewProps {
   onView: (country: Country) => void;
   onAdd: () => void;
   t: (key: string) => string;
+  lastAddedId?: string | number | null;
+  lastEditedId?: string | number | null;
+  lastDeletedIndex?: number | null;
 }
 
 const CountriesCardView = ({
@@ -73,6 +76,9 @@ const CountriesCardView = ({
   onView,
   onAdd,
   t,
+  lastAddedId,
+  lastEditedId,
+  lastDeletedIndex,
 }: CountriesCardViewProps) => {
   const theme = useTheme();
   const [searchTerm, setSearchTerm] = useState("");
@@ -82,6 +88,7 @@ const CountriesCardView = ({
   const [bookmarkedCountries, setBookmarkedCountries] = useState<Set<string | number>>(new Set());
   const [ratedCountries, setRatedCountries] = useState<Map<string | number, number>>(new Map());
   const [hoveredCard, setHoveredCard] = useState<string | number | null>(null);
+  const [highlightedCard, setHighlightedCard] = useState<string | number | null>(null);
 
   // Search derived state using the new hook
   const normalizedSearch = useMemo(() => {
@@ -124,6 +131,76 @@ const CountriesCardView = ({
   useEffect(() => {
     setPage(0);
   }, [normalizedSearch, filterBy, sortBy]);
+
+  // Handle highlighting and navigation for add/edit/delete operations
+  useEffect(() => {
+    if (lastAddedId && countries.length > 0) {
+      console.log("🎯 CardView: Highlighting added country with ID:", lastAddedId);
+      // Navigate to the newly added country
+      const addedCountryIndex = countries.findIndex(c => c.id === lastAddedId);
+      if (addedCountryIndex !== -1) {
+        console.log("🎯 CardView: Found added country at index:", addedCountryIndex);
+        const targetPage = Math.floor(addedCountryIndex / rowsPerPage);
+        console.log("🎯 CardView: Navigating to page:", targetPage);
+        setPage(targetPage);
+        setHighlightedCard(lastAddedId);
+        
+        // Clear highlight after 3 seconds
+        setTimeout(() => {
+          console.log("🎯 CardView: Clearing highlight for added country");
+          setHighlightedCard(null);
+        }, 3000);
+      } else {
+        console.log("🎯 CardView: Added country not found in countries list");
+      }
+    }
+  }, [lastAddedId, countries, rowsPerPage]);
+
+  useEffect(() => {
+    if (lastEditedId && countries.length > 0) {
+      console.log("🎯 CardView: Highlighting edited country with ID:", lastEditedId);
+      // Navigate to the edited country
+      const editedCountryIndex = countries.findIndex(c => c.id === lastEditedId);
+      if (editedCountryIndex !== -1) {
+        console.log("🎯 CardView: Found edited country at index:", editedCountryIndex);
+        const targetPage = Math.floor(editedCountryIndex / rowsPerPage);
+        console.log("🎯 CardView: Navigating to page:", targetPage);
+        setPage(targetPage);
+        setHighlightedCard(lastEditedId);
+        
+        // Clear highlight after 3 seconds
+        setTimeout(() => {
+          console.log("🎯 CardView: Clearing highlight for edited country");
+          setHighlightedCard(null);
+        }, 3000);
+      } else {
+        console.log("🎯 CardView: Edited country not found in countries list");
+      }
+    }
+  }, [lastEditedId, countries, rowsPerPage]);
+
+  useEffect(() => {
+    if (lastDeletedIndex !== null && lastDeletedIndex !== undefined && countries.length > 0) {
+      console.log("🎯 CardView: Handling delete, lastDeletedIndex:", lastDeletedIndex);
+      // Navigate to the previous country or stay on same page
+      const targetIndex = Math.max(0, Math.min(lastDeletedIndex - 1, countries.length - 1));
+      const targetPage = Math.floor(targetIndex / rowsPerPage);
+      console.log("🎯 CardView: Navigating to page:", targetPage, "targetIndex:", targetIndex);
+      setPage(targetPage);
+      
+      // Highlight the previous country if it exists
+      if (countries[targetIndex]) {
+        console.log("🎯 CardView: Highlighting country at index:", targetIndex, "ID:", countries[targetIndex].id);
+        setHighlightedCard(countries[targetIndex].id);
+        
+        // Clear highlight after 3 seconds
+        setTimeout(() => {
+          console.log("🎯 CardView: Clearing highlight for deleted country navigation");
+          setHighlightedCard(null);
+        }, 3000);
+      }
+    }
+  }, [lastDeletedIndex, countries, rowsPerPage]);
 
   // Enhanced data processing with search, filter, and sort
   const processedCountries = useMemo(() => {
@@ -223,37 +300,10 @@ const CountriesCardView = ({
     setPage(lastPage);
   };
 
-  // Enhanced onAdd function with multiple navigation attempts
+  // Enhanced onAdd function
   const handleAdd = () => {
     if (onAdd) {
-      console.log('=== ADDING NEW COUNTRY ===');
-      console.log('Current countries length:', countries ? countries.length : 0);
-      console.log('Current page:', page);
-      console.log('Rows per page:', rowsPerPage);
-      
-      // Call the original onAdd function
       onAdd();
-      
-      // Try multiple navigation attempts with different delays
-      setTimeout(() => {
-        console.log('First navigation attempt (500ms)');
-        navigateToLastPage();
-      }, 500);
-      
-      setTimeout(() => {
-        console.log('Second navigation attempt (1000ms)');
-        navigateToLastPage();
-      }, 1000);
-      
-      setTimeout(() => {
-        console.log('Third navigation attempt (1500ms)');
-        navigateToLastPage();
-      }, 1500);
-      
-      setTimeout(() => {
-        console.log('Final navigation attempt (2000ms)');
-        navigateToLastPage();
-      }, 2000);
     }
   };
 
@@ -578,6 +628,7 @@ const CountriesCardView = ({
           const isBookmarked = bookmarkedCountries.has(country.id);
           const rating = ratedCountries.get(country.id) || 0;
           const isHovered = hoveredCard === country.id;
+          const isHighlighted = highlightedCard === country.id;
           
           return (
             <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={country.id}>
@@ -592,12 +643,34 @@ const CountriesCardView = ({
                     position: "relative",
                     overflow: 'hidden',
                     transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-                    background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${alpha(theme.palette.primary.main, 0.02)} 100%)`,
-                    border: `1px solid ${alpha(theme.palette.primary.main, isHovered ? 0.3 : 0.1)}`,
+                    background: isHighlighted 
+                      ? `linear-gradient(135deg, ${alpha(theme.palette.success.main, 0.1)} 0%, ${alpha(theme.palette.success.main, 0.05)} 100%)`
+                      : `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${alpha(theme.palette.primary.main, 0.02)} 100%)`,
+                    border: `1px solid ${
+                      isHighlighted 
+                        ? theme.palette.success.main
+                        : alpha(theme.palette.primary.main, isHovered ? 0.3 : 0.1)
+                    }`,
                     "&:hover": {
                       transform: "translateY(-8px) scale(1.02)",
                       boxShadow: `0 16px 48px ${alpha(theme.palette.primary.main, 0.2)}`,
                     },
+                    ...(isHighlighted && {
+                      transform: "translateY(-4px) scale(1.01)",
+                      boxShadow: `0 12px 32px ${alpha(theme.palette.success.main, 0.3)}`,
+                      animation: "pulse 2s ease-in-out infinite",
+                      "@keyframes pulse": {
+                        "0%": {
+                          boxShadow: `0 12px 32px ${alpha(theme.palette.success.main, 0.3)}`,
+                        },
+                        "50%": {
+                          boxShadow: `0 16px 40px ${alpha(theme.palette.success.main, 0.5)}`,
+                        },
+                        "100%": {
+                          boxShadow: `0 12px 32px ${alpha(theme.palette.success.main, 0.3)}`,
+                        },
+                      },
+                    }),
                     "&::before": {
                       content: '""',
                       position: "absolute",
@@ -605,7 +678,9 @@ const CountriesCardView = ({
                       left: 0,
                       right: 0,
                       height: 4,
-                      background: `linear-gradient(90deg, ${qualityInfo.color} 0%, ${theme.palette.primary.main} 100%)`,
+                      background: isHighlighted
+                        ? `linear-gradient(90deg, ${theme.palette.success.main} 0%, ${theme.palette.success.dark} 100%)`
+                        : `linear-gradient(90deg, ${qualityInfo.color} 0%, ${theme.palette.primary.main} 100%)`,
                       opacity: isHovered ? 1 : 0.8,
                       transition: 'opacity 0.3s ease'
                     }
@@ -624,14 +699,49 @@ const CountriesCardView = ({
                       label={`${qualityScore}%`}
                       size="small"
                       sx={{
-                        bgcolor: qualityInfo.color,
+                        bgcolor: isHighlighted ? theme.palette.success.main : qualityInfo.color,
                         color: 'white',
                         fontWeight: 'bold',
                         fontSize: '0.7rem',
-                        boxShadow: `0 2px 8px ${alpha(qualityInfo.color, 0.3)}`
+                        boxShadow: `0 2px 8px ${alpha(isHighlighted ? theme.palette.success.main : qualityInfo.color, 0.3)}`
                       }}
                     />
                   </Box>
+
+                  {/* Highlight Badge */}
+                  {isHighlighted && (
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: 12,
+                        left: 50,
+                        zIndex: 3,
+                      }}
+                    >
+                      <Chip
+                        label="NEW"
+                        size="small"
+                        sx={{
+                          bgcolor: theme.palette.success.main,
+                          color: 'white',
+                          fontWeight: 'bold',
+                          fontSize: '0.65rem',
+                          animation: "bounce 1s ease-in-out infinite",
+                          "@keyframes bounce": {
+                            "0%, 20%, 50%, 80%, 100%": {
+                              transform: "translateY(0)",
+                            },
+                            "40%": {
+                              transform: "translateY(-4px)",
+                            },
+                            "60%": {
+                              transform: "translateY(-2px)",
+                            },
+                          },
+                        }}
+                      />
+                    </Box>
+                  )}
 
                   {/* Bookmark Button */}
                   <IconButton

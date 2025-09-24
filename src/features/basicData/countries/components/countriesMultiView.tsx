@@ -21,6 +21,9 @@ const CountriesMultiView = ({
   onAdd,
   onRefresh,
   t,
+  lastAddedId,
+  lastEditedId,
+  lastDeletedIndex,
 }) => {
   // Initialize with default, will be updated by MultiViewHeader
   const [currentViewType, setCurrentViewType] = useState("grid");
@@ -67,6 +70,9 @@ const CountriesMultiView = ({
       onView,
       onAdd,
       t,
+      lastAddedId,
+      lastEditedId,
+      lastDeletedIndex,
     };
 
     switch (currentViewType) {

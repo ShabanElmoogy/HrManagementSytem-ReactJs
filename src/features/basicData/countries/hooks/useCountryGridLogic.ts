@@ -40,10 +40,17 @@ const useCountryGridLogic = () => {
       );
 
       const newCountryId = newCountry.id;
+      console.log("🟢 Country created with ID:", newCountryId);
       setLastAddedRowId(newCountryId);
       setNewRowAdded(true);
       setDialogType(null);
       setSelectedCountry(null);
+      
+      // Clear the highlight after 4 seconds
+      setTimeout(() => {
+        console.log("🔄 Clearing lastAddedRowId");
+        setLastAddedRowId(null);
+      }, 4000);
     },
     onError: (error: any) => {
       const errorMessage = extractErrorMessage(error);
@@ -60,10 +67,17 @@ const useCountryGridLogic = () => {
           `Country "${updatedCountry.nameEn}" updated successfully!`
       );
 
+      console.log("🟡 Country updated with ID:", updatedCountry.id);
       setRowEdited(true);
       setLastEditedRowId(updatedCountry.id);
       setDialogType(null);
       setSelectedCountry(null);
+      
+      // Clear the highlight after 4 seconds
+      setTimeout(() => {
+        console.log("🔄 Clearing lastEditedRowId");
+        setLastEditedRowId(null);
+      }, 4000);
     },
     onError: (error: any) => {
       const errorMessage = extractErrorMessage(error);
@@ -79,9 +93,16 @@ const useCountryGridLogic = () => {
         t("countries.deleted") || "Country deleted successfully!"
       );
 
+      console.log("🔴 Country deleted, lastDeletedRowIndex:", lastDeletedRowIndex);
       setRowDeleted(true);
       setDialogType(null);
       setSelectedCountry(null);
+      
+      // Clear the highlight after 4 seconds
+      setTimeout(() => {
+        console.log("🔄 Clearing lastDeletedRowIndex");
+        setLastDeletedRowIndex(null);
+      }, 4000);
     },
     onError: (error: any) => {
       const errorMessage = extractErrorMessage(error);
@@ -388,6 +409,11 @@ const useCountryGridLogic = () => {
     isCreating: createCountryMutation.isPending,
     isUpdating: updateCountryMutation.isPending,
     isDeleting: deleteCountryMutation.isPending,
+
+    // Highlighting/Navigation state for card view
+    lastAddedId: lastAddedRowId,
+    lastEditedId: lastEditedRowId,
+    lastDeletedIndex: lastDeletedRowIndex,
   };
 };
 

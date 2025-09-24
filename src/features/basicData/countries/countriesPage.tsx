@@ -30,6 +30,9 @@ const CountriesPage = () => {
     isUpdating,
     isDeleting,
     SnackbarComponent,
+    lastAddedId,
+    lastEditedId,
+    lastDeletedIndex,
   } = useCountryGridLogic();
 
   // Handle error state
@@ -63,6 +66,9 @@ const CountriesPage = () => {
         onAdd={onAdd}
         onRefresh={handleRefresh}
         t={t}
+        lastAddedId={lastAddedId}
+        lastEditedId={lastEditedId}
+        lastDeletedIndex={lastDeletedIndex}
       />
 
       <CountryForm
