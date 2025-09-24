@@ -39,40 +39,34 @@ export const useCountrySearch = (
   }, [searchTerm, existingCountries]);
 };
 
-// Mutation Hooks
-export const useCreateCountry = (options = {}) => {
+
+export const useUpdateCountry = (options: any = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: CountryService.create,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: countryKeys.all });
-    },
     ...options,
-  });
-};
-
-export const useUpdateCountry = (options = {}) => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
     mutationFn: CountryService.update,
-    onSuccess: () => {
+    onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({ queryKey: countryKeys.all });
+      if (typeof options.onSuccess === "function") {
+        options.onSuccess(data, variables, context);
+      }
     },
-    ...options,
   });
 };
 
-export const useDeleteCountry = (options = {}) => {
+export const useDeleteCountry = (options: any = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: CountryService.delete,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: countryKeys.all });
-    },
     ...options,
+    mutationFn: CountryService.delete,
+    onSuccess: (data: any, variables: any, context: any) => {
+      queryClient.invalidateQueries({ queryKey: countryKeys.all });
+      if (typeof options.onSuccess === "function") {
+        options.onSuccess(data, variables, context);
+      }
+    },
   });
 };
 
