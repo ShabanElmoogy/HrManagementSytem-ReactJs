@@ -1,10 +1,13 @@
 /* eslint-disable react/prop-types */
 // components/CountryForm.jsx
 import { MyForm, MyTextField } from "@/shared/components";
+import { faker } from '@faker-js/faker';
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, TextField } from "@mui/material";
+import { Casino } from "@mui/icons-material";
+import { Box, Button, TextField } from "@mui/material";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
+import { countries } from "../utils/fakeData";
 import { getCountryValidationSchema } from "../utils/validation";
 
 const CountryForm = ({
@@ -31,6 +34,7 @@ const CountryForm = ({
     handleSubmit,
     reset,
     control,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -99,6 +103,43 @@ const CountryForm = ({
     // - Additional UI feedback
   };
 
+  // Generate mock data using Faker.js
+  const usedIndexes = new Set<number>();
+
+  const generateMockData = () => {
+    if (usedIndexes.size === countries.length) {
+      console.warn("⚠️ كل الدول استخدمت بالفعل!");
+      return;
+    }
+
+    let index: number;
+    do {
+      index = Math.floor(Math.random() * countries.length);
+    } while (usedIndexes.has(index));
+    usedIndexes.add(index);
+
+    const country = countries[index];
+
+    const mockData = {
+      nameEn: country.en,
+      nameAr: country.ar,
+      alpha2Code: faker.location.countryCode("alpha-2"),
+      alpha3Code: faker.location.countryCode("alpha-3"),
+      phoneCode: faker.string.numeric({ length: { min: 1, max: 4 } }),
+      currencyCode: faker.finance.currencyCode(),
+    };
+
+    setValue("nameEn", mockData.nameEn);
+    setValue("nameAr", mockData.nameAr);
+    setValue("alpha2Code", mockData.alpha2Code);
+    setValue("alpha3Code", mockData.alpha3Code);
+    setValue("phoneCode", mockData.phoneCode);
+    setValue("currencyCode", mockData.currencyCode);
+
+    console.log("✅ Generated mock data:", mockData);
+  };
+
+
   return (
     <MyForm
       open={open}
@@ -107,22 +148,22 @@ const CountryForm = ({
         isViewMode
           ? t("countries.view")
           : isEditMode
-          ? t("countries.edit")
-          : t("countries.add")
+            ? t("countries.edit")
+            : t("countries.add")
       }
       subtitle={
         isViewMode
           ? t("countries.viewSubtitle") || "View country details"
           : isEditMode
-          ? t("countries.editSubtitle") || "Modify country information"
-          : t("countries.addSubtitle") || "Add a new country to the system"
+            ? t("countries.editSubtitle") || "Modify country information"
+            : t("countries.addSubtitle") || "Add a new country to the system"
       }
       submitButtonText={
         isViewMode
           ? null
           : isEditMode
-          ? t("actions.update")
-          : t("actions.create")
+            ? t("actions.update")
+            : t("actions.create")
       }
       onSubmit={isViewMode ? undefined : handleSubmit(onSubmit)}
       isSubmitting={loading}
@@ -237,6 +278,33 @@ const CountryForm = ({
         readOnly={isViewMode}
         data-field-name="currencyCode" // Add this for better error field detection
       />
+
+      {/* Generate Mock Data Button - Show in add and edit modes for testing */}
+      {(isAddMode || isEditMode) && (
+        <Box sx={{ mt: 3, mb: 2 }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<Casino />}
+            onClick={generateMockData}
+            disabled={loading}
+            fullWidth
+            sx={{
+              py: 1.5,
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              textTransform: 'none',
+              boxShadow: 2,
+              '&:hover': {
+                boxShadow: 4,
+                transform: 'translateY(-1px)'
+              }
+            }}
+          >
+            {t("countries.generateMockData") || "🎲 Generate Mock Data with Faker.js"}
+          </Button>
+        </Box>
+      )}
     </MyForm>
   );
 };
