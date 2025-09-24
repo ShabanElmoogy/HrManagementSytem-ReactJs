@@ -98,7 +98,7 @@ const CountriesCardView = ({
     // Apply additional filters
     if (filterBy !== "all") {
       switch (filterBy) {
-                        case "recent":
+        case "recent":
           const thirtyDaysAgo = new Date();
           thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
           filteredCountries = filteredCountries.filter(country =>
@@ -141,7 +141,7 @@ const CountriesCardView = ({
         case "created":
           comparison = new Date(a.createdOn || 0).getTime() - new Date(b.createdOn || 0).getTime();
           break;
-                default:
+        default:
           comparison = 0;
       }
       return sortOrder === "asc" ? comparison : -comparison;
@@ -153,19 +153,15 @@ const CountriesCardView = ({
   // Handle highlighting and navigation for add/edit/delete operations
   useEffect(() => {
     if (lastAddedId && processedCountries.length > 0) {
-      console.log("🎯 CardView: Highlighting added country with IDs:", lastAddedId);
       // Navigate to the newly added country in the processed (sorted) list
       const addedCountryIndex = processedCountries.findIndex(c => c.id === lastAddedId);
       if (addedCountryIndex !== -1) {
-        console.log("🎯 CardView: Found added country at index:", addedCountryIndex);
         const targetPage = Math.floor(addedCountryIndex / rowsPerPage);
-        console.log("🎯 CardView: Navigating to page:", targetPage);
         setPage(targetPage);
         setHighlightedCard(lastAddedId);
 
         // Clear highlight after 3 seconds
         setTimeout(() => {
-          console.log("🎯 CardView: Clearing highlight for added country");
           setHighlightedCard(null);
         }, 5000);
       } else {
@@ -176,19 +172,15 @@ const CountriesCardView = ({
 
   useEffect(() => {
     if (lastEditedId && processedCountries.length > 0) {
-      console.log("🎯 CardView: Highlighting edited country with ID:", lastEditedId);
       // Navigate to the edited country in the processed (sorted) list
       const editedCountryIndex = processedCountries.findIndex(c => c.id === lastEditedId);
       if (editedCountryIndex !== -1) {
-        console.log("🎯 CardView: Found edited country at index:", editedCountryIndex);
         const targetPage = Math.floor(editedCountryIndex / rowsPerPage);
-        console.log("🎯 CardView: Navigating to page:", targetPage);
         setPage(targetPage);
         setHighlightedCard(lastEditedId);
 
         // Clear highlight after 3 seconds
         setTimeout(() => {
-          console.log("🎯 CardView: Clearing highlight for edited country");
           setHighlightedCard(null);
         }, 5000);
       } else {
@@ -199,21 +191,18 @@ const CountriesCardView = ({
 
   useEffect(() => {
     if (lastDeletedIndex !== null && lastDeletedIndex !== undefined && processedCountries.length > 0) {
-      console.log("🎯 CardView: Handling delete, lastDeletedIndex:", lastDeletedIndex);
+
       // Navigate to the previous country or stay on same page in the processed list
       const targetIndex = Math.max(0, Math.min(lastDeletedIndex - 1, processedCountries.length - 1));
       const targetPage = Math.floor(targetIndex / rowsPerPage);
-      console.log("🎯 CardView: Navigating to page:", targetPage, "targetIndex:", targetIndex);
       setPage(targetPage);
 
       // Highlight the previous country if it exists
       if (processedCountries[targetIndex]) {
-        console.log("🎯 CardView: Highlighting country at index:", targetIndex, "ID:", processedCountries[targetIndex].id);
         setHighlightedCard(processedCountries[targetIndex].id);
 
         // Clear highlight after 3 seconds
         setTimeout(() => {
-          console.log("🎯 CardView: Clearing highlight for deleted country navigation");
           setHighlightedCard(null);
         }, 5000);
       }
@@ -241,26 +230,6 @@ const CountriesCardView = ({
     if (onAdd) {
       onAdd();
     }
-  };
-
-  
-  
-  const getQualityScore = (country: Country) => {
-    let score = 50; // Base score
-    if (country.nameEn) score += 15;
-    if (country.nameAr) score += 15;
-    if (country.alpha2Code) score += 5;
-    if (country.alpha3Code) score += 5;
-    if (country.phoneCode) score += 5;
-    if (country.currencyCode) score += 5;
-    return Math.min(score, 100);
-  };
-
-  const getQualityLevel = (score: number) => {
-    if (score >= 90) return { level: 'excellent', color: theme.palette.success.main };
-    if (score >= 75) return { level: 'good', color: theme.palette.info.main };
-    if (score >= 60) return { level: 'average', color: theme.palette.warning.main };
-    return { level: 'poor', color: theme.palette.error.main };
   };
 
   // Get responsive items per page options
