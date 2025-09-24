@@ -7,27 +7,15 @@ import {
   Public, 
   Visibility,
   Search,
-  FilterList,
-  Sort,
   ViewModule,
   Star,
   StarBorder,
   Bookmark,
   BookmarkBorder,
   TrendingUp,
-  TrendingDown,
-  Analytics,
-  Language,
   CalendarToday,
-  Flag,
-  Place,
-  Speed,
-  DataUsage,
-  NavigateNext,
-  NavigateBefore,
   Phone,
-  AttachMoney,
-  Code
+  AttachMoney
 } from "@mui/icons-material";
 import {
   Box,
@@ -47,7 +35,6 @@ import {
   Paper,
   Stack,
   Avatar,
-  Badge,
   FormControl,
   InputLabel,
   Select,
@@ -58,15 +45,25 @@ import {
   Divider,
   LinearProgress,
   Fade,
-  Zoom,
   Pagination,
-  TablePagination,
   useMediaQuery
 } from "@mui/material";
 import { format } from "date-fns";
 import { useState, useMemo, useEffect } from "react";
 import AuthorizeView from "../../../../shared/components/auth/authorizeView";
-import { useCountrySearch, useCountrySearchOptimized } from "../hooks/useCountryQueries";
+import { useCountrySearch } from "../hooks/useCountryQueries";
+import type { Country } from "../types/Country";
+import type { SelectChangeEvent } from "@mui/material/Select";
+
+interface CountriesCardViewProps {
+  countries: Country[];
+  loading: boolean;
+  onEdit: (country: Country) => void;
+  onDelete: (country: Country) => void;
+  onView: (country: Country) => void;
+  onAdd: () => void;
+  t: (key: string) => string;
+}
 
 const CountriesCardView = ({
   countries,
@@ -76,25 +73,22 @@ const CountriesCardView = ({
   onView,
   onAdd,
   t,
-}) => {
+}: CountriesCardViewProps) => {
   const theme = useTheme();
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("name");
   const [sortOrder, setSortOrder] = useState("asc");
   const [filterBy, setFilterBy] = useState("all");
-  const [bookmarkedCountries, setBookmarkedCountries] = useState(new Set());
-  const [ratedCountries, setRatedCountries] = useState(new Map());
-  const [hoveredCard, setHoveredCard] = useState(null);
-  const [useQuerySearch, setUseQuerySearch] = useState(false);
-  
-  // TanStack Query search (optional)
-  const { 
-    data: querySearchResults, 
-    isLoading: isQuerySearchLoading 
-  } = useCountrySearch(searchTerm, {
-    enabled: useQuerySearch && searchTerm.length > 0,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+  const [bookmarkedCountries, setBookmarkedCountries] = useState<Set<string | number>>(new Set());
+  const [ratedCountries, setRatedCountries] = useState<Map<string | number, number>>(new Map());
+  const [hoveredCard, setHoveredCard] = useState<string | number | null>(null);
+
+  // Search derived state using the new hook
+  const normalizedSearch = useMemo(() => {
+    const s = searchTerm.trim();
+    return s.startsWith("+") ? s.slice(1) : s;
+  }, [searchTerm]);
+  const searchedCountries = useCountrySearch(normalizedSearch, countries || []);
   
   // Responsive breakpoints
   const isXs = useMediaQuery(theme.breakpoints.down('sm'));
@@ -126,23 +120,16 @@ const CountriesCardView = ({
     }
   }, [isXs, isSm, isMd, isLg, isXl]);
 
+  // Reset to first page when search or filters change
+  useEffect(() => {
+    setPage(0);
+  }, [normalizedSearch, filterBy, sortBy]);
+
   // Enhanced data processing with search, filter, and sort
   const processedCountries = useMemo(() => {
     if (!countries) return [];
 
-    let filteredCountries = [...countries];
-
-    // Apply search filter
-    if (searchTerm) {
-      filteredCountries = filteredCountries.filter(country =>
-        country.nameEn?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        country.nameAr?.includes(searchTerm) ||
-        country.alpha2Code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        country.alpha3Code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        country.phoneCode?.toString().includes(searchTerm) ||
-        country.currencyCode?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
+    let filteredCountries = [...searchedCountries];
 
     // Apply additional filters
     if (filterBy !== "all") {
@@ -184,15 +171,17 @@ const CountriesCardView = ({
         case "alpha3":
           comparison = (a.alpha3Code || "").localeCompare(b.alpha3Code || "");
           break;
-        case "phone":
-          comparison = (a.phoneCode || 0) - (b.phoneCode || 0);
+        case "phone": {
+          const phoneA = Number(a.phoneCode) || 0;
+          const phoneB = Number(b.phoneCode) || 0;
+          comparison = phoneA - phoneB;
           break;
+        }
         case "currency":
           comparison = (a.currencyCode || "").localeCompare(b.currencyCode || "");
           break;
         case "created":
-          // @ts-ignore
-          comparison = new Date(a.createdOn || 0) - new Date(b.createdOn || 0);
+          comparison = new Date(a.createdOn || 0).getTime() - new Date(b.createdOn || 0).getTime();
           break;
         case "rating":
           const ratingA = ratedCountries.get(a.id) || 0;
@@ -206,7 +195,7 @@ const CountriesCardView = ({
     });
 
     return filteredCountries;
-  }, [countries, searchTerm, sortBy, sortOrder, filterBy, bookmarkedCountries, ratedCountries]);
+  }, [searchedCountries, sortBy, sortOrder, filterBy, bookmarkedCountries, ratedCountries]);
 
   // Paginated data
   const paginatedCountries = useMemo(() => {
@@ -214,12 +203,13 @@ const CountriesCardView = ({
     return processedCountries.slice(startIndex, startIndex + rowsPerPage);
   }, [processedCountries, page, rowsPerPage]);
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (event: unknown, newPage: number) => {
+    void event;
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+  const handleChangeRowsPerPage = (event: SelectChangeEvent<number>) => {
+    setRowsPerPage(Number(event.target.value));
     setPage(0);
   };
 
@@ -267,7 +257,7 @@ const CountriesCardView = ({
     }
   };
 
-  const toggleBookmark = (countryId) => {
+  const toggleBookmark = (countryId: string | number) => {
     setBookmarkedCountries(prev => {
       const newSet = new Set(prev);
       if (newSet.has(countryId)) {
@@ -279,7 +269,7 @@ const CountriesCardView = ({
     });
   };
 
-  const setRating = (countryId, rating) => {
+  const setRating = (countryId: string | number, rating: number) => {
     setRatedCountries(prev => {
       const newMap = new Map(prev);
       if (rating === 0) {
@@ -291,7 +281,7 @@ const CountriesCardView = ({
     });
   };
 
-  const getQualityScore = (country) => {
+  const getQualityScore = (country: Country) => {
     let score = 50; // Base score
     if (country.nameEn) score += 15;
     if (country.nameAr) score += 15;
@@ -302,7 +292,7 @@ const CountriesCardView = ({
     return Math.min(score, 100);
   };
 
-  const getQualityLevel = (score) => {
+  const getQualityLevel = (score: number) => {
     if (score >= 90) return { level: 'excellent', color: theme.palette.success.main };
     if (score >= 75) return { level: 'good', color: theme.palette.info.main };
     if (score >= 60) return { level: 'average', color: theme.palette.warning.main };
@@ -467,7 +457,7 @@ const CountriesCardView = ({
               size="small"
               placeholder="Search countries by name, code, phone, or currency..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => { setSearchTerm(e.target.value); setPage(0); }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -512,7 +502,7 @@ const CountriesCardView = ({
             <ToggleButtonGroup
               value={sortOrder}
               exclusive
-              onChange={(e, value) => value && setSortOrder(value)}
+              onChange={(event, value) => { void event; if (value) setSortOrder(value); }}
               size="small"
               fullWidth
             >
@@ -575,30 +565,7 @@ const CountriesCardView = ({
                 </Button>
               </Stack>
               
-              {/* Search Mode Toggle */}
-              <ToggleButtonGroup
-                value={useQuerySearch ? 'query' : 'local'}
-                exclusive
-                onChange={(e, value) => {
-                  if (value !== null) {
-                    setUseQuerySearch(value === 'query');
-                  }
-                }}
-                size="small"
-                fullWidth
-              >
-                <ToggleButton value="local">
-                  <Tooltip title="Local Search (Client-side filtering)">
-                    <Speed sx={{ fontSize: 16 }} />
-                  </Tooltip>
-                </ToggleButton>
-                <ToggleButton value="query">
-                  <Tooltip title="TanStack Query Search (Shows in DevTools)">
-                    <DataUsage sx={{ fontSize: 16 }} />
-                  </Tooltip>
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </Stack>
+                          </Stack>
           </Grid>
         </Grid>
       </Paper>

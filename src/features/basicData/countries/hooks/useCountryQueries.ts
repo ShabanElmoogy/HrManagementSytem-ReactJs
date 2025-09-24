@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, UseMutationOptions, UseQueryOptions } from "@tanstack/react-query";
 import { useMemo } from "react";
 import CountryService from "../services/countryService";
 import { Country } from "../types/Country";
@@ -11,79 +11,58 @@ export const countryKeys = {
 };
 
 // Query Hooks
-export const useCountries = (options = {}) => {
-  return useQuery({
+export const useCountries = (options?: UseQueryOptions<Country[], Error>) =>
+  useQuery({
     queryKey: countryKeys.list(),
     queryFn: CountryService.getAll,
     staleTime: 5 * 60 * 1000,
     ...options,
   });
-};
 
-export const useCountry = (id: string | number | null | undefined) => {
-  return useQuery({
+export const useCountry = (id: string | number | null | undefined, options?: UseQueryOptions<Country, Error>) =>
+  useQuery({
     queryKey: countryKeys.detail(id!),
     queryFn: () => CountryService.getById(id!),
     enabled: !!id,
     staleTime: 5 * 60 * 1000,
+    ...options,
   });
-};
 
 export const useCountrySearch = (
   searchTerm: string,
   existingCountries: Country[] = []
-) => {
-  return useMemo(() => {
+) =>
+  useMemo(() => {
     if (!searchTerm.trim()) return existingCountries;
     return CountryService.searchCountries(existingCountries, searchTerm);
   }, [searchTerm, existingCountries]);
-};
 
-// Mutation Hooks
-export const useCreateCountry = (options: any = {}) => {
+// Generic Mutation Hook Factory
+function useCountryMutation<TData = unknown, TVariables = unknown>(
+  mutationFn: (variables: TVariables) => Promise<TData>,
+  options?: UseMutationOptions<TData, Error, TVariables>
+) {
   const queryClient = useQueryClient();
-
   return useMutation({
+    mutationFn,
     ...options,
-    mutationFn: CountryService.create,
-    onSuccess: (data: any, variables: any, context: any) => {
+    onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: countryKeys.all });
-      if (typeof options.onSuccess === "function") {
+      if (options && typeof options.onSuccess === "function") {
         options.onSuccess(data, variables, context);
       }
     },
   });
-};
+}
 
-export const useUpdateCountry = (options: any = {}) => {
-  const queryClient = useQueryClient();
+export const useCreateCountry = (options?: UseMutationOptions<Country, Error, Partial<Country>>) =>
+  useCountryMutation(CountryService.create, options);
 
-  return useMutation({
-    ...options,
-    mutationFn: CountryService.update,
-    onSuccess: (data: any, variables: any, context: any) => {
-      queryClient.invalidateQueries({ queryKey: countryKeys.all });
-      if (typeof options.onSuccess === "function") {
-        options.onSuccess(data, variables, context);
-      }
-    },
-  });
-};
+export const useUpdateCountry = (options?: UseMutationOptions<Country, Error, Partial<Country>>) =>
+  useCountryMutation(CountryService.update, options);
 
-export const useDeleteCountry = (options: any = {}) => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    ...options,
-    mutationFn: CountryService.delete,
-    onSuccess: (data: any, variables: any, context: any) => {
-      queryClient.invalidateQueries({ queryKey: countryKeys.all });
-      if (typeof options.onSuccess === "function") {
-        options.onSuccess(data, variables, context);
-      }
-    },
-  });
-};
+export const useDeleteCountry = (options?: UseMutationOptions<string | number, Error, string | number>) =>
+  useCountryMutation<string | number, string | number>(CountryService.delete, options);
 
 // Utility Hook
 export const useInvalidateCountries = () => {
