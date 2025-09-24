@@ -1,59 +1,59 @@
 /* eslint-disable react/prop-types */
 // components/CountriesCardView.jsx
 import { appPermissions } from "@/constants";
-import { 
-  Delete, 
-  Edit, 
-  Public, 
-  Visibility,
-  Search,
-  ViewModule,
-  Star,
-  StarBorder,
+import {
+  AttachMoney,
   Bookmark,
   BookmarkBorder,
-  TrendingUp,
   CalendarToday,
+  Delete,
+  Edit,
   Phone,
-  AttachMoney
+  Public,
+  Search,
+  Star,
+  StarBorder,
+  TrendingUp,
+  ViewModule,
+  Visibility
 } from "@mui/icons-material";
 import {
-  Box,
-  Card,
-  CardContent,
-  CardActions,
-  Typography,
-  IconButton,
-  Tooltip,
-  Grid,
-  Chip,
-  alpha,
-  useTheme,
-  Skeleton,
-  TextField,
-  InputAdornment,
-  Paper,
-  Stack,
   Avatar,
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Chip,
+  Divider,
+  Fade,
   FormControl,
+  Grid,
+  IconButton,
+  InputAdornment,
   InputLabel,
-  Select,
+  LinearProgress,
   MenuItem,
+  Pagination,
+  Paper,
+  Select,
+  Skeleton,
+  Stack,
+  TextField,
   ToggleButton,
   ToggleButtonGroup,
-  Button,
-  Divider,
-  LinearProgress,
-  Fade,
-  Pagination,
-  useMediaQuery
+  Tooltip,
+  Typography,
+  alpha,
+  useMediaQuery,
+  useTheme
 } from "@mui/material";
+import type { SelectChangeEvent } from "@mui/material/Select";
 import { format } from "date-fns";
-import { useState, useMemo, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import AuthorizeView from "../../../../shared/components/auth/authorizeView";
 import { useCountrySearch } from "../hooks/useCountryQueries";
 import type { Country } from "../types/Country";
-import type { SelectChangeEvent } from "@mui/material/Select";
 
 interface CountriesCardViewProps {
   countries: Country[];
@@ -96,7 +96,7 @@ const CountriesCardView = ({
     return s.startsWith("+") ? s.slice(1) : s;
   }, [searchTerm]);
   const searchedCountries = useCountrySearch(normalizedSearch, countries || []);
-  
+
   // Responsive breakpoints
   const isXs = useMediaQuery(theme.breakpoints.down('sm'));
   const isSm = useMediaQuery(theme.breakpoints.between('sm', 'md'));
@@ -135,7 +135,7 @@ const CountriesCardView = ({
   // Handle highlighting and navigation for add/edit/delete operations
   useEffect(() => {
     if (lastAddedId && countries.length > 0) {
-      console.log("🎯 CardView: Highlighting added country with ID:", lastAddedId);
+      console.log("🎯 CardView: Highlighting added country with IDs:", lastAddedId);
       // Navigate to the newly added country
       const addedCountryIndex = countries.findIndex(c => c.id === lastAddedId);
       if (addedCountryIndex !== -1) {
@@ -144,7 +144,7 @@ const CountriesCardView = ({
         console.log("🎯 CardView: Navigating to page:", targetPage);
         setPage(targetPage);
         setHighlightedCard(lastAddedId);
-        
+
         // Clear highlight after 3 seconds
         setTimeout(() => {
           console.log("🎯 CardView: Clearing highlight for added country");
@@ -167,7 +167,7 @@ const CountriesCardView = ({
         console.log("🎯 CardView: Navigating to page:", targetPage);
         setPage(targetPage);
         setHighlightedCard(lastEditedId);
-        
+
         // Clear highlight after 3 seconds
         setTimeout(() => {
           console.log("🎯 CardView: Clearing highlight for edited country");
@@ -187,12 +187,12 @@ const CountriesCardView = ({
       const targetPage = Math.floor(targetIndex / rowsPerPage);
       console.log("🎯 CardView: Navigating to page:", targetPage, "targetIndex:", targetIndex);
       setPage(targetPage);
-      
+
       // Highlight the previous country if it exists
       if (countries[targetIndex]) {
         console.log("🎯 CardView: Highlighting country at index:", targetIndex, "ID:", countries[targetIndex].id);
         setHighlightedCard(countries[targetIndex].id);
-        
+
         // Clear highlight after 3 seconds
         setTimeout(() => {
           console.log("🎯 CardView: Clearing highlight for deleted country navigation");
@@ -220,7 +220,7 @@ const CountriesCardView = ({
         case "recent":
           const thirtyDaysAgo = new Date();
           thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-          filteredCountries = filteredCountries.filter(country => 
+          filteredCountries = filteredCountries.filter(country =>
             country.createdOn && new Date(country.createdOn) > thirtyDaysAgo
           );
           break;
@@ -355,7 +355,7 @@ const CountriesCardView = ({
     if (isLg || isXl) {
       return [12, 24, 36, 48];
     }
-    
+
     const base = getResponsiveItemsPerPage();
     return [
       Math.max(4, Math.floor(base * 0.5)),  // Half
@@ -374,7 +374,7 @@ const CountriesCardView = ({
           <Skeleton variant="text" width="30%" height={40} />
           <Skeleton variant="rectangular" width="100%" height={56} sx={{ mt: 2 }} />
         </Paper>
-        
+
         {/* Loading Cards */}
         <Grid container spacing={3}>
           {Array.from({ length: 8 }).map((_, index) => (
@@ -411,10 +411,10 @@ const CountriesCardView = ({
             No countries available to display
           </Typography>
         </Paper>
-        
+
         {/* Empty State Content */}
-        <Paper sx={{ 
-          p: 6, 
+        <Paper sx={{
+          p: 6,
           textAlign: "center",
           background: `linear-gradient(135deg, ${theme.palette.primary.main}05 0%, ${theme.palette.secondary.main}05 100%)`
         }}>
@@ -425,9 +425,9 @@ const CountriesCardView = ({
           <Typography variant="body1" color="text.secondary" sx={{ mb: 3, maxWidth: 500, mx: 'auto' }}>
             Start building your geographic database by adding countries. You'll be able to search, filter, and organize them in this enhanced card view.
           </Typography>
-          <Button 
-            variant="contained" 
-            size="large" 
+          <Button
+            variant="contained"
+            size="large"
             startIcon={<Public />}
             onClick={handleAdd}
             sx={{ mt: 2 }}
@@ -442,10 +442,10 @@ const CountriesCardView = ({
   return (
     <Box>
       {/* Enhanced Header with Search and Controls */}
-      <Paper 
+      <Paper
         elevation={3}
-        sx={{ 
-          p: 3, 
+        sx={{
+          p: 3,
           mb: 3,
           background: `linear-gradient(135deg, ${theme.palette.primary.main}08 0%, ${theme.palette.secondary.main}08 100%)`,
           border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
@@ -454,10 +454,10 @@ const CountriesCardView = ({
       >
         {/* Title Section */}
         <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 3 }}>
-          <Avatar 
-            sx={{ 
-              bgcolor: theme.palette.primary.main, 
-              width: 48, 
+          <Avatar
+            sx={{
+              bgcolor: theme.palette.primary.main,
+              width: 48,
               height: 48,
               boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.3)}`
             }}
@@ -473,25 +473,25 @@ const CountriesCardView = ({
             </Typography>
           </Box>
           <Stack direction="row" spacing={1}>
-            <Chip 
-              label={`${processedCountries.length} Countries`} 
-              color="primary" 
+            <Chip
+              label={`${processedCountries.length} Countries`}
+              color="primary"
               variant="outlined"
             />
-            <Chip 
-              label={`${bookmarkedCountries.size} Bookmarked`} 
-              color="warning" 
+            <Chip
+              label={`${bookmarkedCountries.size} Bookmarked`}
+              color="warning"
               variant="outlined"
             />
-            <Chip 
-              label={`${ratedCountries.size} Rated`} 
-              color="success" 
+            <Chip
+              label={`${ratedCountries.size} Rated`}
+              color="success"
               variant="outlined"
             />
             {/* Debug Info */}
-            <Chip 
-              label={`Page: ${page + 1}`} 
-              color="info" 
+            <Chip
+              label={`Page: ${page + 1}`}
+              color="info"
               variant="outlined"
               size="small"
             />
@@ -592,17 +592,17 @@ const CountriesCardView = ({
           <Grid size={{ xs: 12, md: 2 }}>
             <Stack direction="column" spacing={1}>
               <Stack direction="row" spacing={1}>
-                <Button 
-                  size="small" 
-                  variant="outlined" 
+                <Button
+                  size="small"
+                  variant="outlined"
                   onClick={() => setSearchTerm('')}
                   disabled={!searchTerm}
                 >
                   Clear
                 </Button>
-                <Button 
-                  size="small" 
-                  variant="outlined" 
+                <Button
+                  size="small"
+                  variant="outlined"
                   onClick={() => {
                     setSearchTerm('');
                     setSortBy('name');
@@ -614,8 +614,8 @@ const CountriesCardView = ({
                   Reset
                 </Button>
               </Stack>
-              
-                          </Stack>
+
+            </Stack>
           </Grid>
         </Grid>
       </Paper>
@@ -629,7 +629,7 @@ const CountriesCardView = ({
           const rating = ratedCountries.get(country.id) || 0;
           const isHovered = hoveredCard === country.id;
           const isHighlighted = highlightedCard === country.id;
-          
+
           return (
             <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={country.id}>
               <Fade in={true} style={{ transitionDelay: `${index * 50}ms` }}>
@@ -643,14 +643,13 @@ const CountriesCardView = ({
                     position: "relative",
                     overflow: 'hidden',
                     transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-                    background: isHighlighted 
+                    background: isHighlighted
                       ? `linear-gradient(135deg, ${alpha(theme.palette.success.main, 0.1)} 0%, ${alpha(theme.palette.success.main, 0.05)} 100%)`
                       : `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${alpha(theme.palette.primary.main, 0.02)} 100%)`,
-                    border: `1px solid ${
-                      isHighlighted 
+                    border: `1px solid ${isHighlighted
                         ? theme.palette.success.main
                         : alpha(theme.palette.primary.main, isHovered ? 0.3 : 0.1)
-                    }`,
+                      }`,
                     "&:hover": {
                       transform: "translateY(-8px) scale(1.02)",
                       boxShadow: `0 16px 48px ${alpha(theme.palette.primary.main, 0.2)}`,
@@ -762,8 +761,8 @@ const CountriesCardView = ({
                       }
                     }}
                   >
-                    {isBookmarked ? 
-                      <Bookmark sx={{ fontSize: 18, color: theme.palette.warning.main }} /> : 
+                    {isBookmarked ?
+                      <Bookmark sx={{ fontSize: 18, color: theme.palette.warning.main }} /> :
                       <BookmarkBorder sx={{ fontSize: 18 }} />
                     }
                   </IconButton>
@@ -789,7 +788,7 @@ const CountriesCardView = ({
                         <Typography
                           variant="body2"
                           color="text.secondary"
-                          sx={{ 
+                          sx={{
                             direction: "rtl",
                             fontStyle: 'italic',
                             overflow: 'hidden',
@@ -840,7 +839,7 @@ const CountriesCardView = ({
                         label={`ID: ${country.id}`}
                         size="small"
                         variant="outlined"
-                        sx={{ 
+                        sx={{
                           fontSize: '0.7rem',
                           fontFamily: 'monospace'
                         }}
@@ -908,8 +907,8 @@ const CountriesCardView = ({
                             }}
                             sx={{ p: 0.25 }}
                           >
-                            {star <= rating ? 
-                              <Star sx={{ fontSize: 16, color: theme.palette.warning.main }} /> : 
+                            {star <= rating ?
+                              <Star sx={{ fontSize: 16, color: theme.palette.warning.main }} /> :
                               <StarBorder sx={{ fontSize: 16, color: theme.palette.grey[400] }} />
                             }
                           </IconButton>
@@ -933,10 +932,10 @@ const CountriesCardView = ({
                   <Divider />
 
                   {/* Fixed Action Buttons */}
-                  <CardActions 
-                    sx={{ 
-                      justifyContent: "space-between", 
-                      px: 2, 
+                  <CardActions
+                    sx={{
+                      justifyContent: "space-between",
+                      px: 2,
                       py: 1.5,
                       minHeight: 64, // Fixed height for consistent layout
                       alignItems: 'center'
@@ -961,7 +960,7 @@ const CountriesCardView = ({
                           <Visibility sx={{ fontSize: 16 }} />
                         </IconButton>
                       </Tooltip>
-                      
+
                       <Tooltip title={t("actions.edit") || "Edit Country"} arrow>
                         <IconButton
                           size="small"
@@ -980,7 +979,7 @@ const CountriesCardView = ({
                           <Edit sx={{ fontSize: 16 }} />
                         </IconButton>
                       </Tooltip>
-                      
+
                       <AuthorizeView requiredPermissions={[appPermissions.DeleteCountries]}>
                         <Tooltip title={t("actions.delete") || "Delete Country"} arrow>
                           <IconButton
@@ -1002,7 +1001,7 @@ const CountriesCardView = ({
                         </Tooltip>
                       </AuthorizeView>
                     </Stack>
-                    
+
                     {/* Status Indicators */}
                     <Stack direction="column" spacing={0.5} alignItems="flex-end">
                       {isBookmarked && (
@@ -1032,22 +1031,22 @@ const CountriesCardView = ({
 
       {/* Enhanced Pagination */}
       <Paper sx={{ mt: 3, p: 3 }}>
-        <Stack 
-          direction={{ xs: 'column', sm: 'row' }} 
-          justifyContent="space-between" 
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          justifyContent="space-between"
           alignItems={{ xs: 'stretch', sm: 'center' }}
           spacing={2}
         >
           {/* Left side - Showing info and items per page */}
-          <Stack 
-            direction={{ xs: 'column', sm: 'row' }} 
-            spacing={2} 
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={2}
             alignItems={{ xs: 'stretch', sm: 'center' }}
           >
             <Typography variant="body2" color="text.secondary">
               Showing {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, processedCountries.length)} of {processedCountries.length} countries
             </Typography>
-            
+
             <Stack direction="row" spacing={1} alignItems="center">
               <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
                 Items per page:
@@ -1064,7 +1063,7 @@ const CountriesCardView = ({
               </Select>
             </Stack>
           </Stack>
-          
+
           {/* Right side - Pagination controls */}
           <Pagination
             count={Math.ceil(processedCountries.length / rowsPerPage)}
@@ -1082,9 +1081,9 @@ const CountriesCardView = ({
 
       {/* No Results Message */}
       {searchTerm && processedCountries.length === 0 && (
-        <Paper sx={{ 
-          p: 4, 
-          textAlign: 'center', 
+        <Paper sx={{
+          p: 4,
+          textAlign: 'center',
           mt: 3,
           background: `linear-gradient(135deg, ${theme.palette.grey[50]} 0%, ${theme.palette.grey[100]} 100%)`
         }}>
@@ -1095,8 +1094,8 @@ const CountriesCardView = ({
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
             No countries match your search criteria "{searchTerm}"
           </Typography>
-          <Button 
-            variant="outlined" 
+          <Button
+            variant="outlined"
             onClick={() => {
               setSearchTerm('');
               setPage(0);
