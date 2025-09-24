@@ -46,6 +46,7 @@ const CountriesCardView = ({
   const [filterBy, setFilterBy] = useState("all");
   const [hoveredCard, setHoveredCard] = useState<string | number | null>(null);
   const [highlightedCard, setHighlightedCard] = useState<string | number | null>(null);
+  const [highlightLabel, setHighlightLabel] = useState<string | null>(null);
 
   // Search derived state using the new hook
   const normalizedSearch = useMemo(() => {
@@ -159,10 +160,12 @@ const CountriesCardView = ({
         const targetPage = Math.floor(addedCountryIndex / rowsPerPage);
         setPage(targetPage);
         setHighlightedCard(lastAddedId);
+        setHighlightLabel('New');
 
         // Clear highlight after 3 seconds
         setTimeout(() => {
           setHighlightedCard(null);
+          setHighlightLabel(null);
         }, 5000);
       } else {
         console.log("🎯 CardView: Added country not found in processed countries list");
@@ -178,10 +181,12 @@ const CountriesCardView = ({
         const targetPage = Math.floor(editedCountryIndex / rowsPerPage);
         setPage(targetPage);
         setHighlightedCard(lastEditedId);
+        setHighlightLabel('Edited');
 
         // Clear highlight after 3 seconds
         setTimeout(() => {
           setHighlightedCard(null);
+          setHighlightLabel(null);
         }, 5000);
       } else {
         console.log("🎯 CardView: Edited country not found in processed countries list");
@@ -200,10 +205,12 @@ const CountriesCardView = ({
       // Highlight the previous country if it exists
       if (processedCountries[targetIndex]) {
         setHighlightedCard(processedCountries[targetIndex].id);
+        setHighlightLabel(null);
 
         // Clear highlight after 3 seconds
         setTimeout(() => {
           setHighlightedCard(null);
+          setHighlightLabel(null);
         }, 5000);
       }
     }
@@ -301,6 +308,7 @@ const CountriesCardView = ({
               index={index}
               isHovered={hoveredCard === country.id}
               isHighlighted={highlightedCard === country.id}
+              highlightLabel={highlightedCard === country.id ? highlightLabel ?? undefined : undefined}
               onEdit={onEdit}
               onDelete={onDelete}
               onView={onView}

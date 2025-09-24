@@ -320,7 +320,8 @@
     "viewTitle": "إدارة الدول",
     "total": "الإجمالي",
     "noData": "لا توجد دول متاحة",
-    "noDataDescription": "ابدأ بإضافة أول دولة"
+    "noDataDescription": "ابدأ بإضافة أول دولة",
+    "generateMockData": "توليد بيانات تجريبية"
   },
   "states": {
     "dashboard": {

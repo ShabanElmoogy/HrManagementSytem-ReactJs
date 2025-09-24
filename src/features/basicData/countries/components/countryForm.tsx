@@ -177,7 +177,6 @@ const CountryForm = ({
       // Error handling props
       errors={getErrorMessages()} // Pass the converted errors
       onErrorFound={handleErrorFound} // Optional callback when error is found
-      t={t}
     >
       {(isEditMode || isViewMode) && (
         <TextField

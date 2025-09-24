@@ -1,10 +1,10 @@
+import { appPermissions } from "@/constants";
+import AuthorizeView from "@/shared/components/auth/authorizeView";
+import { CardView } from "@/shared/components/cardView";
 import { AttachMoney, CalendarToday, Delete, Edit, Phone, Visibility } from "@mui/icons-material";
 import { Chip, IconButton, LinearProgress, Stack, Tooltip, Typography, alpha, useTheme } from "@mui/material";
 import { Box } from "@mui/system";
 import { format } from "date-fns";
-import { CardView } from "../../../../../shared/components/cardView";
-import AuthorizeView from "../../../../../shared/components/auth/authorizeView";
-import { appPermissions } from "@/constants";
 import type { Country } from "../../types/Country";
 
 interface CountryCardProps {
@@ -12,6 +12,7 @@ interface CountryCardProps {
   index: number;
   isHovered: boolean;
   isHighlighted: boolean;
+  highlightLabel?: string | null;
   onEdit: (country: Country) => void;
   onDelete: (country: Country) => void;
   onView: (country: Country) => void;
@@ -24,6 +25,7 @@ const CountryCard = ({
   index,
   isHovered,
   isHighlighted,
+  highlightLabel,
   onEdit,
   onDelete,
   onView,
@@ -67,12 +69,12 @@ const CountryCard = ({
     />
   );
 
-  const leftBadge = isHighlighted ? (
+  const leftBadge = isHighlighted && highlightLabel ? (
     <Chip
-      label="NEW"
+      label={highlightLabel}
       size="small"
       sx={{
-        bgcolor: theme.palette.success.main,
+        bgcolor: theme.palette.error.main,
         color: 'white',
         fontWeight: 'bold',
         fontSize: '0.65rem',

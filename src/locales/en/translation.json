@@ -331,7 +331,8 @@
     "nameArPlaceholder": "Arabic only like : مصر , السعودية",
     "nameEnPlaceholder": "English only like : Egypt , Saudi Arabia",
     "noData": "No countries available",
-    "noDataDescription": "Start by adding your first country"
+    "noDataDescription": "Start by adding your first country",
+    "generateMockData": "Generate Mock Data"
   },
   "states": {
     "dashboard": {
