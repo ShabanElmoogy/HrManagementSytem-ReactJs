@@ -1,25 +1,26 @@
 import React from 'react';
-import { ChartContainer } from '../../../../../shared/components/charts';
+import { LocationOn } from '@mui/icons-material';
+import { EmptyChartState as ReusableEmptyChartState } from '@/shared/components/common/feedback';
 
 interface EmptyChartStateProps {
   t: (key: string) => string;
+  onAdd?: () => void;
 }
 
-const EmptyChartState: React.FC<EmptyChartStateProps> = ({ t }) => {
-  const emptyError = {
-    message: t("states.noDataDescription") || "Start by adding your first state"
-  };
-
+const EmptyChartState: React.FC<EmptyChartStateProps> = ({ t, onAdd }) => {
   return (
-    <ChartContainer
+    <ReusableEmptyChartState
       title={t("states.charts.title") || "States Analytics"}
-      error={emptyError}
+      message={t("states.charts.noData") || "No States Data Available"}
+      subtitle={t("states.noDataDescription") || "Start by adding your first state to see analytics and insights"}
+      chartIcon={LocationOn}
+      emptyIcon={LocationOn}
+      actionText={onAdd ? (t("states.addFirst") || "Add Your First State") : undefined}
+      onAction={onAdd}
+      showRefresh={true}
+      onRefresh={() => window.location.reload()}
       height={400}
-      subtitle={undefined}
-      children={undefined}
-    >
-      {/* Content will be handled by ChartContainer's error state */}
-    </ChartContainer>
+    />
   );
 };
 

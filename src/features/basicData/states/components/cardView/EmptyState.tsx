@@ -1,19 +1,16 @@
 import { LocationOn } from "@mui/icons-material";
 import {
   Box,
-  Button,
   Paper,
-  Typography,
-  useTheme
+  Typography
 } from "@mui/material";
+import { EmptyState as ReusableEmptyState } from "@/shared/components/common/feedback";
 
 interface EmptyStateProps {
   onAdd: () => void;
 }
 
 const EmptyState = ({ onAdd }: EmptyStateProps) => {
-  const theme = useTheme();
-
   return (
     <Box>
       {/* Empty State Header */}
@@ -26,29 +23,15 @@ const EmptyState = ({ onAdd }: EmptyStateProps) => {
         </Typography>
       </Paper>
 
-      {/* Empty State Content */}
-      <Paper sx={{
-        p: 6,
-        textAlign: "center",
-        background: `linear-gradient(135deg, ${theme.palette.primary.main}05 0%, ${theme.palette.secondary.main}05 100%)`
-      }}>
-        <LocationOn sx={{ fontSize: 80, color: "text.secondary", mb: 3 }} />
-        <Typography variant="h4" color="text.secondary" gutterBottom>
-          No States Available
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 3, maxWidth: 500, mx: 'auto' }}>
-          Start building your geographic database by adding states. You'll be able to search, filter, and organize them in this enhanced card view.
-        </Typography>
-        <Button
-          variant="contained"
-          size="large"
-          startIcon={<LocationOn />}
-          onClick={onAdd}
-          sx={{ mt: 2 }}
-        >
-          Add Your First State
-        </Button>
-      </Paper>
+      {/* Empty State Content using reusable component */}
+      <ReusableEmptyState
+        icon={LocationOn}
+        title="No States Available"
+        subtitle="Start building your geographic database by adding states. You'll be able to search, filter, and organize them in this enhanced card view."
+        actionText="Add Your First State"
+        onAction={onAdd}
+        iconSize="large"
+      />
     </Box>
   );
 };

@@ -1,41 +1,28 @@
-import { Search } from "@mui/icons-material";
-import {
-  Button,
-  Paper,
-  Typography,
-  useTheme
-} from "@mui/material";
+import { NoResultsState as ReusableNoResultsState } from "@/shared/components/common/feedback";
 
 interface NoResultsStateProps {
   searchTerm: string;
   onClearSearch: () => void;
+  onClearFilters?: () => void;
+  onRefresh?: () => void;
 }
 
-const NoResultsState = ({ searchTerm, onClearSearch }: NoResultsStateProps) => {
-  const theme = useTheme();
-
+const NoResultsState = ({ 
+  searchTerm, 
+  onClearSearch, 
+  onClearFilters, 
+  onRefresh 
+}: NoResultsStateProps) => {
   return (
-    <Paper sx={{
-      p: 4,
-      textAlign: 'center',
-      mt: 3,
-      background: `linear-gradient(135deg, ${theme.palette.grey[50]} 0%, ${theme.palette.grey[100]} 100%)`
-    }}>
-      <Search sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
-      <Typography variant="h6" color="text.secondary" gutterBottom>
-        No Countries Found
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        No countries match your search criteria "{searchTerm}"
-      </Typography>
-      <Button
-        variant="outlined"
-        onClick={onClearSearch}
-        startIcon={<Search />}
-      >
-        Clear Search
-      </Button>
-    </Paper>
+    <ReusableNoResultsState
+      searchTerm={searchTerm}
+      message="No Countries Found"
+      subtitle={`No countries match your search criteria "${searchTerm}"`}
+      onClearSearch={onClearSearch}
+      onClearFilters={onClearFilters}
+      onRefresh={onRefresh}
+      sx={{ mt: 3 }}
+    />
   );
 };
 

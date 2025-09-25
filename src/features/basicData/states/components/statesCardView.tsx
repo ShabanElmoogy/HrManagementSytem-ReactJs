@@ -328,6 +328,8 @@ const StatesCardView = ({
         <NoResultsState
           searchTerm={searchTerm}
           onClearSearch={handleClearSearch}
+          onClearFilters={filterBy !== 'all' ? () => setFilterBy('all') : undefined}
+          onRefresh={() => window.location.reload()}
         />
       )}
     </Box>

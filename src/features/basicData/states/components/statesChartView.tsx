@@ -19,12 +19,14 @@ import {
 interface StatesChartViewProps {
   states: State[];
   loading: boolean;
+  onAdd?: () => void;
   t: (key: string) => string;
 }
 
 const StatesChartView: React.FC<StatesChartViewProps> = ({
   states,
   loading,
+  onAdd,
   t
 }) => {
 
@@ -35,7 +37,7 @@ const StatesChartView: React.FC<StatesChartViewProps> = ({
 
   // Handle empty state
   if (!states || states.length === 0) {
-    return <EmptyChartState t={t} />;
+    return <EmptyChartState t={t} onAdd={onAdd} />;
   }
 
   // Prepare chart data
