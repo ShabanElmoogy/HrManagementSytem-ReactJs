@@ -1,4 +1,5 @@
 import { Search, TrendingUp, ViewModule } from "@mui/icons-material";
+import { useRef } from "react";
 import {
   Avatar,
   Box,
@@ -12,7 +13,6 @@ import {
   Paper,
   Select,
   Stack,
-  TextField,
   ToggleButton,
   ToggleButtonGroup,
   Tooltip,
@@ -20,6 +20,7 @@ import {
   alpha,
   useTheme
 } from "@mui/material";
+import { MyTextField } from "@/shared/components";
 
 interface CardViewHeaderProps {
   searchTerm: string;
@@ -51,6 +52,7 @@ const CardViewHeader = ({
   onReset,
 }: CardViewHeaderProps) => {
   const theme = useTheme();
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   return (
     <Paper
@@ -102,19 +104,18 @@ const CardViewHeader = ({
       <Grid container spacing={2} alignItems="center">
         {/* Search Bar */}
         <Grid size={{ xs: 12, md: 4 }}>
-          <TextField
-            fullWidth
-            size="small"
+          <MyTextField
+            fieldName="search"
+            labelKey={null}
             placeholder="Search states by name, code, or country..."
             value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search color="action" />
-                </InputAdornment>
-              ),
-            }}
+            register={() => ({
+              onChange: (e) => onSearchChange(e.target.value),
+            })}
+            inputRef={searchInputRef}
+            startIcon={<Search color="action" />}
+            size="small"
+            showCounter={false}
             sx={{
               '& .MuiOutlinedInput-root': {
                 backgroundColor: theme.palette.background.paper,

@@ -1,4 +1,5 @@
-import { Search, TrendingUp, ViewModule } from "@mui/icons-material";
+import { Search, TrendingUp, ViewModule, Clear } from "@mui/icons-material";
+import { useRef } from "react";
 import {
   Avatar,
   Box,
@@ -6,13 +7,12 @@ import {
   Chip,
   FormControl,
   Grid,
-  InputAdornment,
+  IconButton,
   InputLabel,
   MenuItem,
   Paper,
   Select,
   Stack,
-  TextField,
   ToggleButton,
   ToggleButtonGroup,
   Tooltip,
@@ -20,6 +20,7 @@ import {
   alpha,
   useTheme
 } from "@mui/material";
+import { MyTextField } from "@/shared/components";
 
 interface CardViewHeaderProps {
   searchTerm: string;
@@ -51,6 +52,13 @@ const CardViewHeader = ({
   onReset,
 }: CardViewHeaderProps) => {
   const theme = useTheme();
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
+  const clearSearchField = () => {
+    if (searchInputRef.current) {
+      searchInputRef.current.value = '';
+      searchInputRef.current.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  };
 
   return (
     <Paper
@@ -101,20 +109,31 @@ const CardViewHeader = ({
       {/* Search and Filter Controls */}
       <Grid container spacing={2} alignItems="center">
         {/* Search Bar */}
-        <Grid size={{ xs: 12, md: 4 }}>
-          <TextField
-            fullWidth
-            size="small"
+        <Grid size={{ xs: 12, md: 4 }} sx={{mb:2}}>
+          <MyTextField
+            fieldName="search"
+            labelKey={null}
             placeholder="Search countries by name, code, phone, or currency..."
             value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search color="action" />
-                </InputAdornment>
-              ),
-            }}
+            register={() => ({
+              onChange: (e : any) => onSearchChange(e.target.value),
+            })}
+            inputRef={searchInputRef}
+            startIcon={<Search color="action" />}
+            size="small"
+            showClearButton={false}
+            endAdornment={
+              <IconButton
+                aria-label="clear search"
+                onClick={() => { clearSearchField(); onSearchChange(''); onFilterByChange('all'); }}
+                disabled={!searchTerm}
+                edge="end"
+                size="small"
+              >
+                <Clear fontSize="small" />
+              </IconButton>
+            }
+            showCounter={false}
             sx={{
               '& .MuiOutlinedInput-root': {
                 backgroundColor: theme.palette.background.paper,
@@ -192,7 +211,7 @@ const CardViewHeader = ({
               <Button
                 size="small"
                 variant="outlined"
-                onClick={onClearSearch}
+                onClick={() => { onClearSearch(); onFilterByChange('all'); clearSearchField(); }}
                 disabled={!searchTerm}
               >
                 Clear
@@ -200,7 +219,7 @@ const CardViewHeader = ({
               <Button
                 size="small"
                 variant="outlined"
-                onClick={onReset}
+                onClick={() => { onReset(); clearSearchField(); }}
               >
                 Reset
               </Button>

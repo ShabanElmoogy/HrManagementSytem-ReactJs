@@ -10,11 +10,14 @@ import Permissions from "@/constants/appPermissions";
 import { MyContentsWrapper } from "@/layouts";
 import {
   MyDataGrid,
+  renderAlphaCode,
+  renderCountryName,
   renderDate,
 } from "@/shared/components";
 import { useStatesPermissions } from "@/shared/hooks/usePermissions";
 import AuthorizeView from "@/shared/components/auth/authorizeView";
 import { State } from "../types/State";
+import { Country } from "../../countries";
 
 // Define interfaces for better type safety
 interface StatesDataGridProps {
@@ -42,20 +45,6 @@ const renderStateName = (isArabic: boolean = false) => (params: any) => {
   );
 };
 
-const renderStateCode = (params: any) => {
-  return (
-    <div style={{ 
-      fontFamily: 'monospace',
-      backgroundColor: '#f5f5f5',
-      padding: '4px 8px',
-      borderRadius: '4px',
-      fontWeight: 'bold',
-      color: '#666'
-    }}>
-      {params.row.code || '-'}
-    </div>
-  );
-};
 
 const renderCountryInfo = (params: any) => {
   const country = params.row.country;
@@ -175,7 +164,7 @@ const StatesDataGrid: React.FC<StatesDataGridProps> = ({
         flex: 0.8,
         align: "center",
         headerAlign: "center",
-        renderCell: renderStateCode,
+        renderCell: renderAlphaCode,
       },
       {
         field: "country",
