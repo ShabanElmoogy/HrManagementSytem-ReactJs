@@ -1,4 +1,5 @@
 import { Country } from "../../types/Country";
+import { getActiveStates, getStatesCount } from "../../utils/statesUtils";
 
 export interface RegionData {
   name: string;
@@ -14,6 +15,12 @@ export interface TimelineData {
   month: string;
   count: number;
   cumulative: number;
+}
+
+export interface StatesData {
+  name: string;
+  statesCount: number;
+  totalStates: number;
 }
 
 export const prepareRegionData = (countries: Country[]): RegionData[] => {
@@ -63,6 +70,44 @@ export const prepareTimelineData = (countries: Country[]): TimelineData[] => {
       ...item,
       cumulative: array.slice(0, index + 1).reduce((sum, curr) => sum + curr.count, 0),
     }));
+};
+
+export const prepareStatesData = (countries: Country[]): StatesData[] => {
+  return countries
+    .map((country) => ({
+      name: country.nameEn || 'Unknown',
+      statesCount: getStatesCount(country.states),
+      totalStates: country.states?.length || 0,
+    }))
+    .filter((item) => item.statesCount > 0)
+    .sort((a, b) => b.statesCount - a.statesCount)
+    .slice(0, 10); // Top 10 countries with most states
+};
+
+// Utility function to calculate total states across all countries
+export const getTotalStatesCount = (countries: Country[]): number => {
+  return countries.reduce((total, country) => {
+    return total + getStatesCount(country.states);
+  }, 0);
+};
+
+// Utility function to get countries with states vs without states
+export const getCountriesStatesDistribution = (countries: Country[]): {
+  withStates: number;
+  withoutStates: number;
+} => {
+  let withStates = 0;
+  let withoutStates = 0;
+
+  countries.forEach((country) => {
+    if (getStatesCount(country.states) > 0) {
+      withStates++;
+    } else {
+      withoutStates++;
+    }
+  });
+
+  return { withStates, withoutStates };
 };
 
 import { COLOR_PALETTES } from '../../../../../shared/components/charts/chartUtils';

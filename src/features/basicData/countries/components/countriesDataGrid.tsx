@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 // TypeScript version of CountriesDataGrid with enhanced permissions implementation
-import { Delete, Edit, Visibility } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
+import { Delete, Edit, Visibility, LocationOn } from "@mui/icons-material";
+import { Tooltip, useTheme } from "@mui/material";
 import { GridActionsCellItem, GridApi, GridColDef } from "@mui/x-data-grid";
 import React, { useCallback, useMemo } from "react";
 
@@ -14,6 +14,7 @@ import {
   renderCountryName,
   renderCurrencyCode,
   renderDate,
+  renderList,
   renderPhoneCode,
 } from "@/shared/components";
 import { useCountriesPermissions } from "@/shared/hooks/usePermissions";
@@ -43,6 +44,7 @@ const CountriesDataGrid: React.FC<CountriesDataGridProps> = ({
   t,
 }) => {
   const permissions = useCountriesPermissions();
+  const theme = useTheme();
 
   // Memoized action buttons with enhanced permission checking
   const getActions = useCallback(
@@ -52,7 +54,11 @@ const CountriesDataGrid: React.FC<CountriesDataGridProps> = ({
       // View action - always available if user has view permission
       if (permissions.canView) {
         actions.push(
-          <Tooltip title={t("actions.view")} key={`view-${params.row.id}`} arrow>
+          <Tooltip
+            title={t("actions.view")}
+            key={`view-${params.row.id}`}
+            arrow
+          >
             <GridActionsCellItem
               icon={<Visibility sx={{ fontSize: 25 }} />}
               label={t("actions.view")}
@@ -66,7 +72,11 @@ const CountriesDataGrid: React.FC<CountriesDataGridProps> = ({
       // Edit action - only if user has edit permission
       if (permissions.canEdit) {
         actions.push(
-          <Tooltip title={t("actions.edit")} key={`edit-${params.row.id}`} arrow>
+          <Tooltip
+            title={t("actions.edit")}
+            key={`edit-${params.row.id}`}
+            arrow
+          >
             <GridActionsCellItem
               icon={<Edit sx={{ fontSize: 25 }} />}
               label={t("actions.edit")}
@@ -159,6 +169,36 @@ const CountriesDataGrid: React.FC<CountriesDataGridProps> = ({
         align: "center",
         headerAlign: "center",
         renderCell: renderCurrencyCode,
+      },
+      {
+        field: "states",
+        headerName: t("countries.states") || "States",
+        flex: 1.2,
+        align: "center",
+        headerAlign: "center",
+        sortable: false,
+        valueGetter: (params: any) => {
+          return Array.isArray(params)
+            ? params
+                .filter((state: any) => !state.isDeleted)
+                .map((state: any) =>
+                  theme.direction === "rtl" ? state.nameAr : state.nameEn
+                )
+            : [];
+        },
+        renderCell: renderList({
+          displayType: "chips",
+          maxItems: 2,
+          defaultColor: "primary",
+          variant: "outlined",
+          size: "small",
+          showCount: true,
+          emptyText: t("countries.noStates") || "No states",
+          chipProps: {
+            icon: <LocationOn sx={{ fontSize: 14 }} />,
+            sx: { fontSize: "0.75rem" },
+          },
+        }),
       },
       {
         field: "createdOn",

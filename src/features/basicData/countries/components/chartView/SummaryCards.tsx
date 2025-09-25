@@ -1,5 +1,5 @@
 import { MetricCard } from '@/shared/components/charts';
-import { Assessment, DonutLarge, Public, TrendingUp } from '@mui/icons-material';
+import { Assessment, DonutLarge, LocationOn, Public, TrendingUp } from '@mui/icons-material';
 import { Grid } from '@mui/material';
 import React from 'react';
 
@@ -7,6 +7,7 @@ interface SummaryCardsProps {
   totalCountries: number;
   totalRegions: number;
   totalCurrencies: number;
+  totalStates: number;
   avgPerRegion: number;
   t: (key: string) => string;
 }
@@ -15,6 +16,7 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
   totalCountries,
   totalRegions,
   totalCurrencies,
+  totalStates,
   avgPerRegion,
   t
 }) => {
@@ -24,6 +26,12 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
       value: totalCountries,
       icon: Public,
       color: 'primary' as const,
+    },
+    {
+      title: t("countries.dashboard.totalStates") || "Total States",
+      value: totalStates,
+      icon: LocationOn,
+      color: 'info' as const,
     },
     {
       title: t("countries.dashboard.regions") || "Regions",
@@ -36,12 +44,6 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
       value: totalCurrencies,
       icon: Assessment,
       color: 'success' as const,
-    },
-    {
-      title: t("countries.dashboard.avgPerRegion") || "Avg/Region",
-      value: avgPerRegion,
-      icon: DonutLarge,
-      color: 'warning' as const,
     },
   ];
 

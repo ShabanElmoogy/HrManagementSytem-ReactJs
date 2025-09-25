@@ -6,12 +6,15 @@ import {
   CurrencyChart,
   EmptyChartState,
   getChartColors,
+  getTotalStatesCount,
   LoadingChartState,
   prepareCurrencyData,
   prepareRegionData,
+  prepareStatesData,
   prepareTimelineData,
   RegionBarChart,
   RegionPieChart,
+  StatesChart,
   SummaryCards,
   TimelineChart,
 } from './chartView';
@@ -44,12 +47,14 @@ const CountriesChartView: React.FC<CountriesChartViewProps> = ({
   const regionData = prepareRegionData(countries);
   const currencyData = prepareCurrencyData(countries);
   const timelineData = prepareTimelineData(countries);
+  const statesData = prepareStatesData(countries);
   const colors = getChartColors();
 
   // Calculate summary metrics
   const totalCountries = countries.length;
   const totalRegions = regionData.length;
   const totalCurrencies = currencyData.length;
+  const totalStates = getTotalStatesCount(countries);
   const avgPerRegion = Math.round(totalCountries / totalRegions);
 
   return (
@@ -59,6 +64,7 @@ const CountriesChartView: React.FC<CountriesChartViewProps> = ({
         totalCountries={totalCountries}
         totalRegions={totalRegions}
         totalCurrencies={totalCurrencies}
+        totalStates={totalStates}
         avgPerRegion={avgPerRegion}
         t={t}
       />
@@ -75,13 +81,18 @@ const CountriesChartView: React.FC<CountriesChartViewProps> = ({
           <RegionPieChart data={regionData} colors={colors} t={t} />
         </Grid>
 
+        {/* States by Country */}
+        <Grid size={{ xs: 12, md: 6 }}>
+          <StatesChart data={statesData} t={t} />
+        </Grid>
+
         {/* Top Currencies */}
         <Grid size={{ xs: 12, md: 6 }}>
           <CurrencyChart data={currencyData} t={t} />
         </Grid>
 
         {/* Timeline */}
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12 }}>
           <TimelineChart data={timelineData} t={t} />
         </Grid>
       </Grid>

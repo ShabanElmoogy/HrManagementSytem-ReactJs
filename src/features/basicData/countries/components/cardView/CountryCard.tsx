@@ -1,11 +1,12 @@
 import { appPermissions } from "@/constants";
 import AuthorizeView from "@/shared/components/auth/authorizeView";
 import { CardView } from "@/shared/components/cardView";
-import { AttachMoney, CalendarToday, Delete, Edit, Phone, Visibility } from "@mui/icons-material";
+import { AttachMoney, CalendarToday, Delete, Edit, LocationOn, Phone, Visibility } from "@mui/icons-material";
 import { Chip, IconButton, LinearProgress, Stack, Tooltip, Typography, alpha, useTheme } from "@mui/material";
 import { Box } from "@mui/system";
 import { format } from "date-fns";
 import type { Country } from "../../types/Country";
+import { getActiveStates, getStatesCount, formatStatesForDisplay } from "../../utils/statesUtils";
 
 interface CountryCardProps {
   country: Country;
@@ -140,6 +141,51 @@ const CountryCard = ({
             <AttachMoney sx={{ fontSize: 16, color: "text.secondary" }} />
             <Typography variant="body2" fontWeight="medium">{country.currencyCode}</Typography>
           </Stack>
+        )}
+      </Box>
+
+      {/* States Section */}
+      <Box sx={{ mb: 2 }}>
+        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
+          <LocationOn sx={{ fontSize: 16, color: "text.secondary" }} />
+          <Typography variant="body2" fontWeight="medium">
+            {getStatesCount(country.states)} {getStatesCount(country.states) === 1 ? 'State' : 'States'}
+          </Typography>
+        </Stack>
+        
+        {country.states && getActiveStates(country.states).length > 0 && (
+          <Box sx={{ ml: 3 }}>
+            {(() => {
+              const { displayStates, hasMore, moreCount } = formatStatesForDisplay(country.states, 2);
+              return (
+                <Stack spacing={0.5}>
+                  {displayStates.map((state) => (
+                    <Typography
+                      key={state.id}
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{
+                        display: 'block',
+                        fontSize: '0.7rem',
+                        '&:hover': { color: 'primary.main' }
+                      }}
+                    >
+                      • {state.nameEn}
+                    </Typography>
+                  ))}
+                  {hasMore && (
+                    <Typography
+                      variant="caption"
+                      color="primary.main"
+                      sx={{ fontSize: '0.7rem', fontStyle: 'italic' }}
+                    >
+                      +{moreCount} more...
+                    </Typography>
+                  )}
+                </Stack>
+              );
+            })()}
+          </Box>
         )}
       </Box>
 

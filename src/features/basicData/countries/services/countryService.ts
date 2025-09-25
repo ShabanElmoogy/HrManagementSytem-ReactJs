@@ -1,11 +1,7 @@
 import { apiRoutes } from "@/routes";
 import { apiService } from "@/shared/services";
 import { extractValue, extractValues } from "@/shared/utils/ApiHelper";
-import { Country, CreateCountryRequest } from "../types/Country";
-
-export interface UpdateCountryRequest extends CreateCountryRequest {
-  id: string | number;
-}
+import { Country, CreateCountryRequest, UpdateCountryRequest } from "../types/Country";
 
 // Country Service
 export class CountryService {
@@ -50,7 +46,8 @@ export class CountryService {
     return countries.filter((country) => {
       if (!country || country.isDeleted) return false;
 
-      return (
+      // Search in country fields
+      const countryMatch = (
         country.nameEn?.toLowerCase().includes(term) ||
         country.nameAr?.includes(term) ||
         country.alpha2Code?.toLowerCase().includes(term) ||
@@ -58,6 +55,17 @@ export class CountryService {
         country.phoneCode?.toString().includes(term) ||
         country.currencyCode?.toLowerCase().includes(term)
       );
+
+      // Search in states
+      const statesMatch = country.states?.some(state => 
+        !state.isDeleted && (
+          state.nameEn?.toLowerCase().includes(term) ||
+          state.nameAr?.includes(term) ||
+          state.code?.toLowerCase().includes(term)
+        )
+      );
+
+      return countryMatch || statesMatch;
     });
   }
 }
