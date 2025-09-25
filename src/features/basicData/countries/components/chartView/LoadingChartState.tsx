@@ -10,8 +10,9 @@ const LoadingChartState: React.FC<LoadingChartStateProps> = ({ t }) => {
     <ChartContainer
       title={t("countries.charts.title") || "Countries Analytics"}
       loading={true}
-      height={400}
-    >
+      height={400} 
+      subtitle={undefined} 
+      children={undefined}    >
       {/* Content will be handled by ChartContainer's loading state */}
     </ChartContainer>
   );

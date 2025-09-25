@@ -14,8 +14,9 @@ const EmptyChartState: React.FC<EmptyChartStateProps> = ({ t }) => {
     <ChartContainer
       title={t("countries.charts.title") || "Countries Analytics"}
       error={emptyError}
-      height={400}
-    >
+      height={400} 
+      subtitle={undefined} 
+      children={undefined}    >
       {/* Content will be handled by ChartContainer's error state */}
     </ChartContainer>
   );

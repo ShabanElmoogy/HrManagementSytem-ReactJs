@@ -3,7 +3,6 @@ import React from 'react';
 import { Country } from '../types/Country';
 import {
   ChartLegend,
-  ChartViewHeader,
   CurrencyChart,
   EmptyChartState,
   getChartColors,

@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-// components/CountryForm.jsx
+// components/CountryForm.tsx
 import { MyForm, MyTextField } from "@/shared/components";
 import { faker } from '@faker-js/faker';
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -9,24 +8,44 @@ import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { countries } from "../utils/fakeData";
 import { getCountryValidationSchema } from "../utils/validation";
+import { Country } from "../types/Country";
+
+interface CountryFormData {
+  nameAr: string;
+  nameEn: string;
+  alpha2Code: string;
+  alpha3Code: string;
+  phoneCode: string;
+  currencyCode: string;
+}
+
+interface CountryFormProps {
+  open: boolean;
+  dialogType: "add" | "edit" | "view";
+  selectedCountry?: Country | null;
+  onClose: () => void;
+  onSubmit: (data: CountryFormData) => void;
+  loading: boolean;
+  t: (key: string) => string;
+}
 
 const CountryForm = ({
   open,
-  dialogType, // "add" | "edit" | "view"
+  dialogType,
   selectedCountry,
   onClose,
   onSubmit,
   loading,
   t,
-}) => {
-  const nameArRef = useRef(null);
-  const nameEnRef = useRef(null);
-  const alpha2CodeRef = useRef(null);
-  const alpha3CodeRef = useRef(null);
+}: CountryFormProps) => {
+  const nameArRef = useRef<HTMLInputElement>(null);
+  const nameEnRef = useRef<HTMLInputElement>(null);
+  const alpha2CodeRef = useRef<HTMLInputElement>(null);
+  const alpha3CodeRef = useRef<HTMLInputElement>(null);
 
-  const isViewMode = dialogType === "view";
-  const isEditMode = dialogType === "edit";
-  const isAddMode = dialogType === "add";
+  const isViewMode: boolean = dialogType === "view";
+  const isEditMode: boolean = dialogType === "edit";
+  const isAddMode: boolean = dialogType === "add";
 
   const schema = getCountryValidationSchema(t);
 
@@ -36,7 +55,7 @@ const CountryForm = ({
     control,
     setValue,
     formState: { errors },
-  } = useForm({
+  } = useForm<CountryFormData>({
     resolver: yupResolver(schema),
     mode: "onChange",
     defaultValues: {
@@ -68,14 +87,14 @@ const CountryForm = ({
   }, [open, dialogType, selectedCountry, reset, isEditMode, isViewMode]);
 
   // Get appropriate action type for overlay
-  const getOverlayActionType = () => {
+  const getOverlayActionType = (): string => {
     if (isAddMode) return "create";
     if (isEditMode) return "update";
     return "save";
   };
 
   // Get appropriate overlay message
-  const getOverlayMessage = () => {
+  const getOverlayMessage = (): string => {
     if (isAddMode)
       return t("countries.creatingCountry") || "Creating country...";
     if (isEditMode)
@@ -84,18 +103,18 @@ const CountryForm = ({
   };
 
   // Convert react-hook-form errors to simple error object for MyForm
-  const getErrorMessages = () => {
-    const errorMessages = {};
+  const getErrorMessages = (): Record<string, string> => {
+    const errorMessages: Record<string, string> = {};
     Object.keys(errors).forEach((key) => {
-      if (errors[key]?.message) {
-        errorMessages[key] = errors[key].message;
+      if (errors[key as keyof CountryFormData]?.message) {
+        errorMessages[key] = errors[key as keyof CountryFormData]?.message as string;
       }
     });
     return errorMessages;
   };
 
   // Handle error found callback
-  const handleErrorFound = (fieldName, fieldElement) => {
+  const handleErrorFound = (fieldName: string, fieldElement: HTMLElement): void => {
     console.log(`Validation error in field: ${fieldName}`, fieldElement);
     // You can add custom logic here, such as:
     // - Analytics tracking
@@ -106,7 +125,7 @@ const CountryForm = ({
   // Generate mock data using Faker.js
   const usedIndexes = new Set<number>();
 
-  const generateMockData = () => {
+  const generateMockData = (): void => {
     if (usedIndexes.size === countries.length) {
       console.warn("⚠️ كل الدول استخدمت بالفعل!");
       return;

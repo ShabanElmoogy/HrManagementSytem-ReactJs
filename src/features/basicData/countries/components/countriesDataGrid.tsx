@@ -17,7 +17,7 @@ import {
   renderPhoneCode,
 } from "@/shared/components";
 import { useCountriesPermissions } from "@/shared/hooks/usePermissions";
-import AuthorizeView from "../../../../shared/components/auth/authorizeView";
+import AuthorizeView from "@/shared/components/auth/authorizeView";
 import { Country } from "../types/Country";
 
 // Define interfaces for better type safety

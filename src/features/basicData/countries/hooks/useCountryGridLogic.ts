@@ -1,7 +1,7 @@
-// hooks/useCountryGridLogic.js - TanStack Query Implementation
+// hooks/useCountryGridLogic.ts - TanStack Query Implementation
 import { showToast } from "@/shared/components";
 import { extractErrorMessage } from "@/shared/utils";
-import { useGridApiRef } from "@mui/x-data-grid";
+import { useGridApiRef, GridApiCommon } from "@mui/x-data-grid";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Country, CreateCountryRequest } from "../types/Country";
@@ -12,7 +12,45 @@ import {
   useUpdateCountry,
 } from "./useCountryQueries";
 
-const useCountryGridLogic = () => {
+type DialogType = "add" | "edit" | "view" | "delete" | null;
+
+interface UseCountryGridLogicReturn {
+  // State
+  dialogType: DialogType;
+  selectedCountry: Country | null;
+  loading: boolean;
+  countries: Country[];
+  apiRef: React.MutableRefObject<GridApiCommon>;
+  error: any;
+  isFetching: boolean;
+
+  // Dialog methods
+  openDialog: (type: DialogType, country?: Country | null) => void;
+  closeDialog: () => void;
+
+  // Form and action handlers
+  handleFormSubmit: (formdata: CreateCountryRequest) => Promise<void>;
+  handleDelete: () => Promise<void>;
+  handleRefresh: () => void;
+
+  // Action methods
+  onEdit: (country: Country) => void;
+  onView: (country: Country) => void;
+  onDelete: (country: Country) => void;
+  onAdd: () => void;
+
+  // Mutation states for advanced UI feedback
+  isCreating: boolean;
+  isUpdating: boolean;
+  isDeleting: boolean;
+
+  // Highlighting/Navigation state for card view
+  lastAddedId: number | null;
+  lastEditedId: number | null;
+  lastDeletedIndex: number | null;
+}
+
+const useCountryGridLogic = (): UseCountryGridLogicReturn => {
   // Hooks
   const { t } = useTranslation();
 
@@ -23,14 +61,17 @@ const useCountryGridLogic = () => {
     error,
     refetch,
     isFetching,
-  } = useCountries({
-    onError: (error: any) => {
+  } = useCountries();
+
+  // Handle query error separately using useEffect
+  useEffect(() => {
+    if (error) {
       const errorMessage = extractErrorMessage(error);
       showToast.error(
         errorMessage || t("countries.fetchError") || "Failed to fetch countries"
       );
-    },
-  });
+    }
+  }, [error, t]);
 
   const createCountryMutation = useCreateCountry({
     onSuccess: (newCountry: Country) => {
@@ -39,7 +80,7 @@ const useCountryGridLogic = () => {
           `Country "${newCountry.nameEn}" created successfully!`
       );
 
-      const newCountryId = newCountry.id;
+      const newCountryId: number = typeof newCountry.id === 'string' ? parseInt(newCountry.id, 10) : newCountry.id;
       console.log("🟢 Country created with ID:", newCountryId);
       setLastAddedRowId(newCountryId);
       setNewRowAdded(true);
@@ -67,9 +108,10 @@ const useCountryGridLogic = () => {
           `Country "${updatedCountry.nameEn}" updated successfully!`
       );
 
-      console.log("🟡 Country updated with ID:", updatedCountry.id);
+      const updatedCountryId: number = typeof updatedCountry.id === 'string' ? parseInt(updatedCountry.id, 10) : updatedCountry.id;
+      console.log("🟡 Country updated with ID:", updatedCountryId);
       setRowEdited(true);
-      setLastEditedRowId(updatedCountry.id);
+      setLastEditedRowId(updatedCountryId);
       setDialogType(null);
       setSelectedCountry(null);
       
@@ -113,33 +155,33 @@ const useCountryGridLogic = () => {
   });
 
   // State management
-  const [dialogType, setDialogType] = useState(null);
-  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [dialogType, setDialogType] = useState<DialogType>(null);
+  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
 
   // Navigation state variables
-  const [newRowAdded, setNewRowAdded] = useState(false);
-  const [lastAddedRowId, setLastAddedRowId] = useState(null);
+  const [newRowAdded, setNewRowAdded] = useState<boolean>(false);
+  const [lastAddedRowId, setLastAddedRowId] = useState<number | null>(null);
 
-  const [rowEdited, setRowEdited] = useState(false);
-  const [lastEditedRowId, setLastEditedRowId] = useState(null);
+  const [rowEdited, setRowEdited] = useState<boolean>(false);
+  const [lastEditedRowId, setLastEditedRowId] = useState<number | null>(null);
 
-  const [rowDeleted, setRowDeleted] = useState(false);
-  const [lastDeletedRowIndex, setLastDeletedRowIndex] = useState(null);
+  const [rowDeleted, setRowDeleted] = useState<boolean>(false);
+  const [lastDeletedRowIndex, setLastDeletedRowIndex] = useState<number | null>(null);
 
-  const apiRef = useGridApiRef();
+  const apiRef = useGridApiRef<GridApiCommon>();
 
   // Memoized countries
-  const stableCountries = useMemo(() => countries, [countries]);
+  const stableCountries = useMemo((): Country[] => countries, [countries]);
 
   // Check for any loading state from mutations
-  const isAnyLoading =
+  const isAnyLoading: boolean =
     loading ||
     createCountryMutation.isPending ||
     updateCountryMutation.isPending ||
     deleteCountryMutation.isPending;
 
   // Dialog management
-  const openDialog = useCallback((type: any, country: any = null) => {
+  const openDialog = useCallback((type: DialogType, country: Country | null = null) => {
     setDialogType(type);
     setSelectedCountry(country);
   }, []);
@@ -320,19 +362,19 @@ const useCountryGridLogic = () => {
   );
 
   // Delete handler
-  const handleDelete = useCallback(async () => {
+  const handleDelete = useCallback(async (): Promise<void> => {
     if (!selectedCountry?.id) return;
 
     try {
-      const deletedId = selectedCountry.id;
-      const currentIndex = countries.findIndex(
+      const deletedId: number = typeof selectedCountry.id === 'string' ? parseInt(selectedCountry.id, 10) : selectedCountry.id;
+      const currentIndex: number = countries.findIndex(
         (country) => country.id === deletedId
       );
 
       await deleteCountryMutation.mutateAsync(deletedId);
 
       // Update selected country for navigation
-      let newSelectedCountry = null;
+      let newSelectedCountry: Country | null = null;
       if (countries.length > 1) {
         // Will be length - 1 after deletion
         newSelectedCountry =

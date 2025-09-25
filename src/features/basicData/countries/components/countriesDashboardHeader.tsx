@@ -12,12 +12,44 @@ import {
   useTheme,
 } from "@mui/material";
 import { useMemo } from "react";
+import { ReactElement } from "react";
 
-const CountriesDashboardHeader = ({ countries, loading, t }) => {
+interface Country {
+  id: number;
+  nameAr?: string;
+  nameEn?: string;
+  alpha2Code?: string;
+  alpha3Code?: string;
+  phoneCode?: string;
+  currencyCode?: string;
+}
+
+interface CountryStats {
+  totalCountries: number;
+  withPhoneCodes: number;
+  withCurrencies: number;
+  withAlphaCodes: number;
+  completedProfiles: number;
+}
+
+interface StatConfig {
+  icon: ReactElement;
+  title: string;
+  value: number | string;
+  color: "primary" | "success" | "info" | "warning" | "secondary" | "error";
+}
+
+interface CountriesDashboardHeaderProps {
+  countries: Country[];
+  loading: boolean;
+  t: (key: string) => string;
+}
+
+const CountriesDashboardHeader = ({ countries, loading, t }: CountriesDashboardHeaderProps) => {
   const theme = useTheme();
 
   // Calculate statistics
-  const stats = useMemo(() => {
+  const stats = useMemo((): CountryStats => {
     if (!countries || countries.length === 0) {
       return {
         totalCountries: 0,
@@ -29,7 +61,7 @@ const CountriesDashboardHeader = ({ countries, loading, t }) => {
     }
 
     const completedProfiles = countries.filter(
-      (c) =>
+      (c: Country) =>
         c.nameAr &&
         c.nameEn &&
         c.alpha2Code &&
@@ -40,25 +72,25 @@ const CountriesDashboardHeader = ({ countries, loading, t }) => {
 
     return {
       totalCountries: countries.length,
-      withPhoneCodes: countries.filter((c) => c.phoneCode && c.phoneCode.trim())
+      withPhoneCodes: countries.filter((c: Country) => c.phoneCode && c.phoneCode.trim())
         .length,
       withCurrencies: countries.filter(
-        (c) => c.currencyCode && c.currencyCode.trim()
+        (c: Country) => c.currencyCode && c.currencyCode.trim()
       ).length,
-      withAlphaCodes: countries.filter((c) => c.alpha2Code && c.alpha3Code)
+      withAlphaCodes: countries.filter((c: Country) => c.alpha2Code && c.alpha3Code)
         .length,
       completedProfiles,
     };
   }, [countries]);
 
   // Get completion percentage
-  const completionRate = useMemo(() => {
+  const completionRate = useMemo((): number => {
     if (stats.totalCountries === 0) return 0;
     return Math.round((stats.completedProfiles / stats.totalCountries) * 100);
   }, [stats.completedProfiles, stats.totalCountries]);
 
   // Stats configuration
-  const statsConfig = [
+  const statsConfig: StatConfig[] = [
     {
       icon: <Public />,
       title: t("countries.dashboard.totalCountries"),
