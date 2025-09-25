@@ -1,11 +1,17 @@
 import { appPermissions } from "@/constants";
-import AuthorizeView from "@/shared/components/auth/authorizeView";
 import { CardView } from "@/shared/components/cardView";
-import { CalendarToday, Delete, Edit, LocationOn, Public, Visibility } from "@mui/icons-material";
-import { Chip, IconButton, LinearProgress, Stack, Tooltip, Typography, alpha, useTheme } from "@mui/material";
+import { Delete, Edit, LocationOn, Public, Visibility } from "@mui/icons-material";
+import { Chip, Stack, Typography, alpha, useTheme } from "@mui/material";
 import { Box } from "@mui/system";
 import { format } from "date-fns";
 import type { State } from "../../types/State";
+import {
+  BadgePercentage,
+  CardActionsRow,
+  CreatedDateRow,
+  QualityMeter,
+  HighlightBadge,
+} from "@/shared/components/common/cardView/UnifiedCardParts";
 
 interface StateCardProps {
   state: State;
@@ -44,60 +50,35 @@ const StateCard = ({
   };
 
   const getQualityLevel = (score: number) => {
-    if (score >= 90) return { level: 'excellent', color: theme.palette.success.main };
-    if (score >= 75) return { level: 'good', color: theme.palette.info.main };
-    if (score >= 60) return { level: 'average', color: theme.palette.warning.main };
-    return { level: 'poor', color: theme.palette.error.main };
+    if (score >= 90) return { level: "excellent", color: theme.palette.success.main };
+    if (score >= 75) return { level: "good", color: theme.palette.info.main };
+    if (score >= 60) return { level: "average", color: theme.palette.warning.main };
+    return { level: "poor", color: theme.palette.error.main };
   };
 
   const qualityScore = getQualityScore(state);
   const qualityInfo = getQualityLevel(qualityScore);
 
   const topRightBadge = (
-    <Chip
-      label={`${qualityScore}%`}
-      size="small"
-      sx={{
-        bgcolor: isHighlighted ? theme.palette.success.main : qualityInfo.color,
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: '0.7rem',
-        boxShadow: `0 2px 8px ${alpha(isHighlighted ? theme.palette.success.main : qualityInfo.color, 0.3)}`
-      }}
-    />
+    <BadgePercentage value={qualityScore} highlighted={isHighlighted} color={qualityInfo.color} />
   );
 
   const leftBadge = isHighlighted && highlightLabel ? (
-    <Chip
-      label={highlightLabel}
-      size="small"
-      sx={{
-        bgcolor: theme.palette.error.main,
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: '0.65rem',
-        animation: "bounce 1s ease-in-out infinite",
-        "@keyframes bounce": {
-          "0%, 20%, 50%, 80%, 100%": { transform: "translateY(0)" },
-          "40%": { transform: "translateY(-4px)" },
-          "60%": { transform: "translateY(-2px)" },
-        },
-      }}
-    />
+    <HighlightBadge label={highlightLabel} />
   ) : undefined;
 
   const chips = (
-    <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 0.5 }}>
+    <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", gap: 0.5 }}>
       {state.code && (
         <Chip
           label={state.code}
           size="small"
           sx={{
             fontWeight: "bold",
-            fontFamily: 'monospace',
+            fontFamily: "monospace",
             bgcolor: alpha(theme.palette.primary.main, 0.1),
             color: theme.palette.primary.main,
-            '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.2), transform: 'scale(1.05)' }
+            "&:hover": { bgcolor: alpha(theme.palette.primary.main, 0.2), transform: "scale(1.05)" },
           }}
         />
       )}
@@ -105,7 +86,7 @@ const StateCard = ({
         label={`ID: ${state.id}`}
         size="small"
         variant="outlined"
-        sx={{ fontSize: '0.7rem', fontFamily: 'monospace' }}
+        sx={{ fontSize: "0.7rem", fontFamily: "monospace" }}
       />
     </Stack>
   );
@@ -118,9 +99,13 @@ const StateCard = ({
           <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
             <Public sx={{ fontSize: 16, color: "text.secondary" }} />
             <Box>
-              <Typography variant="body2" fontWeight="medium">{state.country.nameEn}</Typography>
+              <Typography variant="body2" fontWeight="medium">
+                {state.country.nameEn}
+              </Typography>
               {state.country.nameAr && (
-                <Typography variant="caption" color="text.secondary">{state.country.nameAr}</Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {state.country.nameAr}
+                </Typography>
               )}
             </Box>
           </Stack>
@@ -134,84 +119,43 @@ const StateCard = ({
       </Box>
 
       {/* Quality Progress */}
-      <Box sx={{ mb: 2 }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 0.5 }}>
-          <Typography variant="caption" color="text.secondary" fontWeight="bold">Data Quality</Typography>
-          <Typography variant="caption" color={qualityInfo.color} fontWeight="bold">{qualityInfo.level.toUpperCase()}</Typography>
-        </Stack>
-        <LinearProgress
-          variant="determinate"
-          value={qualityScore}
-          sx={{
-            height: 6,
-            borderRadius: 3,
-            backgroundColor: alpha(theme.palette.grey[300], 0.3),
-            '& .MuiLinearProgress-bar': { borderRadius: 3, backgroundColor: qualityInfo.color },
-          }}
-        />
-      </Box>
+      <QualityMeter score={qualityScore} />
 
       {/* Creation Date */}
-      <Box sx={{ mt: "auto" }}>
-        <Stack direction="row" spacing={1} alignItems="center">
-          <CalendarToday sx={{ fontSize: 14, color: "text.secondary" }} />
-          <Typography variant="caption" color="text.secondary">
-            {state.createdOn ? format(new Date(state.createdOn), "MMM dd, yyyy") : "N/A"}
-          </Typography>
-        </Stack>
-      </Box>
+      <CreatedDateRow
+        date={state.createdOn ? new Date(state.createdOn) : null}
+        formatter={(d) => format(d, "MMM dd, yyyy")}
+      />
     </>
   );
 
   const footer = (
-    <Stack direction="row" spacing={1}>
-      <Tooltip title={t("actions.view") || "View Details"} arrow>
-        <IconButton
-          size="small"
-          color="info"
-          onClick={() => onView(state)}
-          sx={{
-            bgcolor: alpha(theme.palette.info.main, 0.1),
-            border: `1px solid ${alpha(theme.palette.info.main, 0.2)}`,
-            '&:hover': { bgcolor: alpha(theme.palette.info.main, 0.2), transform: 'scale(1.1)', borderColor: theme.palette.info.main }
-          }}
-        >
-          <Visibility sx={{ fontSize: 16 }} />
-        </IconButton>
-      </Tooltip>
-
-      <Tooltip title={t("actions.edit") || "Edit State"} arrow>
-        <IconButton
-          size="small"
-          color="primary"
-          onClick={() => onEdit(state)}
-          sx={{
-            bgcolor: alpha(theme.palette.primary.main, 0.1),
-            border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-            '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.2), transform: 'scale(1.1)', borderColor: theme.palette.primary.main }
-          }}
-        >
-          <Edit sx={{ fontSize: 16 }} />
-        </IconButton>
-      </Tooltip>
-
-      <AuthorizeView requiredPermissions={[appPermissions.DeleteStates]}>
-        <Tooltip title={t("actions.delete") || "Delete State"} arrow>
-          <IconButton
-            size="small"
-            color="error"
-            onClick={() => onDelete(state)}
-            sx={{
-              bgcolor: alpha(theme.palette.error.main, 0.1),
-              border: `1px solid ${alpha(theme.palette.error.main, 0.2)}`,
-              '&:hover': { bgcolor: alpha(theme.palette.error.main, 0.2), transform: 'scale(1.1)', borderColor: theme.palette.error.main }
-            }}
-          >
-            <Delete sx={{ fontSize: 16 }} />
-          </IconButton>
-        </Tooltip>
-      </AuthorizeView>
-    </Stack>
+    <CardActionsRow
+      actions={[
+        {
+          key: "view",
+          title: t("actions.view") || "View Details",
+          color: "info",
+          icon: <Visibility sx={{ fontSize: 16 }} />,
+          onClick: () => onView(state),
+        },
+        {
+          key: "edit",
+          title: t("actions.edit") || "Edit State",
+          color: "primary",
+          icon: <Edit sx={{ fontSize: 16 }} />,
+          onClick: () => onEdit(state),
+        },
+        {
+          key: "delete",
+          title: t("actions.delete") || "Delete State",
+          color: "error",
+          icon: <Delete sx={{ fontSize: 16 }} />,
+          onClick: () => onDelete(state),
+          requiredPermissions: [appPermissions.DeleteStates],
+        },
+      ]}
+    />
   );
 
   return (

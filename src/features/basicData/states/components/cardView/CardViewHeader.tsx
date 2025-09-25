@@ -1,26 +1,4 @@
-import { Search, TrendingUp, ViewModule } from "@mui/icons-material";
-import { useRef } from "react";
-import {
-  Avatar,
-  Box,
-  Button,
-  Chip,
-  FormControl,
-  Grid,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  Stack,
-  ToggleButton,
-  ToggleButtonGroup,
-  Tooltip,
-  Typography,
-  alpha,
-  useTheme
-} from "@mui/material";
-import { MyTextField } from "@/shared/components";
+import UnifiedCardViewHeader from "@/shared/components/common/cardView/UnifiedCardViewHeader";
 
 interface CardViewHeaderProps {
   searchTerm: string;
@@ -51,163 +29,45 @@ const CardViewHeader = ({
   onClearSearch,
   onReset,
 }: CardViewHeaderProps) => {
-  const theme = useTheme();
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
-
   return (
-    <Paper
-      elevation={3}
-      sx={{
-        p: 3,
-        mb: 3,
-        background: `linear-gradient(135deg, ${theme.palette.primary.main}08 0%, ${theme.palette.secondary.main}08 100%)`,
-        border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-        borderRadius: 3
+    <UnifiedCardViewHeader
+      title="States Card View"
+      subtitle={`Browse and manage ${processedStatesLength} states with enhanced search and filtering`}
+      mainChipLabel={`${processedStatesLength} States`}
+      page={page}
+
+      searchTerm={searchTerm}
+      searchPlaceholder="Search states by name, code, or country..."
+      onSearchChange={onSearchChange}
+      onClearSearch={() => {
+        onSearchChange("");
+        onFilterByChange("all");
+        onClearSearch();
       }}
-    >
-      {/* Title Section */}
-      <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 3 }}>
-        <Avatar
-          sx={{
-            bgcolor: theme.palette.primary.main,
-            width: 48,
-            height: 48,
-            boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.3)}`
-          }}
-        >
-          <ViewModule sx={{ fontSize: 24 }} />
-        </Avatar>
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="h4" color="primary.main" fontWeight="bold">
-            States Card View
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Browse and manage {processedStatesLength} states with enhanced search and filtering
-          </Typography>
-        </Box>
-        <Stack direction="row" spacing={1}>
-          <Chip
-            label={`${processedStatesLength} States`}
-            color="primary"
-            variant="outlined"
-          />
-          <Chip
-            label={`Page: ${page + 1}`}
-            color="info"
-            variant="outlined"
-            size="small"
-          />
-        </Stack>
-      </Stack>
 
-      {/* Search and Filter Controls */}
-      <Grid container spacing={2} alignItems="center">
-        {/* Search Bar */}
-        <Grid size={{ xs: 12, md: 4 }}>
-          <MyTextField
-            fieldName="search"
-            labelKey={null}
-            placeholder="Search states by name, code, or country..."
-            value={searchTerm}
-            register={() => ({
-              onChange: (e) => onSearchChange(e.target.value),
-            })}
-            inputRef={searchInputRef}
-            startIcon={<Search color="action" />}
-            size="small"
-            showCounter={false}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                backgroundColor: theme.palette.background.paper,
-                borderRadius: 2,
-                '&:hover': {
-                  boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.1)}`
-                }
-              }
-            }}
-          />
-        </Grid>
+      sortBy={sortBy}
+      sortByOptions={[
+        { value: "name", label: "Name" },
+        { value: "code", label: "State Code" },
+        { value: "country", label: "Country" },
+        { value: "created", label: "Created Date" },
+      ]}
+      onSortByChange={onSortByChange}
 
-        {/* Sort By */}
-        <Grid size={{ xs: 6, md: 2 }}>
-          <FormControl fullWidth size="small">
-            <InputLabel>Sort By</InputLabel>
-            <Select
-              value={sortBy}
-              label="Sort By"
-              onChange={(e) => onSortByChange(e.target.value)}
-            >
-              <MenuItem value="name">Name</MenuItem>
-              <MenuItem value="code">State Code</MenuItem>
-              <MenuItem value="country">Country</MenuItem>
-              <MenuItem value="created">Created Date</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
+      sortOrder={sortOrder as "asc" | "desc"}
+      onSortOrderChange={(v) => onSortOrderChange(v)}
 
-        {/* Sort Order */}
-        <Grid size={{ xs: 6, md: 2 }}>
-          <ToggleButtonGroup
-            value={sortOrder}
-            exclusive
-            onChange={(event, value) => { void event; if (value) onSortOrderChange(value); }}
-            size="small"
-            fullWidth
-          >
-            <ToggleButton value="asc">
-              <Tooltip title="Ascending">
-                <TrendingUp />
-              </Tooltip>
-            </ToggleButton>
-            <ToggleButton value="desc">
-              <Tooltip title="Descending">
-                <TrendingUp sx={{ transform: 'rotate(180deg)' }} />
-              </Tooltip>
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </Grid>
+      filterBy={filterBy}
+      filterOptions={[
+        { value: "all", label: "All States" },
+        { value: "recent", label: "Recent (30 days)" },
+        { value: "hasCode", label: "Has State Code" },
+        { value: "hasCountry", label: "Has Country" },
+      ]}
+      onFilterByChange={onFilterByChange}
 
-        {/* Filter */}
-        <Grid size={{ xs: 12, md: 2 }}>
-          <FormControl fullWidth size="small">
-            <InputLabel>Filter</InputLabel>
-            <Select
-              value={filterBy}
-              label="Filter"
-              onChange={(e) => onFilterByChange(e.target.value)}
-            >
-              <MenuItem value="all">All States</MenuItem>
-              <MenuItem value="recent">Recent (30 days)</MenuItem>
-              <MenuItem value="hasCode">Has State Code</MenuItem>
-              <MenuItem value="hasCountry">Has Country</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-
-        {/* Quick Actions */}
-        <Grid size={{ xs: 12, md: 2 }}>
-          <Stack direction="column" spacing={1}>
-            <Stack direction="row" spacing={1}>
-              <Button
-                size="small"
-                variant="outlined"
-                onClick={onClearSearch}
-                disabled={!searchTerm}
-              >
-                Clear
-              </Button>
-              <Button
-                size="small"
-                variant="outlined"
-                onClick={onReset}
-              >
-                Reset
-              </Button>
-            </Stack>
-          </Stack>
-        </Grid>
-      </Grid>
-    </Paper>
+      onReset={onReset}
+    />
   );
 };
 

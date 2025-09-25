@@ -219,19 +219,37 @@ const MultiViewHeader = ({
           {/* Action Buttons */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {showActions.add && (
-              <Button
-                variant="contained"
-                startIcon={<Add />}
-                onClick={onAdd}
-                size="small"
-                sx={{
-                  borderRadius: 2,
-                  textTransform: "none",
-                  fontWeight: 500,
-                }}
-              >
-                {t("actions.add") || "Add"}
-              </Button>
+              <Tooltip title={t("actions.add") || "Add"} arrow>
+                <Button
+                  variant="contained"
+                  startIcon={<Add />}
+                  onClick={onAdd}
+                  size="small"
+                  sx={{
+                    borderRadius: 3,
+                    textTransform: "none",
+                    fontWeight: 700,
+                    px: 2,
+                    boxShadow: `0 4px 12px ${theme.palette.primary.main}40`,
+                    background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                    color: theme.palette.primary.contrastText,
+                    transition: "transform 0.15s ease, box-shadow 0.15s ease, filter 0.2s ease",
+                    '&:hover': {
+                      transform: 'translateY(-1px)',
+                      boxShadow: `0 6px 16px ${theme.palette.primary.main}50`,
+                      filter: 'brightness(1.02)',
+                      background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.secondary.dark} 100%)`,
+                    },
+                    '&:active': {
+                      transform: 'translateY(0)',
+                      boxShadow: `0 3px 8px ${theme.palette.primary.main}30`,
+                    },
+                    '& .MuiButton-startIcon': { mr: 1 },
+                  }}
+                >
+                  {t("actions.add") || "Add"}
+                </Button>
+              </Tooltip>
             )}
 
             {showActions.refresh && (
@@ -405,22 +423,38 @@ const MultiViewHeader = ({
             }}
           >
             {showActions.add && (
-              <Button
-                variant="contained"
-                startIcon={<Add />}
-                onClick={onAdd}
-                size="small"
-                sx={{
-                  borderRadius: 2,
-                  textTransform: "none",
-                  fontWeight: 500,
-                  fontSize: "0.75rem",
-                  minWidth: "auto",
-                  px: 1,
-                }}
-              >
-                Add
-              </Button>
+              <Tooltip title={t("actions.add") || "Add"} arrow>
+                <Button
+                  variant="contained"
+                  startIcon={<Add />}
+                  onClick={onAdd}
+                  size="small"
+                  sx={{
+                    borderRadius: 2,
+                    textTransform: "none",
+                    fontWeight: 700,
+                    fontSize: "0.75rem",
+                    minWidth: "auto",
+                    px: 1.25,
+                    boxShadow: `0 3px 10px ${theme.palette.primary.main}30`,
+                    background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                    color: theme.palette.primary.contrastText,
+                    transition: "transform 0.15s ease, box-shadow 0.15s ease",
+                    '&:hover': {
+                      transform: 'translateY(-1px)',
+                      boxShadow: `0 5px 14px ${theme.palette.primary.main}45`,
+                      background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.secondary.dark} 100%)`,
+                    },
+                    '&:active': {
+                      transform: 'translateY(0)',
+                      boxShadow: `0 2px 6px ${theme.palette.primary.main}25`,
+                    },
+                    '& .MuiButton-startIcon': { mr: 0.5 },
+                  }}
+                >
+                  {t("actions.add") || "Add"}
+                </Button>
+              </Tooltip>
             )}
 
             {showActions.refresh && (
