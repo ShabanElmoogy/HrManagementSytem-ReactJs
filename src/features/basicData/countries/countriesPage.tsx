@@ -29,7 +29,6 @@ const CountriesPage = () => {
     isCreating,
     isUpdating,
     isDeleting,
-    SnackbarComponent,
     lastAddedId,
     lastEditedId,
     lastDeletedIndex,
@@ -73,7 +72,7 @@ const CountriesPage = () => {
 
       <CountryForm
         open={["edit", "add", "view"].includes(dialogType)}
-        dialogType={dialogType}
+        dialogType={dialogType as "add" | "edit" | "view"}
         selectedCountry={selectedCountry}
         onClose={closeDialog}
         onSubmit={handleFormSubmit}
@@ -89,8 +88,6 @@ const CountriesPage = () => {
         loading={isDeleting}
         t={t}
       />
-      
-      {SnackbarComponent}
     </>
   );
 };

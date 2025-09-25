@@ -1,97 +1,84 @@
-// State TanStack Query hooks
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CreateStateRequest, State, StateQueryParams, UpdateStateRequest } from "../types/State";
-import { stateService } from "../services/stateService";
+import { useMutation, useQuery, useQueryClient, UseMutationOptions, UseQueryOptions } from "@tanstack/react-query";
+import { useMemo } from "react";
+import StateService from "../services/stateService";
+import { State, CreateStateRequest, UpdateStateRequest } from "../types/State";
 
-// Query keys
-export const stateQueryKeys = {
-  all: ['states'] as const,
-  lists: () => [...stateQueryKeys.all, 'list'] as const,
-  list: (params?: StateQueryParams) => [...stateQueryKeys.lists(), params] as const,
-  details: () => [...stateQueryKeys.all, 'detail'] as const,
-  detail: (id: number) => [...stateQueryKeys.details(), id] as const,
-  byCountry: (countryId: number) => [...stateQueryKeys.all, 'by-country', countryId] as const,
+// Query Keys
+export const stateKeys = {
+  all: ["states"] as const,
+  list: () => [...stateKeys.all, "list"] as const,
+  detail: (id: string | number) => [...stateKeys.all, "detail", id] as const,
+  byCountry: (countryId: string | number) => [...stateKeys.all, "by-country", countryId] as const,
 };
 
-// Get all states
-export const useStates = (params?: StateQueryParams) => {
-  return useQuery({
-    queryKey: stateQueryKeys.list(params),
-    queryFn: () => stateService.getStates(params),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+// Query Hooks
+export const useStates = (options?: UseQueryOptions<State[], Error>) =>
+  useQuery({
+    queryKey: stateKeys.list(),
+    queryFn: StateService.getAll,
+    staleTime: 5 * 60 * 1000,
+    ...options,
   });
-};
 
-// Get state by ID
-export const useState = (id: number) => {
-  return useQuery({
-    queryKey: stateQueryKeys.detail(id),
-    queryFn: () => stateService.getStateById(id),
+export const useState = (id: string | number | null | undefined, options?: UseQueryOptions<State, Error>) =>
+  useQuery({
+    queryKey: stateKeys.detail(id!),
+    queryFn: () => StateService.getById(id!),
     enabled: !!id,
+    staleTime: 5 * 60 * 1000,
+    ...options,
   });
-};
 
-// Get states by country
-export const useStatesByCountry = (countryId: number) => {
-  return useQuery({
-    queryKey: stateQueryKeys.byCountry(countryId),
-    queryFn: () => stateService.getStatesByCountry(countryId),
+export const useStatesByCountry = (countryId: string | number | null | undefined, options?: UseQueryOptions<State[], Error>) =>
+  useQuery({
+    queryKey: stateKeys.byCountry(countryId!),
+    queryFn: () => StateService.getByCountry(countryId!),
     enabled: !!countryId,
+    staleTime: 5 * 60 * 1000,
+    ...options,
   });
-};
 
-// Create state mutation
-export const useCreateState = (options?: {
-  onSuccess?: (data: State) => void;
-  onError?: (error: any) => void;
-}) => {
+export const useStateSearch = (
+  searchTerm: string,
+  existingStates: State[] = []
+) =>
+  useMemo(() => {
+    if (!searchTerm.trim()) return existingStates;
+    return StateService.searchStates(existingStates, searchTerm);
+  }, [searchTerm, existingStates]);
+
+// Generic Mutation Hook Factory
+function useStateMutation<TData = unknown, TVariables = unknown>(
+  mutationFn: (variables: TVariables) => Promise<TData>,
+  options?: UseMutationOptions<TData, Error, TVariables>
+) {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: (data: CreateStateRequest) => stateService.createState(data),
-    onSuccess: (data) => {
-      // Invalidate and refetch states
-      queryClient.invalidateQueries({ queryKey: stateQueryKeys.all });
-      options?.onSuccess?.(data);
+    mutationFn,
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: stateKeys.all });
+      if (options && typeof options.onSuccess === "function") {
+        options.onSuccess(data, variables, context);
+      }
     },
-    onError: options?.onError,
   });
-};
+}
 
-// Update state mutation
-export const useUpdateState = (options?: {
-  onSuccess?: (data: State) => void;
-  onError?: (error: any) => void;
-}) => {
+export const useCreateState = (options?: UseMutationOptions<State, Error, CreateStateRequest>) =>
+  useStateMutation(StateService.create, options);
+
+export const useUpdateState = (options?: UseMutationOptions<State, Error, UpdateStateRequest>) =>
+  useStateMutation(StateService.update, options);
+
+export const useDeleteState = (options?: UseMutationOptions<string | number, Error, string | number>) =>
+  useStateMutation<string | number, string | number>(StateService.delete, options);
+
+// Utility Hook
+export const useInvalidateStates = () => {
   const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (data: UpdateStateRequest) => stateService.updateState(data),
-    onSuccess: (data) => {
-      // Invalidate and refetch states
-      queryClient.invalidateQueries({ queryKey: stateQueryKeys.all });
-      // Update the specific state in cache
-      queryClient.setQueryData(stateQueryKeys.detail(data.id), data);
-      options?.onSuccess?.(data);
-    },
-    onError: options?.onError,
-  });
+  return () => queryClient.invalidateQueries({ queryKey: stateKeys.all });
 };
 
-// Delete state mutation
-export const useDeleteState = (options?: {
-  onSuccess?: () => void;
-  onError?: (error: any) => void;
-}) => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (id: number) => stateService.deleteState(id),
-    onSuccess: () => {
-      // Invalidate and refetch states
-      queryClient.invalidateQueries({ queryKey: stateQueryKeys.all });
-      options?.onSuccess?.();
-    },
-    onError: options?.onError,
-  });
-};
+// Legacy exports for backward compatibility
+export const stateQueryKeys = stateKeys;

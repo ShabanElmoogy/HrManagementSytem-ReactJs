@@ -1,32 +1,33 @@
 // State types and interfaces
 export interface State {
-  id: number;
+  id: string | number;
   nameAr: string;
   nameEn: string;
   code: string;
   countryId: number;
   country?: SimpleCountry;
   createdOn: string;
-  updatedOn?: string;
-  isDeleted: boolean;
+  updatedOn: string;
+  isDeleted?: boolean;
+  [key: string]: any;
 }
 
 export interface SimpleCountry {
   id: number;
   nameAr: string;
   nameEn: string;
-  code: string;
+  code?: string;
 }
 
 export interface CreateStateRequest {
-  nameAr: string;
   nameEn: string;
-  code: string;
+  nameAr: string;
+  code?: string | null;
   countryId: number;
 }
 
 export interface UpdateStateRequest extends CreateStateRequest {
-  id: number;
+  id: string | number;
 }
 
 export interface StateResponse {

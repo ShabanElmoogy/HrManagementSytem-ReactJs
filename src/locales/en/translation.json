@@ -357,7 +357,9 @@
       "acrossCountries": "Across {{count}} countries",
       "averageStatesPerCountry": "Average States per Country",
       "distributionMetric": "Distribution metric",
-      "topCountries": "Top Countries by State Count"
+      "topCountries": "Top Countries by State Count",
+      "title": "States Analytics",
+      "timeline": "States Added Over Time"
     },
     "fetched": "State list fetched successfully",
     "title": "States",
@@ -391,7 +393,14 @@
     "selectCountry": "Select a country",
     "noData": "No states available",
     "noDataDescription": "Start by adding your first state",
-    "statesCount": "states"
+    "statesCount": "states",
+    "fetchError": "Failed to fetch states",
+    "createError": "Failed to create state",
+    "updateError": "Failed to update state",
+    "deleteError": "Failed to delete state",
+    "withCodes": "With Codes",
+    "generateMockData": "Generate Mock Data",
+    "errorMessage": "Failed to load states"
   },
   "roles": {
     "creatingRole": "Creating new role",

@@ -1,62 +1,78 @@
-// States Page - Main component
-import { Box } from "@mui/material";
+// StatesPage.js - TanStack Query Implementation
 import { useTranslation } from "react-i18next";
-import StateForm from "./components/stateForm";
+import { Alert, Box, Button } from "@mui/material";
+import StatesMultiView from "./components/statesMultiView";
 import StateDeleteDialog from "./components/stateDeleteDialog";
-import StatesDashboardHeader from "./components/statesDashboardHeader";
+import StateForm from "./components/stateForm";
 import useStateGridLogic from "./hooks/useStateGridLogic";
 
 const StatesPage = () => {
   const { t } = useTranslation();
-  
+
+  // All logic is now in the TanStack Query hook
   const {
-    // State
     dialogType,
     selectedState,
     loading,
     states,
-    
-    // Dialog methods
-    closeDialog,
-    
-    // Form and action handlers
-    handleFormSubmit,
-    handleDelete,
-    handleRefresh,
-    
-    // Action methods
+    apiRef,
+    error,
+    isFetching,
     onEdit,
     onView,
     onDelete,
     onAdd,
-    
-    // Mutation states
+    closeDialog,
+    handleFormSubmit,
+    handleDelete,
+    handleRefresh,
     isCreating,
     isUpdating,
     isDeleting,
+    lastAddedId,
+    lastEditedId,
+    lastDeletedIndex,
   } = useStateGridLogic();
 
+  // Handle error state
+  if (error) {
+    return (
+      <Box sx={{ p: 3 }}>
+        <Alert 
+          severity="error" 
+          action={
+            <Button color="inherit" size="small" onClick={handleRefresh}>
+              {t("common.retry") || "Retry"}
+            </Button>
+          }
+        >
+          {error.message || t("states.errorMessage") || "Failed to load states"}
+        </Alert>
+      </Box>
+    );
+  }
+
   return (
-    <Box sx={{ p: 3 }}>
-      {/* Dashboard Header with Statistics */}
-      <StatesDashboardHeader
+    <>
+      <StatesMultiView
         states={states}
         loading={loading}
+        isFetching={isFetching}
+        apiRef={apiRef}
+        onEdit={onEdit}
+        onView={onView}
+        onDelete={onDelete}
+        onAdd={onAdd}
+        onRefresh={handleRefresh}
         t={t}
+        lastAddedId={lastAddedId}
+        lastEditedId={lastEditedId}
+        lastDeletedIndex={lastDeletedIndex}
       />
 
-      {/* TODO: Add DataGrid component here */}
-      <Box sx={{ mt: 3, p: 2, border: '1px dashed #ccc', borderRadius: 1 }}>
-        <p>States DataGrid will be implemented here</p>
-        <p>Total States: {states.length}</p>
-        <button onClick={onAdd}>Add State</button>
-        <button onClick={handleRefresh}>Refresh</button>
-      </Box>
-
-      {/* State Form Dialog */}
       <StateForm
-        open={dialogType === "add" || dialogType === "edit" || dialogType === "view"}
-        dialogType={dialogType as "add" | "edit" | "view"}
+        open={["edit", "add", "view"].includes(dialogType)}
+        dialogType={dialogType}
         selectedState={selectedState}
         onClose={closeDialog}
         onSubmit={handleFormSubmit}
@@ -64,7 +80,6 @@ const StatesPage = () => {
         t={t}
       />
 
-      {/* Delete Confirmation Dialog */}
       <StateDeleteDialog
         open={dialogType === "delete"}
         onClose={closeDialog}
@@ -73,7 +88,7 @@ const StatesPage = () => {
         loading={isDeleting}
         t={t}
       />
-    </Box>
+    </>
   );
 };
 

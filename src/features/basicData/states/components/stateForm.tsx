@@ -1,6 +1,5 @@
 // components/StateForm.tsx
-import { MyForm, MyTextField, MySelectField } from "@/shared/components";
-import { faker } from '@faker-js/faker';
+import { MyForm, MyTextField, MySelectForm } from "@/shared/components";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Casino } from "@mui/icons-material";
 import { Box, TextField, Button } from "@mui/material";
@@ -9,14 +8,7 @@ import { useForm } from "react-hook-form";
 import { getStateValidationSchema } from "../utils/validation";
 import { useCountries } from "../../countries/hooks/useCountryQueries";
 import { states } from "../utils/fakeData";
-
-interface State {
-  id: number;
-  nameAr?: string;
-  nameEn?: string;
-  code?: string;
-  countryId?: number;
-}
+import { State } from "../types/State";
 
 interface StateFormData {
   nameAr: string;
@@ -58,6 +50,7 @@ const StateForm = ({
     reset,
     control,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<StateFormData>({
     resolver: yupResolver(schema),
@@ -70,17 +63,41 @@ const StateForm = ({
     },
   });
 
+  // Watch the countryId value
+  const watchedCountryId = watch("countryId");
+
   // Reset form when dialog opens or selected state changes
   useEffect(() => {
-    if (open && (dialogType === "add" || selectedState)) {
-      reset({
-        nameAr: isEditMode || isViewMode ? selectedState?.nameAr || "" : "",
-        nameEn: isEditMode || isViewMode ? selectedState?.nameEn || "" : "",
-        code: isEditMode || isViewMode ? selectedState?.code || "" : "",
-        countryId: isEditMode || isViewMode ? selectedState?.countryId || 0 : 0,
-      });
+    if (open) {
+      if (dialogType === "add") {
+        // Reset to empty form for add mode
+        reset({
+          nameAr: "",
+          nameEn: "",
+          code: "",
+          countryId: 0,
+        });
+      } else if ((isEditMode || isViewMode) && selectedState) {
+        // Extract countryId from either direct property or nested country object
+        const countryId = selectedState.countryId || selectedState.country?.id || 0;
+        
+        // Debug logging
+        console.log("🔍 StateForm: Resetting form with selectedState:", selectedState);
+        console.log("🔍 StateForm: countryId from selectedState:", selectedState.countryId);
+        console.log("🔍 StateForm: countryId from nested country:", selectedState.country?.id);
+        console.log("🔍 StateForm: final countryId:", countryId);
+        console.log("🔍 StateForm: countries loaded:", countries.length);
+        
+        // Reset form with selected state data
+        reset({
+          nameAr: selectedState.nameAr || "",
+          nameEn: selectedState.nameEn || "",
+          code: selectedState.code || "",
+          countryId: Number(countryId),
+        });
+      }
     }
-  }, [open, dialogType, selectedState, reset, isEditMode, isViewMode]);
+  }, [open, dialogType, selectedState, reset, isEditMode, isViewMode, countries.length]);
 
   // Get appropriate action type for overlay
   const getOverlayActionType = (): string => {
@@ -114,11 +131,52 @@ const StateForm = ({
     console.log(`Validation error in field: ${fieldName}`, fieldElement);
   };
 
-  // Prepare country options for dropdown
-  const countryOptions = countries.map((country) => ({
-    value: country.id,
-    label: `${country.nameEn} (${country.nameAr})`,
+  // Prepare countries data for MySelectForm
+  const countriesData = countries.map((country) => ({
+    id: Number(country.id), // Ensure ID is a number to match countryId type
+    nameEn: country.nameEn,
+    nameAr: country.nameAr,
+    displayName: `${country.nameEn} (${country.nameAr})`,
   }));
+
+  // Debug logging for countries data
+  useEffect(() => {
+    if (countries.length > 0) {
+      console.log("🔍 StateForm: Countries data:", countries.slice(0, 3));
+      console.log("🔍 StateForm: Processed countriesData:", countriesData.slice(0, 3));
+    }
+  }, [countries, countriesData]);
+
+  // Additional effect to handle late-loading countries data
+  useEffect(() => {
+    if (open && (isEditMode || isViewMode) && selectedState && countries.length > 0) {
+      const countryId = selectedState.countryId || selectedState.country?.id;
+      if (countryId && watchedCountryId !== Number(countryId)) {
+        console.log("🔄 StateForm: Updating countryId after countries loaded:", countryId);
+        console.log("🔄 StateForm: Current watchedCountryId:", watchedCountryId);
+        setValue("countryId", Number(countryId));
+      }
+    }
+  }, [open, isEditMode, isViewMode, selectedState, countries.length, watchedCountryId, setValue]);
+
+  // Force update when countries load and we have a selected state
+  useEffect(() => {
+    if (open && (isEditMode || isViewMode) && selectedState && countries.length > 0) {
+      // Small delay to ensure the form is ready
+      const timer = setTimeout(() => {
+        const countryId = selectedState.countryId || selectedState.country?.id;
+        if (countryId && watchedCountryId !== Number(countryId)) {
+          console.log("🔄 StateForm: Force updating countryId:", countryId);
+          setValue("countryId", Number(countryId), { shouldValidate: true });
+        }
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+    
+    // Return undefined for the else case
+    return undefined;
+  }, [open, isEditMode, isViewMode, selectedState, countries.length, watchedCountryId, setValue]);
 
   // Generate mock data using Faker.js and existing fakeData
   const usedIndexes = new Set<number>();
@@ -243,17 +301,40 @@ const StateForm = ({
       />
 
       {/* Required: Country */}
-      <MySelectField
-        fieldName="countryId"
-        labelKey={t("general.country")}
+      <MySelectForm
+        name="countryId"
+        label={t("general.country")}
+        control={control}
+        dataSource={countriesData}
+        valueMember="id"
+        displayMember="displayName"
         loading={loading}
         errors={errors}
-        control={control}
-        options={countryOptions}
         placeholder={t("states.selectCountry")}
-        readOnly={isViewMode}
-        data-field-name="countryId"
-      />
+        isViewMode={isViewMode}
+        disabled={loading}
+        showClearButton={!isViewMode}
+        actualFieldName="countryId" 
+        colorMember={undefined} 
+        loadingText={undefined} 
+        noOptionsText={undefined}/>
+
+      {/* Debug Information */}
+      {(isEditMode || isViewMode) && selectedState && (
+        <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
+          <pre style={{ fontSize: '12px', margin: 0 }}>
+            {JSON.stringify({
+              fullSelectedState: selectedState,
+              selectedStateCountryId: selectedState.countryId,
+              selectedStateCountryIdType: typeof selectedState.countryId,
+              selectedStateCountryObject: selectedState.country,
+              watchedCountryId: watchedCountryId,
+              watchedCountryIdType: typeof watchedCountryId,
+              countriesDataSample: countriesData.slice(0, 2),
+            }, null, 2)}
+          </pre>
+        </Box>
+      )}
 
       {/* Generate Mock Data Button - Show in add and edit modes for testing */}
       {(isAddMode || isEditMode) && (

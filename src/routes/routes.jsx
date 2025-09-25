@@ -23,6 +23,7 @@ import ResendEmailConfirmation from "../features/auth/resendEmailConfirmation";
 import ResetPassword from "../features/auth/resetPassword";
 import RolePermissionsPage from "../features/auth/roles/components/rolePermissionsPage";
 import CountriesPage from "../features/basicData/countries/countriesPage";
+import { StatesPage } from "../features/basicData/states";
 import UsersPage from "@/features/auth/users/usersPage";
 import RolesPage from "@/features/auth/roles/rolesPage";
 import TrackChangesGrid from "@/features/advancedTools/trackChangesGrid";
@@ -133,7 +134,7 @@ const AppRoutes = () => {
                 </ProtectedRoute>
               }
             />
-{/*             
+
             <Route
               path={appRoutes.basicData.states}
               element={
@@ -145,8 +146,8 @@ const AppRoutes = () => {
                   </Suspense>
                 </ProtectedRoute>
               }
-            /> */}
-            
+            />
+
             {/* Employees Management */}
             <Route
               path={appRoutes.basicData.employees}
@@ -166,7 +167,7 @@ const AppRoutes = () => {
                 </Suspense>
               }
             />
-          
+
             {/* Roles Management */}
             <Route
               path={appRoutes.auth.rolesPage}

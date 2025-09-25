@@ -380,7 +380,14 @@
     "selectCountry": "اختر دولة",
     "noData": "لا توجد محافظات متاحة",
     "noDataDescription": "ابدأ بإضافة أول محافظة",
-    "statesCount": "محافظات"
+    "statesCount": "محافظات",
+    "fetchError": "فشل في جلب المحافظات",
+    "createError": "فشل في إنشاء المحافظة",
+    "updateError": "فشل في تحديث المحافظة",
+    "deleteError": "فشل في حذف المحافظة",
+    "withCodes": "مع الأكواد",
+    "generateMockData": "توليد بيانات تجريبية",
+    "errorMessage": "فشل في تحميل المحافظات"
   },
   "roles": {
     "creatingRole": "جارى انشاء صلاحية جديد",

@@ -73,6 +73,18 @@ export const useCountriesPermissions = () => {
   }), [hasPermission]);
 };
 
+// Simplified States permissions hook
+export const useStatesPermissions = () => {
+  const { hasPermission } = usePermissions();
+  
+  return useMemo(() => ({
+    canView: hasPermission("States:View"),
+    canCreate: hasPermission("States:Create"),
+    canEdit: hasPermission("States:Edit"),
+    canDelete: hasPermission("States:Delete"),
+  }), [hasPermission]);
+};
+
 // Generic module permissions hook
 export const useModulePermissions = (module: string) => {
   const { hasPermission } = usePermissions();
