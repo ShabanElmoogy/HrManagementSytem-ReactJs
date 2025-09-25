@@ -210,6 +210,7 @@ const StateForm = ({
 
   return (
     <MyForm
+      maxHeight="65vh"
       open={open}
       onClose={onClose}
       title={
@@ -318,23 +319,6 @@ const StateForm = ({
         colorMember={undefined} 
         loadingText={undefined} 
         noOptionsText={undefined}/>
-
-      {/* Debug Information */}
-      {(isEditMode || isViewMode) && selectedState && (
-        <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
-          <pre style={{ fontSize: '12px', margin: 0 }}>
-            {JSON.stringify({
-              fullSelectedState: selectedState,
-              selectedStateCountryId: selectedState.countryId,
-              selectedStateCountryIdType: typeof selectedState.countryId,
-              selectedStateCountryObject: selectedState.country,
-              watchedCountryId: watchedCountryId,
-              watchedCountryIdType: typeof watchedCountryId,
-              countriesDataSample: countriesData.slice(0, 2),
-            }, null, 2)}
-          </pre>
-        </Box>
-      )}
 
       {/* Generate Mock Data Button - Show in add and edit modes for testing */}
       {(isAddMode || isEditMode) && (
