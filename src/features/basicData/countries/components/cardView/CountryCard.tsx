@@ -32,20 +32,26 @@ const CountryCard = ({
   const qualityInfo = getQualityLevel(qualityScore, theme);
 
   const topRightBadge = (
-    <BadgePercentage value={qualityScore} highlighted={isHighlighted} color={qualityInfo.color} />
+    <BadgePercentage
+      value={qualityScore}
+      highlighted={isHighlighted}
+      color={qualityInfo.color}
+    />
   );
 
-  const leftBadge = isHighlighted && highlightLabel ? (
-    <HighlightBadge label={highlightLabel} />
-  ) : undefined;
+  const leftBadge =
+    isHighlighted && highlightLabel ? (
+      <HighlightBadge label={highlightLabel} />
+    ) : undefined;
 
-  const chips = (
-    <CountryCardChips country={country} />
-  );
+  const chips = <CountryCardChips country={country} />;
 
   const content = (
     <>
-      <CountryDetails phoneCode={country.phoneCode} currencyCode={country.currencyCode} />
+      <CountryDetails
+        phoneCode={country.phoneCode}
+        currencyCode={country.currencyCode}
+      />
 
       <CountryStatesSection country={country} t={t} />
 
@@ -75,7 +81,7 @@ const CountryCard = ({
       isHovered={isHovered}
       onMouseEnter={() => onHover(country.id)}
       onMouseLeave={() => onHover(null)}
-      height={400}
+      height={420}
       topRightBadge={topRightBadge}
       leftBadge={leftBadge}
       title={country.nameEn || "N/A"}

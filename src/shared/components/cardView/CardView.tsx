@@ -40,7 +40,7 @@ const CardView: React.FC<CardViewProps> = ({
   isHovered = false,
   onMouseEnter,
   onMouseLeave,
-  height = 400,
+  height = 350,
   barColor,
   sx,
   title,
@@ -62,7 +62,7 @@ const CardView: React.FC<CardViewProps> = ({
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         sx={{
-          height,
+          height: height,
           display: "flex",
           flexDirection: "column",
           position: "relative",
@@ -116,7 +116,7 @@ const CardView: React.FC<CardViewProps> = ({
           </Box>
         )}
 
-        <CardContent sx={{ flex: 1, pt: 4, pb: 1 }}>
+        <CardContent sx={{ flex: 1, minHeight: 0, overflowY: "auto", pt: 4, pb: 1 }}>
           {/* Title & Subtitle */}
           <Box sx={{ mb: 2 }}>
             <Typography
