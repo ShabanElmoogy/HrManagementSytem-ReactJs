@@ -11,7 +11,7 @@ import {
   CreatedDateRow,
   QualityMeter,
   HighlightBadge,
-} from "@/shared/components/common/cardView/UnifiedCardParts";
+} from "@/shared/components/common/cardView/cardBody/UnifiedCardParts";
 
 interface StateCardProps {
   state: State;

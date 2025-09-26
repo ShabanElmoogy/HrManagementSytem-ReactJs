@@ -1,4 +1,4 @@
-import UnifiedCardViewHeader from "@/shared/components/common/cardView/UnifiedCardViewHeader";
+import UnifiedCardViewHeader from "@/shared/components/common/cardView/cardHeader/UnifiedCardViewHeader";
 
 interface CardViewHeaderProps {
   searchTerm: string;
