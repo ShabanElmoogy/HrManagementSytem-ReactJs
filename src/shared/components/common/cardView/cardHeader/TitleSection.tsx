@@ -1,6 +1,7 @@
 import React from "react";
 import { Avatar, Box, Chip, Stack, Typography, alpha, useTheme } from "@mui/material";
 import { ViewModule } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 export interface TitleSectionProps {
   title: string;
@@ -11,6 +12,7 @@ export interface TitleSectionProps {
 
 export const TitleSection: React.FC<TitleSectionProps> = ({ title, subtitle, mainChipLabel, page }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   return (
     <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 3 }}>
       <Avatar
@@ -35,7 +37,7 @@ export const TitleSection: React.FC<TitleSectionProps> = ({ title, subtitle, mai
       </Box>
       <Stack direction="row" spacing={1}>
         <Chip label={mainChipLabel} color="primary" variant="outlined" />
-        <Chip label={`Page: ${page + 1}`} color="info" variant="outlined" size="small" />
+        <Chip label={`${t("general.page")}: ${page + 1}`} color="warning" variant="outlined" size="small" />
       </Stack>
     </Stack>
   );

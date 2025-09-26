@@ -10,6 +10,8 @@ export {
   renderDisabledStatus,
   renderEmail,
   renderList,
+  renderStateName,
+  renderCountryInfo,
   renderLockedStatus,
   renderNumber,
   renderPermissions,

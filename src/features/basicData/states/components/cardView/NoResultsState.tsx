@@ -7,17 +7,15 @@ interface NoResultsStateProps {
   onRefresh?: () => void;
 }
 
-const NoResultsState = ({ 
-  searchTerm, 
-  onClearSearch, 
-  onClearFilters, 
-  onRefresh 
+const NoResultsState = ({
+  searchTerm,
+  onClearSearch,
+  onClearFilters,
+  onRefresh,
 }: NoResultsStateProps) => {
   return (
     <ReusableNoResultsState
       searchTerm={searchTerm}
-      message="No States Found"
-      subtitle={`No states match your search criteria "${searchTerm}"`}
       onClearSearch={onClearSearch}
       onClearFilters={onClearFilters}
       onRefresh={onRefresh}

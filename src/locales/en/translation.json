@@ -26,7 +26,16 @@
     "tryDifferentSearch": "Try a different search term",
     "created": "Created",
     "clear": "Clear",
-    "reset": "Reset"
+    "reset": "Reset",
+    "sortBy": "Sort By",
+    "filter": "Filter By",
+    "ascending": "Ascending",
+    "descending": "Descending",
+    "page" : "Page",
+    "dataQuality" : "Data Quality",
+    "excellent" : "Excellent",
+    "good" : "Good",
+    "average" : "Average"
   },
   "menu": {
     "dashboard": "Dashboard",
@@ -428,7 +437,9 @@
     "recent30Days": "Recent (30 days)",
     "recent60Days": "Recent (60 days)",
     "recent90Days": "Recent (90 days)",
-    "recent120Days": "Recent (120 days)"
+    "recent120Days": "Recent (120 days)",
+    "total": "Total",
+    "filtered": "Filtered"
   },
   "roles": {
     "creatingRole": "Creating new role",

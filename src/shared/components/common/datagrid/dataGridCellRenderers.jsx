@@ -76,12 +76,36 @@ export const renderAlphaCode = (params) => {
       label={params.value}
       size="small"
       variant="outlined"
+      color="secondary"
       sx={{
         fontFamily: "monospace",
         fontWeight: "bold",
         letterSpacing: 1,
       }}
     />
+  );
+};
+
+// State name renderer (Arabic or English based on flag)
+export const renderStateName = (isArabic = false) => (params) => {
+  const name = isArabic ? params.row?.nameAr : params.row?.nameEn;
+  return (
+    <div style={{ fontWeight: 500, textAlign: "center" }}>
+      {name || "-"}
+    </div>
+  );
+};
+
+// Country info renderer (English on top, Arabic below)
+export const renderCountryInfo = (params) => {
+  const country = params.row?.country || params.value;
+  if (!country) return "-";
+
+  return (
+    <div style={{ textAlign: "center" }}>
+      <div style={{ fontWeight: 500 }}>{country.nameEn}</div>
+      <div style={{ fontSize: "0.8em", color: "#666" }}>{country.nameAr}</div>
+    </div>
   );
 };
 

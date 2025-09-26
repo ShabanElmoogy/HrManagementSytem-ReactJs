@@ -10,6 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material/Select";
+import { useTranslation } from "react-i18next";
 
 export interface UnifiedCardViewPaginationProps {
   page: number; // zero-based page index
@@ -34,6 +35,7 @@ const UnifiedCardViewPagination = ({
   const isXs = useMediaQuery(theme.breakpoints.down("sm"));
   const isNarrow = useMediaQuery("(max-width:724px)");
   const isCompact = useMediaQuery("(max-width:660px)");
+  const {t} = useTranslation();
 
   const start = totalItems === 0 ? 0 : page * rowsPerPage + 1;
   const end = Math.min((page + 1) * rowsPerPage, totalItems);
@@ -60,13 +62,13 @@ const UnifiedCardViewPagination = ({
         >
           <Typography variant="body2" color="text.secondary" sx={{ textAlign: isXs ? "center" : "inherit" }}>
             {totalItems === 0
-              ? `Showing 0 of 0 ${itemsLabel}`
-              : `Showing ${start}-${end} of ${totalItems} ${itemsLabel}`}
+              ? `${t("pagination.showing")} 0 of 0 ${itemsLabel}`
+              : `${t("pagination.showing")} ${start}-${end} ${t("pagination.of")} ${totalItems} ${itemsLabel}`}
           </Typography>
 
           <Stack direction="row" spacing={1} alignItems="center">
-            <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
-              Items per page:
+            <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>            
+              {t("pagination.itemsPerPage")}
             </Typography>
             <Select size="small" value={rowsPerPage} onChange={onRowsPerPageChange} sx={{ minWidth: 80 }}>
               {itemsPerPageOptions.map((option) => (
@@ -79,30 +81,32 @@ const UnifiedCardViewPagination = ({
         </Stack>
 
         {/* Right side - Pagination controls */}
-        <Box
-          sx={{
-            order: isCompact ? 2 : 2,
-            maxWidth: "100%",
-            display: "flex",
-            justifyContent: isXs ? "center" : "flex-start",
-            overflowX: isNarrow ? "auto" : "visible",
-            whiteSpace: isNarrow ? "nowrap" : "normal",
-            "& .MuiPagination-ul": { flexWrap: "nowrap" },
-          }}
-        >
-          <Pagination
-            count={Math.max(1, Math.ceil(totalItems / rowsPerPage))}
-            page={Math.min(page + 1, Math.max(1, Math.ceil(totalItems / rowsPerPage)))}
-            onChange={(event, value) => onPageChange(event, value - 1)}
-            color="primary"
-            showFirstButton={!isNarrow}
-            showLastButton={!isNarrow}
-            siblingCount={isNarrow ? 0 : 1}
-            boundaryCount={isNarrow ? 0 : 1}
-            size={isXs || isNarrow ? "small" : "medium"}
-            sx={{ display: "inline-flex", "& .MuiPagination-ul": { flexWrap: "nowrap" } }}
-          />
-        </Box>
+        {totalItems > 0 && (
+          <Box
+            sx={{
+              order: isCompact ? 2 : 2,
+              maxWidth: "100%",
+              display: "flex",
+              justifyContent: isXs ? "center" : "flex-start",
+              overflowX: isNarrow ? "auto" : "visible",
+              whiteSpace: isNarrow ? "nowrap" : "normal",
+              "& .MuiPagination-ul": { flexWrap: "nowrap" },
+            }}
+          >
+            <Pagination
+              count={Math.max(1, Math.ceil(totalItems / rowsPerPage))}
+              page={Math.min(page + 1, Math.max(1, Math.ceil(totalItems / rowsPerPage)))}
+              onChange={(event, value) => onPageChange(event, value - 1)}
+              color="primary"
+              showFirstButton={!isNarrow}
+              showLastButton={!isNarrow}
+              siblingCount={isNarrow ? 0 : 1}
+              boundaryCount={isNarrow ? 0 : 1}
+              size={isXs || isNarrow ? "small" : "medium"}
+              sx={{ display: "inline-flex", "& .MuiPagination-ul": { flexWrap: "nowrap" } }}
+            />
+          </Box>
+        )}
       </Stack>
     </Paper>
   );

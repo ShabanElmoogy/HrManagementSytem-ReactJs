@@ -21,7 +21,16 @@
     "key": "المفتاح",
     "country": "الدولة",
     "clear" : "حذف",
-    "reset":"اعادة تعيين"
+    "reset":"اعادة تعيين",
+    "sortBy" : "ترتيب حسب",
+    "filter" : "تصفية ب",
+    "ascending" : "تصاعدي",
+    "descending" : "تنازلي",
+    "page" : "الصفحة",
+    "dataQuality" : "جودة البيانات",
+    "excellent" : "ممتاز",
+    "good" : "جيد",
+    "average" : "متوسط"
   },
   "menu": {
     "dashboard": "لوحة التحكم",
@@ -415,7 +424,9 @@
     "recent30Days": "احدث (30 يوما)",
     "recent60Days": "احدث (60 يوما)",
     "recent90Days" : "احدث (90 يوما)",
-    "recent120Days" : "احدث (120 يوما)"
+    "recent120Days" : "احدث (120 يوما)",
+    "total" : "المجموع",
+    "filtered" : "ناتج البحث"
   },
   "roles": {
     "creatingRole": "جارى انشاء صلاحية جديد",

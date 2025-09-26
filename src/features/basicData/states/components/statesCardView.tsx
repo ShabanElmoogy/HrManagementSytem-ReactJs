@@ -293,14 +293,16 @@ const StatesCardView = ({
         ))}
       </Grid>
 
-      <CardViewPagination
-        page={page}
-        rowsPerPage={rowsPerPage}
-        totalItems={processedStates.length}
-        itemsPerPageOptions={getItemsPerPageOptions()}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      {processedStates.length > 0 && (
+        <CardViewPagination
+          page={page}
+          rowsPerPage={rowsPerPage}
+          totalItems={processedStates.length}
+          itemsPerPageOptions={getItemsPerPageOptions()}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      )}
 
       {searchTerm && processedStates.length === 0 && (
         <NoResultsState

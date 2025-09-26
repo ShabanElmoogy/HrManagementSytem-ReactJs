@@ -6,6 +6,7 @@ import { alpha, useTheme } from "@mui/material/styles";
 
 const paletteKeys = ["primary", "secondary", "success", "info", "warning", "error"] as const;
 type ColorKey = typeof paletteKeys[number];
+let lastUsedKey: ColorKey | null = null;
 
 const hashString = (str: string): number => {
   let h = 0;
@@ -31,12 +32,21 @@ export interface CountryPillProps {
 
 export const CountryPill: React.FC<CountryPillProps> = ({ id, nameEn, nameAr, icon }) => {
   const theme = useTheme();
-  const key = colorKeyFor(id ?? null, nameEn ?? null);
+  let key = colorKeyFor(id ?? null, nameEn ?? null);
+  if (lastUsedKey && key === lastUsedKey) {
+    const currentIdx = paletteKeys.indexOf(key);
+    key = paletteKeys[(currentIdx + 1) % paletteKeys.length];
+  }
+  lastUsedKey = key;
   const colorMain = theme.palette[key].main;
   const contrast = theme.palette.getContrastText(colorMain);
+  const isRTL = theme.direction === "rtl";
+  const primaryName = isRTL ? (nameAr ?? nameEn) : nameEn;
+  const secondaryName = isRTL ? nameEn : (nameAr ?? null);
+  const tooltipTitle = secondaryName ? `${primaryName} / ${secondaryName}` : primaryName;
 
   return (
-    <Tooltip title={`${nameEn}${nameAr ? ` / ${nameAr}` : ""}`} arrow>
+    <Tooltip title={tooltipTitle} arrow>
       <Box sx={{ position: "relative", display: "inline-flex", alignItems: "center", mb: 1 }}>
         <Box
           sx={{
@@ -52,7 +62,7 @@ export const CountryPill: React.FC<CountryPillProps> = ({ id, nameEn, nameAr, ic
           }}
         >
           <Typography variant="caption" sx={{ color: colorMain, fontWeight: "bold", lineHeight: 1 }}>
-            {nameEn}
+            {primaryName}
           </Typography>
 
           <Box

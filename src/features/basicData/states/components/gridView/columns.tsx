@@ -1,6 +1,6 @@
 import React from "react";
 import { GridActionsCellItemProps, GridColDef } from "@mui/x-data-grid";
-import { renderAlphaCode, renderDate } from "@/shared/components";
+import { renderAlphaCode, renderDate, renderStateName, renderCountryInfo } from "@/shared/components";
 import type { State } from "../../types/State";
 
 export interface ColumnsFactoryProps {
@@ -9,27 +9,7 @@ export interface ColumnsFactoryProps {
   getActions: (params: { row: State }) => React.ReactElement<GridActionsCellItemProps>[];
 }
 
-// Local renderers specific to States
-const renderStateName = (isArabic: boolean = false) => (params: any) => {
-  const name = isArabic ? params.row.nameAr : params.row.nameEn;
-  return (
-    <div style={{ fontWeight: 500, color: "#1976d2", textAlign: "center" }}>
-      {name || "-"}
-    </div>
-  );
-};
-
-const renderCountryInfo = (params: any) => {
-  const country = params.row.country;
-  if (!country) return "-";
-
-  return (
-    <div style={{ textAlign: "center" }}>
-      <div style={{ fontWeight: 500, color: "#1976d2" }}>{country.nameEn}</div>
-      <div style={{ fontSize: "0.8em", color: "#666" }}>{country.nameAr}</div>
-    </div>
-  );
-};
+// Renderers imported from shared datagrid cell renderers
 
 export const useStateColumns = ({ t, permissions, getActions }: ColumnsFactoryProps): GridColDef[] => {
   const baseColumns: GridColDef[] = [
@@ -38,7 +18,7 @@ export const useStateColumns = ({ t, permissions, getActions }: ColumnsFactoryPr
       headerName: t("general.id"),
       flex: 0.5,
       align: "center",
-      headerAlign: "center",
+      headerAlign: "center"
     },
     {
       field: "nameAr",

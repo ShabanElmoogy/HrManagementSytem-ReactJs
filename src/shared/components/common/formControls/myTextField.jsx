@@ -531,6 +531,7 @@ const MyTextField = ({
         helperText={errors[actualFieldName]?.message}
         {...register}
         inputRef={inputRef}
+        value={value !== undefined ? value : undefined}
         onChange={handleChange}
       />
     );

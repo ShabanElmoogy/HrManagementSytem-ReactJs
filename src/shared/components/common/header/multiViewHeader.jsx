@@ -186,12 +186,6 @@ const MultiViewHeader = ({
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <Chip
-                label={`${dataCount} ${totalLabel}`}
-                size="small"
-                color="primary"
-                variant="outlined"
-              />
-              <Chip
                 label={
                   viewOptions.find((opt) => opt.value === viewType)?.label ||
                   viewType

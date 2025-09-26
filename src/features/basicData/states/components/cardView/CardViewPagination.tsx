@@ -1,5 +1,6 @@
 import UnifiedCardViewPagination from "@/shared/components/common/cardView/UnifiedCardViewPagination";
 import { CardViewPaginationProps } from "./StateCard.types";
+import { useTranslation } from "react-i18next";
 
 const CardViewPagination = ({
   page,
@@ -9,13 +10,14 @@ const CardViewPagination = ({
   onPageChange,
   onRowsPerPageChange,
 }: CardViewPaginationProps) => {
+  const {t} = useTranslation();
   return (
     <UnifiedCardViewPagination
       page={page}
       rowsPerPage={rowsPerPage}
       totalItems={totalItems}
       itemsPerPageOptions={itemsPerPageOptions}
-      itemsLabel="states"
+      itemsLabel={t("states.state")}
       onPageChange={onPageChange}
       onRowsPerPageChange={onRowsPerPageChange}
     />

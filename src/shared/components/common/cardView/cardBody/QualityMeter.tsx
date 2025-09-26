@@ -1,29 +1,27 @@
 import React from "react";
 import { LinearProgress, Stack, Typography, alpha, useTheme } from "@mui/material";
 import { Box } from "@mui/system";
+import { useTranslation } from "react-i18next";
+import { getQualityInfo } from "@/shared/utils/quality";
 
 // QualityMeter: label + progress with dynamic color and level text
 export const QualityMeter: React.FC<{
   score: number; // 0-100
   title?: string;
-}> = ({ score, title = "Data Quality" }) => {
+}> = ({ score }) => {
   const theme = useTheme();
-  const getQualityLevel = (s: number) => {
-    if (s >= 90) return { level: "excellent", color: theme.palette.success.main };
-    if (s >= 75) return { level: "good", color: theme.palette.info.main };
-    if (s >= 60) return { level: "average", color: theme.palette.warning.main };
-    return { level: "poor", color: theme.palette.error.main };
-  };
-  const qualityInfo = getQualityLevel(score);
+  const { t } = useTranslation();
+
+  const qualityInfo = getQualityInfo(score, theme);
 
   return (
     <Box sx={{ mb: 2 }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 0.5 }}>
         <Typography variant="caption" color="text.secondary" fontWeight="bold">
-          {title}
+          {t("general.dataQuality")}
         </Typography>
         <Typography variant="caption" color={qualityInfo.color} fontWeight="bold">
-          {qualityInfo.level.toUpperCase()}
+          {t(`general.${qualityInfo.key}`)?.toUpperCase()}
         </Typography>
       </Stack>
       <LinearProgress

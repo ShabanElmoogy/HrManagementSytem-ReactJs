@@ -32,6 +32,11 @@ const StateCard = ({
 
   const qualityScore = getQualityScore(state);
   const qualityInfo = getQualityLevel(qualityScore, theme);
+  const isRTL = theme.direction === "rtl";
+  const hasAr = !!state.nameAr;
+  const hasEn = !!state.nameEn;
+  const primaryTitle = isRTL ? (state.nameAr || state.nameEn || "N/A") : (state.nameEn || state.nameAr || "N/A");
+  const secondaryTitle = hasAr && hasEn ? (isRTL ? state.nameEn : state.nameAr) : undefined;
 
   const topRightBadge = (
     <BadgePercentage
@@ -110,8 +115,8 @@ const StateCard = ({
       height={400}
       topRightBadge={topRightBadge}
       leftBadge={leftBadge}
-      title={state.nameEn || "N/A"}
-      subtitle={state.nameAr || undefined}
+      title={primaryTitle}
+      subtitle={secondaryTitle}
       chips={chips}
       content={content}
       footer={footer}
