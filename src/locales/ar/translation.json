@@ -322,8 +322,10 @@
     "noData": "لا توجد دول متاحة",
     "noDataDescription": "ابدأ بإضافة أول دولة",
     "generateMockData": "توليد بيانات تجريبية",
-    "states" : "المحافظات",
-    "noStates" : "لا توجد محافظات"
+    "states": "المحافظات",
+    "noStates": "لا توجد محافظات",
+    "active": "نشط",
+    "showLessStates": ""
   },
   "states": {
     "dashboard": {

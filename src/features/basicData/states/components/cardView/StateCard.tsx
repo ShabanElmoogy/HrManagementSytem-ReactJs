@@ -1,7 +1,7 @@
 import { appPermissions } from "@/constants";
 import { CardView } from "@/shared/components/cardView";
 import { Delete, Edit, LocationOn, Public, Visibility } from "@mui/icons-material";
-import { Chip, Stack, Typography, alpha, useTheme } from "@mui/material";
+import { Chip, Stack, Tooltip, Typography, alpha, useTheme } from "@mui/material";
 import { Box } from "@mui/system";
 import { format } from "date-fns";
 import type { State } from "../../types/State";
@@ -12,6 +12,32 @@ import {
   QualityMeter,
   HighlightBadge,
 } from "@/shared/components/common/cardView/cardBody/UnifiedCardParts";
+
+// Deterministic color selection for countries
+const paletteKeys = ["primary", "secondary", "success", "info", "warning", "error"] as const;
+type ColorKey = typeof paletteKeys[number];
+
+const hashString = (str: string): number => {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = (h << 5) - h + str.charCodeAt(i);
+    h |= 0; // Convert to 32bit integer
+  }
+  return Math.abs(h);
+};
+
+const countryColorKeyFor = (countryId?: string | number | null, countryName?: string | null): ColorKey => {
+  const base =
+    typeof countryId === "number"
+      ? countryId
+      : countryId
+      ? hashString(String(countryId))
+      : countryName
+      ? hashString(countryName)
+      : 0;
+  const idx = Math.abs(base % paletteKeys.length);
+  return paletteKeys[idx];
+};
 
 interface StateCardProps {
   state: State;
@@ -95,21 +121,54 @@ const StateCard = ({
     <>
       {/* State Details */}
       <Box sx={{ mb: 2 }}>
-        {state.country && (
-          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
-            <Public sx={{ fontSize: 16, color: "text.secondary" }} />
-            <Box>
-              <Typography variant="body2" fontWeight="medium">
-                {state.country.nameEn}
-              </Typography>
-              {state.country.nameAr && (
-                <Typography variant="caption" color="text.secondary">
-                  {state.country.nameAr}
-                </Typography>
-              )}
-            </Box>
-          </Stack>
-        )}
+        {state.country && (() => {
+          const key = countryColorKeyFor(state.countryId ?? null, state.country?.nameEn ?? null);
+          const colorMain = theme.palette[key].main;
+          const contrast = theme.palette.getContrastText(colorMain);
+          return (
+            <Tooltip title={`${state.country.nameEn}${state.country.nameAr ? ` / ${state.country.nameAr}` : ""}`} arrow>
+              <Box sx={{ position: "relative", display: "inline-flex", alignItems: "center", mb: 1 }}>
+                <Box
+                  sx={{
+                    position: "relative",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    height: 28,
+                    pl: 3.5,
+                    pr: 1.25,
+                    borderRadius: 999,
+                    bgcolor: alpha(colorMain, 0.12),
+                    border: `1px solid ${alpha(colorMain, 0.35)}`,
+                  }}
+                >
+                  <Typography variant="caption" sx={{ color: colorMain, fontWeight: "bold", lineHeight: 1 }}>
+                    {state.country.nameEn}
+                  </Typography>
+
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      left: -6,
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      width: 28,
+                      height: 28,
+                      borderRadius: "50%",
+                      bgcolor: colorMain,
+                      boxShadow: `0 2px 8px ${alpha(colorMain, 0.25)}`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      border: `1px solid ${alpha(contrast, 0.15)}`,
+                    }}
+                  >
+                    <Public sx={{ fontSize: 16, color: contrast }} />
+                  </Box>
+                </Box>
+              </Box>
+            </Tooltip>
+          );
+        })()}
         <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
           <LocationOn sx={{ fontSize: 16, color: "text.secondary" }} />
           <Typography variant="body2" color="text.secondary">

@@ -334,7 +334,8 @@
     "noDataDescription": "Start by adding your first country",
     "generateMockData": "Generate Mock Data",
     "states": "States",
-    "noStates": "No States"
+    "noStates": "No States",
+    "active": "Active"
   },
   "states": {
     "dashboard": {
