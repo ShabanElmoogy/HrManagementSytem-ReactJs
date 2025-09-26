@@ -35,7 +35,8 @@
     "dataQuality" : "Data Quality",
     "excellent" : "Excellent",
     "good" : "Good",
-    "average" : "Average"
+    "average" : "Average",
+    "poor": "Poor"
   },
   "menu": {
     "dashboard": "Dashboard",

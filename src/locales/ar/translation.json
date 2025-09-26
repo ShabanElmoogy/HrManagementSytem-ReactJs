@@ -30,7 +30,8 @@
     "dataQuality" : "جودة البيانات",
     "excellent" : "ممتاز",
     "good" : "جيد",
-    "average" : "متوسط"
+    "average" : "متوسط",
+    "poor" : "ضعيف"
   },
   "menu": {
     "dashboard": "لوحة التحكم",

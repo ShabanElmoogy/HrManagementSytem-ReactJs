@@ -12,6 +12,7 @@ import {
 } from "@/shared/components/common/cardView/cardBody/UnifiedCardParts";
 import CountryCardFooter from "./CountryCardFooter";
 import CountryStatesSection from "./CountryStatesSection";
+import { getQualityScore, getQualityLevel } from "./CountryCardUtils";
 
 interface CountryCardProps {
   country: Country;
@@ -41,28 +42,8 @@ const CountryCard = ({
 }: CountryCardProps) => {
   const theme = useTheme();
 
-  const getQualityScore = (country: Country) => {
-    let score = 50; // Base score
-    if (country.nameEn) score += 15;
-    if (country.nameAr) score += 15;
-    if (country.alpha2Code) score += 5;
-    if (country.alpha3Code) score += 5;
-    if (country.phoneCode) score += 5;
-    if (country.currencyCode) score += 5;
-    return Math.min(score, 100);
-  };
-
-  const getQualityLevel = (score: number) => {
-    if (score >= 90)
-      return { level: "excellent", color: theme.palette.success.main };
-    if (score >= 75) return { level: "good", color: theme.palette.info.main };
-    if (score >= 60)
-      return { level: "average", color: theme.palette.warning.main };
-    return { level: "poor", color: theme.palette.error.main };
-  };
-
   const qualityScore = getQualityScore(country);
-  const qualityInfo = getQualityLevel(qualityScore);
+  const qualityInfo = getQualityLevel(qualityScore, theme);
 
   const topRightBadge = (
     <BadgePercentage value={qualityScore} highlighted={isHighlighted} color={qualityInfo.color} />
