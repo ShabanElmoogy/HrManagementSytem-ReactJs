@@ -343,7 +343,18 @@
     "countriesCardView": "قائمة الدول",
     "noCountriesAvailable": "لا توجد دول متاحة",
     "noCountriesAvailableDescription": "ابدء بإضافة دولة جديدة",
-    "addFirstCountry": "ابدء بإضافة دولة جديدة"
+    "addFirstCountry": "ابدء بإضافة دولة جديدة",
+    "mainTitle": "قائمة الدول",
+    "mainSubTitle": "لا توجد دول متاحة لعرضها",
+    "browseAndManage": "تصفح وادارة",
+    "browseDescription": "الدول مع بحث وتصنيف (أو تصفية)",
+    "searchPlaceHolder": "ابحث باسم الدولة، الكود، الهاتف أو العملة...",
+    "country": "دولة",
+    "createdDate": "تاريخ الانشاء",
+    "all": "كل الدول",
+    "recent30Days": "احدث (30 يوما)",
+    "hasPhone": "مع كود الهاتف",
+    "hasCurrency": "مع كود العملة"
   },
   "states": {
     "dashboard": {

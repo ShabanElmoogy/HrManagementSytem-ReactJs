@@ -354,7 +354,18 @@
     "countriesCardView": "Countries Card View",
     "noCountriesAvailable": "No countries available to display",
     "noCountriesAvailableDescription": "Start by adding your first country",
-    "addFirstCountry": "Add your first country"
+    "addFirstCountry": "Add your first country",
+    "mainTitle": "Countries Card View",
+    "mainSubTitle": "No Countries Available To Display",
+    "browseAndManage": "Browse and manage",
+    "browseDescription": "countries with enhanced search and filtering",
+    "searchPlaceHolder": "Search countries by name, code, phone, or currency...",
+    "country": "Country",
+    "createdDate": "Created Date",
+    "all": "All Countries",
+    "recent30Days": "Recent (30 days)",
+    "hasPhone": "Has Phone Code",
+    "hasCurrency": "Has Currency"
   },
   "states": {
     "dashboard": {

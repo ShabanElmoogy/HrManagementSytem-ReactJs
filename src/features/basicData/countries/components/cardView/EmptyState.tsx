@@ -18,10 +18,10 @@ const EmptyState = ({ onAdd }: EmptyStateProps) => {
     <Box>
       <Paper sx={{ p: 3, mb: 3 }}>
         <Typography variant="h5" color="primary.main" fontWeight="bold" gutterBottom>
-          {t("countries.countriesCardView")}
+          {t("countries.mainTitle")}
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          {t("countries.noCountriesAvailable")}
+          {t("countries.mainSubTitle")}
         </Typography>
       </Paper>
 

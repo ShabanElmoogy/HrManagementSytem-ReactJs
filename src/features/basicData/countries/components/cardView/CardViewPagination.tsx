@@ -1,14 +1,6 @@
 import UnifiedCardViewPagination from "@/shared/components/common/cardView/UnifiedCardViewPagination";
-import type { SelectChangeEvent } from "@mui/material/Select";
-
-interface CardViewPaginationProps {
-  page: number;
-  rowsPerPage: number;
-  totalItems: number;
-  itemsPerPageOptions: number[];
-  onPageChange: (event: unknown, newPage: number) => void;
-  onRowsPerPageChange: (event: SelectChangeEvent<number>) => void;
-}
+import { CardViewPaginationProps } from "./CountryCard.types";
+import { useTranslation } from "react-i18next";
 
 const CardViewPagination = ({
   page,
@@ -18,13 +10,14 @@ const CardViewPagination = ({
   onPageChange,
   onRowsPerPageChange,
 }: CardViewPaginationProps) => {
+  const { t } = useTranslation();
   return (
     <UnifiedCardViewPagination
       page={page}
       rowsPerPage={rowsPerPage}
       totalItems={totalItems}
       itemsPerPageOptions={itemsPerPageOptions}
-      itemsLabel="countries"
+      itemsLabel={t("countries.country")}
       onPageChange={onPageChange}
       onRowsPerPageChange={onRowsPerPageChange}
     />

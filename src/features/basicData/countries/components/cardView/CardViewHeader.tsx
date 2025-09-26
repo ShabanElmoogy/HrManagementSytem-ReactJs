@@ -1,19 +1,6 @@
 import UnifiedCardViewHeader from "@/shared/components/common/cardView/cardHeader/UnifiedCardViewHeader";
-
-interface CardViewHeaderProps {
-  searchTerm: string;
-  sortBy: string;
-  sortOrder: string;
-  filterBy: string;
-  processedCountriesLength: number;
-  page: number;
-  onSearchChange: (value: string) => void;
-  onSortByChange: (value: string) => void;
-  onSortOrderChange: (value: string) => void;
-  onFilterByChange: (value: string) => void;
-  onClearSearch: () => void;
-  onReset: () => void;
-}
+import { useTranslation } from "react-i18next";
+import { CardViewHeaderProps } from "./CountryCard.types";
 
 const CardViewHeader = ({
   searchTerm,
@@ -29,15 +16,18 @@ const CardViewHeader = ({
   onClearSearch,
   onReset,
 }: CardViewHeaderProps) => {
+  const { t } = useTranslation();
   return (
     <UnifiedCardViewHeader
-      title="Countries Card View"
-      subtitle={`Browse and manage ${processedCountriesLength} countries with enhanced search and filtering`}
-      mainChipLabel={`${processedCountriesLength} Countries`}
+      title={t("countries.mainTitle")}
+      subtitle={`${t("countries.browseAndManage")} ${processedCountriesLength} ${t(
+        "countries.browseDescription"
+      )}`}
+      mainChipLabel={`${processedCountriesLength} ${t("countries.country")}`}
       page={page}
 
       searchTerm={searchTerm}
-      searchPlaceholder="Search countries by name, code, phone, or currency..."
+      searchPlaceholder={t("countries.searchPlaceHolder")}
       onSearchChange={onSearchChange}
       onClearSearch={() => {
         onSearchChange("");
@@ -47,12 +37,12 @@ const CardViewHeader = ({
 
       sortBy={sortBy}
       sortByOptions={[
-        { value: "name", label: "Name" },
-        { value: "alpha2", label: "Alpha-2 Code" },
-        { value: "alpha3", label: "Alpha-3 Code" },
-        { value: "phone", label: "Phone Code" },
-        { value: "currency", label: "Currency" },
-        { value: "created", label: "Created Date" },
+        { value: "name", label: t("countries.name") },
+        { value: "alpha2", label: t("countries.alpha2Code") },
+        { value: "alpha3", label: t("countries.alpha3Code") },
+        { value: "phone", label: t("countries.phoneCode") },
+        { value: "currency", label: t("countries.currencyCode") },
+        { value: "created", label: t("countries.createdDate") },
       ]}
       onSortByChange={onSortByChange}
 
@@ -61,10 +51,10 @@ const CardViewHeader = ({
 
       filterBy={filterBy}
       filterOptions={[
-        { value: "all", label: "All Countries" },
-        { value: "recent", label: "Recent (30 days)" },
-        { value: "hasPhone", label: "Has Phone Code" },
-        { value: "hasCurrency", label: "Has Currency" },
+        { value: "all", label: t("countries.all") },
+        { value: "recent", label: t("countries.recent30Days") },
+        { value: "hasPhone", label: t("countries.hasPhone") },
+        { value: "hasCurrency", label: t("countries.hasCurrency") },
       ]}
       onFilterByChange={onFilterByChange}
 

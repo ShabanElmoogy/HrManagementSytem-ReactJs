@@ -14,18 +14,7 @@ import {
   NoResultsState
 } from "./cardView";
 
-interface CountriesCardViewProps {
-  countries: Country[];
-  loading: boolean;
-  onEdit: (country: Country) => void;
-  onDelete: (country: Country) => void;
-  onView: (country: Country) => void;
-  onAdd: () => void;
-  t: (key: string, options?: any) => string;
-  lastAddedId?: string | number | null;
-  lastEditedId?: string | number | null;
-  lastDeletedIndex?: number | null;
-}
+import { CountriesCardViewProps } from "./cardView/CountryCard.types";
 
 const CountriesCardView = ({
   countries,
@@ -319,14 +308,16 @@ const CountriesCardView = ({
         ))}
       </Grid>
 
-      <CardViewPagination
-        page={page}
-        rowsPerPage={rowsPerPage}
-        totalItems={processedCountries.length}
-        itemsPerPageOptions={getItemsPerPageOptions()}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      {processedCountries.length > 0 && (
+        <CardViewPagination
+          page={page}
+          rowsPerPage={rowsPerPage}
+          totalItems={processedCountries.length}
+          itemsPerPageOptions={getItemsPerPageOptions()}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      )}
 
       {searchTerm && processedCountries.length === 0 && (
         <NoResultsState

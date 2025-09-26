@@ -1,7 +1,6 @@
 import { CardView } from "@/shared/components/cardView";
 import { useTheme } from "@mui/material";
 import { format } from "date-fns";
-import type { Country } from "../../types/Country";
 import CountryCardChips from "./CountryCardChips";
 import {
   BadgePercentage,
@@ -13,20 +12,7 @@ import {
 import CountryCardFooter from "./CountryCardFooter";
 import CountryStatesSection from "./CountryStatesSection";
 import { getQualityScore, getQualityLevel } from "./CountryCardUtils";
-
-interface CountryCardProps {
-  country: Country;
-  index: number;
-  isHovered: boolean;
-  isHighlighted: boolean;
-  highlightLabel?: string | null;
-  onEdit: (country: Country) => void;
-  onDelete: (country: Country) => void;
-  onView: (country: Country) => void;
-  onHover: (id: string | number | null) => void;
-  t: (key: string) => string;
-}
-
+import type { CountryCardProps } from "./CountryCard.types";
 
 const CountryCard = ({
   country,
