@@ -29,24 +29,24 @@ const MultiViewHeader = ({
   title,
   onAdd,
   storageKey, // localStorage key for view persistence
-  
+
   // View configuration
   defaultView = "grid",
   availableViews = ["grid", "cards", "chart"],
   viewLabels = {}, // Custom labels for views
-  
+
   // Data props
   dataCount = 0,
   totalLabel = "Total",
-  
+
   // Action handlers (optional)
   onRefresh,
   onExport,
   onFilter,
-  
+
   // Translation function
   t = (key) => key,
-  
+
   // Customization props
   showActions = {
     add: true,
@@ -54,13 +54,13 @@ const MultiViewHeader = ({
     export: false,
     filter: false,
   },
-  
+
   // Additional chips or content
   additionalChips = [],
-  
+
   // Custom styling
   sx = {},
-  
+
   // Callback for view changes (optional)
   onViewTypeChange,
 }) => {
@@ -88,17 +88,19 @@ const MultiViewHeader = ({
   const getViewLabel = (view) => {
     const defaultLabels = {
       grid: "Grid",
-      cards: "Cards", 
+      cards: "Cards",
       chart: "Chart",
       list: "List",
       smallList: "Small List",
     };
-    
+
     // Use custom labels if provided, otherwise use translation or default
-    return viewLabels[view] || t(`views.${view}`) || defaultLabels[view] || view;
+    return (
+      viewLabels[view] || t(`views.${view}`) || defaultLabels[view] || view
+    );
   };
 
-  const viewOptions = availableViews.map(view => ({
+  const viewOptions = availableViews.map((view) => ({
     value: view,
     label: getViewLabel(view),
     icon: getViewIcon(view),
@@ -233,18 +235,19 @@ const MultiViewHeader = ({
                     boxShadow: `0 4px 12px ${theme.palette.primary.main}40`,
                     background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
                     color: theme.palette.primary.contrastText,
-                    transition: "transform 0.15s ease, box-shadow 0.15s ease, filter 0.2s ease",
-                    '&:hover': {
-                      transform: 'translateY(-1px)',
+                    transition:
+                      "transform 0.15s ease, box-shadow 0.15s ease, filter 0.2s ease",
+                    "&:hover": {
+                      transform: "translateY(-1px)",
                       boxShadow: `0 6px 16px ${theme.palette.primary.main}50`,
-                      filter: 'brightness(1.02)',
+                      filter: "brightness(1.02)",
                       background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.secondary.dark} 100%)`,
                     },
-                    '&:active': {
-                      transform: 'translateY(0)',
+                    "&:active": {
+                      transform: "translateY(0)",
                       boxShadow: `0 3px 8px ${theme.palette.primary.main}30`,
                     },
-                    '& .MuiButton-startIcon': { mr: 1 },
+                    "& .MuiButton-startIcon": { mr: 1 },
                   }}
                 >
                   {t("actions.add") || "Add"}
@@ -440,16 +443,16 @@ const MultiViewHeader = ({
                     background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
                     color: theme.palette.primary.contrastText,
                     transition: "transform 0.15s ease, box-shadow 0.15s ease",
-                    '&:hover': {
-                      transform: 'translateY(-1px)',
+                    "&:hover": {
+                      transform: "translateY(-1px)",
                       boxShadow: `0 5px 14px ${theme.palette.primary.main}45`,
                       background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.secondary.dark} 100%)`,
                     },
-                    '&:active': {
-                      transform: 'translateY(0)',
+                    "&:active": {
+                      transform: "translateY(0)",
                       boxShadow: `0 2px 6px ${theme.palette.primary.main}25`,
                     },
-                    '& .MuiButton-startIcon': { mr: 0.5 },
+                    "& .MuiButton-startIcon": { mr: 0.5 },
                   }}
                 >
                   {t("actions.add") || "Add"}

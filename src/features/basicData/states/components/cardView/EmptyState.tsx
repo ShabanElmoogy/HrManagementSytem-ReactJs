@@ -5,30 +5,33 @@ import {
   Typography
 } from "@mui/material";
 import { EmptyState as ReusableEmptyState } from "@/shared/components/common/feedback";
+import { useTranslation } from "react-i18next";
 
 interface EmptyStateProps {
   onAdd: () => void;
 }
 
 const EmptyState = ({ onAdd }: EmptyStateProps) => {
+  const {t} = useTranslation();
+
   return (
     <Box>
       {/* Empty State Header */}
       <Paper sx={{ p: 3, mb: 3 }}>
         <Typography variant="h5" color="primary.main" fontWeight="bold" gutterBottom>
-          States Card View
+          {t("states.mainTitle")}
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          No states available to display
+          {t("states.mainSubTitle")}
         </Typography>
       </Paper>
 
       {/* Empty State Content using reusable component */}
       <ReusableEmptyState
         icon={LocationOn}
-        title="No States Available"
-        subtitle="Start building your geographic database by adding states. You'll be able to search, filter, and organize them in this enhanced card view."
-        actionText="Add Your First State"
+        title={t("states.noStatesAvailable")}
+        subtitle={t("states.noStatesAvailableDescription")}
+        actionText={t("states.addFirstState")}
         onAction={onAdd}
         iconSize="large"
       />

@@ -14,4 +14,5 @@ export * from "./select";
 export * from "./sidebarSearch";
 export * from "./timeline";
 export * from "./upload";
+export * from "./chips";
 

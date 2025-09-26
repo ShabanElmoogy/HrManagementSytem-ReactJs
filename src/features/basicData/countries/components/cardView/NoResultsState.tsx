@@ -13,11 +13,9 @@ const NoResultsState = ({
   onClearFilters, 
   onRefresh 
 }: NoResultsStateProps) => {
-  return (
+  return (   
     <ReusableNoResultsState
       searchTerm={searchTerm}
-      message="No Countries Found"
-      subtitle={`No countries match your search criteria "${searchTerm}"`}
       onClearSearch={onClearSearch}
       onClearFilters={onClearFilters}
       onRefresh={onRefresh}

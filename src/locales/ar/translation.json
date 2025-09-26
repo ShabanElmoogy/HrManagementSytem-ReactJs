@@ -19,7 +19,9 @@
     "supportedFormats": "الصيغ المدعومة",
     "value": "القيمة",
     "key": "المفتاح",
-    "country": "الدولة"
+    "country": "الدولة",
+    "clear" : "حذف",
+    "reset":"اعادة تعيين"
   },
   "menu": {
     "dashboard": "لوحة التحكم",
@@ -63,7 +65,7 @@
     "undoChanges": "الغاء التعديلات",
     "editInformation": "تعديل البيانات",
     "saveInformation": "حفظ البيانات",
-    "drapPhoto": "اسحب وأفلت أو انقر للاختيار • JPG، PNG حتى 5 ميجابايت",
+    "dragPhoto": "اسحب وأفلت أو انقر للاختيار • JPG، PNG حتى 5 ميجابايت",
     "dropImage": "اسحب الصورة هنا",
     "updateProfile": "تحديث الصورة الشخصية",
     "createdOn": "تاريخ الإنشاء",
@@ -325,7 +327,13 @@
     "states": "المحافظات",
     "noStates": "لا توجد محافظات",
     "active": "نشط",
-    "showLessStates": ""
+    "filtered": "تم الإختيار",
+    "showLessStates": "اظهار اقل المحافظات",
+    "showAllStates": "اظهار كل المحافظات",
+    "countriesCardView": "قائمة الدول",
+    "noCountriesAvailable": "لا توجد دول متاحة",
+    "noCountriesAvailableDescription": "ابدء بإضافة دولة جديدة",
+    "addFirstCountry": "ابدء بإضافة دولة جديدة"
   },
   "states": {
     "dashboard": {
@@ -391,7 +399,23 @@
     "deleteError": "فشل في حذف المحافظة",
     "withCodes": "مع الأكواد",
     "generateMockData": "توليد بيانات تجريبية",
-    "errorMessage": "فشل في تحميل المحافظات"
+    "errorMessage": "فشل في تحميل المحافظات",
+    "noStatesAvailable": "لا توجد محافظات متاحة",
+    "noStatesAvailableDescription": "ابدء بإضافة محافظة جديدة",
+    "addFirstState": "إضافة محافظة جديدة",
+    "mainTitle": "قائمة المحافظات",
+    "mainSubTitle": "لا توجد محافظات متاحة لعرضها",
+    "browseAndManage": "تصفح وادارة المحافظات",
+    "browseDescription": "حالات مع بحث وتصنيف (أو تصفية)",
+    "searchPlaceHolder": "ابحث باسم المحافظة , رمز المحافظة , اسم الدولة...",
+    "state": "محافظة",
+    "stateCode": "رمز المحافظة",
+    "createdDate": "تاريخ الانشاء",
+    "all": "كل المحافظات",
+    "recent30Days": "احدث (30 يوما)",
+    "recent60Days": "احدث (60 يوما)",
+    "recent90Days" : "احدث (90 يوما)",
+    "recent120Days" : "احدث (120 يوما)"
   },
   "roles": {
     "creatingRole": "جارى انشاء صلاحية جديد",
@@ -502,5 +526,13 @@
     "changedByPc": "جهاز التغيير",
     "title": "تتبع تغييرات البيانات",
     "subTitle": "عرض تفاصيل التغيير فى البيانات"
+  },
+  "feedback": {
+    "noResults": {
+      "clearSearch": "مسح البحث",
+      "clearFilters": "مسح الفلاتر",
+      "refresh": "تحديث",
+      "messageWithTerm": "لا توجد نتنائج للبحث"
+    }
   }
 }

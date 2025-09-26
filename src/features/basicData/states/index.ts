@@ -2,8 +2,7 @@
 export { default as StatesPage } from './statesPage';
 export { default as StateForm } from './components/stateForm';
 export { default as StateDeleteDialog } from './components/stateDeleteDialog';
-export { default as StatesDashboardHeader } from './components/statesDashboardHeader';
-export { default as StatesDataGrid } from './components/statesDataGrid';
+export { default as StatesDataGrid } from './components/gridView/statesDataGrid';
 export { default as StatesCardView } from './components/statesCardView';
 export { default as StatesChartView } from './components/statesChartView';
 export { default as StatesMultiView } from './components/statesMultiView';

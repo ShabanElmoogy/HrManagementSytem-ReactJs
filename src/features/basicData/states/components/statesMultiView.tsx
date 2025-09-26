@@ -6,7 +6,7 @@ import { Box } from "@mui/material";
 import { useCallback, useState } from "react";
 import StatesCardView from "./statesCardView";
 import StatesChartView from "./statesChartView";
-import StatesDataGrid from "./statesDataGrid";
+import StatesDataGrid from "./gridView/statesDataGrid";
 
 const StatesMultiView = ({
   states,

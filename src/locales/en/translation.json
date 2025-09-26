@@ -24,7 +24,9 @@
     "found": "found",
     "noResults": "No results found",
     "tryDifferentSearch": "Try a different search term",
-    "created": "Created"
+    "created": "Created",
+    "clear": "Clear",
+    "reset": "Reset"
   },
   "menu": {
     "dashboard": "Dashboard",
@@ -68,7 +70,7 @@
     "undoChanges": "Undo Changes",
     "editInformation": "Edit Information",
     "saveInformation": "Save Information",
-    "drapPhoto": "Drag and drop or click to select • JPG, PNG up to 5MB",
+    "dragPhoto": "Drag and drop or click to select • JPG, PNG up to 5MB",
     "dropImage": "Drop your image here",
     "updateProfile": "Upload Profile Picture",
     "submitting": "Submitting",
@@ -335,7 +337,14 @@
     "generateMockData": "Generate Mock Data",
     "states": "States",
     "noStates": "No States",
-    "active": "Active"
+    "active": "Active",
+    "filtered": "Filtered",
+    "showLessStates": "Show Less States",
+    "showAllStates": "Show All States",
+    "countriesCardView": "Countries Card View",
+    "noCountriesAvailable": "No countries available to display",
+    "noCountriesAvailableDescription": "Start by adding your first country",
+    "addFirstCountry": "Add your first country"
   },
   "states": {
     "dashboard": {
@@ -403,7 +412,23 @@
     "deleteError": "Failed to delete state",
     "withCodes": "With Codes",
     "generateMockData": "Generate Mock Data",
-    "errorMessage": "Failed to load states"
+    "errorMessage": "Failed to load states",
+    "noStatesAvailable": "No states available",
+    "noStatesAvailableDescription": "Start by adding your first state",
+    "addFirstState": "Add New state",
+    "mainTitle": "States Card View",
+    "mainSubTitle": "No States Available To Display",
+    "browseAndManage": "Browse and manage",
+    "browseDescription": "states with enhanced search and filtering",
+    "searchPlaceHolder": "Search states by name, code, or country...",
+    "state": "State",
+    "stateCode": "State Code",
+    "createdDate": "Created Date",
+    "all": "All States",
+    "recent30Days": "Recent (30 days)",
+    "recent60Days": "Recent (60 days)",
+    "recent90Days": "Recent (90 days)",
+    "recent120Days": "Recent (120 days)"
   },
   "roles": {
     "creatingRole": "Creating new role",
@@ -497,7 +522,7 @@
     "localizationApi": "Localization API",
     "hangfireDashboard": "Hangfire Dashboard"
   },
-  "trackhanges": {
+  "trackChanges": {
     "changeLogId": "ID",
     "entityName": "Entity Name",
     "key": "Key",
@@ -508,5 +533,13 @@
     "changedByPc": "Changed By PC",
     "title": "Track Changes",
     "subTitle": "Show Track Change Of Data"
+  },
+  "feedback": {
+    "noResults": {
+      "clearSearch": "Clear Search",
+      "clearFilters": "Clear Filters",
+      "refresh": "Refresh",
+      "messageWithTerm": "No results found"
+    }
   }
 }

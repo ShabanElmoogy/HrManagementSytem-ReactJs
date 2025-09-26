@@ -21,7 +21,7 @@ interface CountriesCardViewProps {
   onDelete: (country: Country) => void;
   onView: (country: Country) => void;
   onAdd: () => void;
-  t: (key: string) => string;
+  t: (key: string, options?: any) => string;
   lastAddedId?: string | number | null;
   lastEditedId?: string | number | null;
   lastDeletedIndex?: number | null;

@@ -1,18 +1,31 @@
-// @ts-nocheck
-/* eslint-disable react/prop-types */
-// components/CountriesMultiView.jsx
 import { MultiViewHeader } from "@/shared/components";
 import { Box } from "@mui/material";
 import { useCallback, useState } from "react";
-import { useCountrySearch } from "../hooks/useCountryQueries";
+import type { GridApiCommon } from "@mui/x-data-grid";
+import type { Country } from "../types/Country";
 import CountriesCardView from "./countriesCardView";
 import CountriesChartView from "./countriesChartView";
-import CountriesDataGrid from "./countriesDataGrid.tsx";
+import CountriesDataGrid from "./gridView/countriesDataGrid";
+
+interface CountriesMultiViewProps {
+  countries: Country[];
+  loading: boolean;
+  isFetching?: boolean;
+  apiRef?: React.RefObject<GridApiCommon>;
+  onEdit: (country: Country) => void;
+  onDelete: (country: Country) => void;
+  onView: (country: Country) => void;
+  onAdd: () => void;
+  onRefresh?: () => void;
+  t: (key: string, options?: any) => string;
+  lastAddedId?: string | number | null;
+  lastEditedId?: string | number | null;
+  lastDeletedIndex?: number | null;
+}
 
 const CountriesMultiView = ({
   countries,
   loading,
-  isFetching,
   apiRef,
   onEdit,
   onDelete,
@@ -23,23 +36,14 @@ const CountriesMultiView = ({
   lastAddedId,
   lastEditedId,
   lastDeletedIndex,
-}) => {
+}: CountriesMultiViewProps) => {
   // Initialize with default, will be updated by MultiViewHeader
-  const [currentViewType, setCurrentViewType] = useState("grid");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [currentViewType, setCurrentViewType] = useState<"grid" | "cards" | "chart">("grid");
+  const [searchTerm] = useState("");
 
-  // Use search hook with TanStack Query
-  const {
-    data: searchResults,
-    isLoading: isSearching
-  } = useCountrySearch(searchTerm, {
-    enabled: searchTerm.length > 0, // Only search when there's a search term
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-
-  // Use search results if searching, otherwise use original countries
-  const displayCountries = searchTerm ? searchResults : countries;
-  const displayLoading = searchTerm ? isSearching : loading;
+  // Use original countries and loading states (search is handled within specific views when applicable)
+  const displayCountries = countries;
+  const displayLoading = loading;
 
   const handleRefresh = () => {
     // Use the refresh function passed from parent (TanStack Query refetch)
@@ -56,33 +60,62 @@ const CountriesMultiView = ({
     console.log("Export countries data");
   };
 
-  const handleViewTypeChange = useCallback((newViewType) => {
+  const handleViewTypeChange = useCallback((newViewType: "grid" | "cards" | "chart") => {
     setCurrentViewType(newViewType);
   }, []);
 
   const renderView = () => {
-    const commonProps = {
-      countries: displayCountries,
-      loading: displayLoading,
-      onEdit,
-      onDelete,
-      onView,
-      onAdd,
-      t,
-      lastAddedId,
-      lastEditedId,
-      lastDeletedIndex,
-    };
-
     switch (currentViewType) {
       case "grid":
-        return <CountriesDataGrid {...commonProps} apiRef={apiRef} />;
+        return (
+          <CountriesDataGrid
+            countries={displayCountries}
+            loading={displayLoading}
+            apiRef={apiRef}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onView={onView}
+            onAdd={onAdd}
+            t={t}
+          />
+        );
       case "cards":
-        return <CountriesCardView {...commonProps} />;
+        return (
+          <CountriesCardView
+            countries={displayCountries}
+            loading={displayLoading}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onView={onView}
+            onAdd={onAdd}
+            t={t}
+            lastAddedId={lastAddedId}
+            lastEditedId={lastEditedId}
+            lastDeletedIndex={lastDeletedIndex}
+          />
+        );
       case "chart":
-        return <CountriesChartView {...commonProps} />;
+        return (
+          <CountriesChartView
+            countries={displayCountries}
+            loading={displayLoading}
+            onAdd={onAdd}
+            t={t}
+          />
+        );
       default:
-        return <CountriesDataGrid {...commonProps} apiRef={apiRef} />;
+        return (
+          <CountriesDataGrid
+            countries={displayCountries}
+            loading={displayLoading}
+            apiRef={apiRef}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onView={onView}
+            onAdd={onAdd}
+            t={t}
+          />
+        );
     }
   };
 
@@ -119,40 +152,7 @@ const CountriesMultiView = ({
           refresh: true,
           export: false,
           filter: false,
-        }}
-      />
-
-      {/* Search Input
-      <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
-        <TextField
-          size="small"
-          placeholder={t("countries.search.placeholder") || "Search countries by name, code, or phone..."}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search />
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            maxWidth: 400,
-            '& .MuiOutlinedInput-root': {
-              backgroundColor: 'background.paper',
-            }
-          }}
-        />
-        {searchTerm && (
-          <Box sx={{ mt: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
-            {isSearching 
-              ? (t("countries.search.searching") || "Searching...") 
-              : (t("countries.search.results", { count: displayCountries?.length || 0 }) || 
-                 `Found ${displayCountries?.length || 0} countries`)
-            }
-          </Box>
-        )}
-      </Box> */}
+        }} onFilter={undefined}      />
 
       {/* Scrollable View Content */}
       <Box

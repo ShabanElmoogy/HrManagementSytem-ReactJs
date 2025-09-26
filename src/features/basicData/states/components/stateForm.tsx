@@ -80,14 +80,7 @@ const StateForm = ({
       } else if ((isEditMode || isViewMode) && selectedState) {
         // Extract countryId from either direct property or nested country object
         const countryId = selectedState.countryId || selectedState.country?.id || 0;
-        
-        // Debug logging
-        console.log("🔍 StateForm: Resetting form with selectedState:", selectedState);
-        console.log("🔍 StateForm: countryId from selectedState:", selectedState.countryId);
-        console.log("🔍 StateForm: countryId from nested country:", selectedState.country?.id);
-        console.log("🔍 StateForm: final countryId:", countryId);
-        console.log("🔍 StateForm: countries loaded:", countries.length);
-        
+               
         // Reset form with selected state data
         reset({
           nameAr: selectedState.nameAr || "",

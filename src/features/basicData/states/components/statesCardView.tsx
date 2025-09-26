@@ -3,7 +3,6 @@
 import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material/Select";
 import { useEffect, useMemo, useState } from "react";
-import type { State } from "../types/State";
 import {
   CardViewHeader,
   CardViewPagination,
@@ -12,19 +11,7 @@ import {
   LoadingState,
   NoResultsState
 } from "./cardView";
-
-interface StatesCardViewProps {
-  states: State[];
-  loading: boolean;
-  onEdit: (state: State) => void;
-  onDelete: (state: State) => void;
-  onView: (state: State) => void;
-  onAdd: () => void;
-  t: (key: string) => string;
-  lastAddedId?: string | number | null;
-  lastEditedId?: string | number | null;
-  lastDeletedIndex?: number | null;
-}
+import { StatesCardViewProps } from "./cardView/StateCard.types";
 
 const StatesCardView = ({
   states,
@@ -102,24 +89,15 @@ const StatesCardView = ({
 
     let filteredStates = [...searchedStates];
 
-    // Apply additional filters
-    if (filterBy !== "all") {
-      switch (filterBy) {
-        case "recent":
-          const thirtyDaysAgo = new Date();
-          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-          filteredStates = filteredStates.filter(state =>
-            state.createdOn && new Date(state.createdOn) > thirtyDaysAgo
-          );
-          break;
-        case "hasCode":
-          filteredStates = filteredStates.filter(state => state.code && state.code.trim());
-          break;
-        case "hasCountry":
-          filteredStates = filteredStates.filter(state => state.country && state.countryId);
-          break;
-        default:
-          break;
+    // Apply additional filters for recent N days only
+    if (filterBy !== "all" && filterBy.startsWith("recent")) {
+      const days = parseInt(filterBy.replace("recent", ""), 10);
+      if (!Number.isNaN(days)) {
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - days);
+        filteredStates = filteredStates.filter(
+          (state) => state.createdOn && new Date(state.createdOn) > cutoff
+        );
       }
     }
 

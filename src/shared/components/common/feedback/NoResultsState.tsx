@@ -1,18 +1,14 @@
-import React from 'react';
+import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Box,
   Button,
   Paper,
   Typography,
   useTheme,
-  SvgIconProps
-} from '@mui/material';
-import {
-  Search,
-  FilterList,
-  Clear,
-  Refresh
-} from '@mui/icons-material';
+  SvgIconProps,
+} from "@mui/material";
+import { Search, FilterList, Clear, Refresh } from "@mui/icons-material";
 
 interface NoResultsStateProps {
   /** The search term or filter criteria that produced no results */
@@ -34,13 +30,13 @@ interface NoResultsStateProps {
   /** Custom styling for the container */
   sx?: object;
   /** Size variant for the icon */
-  iconSize?: 'small' | 'medium' | 'large';
+  iconSize?: "small" | "medium" | "large";
   /** Custom action button */
   customAction?: {
     text: string;
     handler: () => void;
     icon?: React.ComponentType<SvgIconProps>;
-    variant?: 'contained' | 'outlined' | 'text';
+    variant?: "contained" | "outlined" | "text";
   };
 }
 
@@ -54,55 +50,52 @@ const NoResultsState: React.FC<NoResultsStateProps> = ({
   icon: IconComponent = Search,
   withPaper = true,
   sx = {},
-  iconSize = 'large',
-  customAction
+  iconSize = "large",
+  customAction,
 }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const getIconSize = () => {
     switch (iconSize) {
-      case 'small': return 32;
-      case 'medium': return 40;
-      case 'large': return 64;
-      default: return 64;
+      case "small":
+        return 32;
+      case "medium":
+        return 40;
+      case "large":
+        return 64;
+      default:
+        return 64;
     }
   };
 
   const getDefaultMessage = () => {
-    if (message) return message;
-    if (searchTerm) return `No results found for "${searchTerm}"`;
-    return 'No results found';
-  };
-
-  const getDefaultSubtitle = () => {
-    if (subtitle) return subtitle;
-    if (searchTerm) return 'Try adjusting your search criteria or clearing filters';
-    return 'Try adjusting your filters or refreshing the data';
+      return t("feedback.noResults.messageWithTerm", { term: searchTerm });
   };
 
   const content = (
     <Box
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: 'center',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
         py: 6,
         px: 3,
         minHeight: 200,
-        ...sx
+        ...sx,
       }}
     >
       <IconComponent
         sx={{
           fontSize: getIconSize(),
-          color: 'text.secondary',
+          color: "text.secondary",
           mb: 2,
-          opacity: 0.7
+          opacity: 0.7,
         }}
       />
-      
+
       <Typography
         variant="h6"
         color="text.secondary"
@@ -111,16 +104,15 @@ const NoResultsState: React.FC<NoResultsStateProps> = ({
       >
         {getDefaultMessage()}
       </Typography>
-      
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        sx={{ mb: 3, maxWidth: 400, opacity: 0.8 }}
+
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+          flexWrap: "wrap",
+          justifyContent: "center",
+        }}
       >
-        {getDefaultSubtitle()}
-      </Typography>
-      
-      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
         {searchTerm && onClearSearch && (
           <Button
             variant="outlined"
@@ -128,10 +120,10 @@ const NoResultsState: React.FC<NoResultsStateProps> = ({
             startIcon={<Clear />}
             sx={{ minWidth: 120 }}
           >
-            Clear Search
+            {t("feedback.noResults.clearSearch")}
           </Button>
         )}
-        
+
         {onClearFilters && (
           <Button
             variant="outlined"
@@ -139,10 +131,10 @@ const NoResultsState: React.FC<NoResultsStateProps> = ({
             startIcon={<FilterList />}
             sx={{ minWidth: 120 }}
           >
-            Clear Filters
+            {t("feedback.noResults.clearFilters")}
           </Button>
         )}
-        
+
         {onRefresh && (
           <Button
             variant="text"
@@ -150,13 +142,13 @@ const NoResultsState: React.FC<NoResultsStateProps> = ({
             startIcon={<Refresh />}
             sx={{ minWidth: 100 }}
           >
-            Refresh
+            {t("feedback.noResults.refresh")}
           </Button>
         )}
-        
+
         {customAction && (
           <Button
-            variant={customAction.variant || 'contained'}
+            variant={customAction.variant || "contained"}
             onClick={customAction.handler}
             startIcon={customAction.icon ? <customAction.icon /> : undefined}
             sx={{ minWidth: 120 }}
@@ -174,7 +166,7 @@ const NoResultsState: React.FC<NoResultsStateProps> = ({
         sx={{
           background: `linear-gradient(135deg, ${theme.palette.grey[50]} 0%, ${theme.palette.grey[100]} 100%)`,
           border: `1px solid ${theme.palette.divider}`,
-          borderRadius: 2
+          borderRadius: 2,
         }}
       >
         {content}
