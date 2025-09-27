@@ -36,8 +36,13 @@ import {
   AccountBalance,
   Description,
   ContactEmergency,
+  Assessment,
+  Chat,
 } from "@mui/icons-material";
 import { Employee } from "../types/Employee";
+import PerformanceTab from "./PerformanceTab";
+import TimeTrackingTab from "./timeTracking/TimeTrackingTab";
+import CommunicationTab from "./CommunicationTab";
 
 interface EmployeeDetailProps {
   employee: Employee;
@@ -468,6 +473,21 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
               icon={<Description sx={{ fontSize: 20 }} />}
               iconPosition="start"
             />
+            <Tab
+              label="Performance"
+              icon={<Assessment sx={{ fontSize: 20 }} />}
+              iconPosition="start"
+            />
+            <Tab
+              label="Time Tracking"
+              icon={<Schedule sx={{ fontSize: 20 }} />}
+              iconPosition="start"
+            />
+            <Tab
+              label="Communication"
+              icon={<Chat sx={{ fontSize: 20 }} />}
+              iconPosition="start"
+            />
           </Tabs>
         </Box>
 
@@ -713,67 +733,140 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
 
         <TabPanel value={activeTab} index={1}>
           {/* Personal Info Tab */}
-          <Grid container spacing={3}>
+          <Grid container spacing={4}>
             <Grid size={{ xs: 12, md: 6 }}>
-              <Card variant="outlined">
-                <CardContent>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
+              <Card
+                variant="outlined"
+                sx={{
+                  background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.8)} 0%, ${alpha(theme.palette.info.light, 0.05)} 100%)`,
+                  border: `1px solid ${alpha(theme.palette.info.main, 0.1)}`,
+                  borderRadius: 3,
+                  transition: 'all 0.3s ease-in-out',
+                  '&:hover': {
+                    boxShadow: `0 8px 24px ${alpha(theme.palette.info.main, 0.15)}`,
+                    transform: 'translateY(-2px)'
+                  }
+                }}
+              >
+                <CardContent sx={{ p: 4 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      mb: 3,
+                      display: "flex",
+                      alignItems: "center",
+                      fontWeight: 700,
+                      color: theme.palette.info.main
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        p: 1,
+                        borderRadius: 2,
+                        background: `linear-gradient(135deg, ${alpha(theme.palette.info.main, 0.1)}, ${alpha(theme.palette.info.light, 0.1)})`,
+                        mr: 2
+                      }}
+                    >
+                      <Person sx={{ color: theme.palette.info.main }} />
+                    </Box>
                     Basic Information
                   </Typography>
                   <Box
-                    sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+                    sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}
                   >
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.info.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.info.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Full Name
                       </Typography>
-                      <Typography>
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
                         {employee.firstName} {employee.lastName}
                       </Typography>
                     </Box>
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.primary.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Employee ID
                       </Typography>
-                      <Typography>{employee.employeeId}</Typography>
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem', fontFamily: 'monospace' }}>{employee.employeeId}</Typography>
                     </Box>
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.success.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.success.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Date of Birth
                       </Typography>
-                      <Typography>
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
                         {employee.birthDate
                           ? formatDate(employee.birthDate)
                           : "Not specified"}
                       </Typography>
                     </Box>
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.warning.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.warning.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Gender
                       </Typography>
-                      <Typography>
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
                         {employee.gender
                           ? employee.gender.charAt(0).toUpperCase() +
                             employee.gender.slice(1)
                           : "Not specified"}
                       </Typography>
                     </Box>
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.secondary.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.secondary.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Marital Status
                       </Typography>
-                      <Typography>
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
                         {employee.maritalStatus
                           ? employee.maritalStatus.charAt(0).toUpperCase() +
                             employee.maritalStatus.slice(1)
                           : "Not specified"}
                       </Typography>
                     </Box>
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.error.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.error.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Nationality
                       </Typography>
-                      <Typography>{employee.nationality}</Typography>
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>{employee.nationality}</Typography>
                     </Box>
                   </Box>
                 </CardContent>
@@ -781,44 +874,99 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-              <Card variant="outlined">
-                <CardContent>
+              <Card
+                variant="outlined"
+                sx={{
+                  background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.8)} 0%, ${alpha(theme.palette.error.light, 0.05)} 100%)`,
+                  border: `1px solid ${alpha(theme.palette.error.main, 0.1)}`,
+                  borderRadius: 3,
+                  transition: 'all 0.3s ease-in-out',
+                  '&:hover': {
+                    boxShadow: `0 8px 24px ${alpha(theme.palette.error.main, 0.15)}`,
+                    transform: 'translateY(-2px)'
+                  }
+                }}
+              >
+                <CardContent sx={{ p: 4 }}>
                   <Typography
                     variant="h6"
-                    sx={{ mb: 2, display: "flex", alignItems: "center" }}
+                    sx={{
+                      mb: 3,
+                      display: "flex",
+                      alignItems: "center",
+                      fontWeight: 700,
+                      color: theme.palette.error.main
+                    }}
                   >
-                    <ContactEmergency sx={{ mr: 1 }} />
+                    <Box
+                      sx={{
+                        p: 1,
+                        borderRadius: 2,
+                        background: `linear-gradient(135deg, ${alpha(theme.palette.error.main, 0.1)}, ${alpha(theme.palette.error.light, 0.1)})`,
+                        mr: 2
+                      }}
+                    >
+                      <ContactEmergency sx={{ color: theme.palette.error.main }} />
+                    </Box>
                     Emergency Contact
                   </Typography>
                   <Box
-                    sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+                    sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}
                   >
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.error.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.error.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Name
                       </Typography>
-                      <Typography>{employee.emergencyContact.name}</Typography>
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>{employee.emergencyContact.name}</Typography>
                     </Box>
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.warning.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.warning.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Relationship
                       </Typography>
-                      <Typography>
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
                         {employee.emergencyContact.relationship}
                       </Typography>
                     </Box>
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.info.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.info.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Phone
                       </Typography>
-                      <Typography>{employee.emergencyContact.phone}</Typography>
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>{employee.emergencyContact.phone}</Typography>
                     </Box>
                     {employee.emergencyContact.email && (
-                      <Box>
-                        <Typography variant="body2" color="text.secondary">
+                      <Box
+                        sx={{
+                          p: 2,
+                          borderRadius: 2,
+                          backgroundColor: alpha(theme.palette.primary.main, 0.02),
+                          border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`
+                        }}
+                      >
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                           Email
                         </Typography>
-                        <Typography>
+                        <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
                           {employee.emergencyContact.email}
                         </Typography>
                       </Box>
@@ -832,70 +980,136 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
 
         <TabPanel value={activeTab} index={2}>
           {/* Employment Tab */}
-          <Grid container spacing={3}>
+          <Grid container spacing={4}>
              <Grid size={{ xs: 12, md: 6 }}>
-              <Card variant="outlined">
-                <CardContent>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
+              <Card
+                variant="outlined"
+                sx={{
+                  background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.8)} 0%, ${alpha(theme.palette.warning.light, 0.05)} 100%)`,
+                  border: `1px solid ${alpha(theme.palette.warning.main, 0.1)}`,
+                  borderRadius: 3,
+                  transition: 'all 0.3s ease-in-out',
+                  '&:hover': {
+                    boxShadow: `0 8px 24px ${alpha(theme.palette.warning.main, 0.15)}`,
+                    transform: 'translateY(-2px)'
+                  }
+                }}
+              >
+                <CardContent sx={{ p: 4 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      mb: 3,
+                      display: "flex",
+                      alignItems: "center",
+                      fontWeight: 700,
+                      color: theme.palette.warning.main
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        p: 1,
+                        borderRadius: 2,
+                        background: `linear-gradient(135deg, ${alpha(theme.palette.warning.main, 0.1)}, ${alpha(theme.palette.warning.light, 0.1)})`,
+                        mr: 2
+                      }}
+                    >
+                      <Business sx={{ color: theme.palette.warning.main }} />
+                    </Box>
                     Employment Information
                   </Typography>
                   <Box
-                    sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+                    sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}
                   >
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.warning.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.warning.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Employment Type
                       </Typography>
-                      <Typography>
-                        {employee.employmentDetails.employmentType.replace(
-                          "-",
-                          " "
-                        )}
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
+                        {employee.employmentDetails.employmentType.replace("-", " ")}
                       </Typography>
                     </Box>
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.info.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.info.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Work Location
                       </Typography>
-                      <Typography>
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
                         {employee.employmentDetails.workLocation}
                       </Typography>
                     </Box>
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.primary.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Work Schedule
                       </Typography>
-                      <Typography>
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
                         {employee.employmentDetails.workSchedule}
                       </Typography>
                     </Box>
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.success.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.success.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Hire Date
                       </Typography>
-                      <Typography>{formatDate(employee.hireDate)}</Typography>
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>{formatDate(employee.hireDate)}</Typography>
                     </Box>
                     {employee.employmentDetails.probationEndDate && (
-                      <Box>
-                        <Typography variant="body2" color="text.secondary">
+                      <Box
+                        sx={{
+                          p: 2,
+                          borderRadius: 2,
+                          backgroundColor: alpha(theme.palette.secondary.main, 0.02),
+                          border: `1px solid ${alpha(theme.palette.secondary.main, 0.1)}`
+                        }}
+                      >
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                           Probation End Date
                         </Typography>
-                        <Typography>
-                          {formatDate(
-                            employee.employmentDetails.probationEndDate
-                          )}
+                        <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
+                          {formatDate(employee.employmentDetails.probationEndDate)}
                         </Typography>
                       </Box>
                     )}
                     {employee.employmentDetails.contractEndDate && (
-                      <Box>
-                        <Typography variant="body2" color="text.secondary">
+                      <Box
+                        sx={{
+                          p: 2,
+                          borderRadius: 2,
+                          backgroundColor: alpha(theme.palette.error.main, 0.02),
+                          border: `1px solid ${alpha(theme.palette.error.main, 0.1)}`
+                        }}
+                      >
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                           Contract End Date
                         </Typography>
-                        <Typography>
-                          {formatDate(
-                            employee.employmentDetails.contractEndDate
-                          )}
+                        <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
+                          {formatDate(employee.employmentDetails.contractEndDate)}
                         </Typography>
                       </Box>
                     )}
@@ -905,24 +1119,70 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
             </Grid>
 
              <Grid size={{ xs: 12, md: 6 }}>
-              <Card variant="outlined">
-                <CardContent>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
+              <Card
+                variant="outlined"
+                sx={{
+                  background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.8)} 0%, ${alpha(theme.palette.secondary.light, 0.05)} 100%)`,
+                  border: `1px solid ${alpha(theme.palette.secondary.main, 0.1)}`,
+                  borderRadius: 3,
+                  transition: 'all 0.3s ease-in-out',
+                  '&:hover': {
+                    boxShadow: `0 8px 24px ${alpha(theme.palette.secondary.main, 0.15)}`,
+                    transform: 'translateY(-2px)'
+                  }
+                }}
+              >
+                <CardContent sx={{ p: 4 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      mb: 3,
+                      display: "flex",
+                      alignItems: "center",
+                      fontWeight: 700,
+                      color: theme.palette.secondary.main
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        p: 1,
+                        borderRadius: 2,
+                        background: `linear-gradient(135deg, ${alpha(theme.palette.secondary.main, 0.1)}, ${alpha(theme.palette.secondary.light, 0.1)})`,
+                        mr: 2
+                      }}
+                    >
+                      <Person sx={{ color: theme.palette.secondary.main }} />
+                    </Box>
                     Manager Information
                   </Typography>
                   {employee.managerId ? (
                     <Box
-                      sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+                      sx={{
+                        p: 3,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.secondary.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.secondary.main, 0.1)}`,
+                        textAlign: 'center'
+                      }}
                     >
-                      <Typography color="text.secondary">
-                        Manager information would be displayed here when
-                        available
+                      <Typography color="text.secondary" sx={{ fontWeight: 500 }}>
+                        Manager information would be displayed here when available
                       </Typography>
                     </Box>
                   ) : (
-                    <Typography color="text.secondary">
-                      No manager assigned
-                    </Typography>
+                    <Box
+                      sx={{
+                        p: 3,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.grey[500], 0.02),
+                        border: `1px solid ${alpha(theme.palette.grey[500], 0.1)}`,
+                        textAlign: 'center'
+                      }}
+                    >
+                      <Typography color="text.secondary" sx={{ fontWeight: 500 }}>
+                        No manager assigned
+                      </Typography>
+                    </Box>
                   )}
                 </CardContent>
               </Card>
@@ -932,41 +1192,82 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
 
         <TabPanel value={activeTab} index={3}>
           {/* Salary & Benefits Tab */}
-          <Grid container spacing={3}>
+          <Grid container spacing={4}>
              <Grid size={{ xs: 12, md: 6 }}>
-              <Card variant="outlined">
-                <CardContent>
+              <Card
+                variant="outlined"
+                sx={{
+                  background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.8)} 0%, ${alpha(theme.palette.success.light, 0.05)} 100%)`,
+                  border: `1px solid ${alpha(theme.palette.success.main, 0.1)}`,
+                  borderRadius: 3,
+                  transition: 'all 0.3s ease-in-out',
+                  '&:hover': {
+                    boxShadow: `0 8px 24px ${alpha(theme.palette.success.main, 0.15)}`,
+                    transform: 'translateY(-2px)'
+                  }
+                }}
+              >
+                <CardContent sx={{ p: 4 }}>
                   <Typography
                     variant="h6"
-                    sx={{ mb: 2, display: "flex", alignItems: "center" }}
+                    sx={{
+                      mb: 3,
+                      display: "flex",
+                      alignItems: "center",
+                      fontWeight: 700,
+                      color: theme.palette.success.main
+                    }}
                   >
-                    <AccountBalance sx={{ mr: 1 }} />
+                    <Box
+                      sx={{
+                        p: 1,
+                        borderRadius: 2,
+                        background: `linear-gradient(135deg, ${alpha(theme.palette.success.main, 0.1)}, ${alpha(theme.palette.success.light, 0.1)})`,
+                        mr: 2
+                      }}
+                    >
+                      <AccountBalance sx={{ color: theme.palette.success.main }} />
+                    </Box>
                     Salary Information
                   </Typography>
                   <Box
-                    sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+                    sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}
                   >
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 3,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.success.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.success.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 1 }}>
                         Base Salary
                       </Typography>
-                      <Typography variant="h6" color="primary">
+                      <Typography variant="h5" sx={{ color: theme.palette.success.main, fontWeight: 700, mb: 0.5 }}>
                         {formatCurrency(
                           employee.salaryInfo.baseSalary,
                           employee.salaryInfo.currency
                         )}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>
                         {employee.salaryInfo.payFrequency}
                       </Typography>
                     </Box>
 
                     {employee.salaryInfo.allowances.length > 0 && (
-                      <Box>
+                      <Box
+                        sx={{
+                          p: 2,
+                          borderRadius: 2,
+                          backgroundColor: alpha(theme.palette.info.main, 0.02),
+                          border: `1px solid ${alpha(theme.palette.info.main, 0.1)}`
+                        }}
+                      >
                         <Typography
                           variant="body2"
                           color="text.secondary"
-                          sx={{ mb: 1 }}
+                          sx={{ mb: 2, fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600 }}
                         >
                           Allowances
                         </Typography>
@@ -977,14 +1278,17 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
                               sx={{
                                 display: "flex",
                                 justifyContent: "space-between",
-                                mb: 0.5,
+                                mb: 1,
+                                p: 1,
+                                borderRadius: 1,
+                                backgroundColor: alpha(theme.palette.info.main, 0.05)
                               }}
                             >
-                              <Typography variant="body2">
+                              <Typography variant="body2" sx={{ fontWeight: 500 }}>
                                 {allowance.type}
                               </Typography>
-                              <Typography variant="body2">
-                                {formatCurrency(
+                              <Typography variant="body2" sx={{ color: theme.palette.info.main, fontWeight: 600 }}>
+                                +{formatCurrency(
                                   allowance.amount,
                                   employee.salaryInfo.currency
                                 )}
@@ -996,11 +1300,18 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
                     )}
 
                     {employee.salaryInfo.deductions.length > 0 && (
-                      <Box>
+                      <Box
+                        sx={{
+                          p: 2,
+                          borderRadius: 2,
+                          backgroundColor: alpha(theme.palette.error.main, 0.02),
+                          border: `1px solid ${alpha(theme.palette.error.main, 0.1)}`
+                        }}
+                      >
                         <Typography
                           variant="body2"
                           color="text.secondary"
-                          sx={{ mb: 1 }}
+                          sx={{ mb: 2, fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600 }}
                         >
                           Deductions
                         </Typography>
@@ -1011,15 +1322,17 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
                               sx={{
                                 display: "flex",
                                 justifyContent: "space-between",
-                                mb: 0.5,
+                                mb: 1,
+                                p: 1,
+                                borderRadius: 1,
+                                backgroundColor: alpha(theme.palette.error.main, 0.05)
                               }}
                             >
-                              <Typography variant="body2">
+                              <Typography variant="body2" sx={{ fontWeight: 500 }}>
                                 {deduction.type}
                               </Typography>
-                              <Typography variant="body2" color="error">
-                                -
-                                {formatCurrency(
+                              <Typography variant="body2" sx={{ color: theme.palette.error.main, fontWeight: 600 }}>
+                                -{formatCurrency(
                                   deduction.amount,
                                   employee.salaryInfo.currency
                                 )}
@@ -1035,38 +1348,87 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-              <Card variant="outlined">
-                <CardContent>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
+              <Card
+                variant="outlined"
+                sx={{
+                  background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.8)} 0%, ${alpha(theme.palette.primary.light, 0.05)} 100%)`,
+                  border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+                  borderRadius: 3,
+                  transition: 'all 0.3s ease-in-out',
+                  '&:hover': {
+                    boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.15)}`,
+                    transform: 'translateY(-2px)'
+                  }
+                }}
+              >
+                <CardContent sx={{ p: 4 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      mb: 3,
+                      display: "flex",
+                      alignItems: "center",
+                      fontWeight: 700,
+                      color: theme.palette.primary.main
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        p: 1,
+                        borderRadius: 2,
+                        background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(theme.palette.primary.light, 0.1)})`,
+                        mr: 2
+                      }}
+                    >
+                      <AccountBalance sx={{ color: theme.palette.primary.main }} />
+                    </Box>
                     Banking Information
                   </Typography>
                   <Box
-                    sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+                    sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}
                   >
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.primary.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Bank Name
                       </Typography>
-                      <Typography>
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
                         {employee.salaryInfo.bankDetails.bankName}
                       </Typography>
                     </Box>
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.secondary.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.secondary.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Account Number
                       </Typography>
-                      <Typography fontFamily="monospace">
-                        ****
-                        {employee.salaryInfo.bankDetails.accountNumber.slice(
-                          -4
-                        )}
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem', fontFamily: 'monospace', letterSpacing: 1 }}>
+                        ****{employee.salaryInfo.bankDetails.accountNumber.slice(-4)}
                       </Typography>
                     </Box>
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.warning.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.warning.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Account Type
                       </Typography>
-                      <Typography>
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
                         {employee.salaryInfo.bankDetails.accountType}
                       </Typography>
                     </Box>
@@ -1079,52 +1441,135 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
 
         <TabPanel value={activeTab} index={4}>
           {/* Documents Tab */}
-          <Card variant="outlined">
-            <CardContent>
+          <Card
+            variant="outlined"
+            sx={{
+              background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.8)} 0%, ${alpha(theme.palette.grey[100], 0.05)} 100%)`,
+              border: `1px solid ${alpha(theme.palette.grey[400], 0.1)}`,
+              borderRadius: 3,
+              transition: 'all 0.3s ease-in-out',
+              '&:hover': {
+                boxShadow: `0 8px 24px ${alpha(theme.palette.grey[400], 0.15)}`,
+                transform: 'translateY(-2px)'
+              }
+            }}
+          >
+            <CardContent sx={{ p: 4 }}>
               <Typography
                 variant="h6"
-                sx={{ mb: 2, display: "flex", alignItems: "center" }}
+                sx={{
+                  mb: 3,
+                  display: "flex",
+                  alignItems: "center",
+                  fontWeight: 700,
+                  color: theme.palette.grey[700]
+                }}
               >
-                <Description sx={{ mr: 1 }} />
+                <Box
+                  sx={{
+                    p: 1,
+                    borderRadius: 2,
+                    background: `linear-gradient(135deg, ${alpha(theme.palette.grey[500], 0.1)}, ${alpha(theme.palette.grey[400], 0.1)})`,
+                    mr: 2
+                  }}
+                >
+                  <Description sx={{ color: theme.palette.grey[700] }} />
+                </Box>
                 Employee Documents
               </Typography>
 
               {employee.documents.length > 0 ? (
-                <Grid container spacing={2}>
+                <Grid container spacing={3}>
                   {employee.documents.map((doc) => (
                     <Grid size={{ xs: 12, sm: 6, md: 4 }} key={doc.id}>
-                      <Card variant="outlined" sx={{ p: 2 }}>
+                      <Card
+                        variant="outlined"
+                        sx={{
+                          p: 3,
+                          borderRadius: 2,
+                          background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.9)} 0%, ${alpha(theme.palette.primary.light, 0.02)} 100%)`,
+                          border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+                          transition: 'all 0.3s ease-in-out',
+                          cursor: 'pointer',
+                          '&:hover': {
+                            boxShadow: `0 6px 20px ${alpha(theme.palette.primary.main, 0.15)}`,
+                            transform: 'translateY(-2px)',
+                            borderColor: alpha(theme.palette.primary.main, 0.3)
+                          }
+                        }}
+                        onClick={() => window.open(doc.fileUrl, "_blank")}
+                      >
                         <Box
-                          sx={{ display: "flex", alignItems: "center", mb: 1 }}
+                          sx={{ display: "flex", alignItems: "center", mb: 2 }}
                         >
-                          <Description sx={{ mr: 1, color: "primary.main" }} />
-                          <Typography variant="subtitle2" sx={{ flex: 1 }}>
+                          <Box
+                            sx={{
+                              p: 1,
+                              borderRadius: 2,
+                              background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(theme.palette.primary.light, 0.1)})`,
+                              mr: 2
+                            }}
+                          >
+                            <Description sx={{ color: theme.palette.primary.main, fontSize: 20 }} />
+                          </Box>
+                          <Typography variant="subtitle1" sx={{ flex: 1, fontWeight: 600, color: theme.palette.primary.main }}>
                             {doc.name}
                           </Typography>
                         </Box>
-                        <Typography
-                          variant="caption"
-                          color="text.secondary"
-                          sx={{ mb: 1 }}
-                        >
-                          Type: {doc.type}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          Uploaded: {formatDate(doc.uploadedAt)}
+                        <Box sx={{ mb: 2 }}>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              px: 1.5,
+                              py: 0.5,
+                              borderRadius: 1,
+                              backgroundColor: alpha(theme.palette.info.main, 0.1),
+                              color: theme.palette.info.main,
+                              fontWeight: 500,
+                              fontSize: '0.7rem',
+                              textTransform: 'uppercase',
+                              display: 'inline-block',
+                              mb: 1
+                            }}
+                          >
+                            {doc.type}
+                          </Typography>
+                        </Box>
+                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
+                          📅 Uploaded: {formatDate(doc.uploadedAt)}
                         </Typography>
                         {doc.expiryDate && (
                           <Typography
                             variant="caption"
-                            color="warning.main"
-                            sx={{ mt: 0.5, display: "block" }}
+                            sx={{
+                              color: theme.palette.warning.main,
+                              fontWeight: 500,
+                              display: 'block',
+                              mb: 1
+                            }}
                           >
-                            Expires: {formatDate(doc.expiryDate)}
+                            ⏰ Expires: {formatDate(doc.expiryDate)}
                           </Typography>
                         )}
                         <Button
                           size="small"
-                          sx={{ mt: 1 }}
-                          onClick={() => window.open(doc.fileUrl, "_blank")}
+                          variant="outlined"
+                          sx={{
+                            mt: 1,
+                            borderRadius: 2,
+                            fontWeight: 600,
+                            textTransform: 'none',
+                            borderColor: alpha(theme.palette.primary.main, 0.3),
+                            color: theme.palette.primary.main,
+                            '&:hover': {
+                              borderColor: theme.palette.primary.main,
+                              backgroundColor: alpha(theme.palette.primary.main, 0.05)
+                            }
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(doc.fileUrl, "_blank");
+                          }}
                         >
                           View Document
                         </Button>
@@ -1133,20 +1578,58 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
                   ))}
                 </Grid>
               ) : (
-                <Box sx={{ textAlign: "center", py: 4 }}>
-                  <Description
-                    sx={{ fontSize: 48, color: "text.secondary", mb: 2 }}
-                  />
-                  <Typography variant="h6" color="text.secondary" gutterBottom>
+                <Box
+                  sx={{
+                    textAlign: "center",
+                    py: 8,
+                    px: 4,
+                    borderRadius: 3,
+                    background: `linear-gradient(135deg, ${alpha(theme.palette.grey[50], 0.5)} 0%, ${alpha(theme.palette.grey[100], 0.3)} 100%)`,
+                    border: `2px dashed ${alpha(theme.palette.grey[400], 0.3)}`
+                  }}
+                >
+                  <Box
+                    sx={{
+                      p: 3,
+                      borderRadius: '50%',
+                      background: `linear-gradient(135deg, ${alpha(theme.palette.grey[300], 0.2)}, ${alpha(theme.palette.grey[400], 0.1)})`,
+                      display: 'inline-flex',
+                      mb: 3
+                    }}
+                  >
+                    <Description
+                      sx={{
+                        fontSize: 64,
+                        color: theme.palette.grey[500],
+                        opacity: 0.7
+                      }}
+                    />
+                  </Box>
+                  <Typography variant="h6" sx={{ color: theme.palette.grey[700], fontWeight: 600, mb: 1 }}>
                     No documents uploaded
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" sx={{ color: theme.palette.grey[600], fontWeight: 400 }}>
                     Employee documents will appear here when uploaded
                   </Typography>
                 </Box>
               )}
             </CardContent>
           </Card>
+        </TabPanel>
+
+        <TabPanel value={activeTab} index={5}>
+          {/* Performance Tab */}
+          <PerformanceTab employeeId={employee.id} />
+        </TabPanel>
+
+        <TabPanel value={activeTab} index={6}>
+          {/* Time Tracking Tab */}
+          <TimeTrackingTab employee={employee} />
+        </TabPanel>
+
+        <TabPanel value={activeTab} index={7}>
+          {/* Communication Tab */}
+          <CommunicationTab employee={employee} />
         </TabPanel>
       </Card>
 

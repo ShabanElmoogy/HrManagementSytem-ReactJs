@@ -5,8 +5,10 @@ import AddTaskIcon from "@mui/icons-material/AddTask";
 import ApiIcon from "@mui/icons-material/Api";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import AssessmentIcon from "@mui/icons-material/Assessment";
+import Business from "@mui/icons-material/Business";
 import CategoryIcon from "@mui/icons-material/Category";
 import ChatIcon from '@mui/icons-material/Chat';
+import Description from "@mui/icons-material/Description";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
@@ -125,6 +127,204 @@ export const getNavigationConfig = (): NavigationConfig => {
           ),
           path: appRoutes.auth.usersPage,
           roles: [UserRoles.ADMIN],
+        },
+      ],
+    },
+    // HR Management Section
+    {
+      id: NavigationSectionId.ANALYTICS,
+      title: NavigationTitles.ANALYTICS,
+      icon: (
+        <ColoredIcon color={NavigationColors.ANALYTICS_GREEN}>
+          <AssessmentIcon />
+        </ColoredIcon>
+      ),
+      items: [
+        {
+          title: NavigationTitles.ANALYTICS_DASHBOARD,
+          icon: (
+            <ColoredIcon color={NavigationColors.LIGHT_ANALYTICS_GREEN}>
+              <AssessmentIcon />
+            </ColoredIcon>
+          ),
+          path: appRoutes.analytics.mainDashboard,
+        },
+        {
+          title: NavigationTitles.PERFORMANCE_ANALYTICS,
+          icon: (
+            <ColoredIcon color={NavigationColors.LIGHT_ANALYTICS_GREEN}>
+              <AssessmentIcon />
+            </ColoredIcon>
+          ),
+          path: appRoutes.analytics.performanceAnalytics,
+        },
+        {
+          title: NavigationTitles.TIME_ATTENDANCE_ANALYTICS,
+          icon: (
+            <ColoredIcon color={NavigationColors.LIGHT_ANALYTICS_GREEN}>
+              <AssessmentIcon />
+            </ColoredIcon>
+          ),
+          path: appRoutes.analytics.timeAttendanceAnalytics,
+        },
+        {
+          title: NavigationTitles.EMPLOYEE_ENGAGEMENT,
+          icon: (
+            <ColoredIcon color={NavigationColors.LIGHT_ANALYTICS_GREEN}>
+              <AssessmentIcon />
+            </ColoredIcon>
+          ),
+          path: appRoutes.analytics.employeeEngagement,
+        },
+        {
+          title: NavigationTitles.DOCUMENT_ANALYTICS,
+          icon: (
+            <ColoredIcon color={NavigationColors.LIGHT_ANALYTICS_GREEN}>
+              <AssessmentIcon />
+            </ColoredIcon>
+          ),
+          path: appRoutes.analytics.documentAnalytics,
+        },
+        {
+          title: NavigationTitles.CUSTOM_REPORTS,
+          icon: (
+            <ColoredIcon color={NavigationColors.LIGHT_ANALYTICS_GREEN}>
+              <AssessmentIcon />
+            </ColoredIcon>
+          ),
+          path: appRoutes.analytics.customReports,
+        },
+        {
+          title: NavigationTitles.DATA_EXPORT,
+          icon: (
+            <ColoredIcon color={NavigationColors.LIGHT_ANALYTICS_GREEN}>
+              <AssessmentIcon />
+            </ColoredIcon>
+          ),
+          path: appRoutes.analytics.dataExport,
+        },
+      ],
+    },
+    // Communication Section
+    {
+      id: NavigationSectionId.COMMUNICATION,
+      title: NavigationTitles.COMMUNICATION,
+      icon: (
+        <ColoredIcon color={NavigationColors.COMMUNICATION_PURPLE}>
+          <ChatIcon />
+        </ColoredIcon>
+      ),
+      items: [
+        {
+          title: NavigationTitles.MESSAGING,
+          icon: (
+            <ColoredIcon color={NavigationColors.LIGHT_COMMUNICATION_PURPLE}>
+              <ChatIcon />
+            </ColoredIcon>
+          ),
+          path: appRoutes.communication.messaging,
+        },
+        {
+          title: NavigationTitles.ANNOUNCEMENTS,
+          icon: (
+            <ColoredIcon color={NavigationColors.LIGHT_COMMUNICATION_PURPLE}>
+              <NotificationsIcon />
+            </ColoredIcon>
+          ),
+          path: appRoutes.communication.announcements,
+        },
+        {
+          title: NavigationTitles.FEEDBACK,
+          icon: (
+            <ColoredIcon color={NavigationColors.LIGHT_COMMUNICATION_PURPLE}>
+              <AssessmentIcon />
+            </ColoredIcon>
+          ),
+          path: appRoutes.communication.feedback,
+        },
+        {
+          title: NavigationTitles.COMMUNICATION_DASHBOARD,
+          icon: (
+            <ColoredIcon color={NavigationColors.LIGHT_COMMUNICATION_PURPLE}>
+              <AssessmentIcon />
+            </ColoredIcon>
+          ),
+          path: appRoutes.communication.dashboard,
+        },
+        {
+          title: NavigationTitles.NOTIFICATIONS,
+          icon: (
+            <ColoredIcon color={NavigationColors.LIGHT_COMMUNICATION_PURPLE}>
+              <NotificationsIcon />
+            </ColoredIcon>
+          ),
+          path: appRoutes.communication.notifications,
+        },
+        {
+          title: NavigationTitles.COMMUNICATION_REPORTS,
+          icon: (
+            <ColoredIcon color={NavigationColors.LIGHT_COMMUNICATION_PURPLE}>
+              <AssessmentIcon />
+            </ColoredIcon>
+          ),
+          path: appRoutes.communication.reports,
+        },
+      ],
+    },
+    // Documents Section
+    {
+      id: NavigationSectionId.DOCUMENTS,
+      title: NavigationTitles.DOCUMENTS,
+      icon: (
+        <ColoredIcon color={NavigationColors.DOCUMENTS_ORANGE}>
+          <ArchiveIcon />
+        </ColoredIcon>
+      ),
+      items: [
+        {
+          title: NavigationTitles.DOCUMENT_OVERVIEW,
+          icon: (
+            <ColoredIcon color={NavigationColors.LIGHT_DOCUMENTS_ORANGE}>
+              <Description />
+            </ColoredIcon>
+          ),
+          path: appRoutes.documents.overview,
+        },
+        {
+          title: NavigationTitles.EMPLOYEE_DOCUMENTS,
+          icon: (
+            <ColoredIcon color={NavigationColors.LIGHT_DOCUMENTS_ORANGE}>
+              <PeopleIcon />
+            </ColoredIcon>
+          ),
+          path: appRoutes.documents.employeeDocuments,
+        },
+        {
+          title: NavigationTitles.COMPANY_DOCUMENTS,
+          icon: (
+            <ColoredIcon color={NavigationColors.LIGHT_DOCUMENTS_ORANGE}>
+              <Business />
+            </ColoredIcon>
+          ),
+          path: appRoutes.documents.companyDocuments,
+        },
+        {
+          title: NavigationTitles.DOCUMENT_TEMPLATES,
+          icon: (
+            <ColoredIcon color={NavigationColors.LIGHT_DOCUMENTS_ORANGE}>
+              <Description />
+            </ColoredIcon>
+          ),
+          path: appRoutes.documents.templates,
+        },
+        {
+          title: NavigationTitles.DOCUMENT_ARCHIVES,
+          icon: (
+            <ColoredIcon color={NavigationColors.LIGHT_DOCUMENTS_ORANGE}>
+              <ArchiveIcon />
+            </ColoredIcon>
+          ),
+          path: appRoutes.documents.archives,
         },
       ],
     },

@@ -41,6 +41,7 @@ import {
   ContactEmergency
 } from '@mui/icons-material';
 import { Employee } from '../types/Employee';
+import FormCard from './FormCard';
 
 // Mock data for dropdowns
 const DEPARTMENTS = ['Engineering', 'Marketing', 'Sales', 'HR', 'Finance', 'Operations'];
@@ -204,31 +205,18 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
           <Grid container spacing={3}>
             {/* Photo Upload */}
             <Grid size={{ xs: 12, md: 4 }}>
-              <Card
+              <FormCard
+                title="Profile Photo"
+                icon={<PhotoCamera />}
+                color="primary"
                 sx={{
-                  p: 4,
                   textAlign: 'center',
-                  background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.8)} 0%, ${alpha(theme.palette.primary.light, 0.05)} 100%)`,
-                  border: `2px dashed ${alpha(theme.palette.primary.main, 0.3)}`,
-                  borderRadius: 4,
-                  transition: 'all 0.3s ease-in-out',
+                  border: `2px dashed ${alpha(theme.palette.primary.main, 0.3)} !important`,
                   '&:hover': {
-                    borderColor: theme.palette.primary.main,
-                    boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.15)}`,
-                    transform: 'translateY(-2px)'
+                    borderColor: `${theme.palette.primary.main} !important`,
                   }
                 }}
               >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    mb: 3,
-                    fontWeight: 700,
-                    color: theme.palette.primary.main
-                  }}
-                >
-                  Profile Photo
-                </Typography>
                 <Box sx={{ position: 'relative', display: 'inline-block', mb: 3 }}>
                   <Avatar
                     src={employee.photo}
@@ -290,48 +278,16 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                 >
                   JPG, PNG or GIF (max. 5MB)
                 </Typography>
-              </Card>
+              </FormCard>
             </Grid>
 
             {/* Basic Information */}
             <Grid size={{ xs: 12, md: 8 }}>
-              <Card
-                sx={{
-                  p: 4,
-                  background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.8)} 0%, ${alpha(theme.palette.success.light, 0.05)} 100%)`,
-                  border: `1px solid ${alpha(theme.palette.success.main, 0.1)}`,
-                  borderRadius: 4,
-                  boxShadow: `0 4px 16px ${alpha(theme.palette.success.main, 0.1)}`,
-                  transition: 'all 0.3s ease-in-out',
-                  '&:hover': {
-                    boxShadow: `0 8px 24px ${alpha(theme.palette.success.main, 0.15)}`,
-                    transform: 'translateY(-1px)'
-                  }
-                }}
+              <FormCard
+                title="Basic Information"
+                icon={<Person />}
+                color="success"
               >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    mb: 4,
-                    display: 'flex',
-                    alignItems: 'center',
-                    fontWeight: 700,
-                    color: theme.palette.success.main
-                  }}
-                >
-                  <Box
-                    sx={{
-                      p: 1,
-                      borderRadius: 2,
-                      background: `linear-gradient(135deg, ${alpha(theme.palette.success.main, 0.1)}, ${alpha(theme.palette.success.light, 0.1)})`,
-                      mr: 2
-                    }}
-                  >
-                    <Person sx={{ color: theme.palette.success.main }} />
-                  </Box>
-                  Basic Information
-                </Typography>
-
                 <Grid container spacing={3}>
                   <Grid size={{ xs: 12, sm: 6 }}>
                     <TextField
@@ -513,24 +469,41 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                     </FormControl>
                   </Grid>
                 </Grid>
-              </Card>
+              </FormCard>
             </Grid>
 
             {/* Address Information */}
             <Grid size={{ xs: 12 }}>
-              <Card sx={{ p: 3 }}>
-                <Typography variant="h6" sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
-                  <LocationOn sx={{ mr: 1 }} />
-                  Address Information
-                </Typography>
-
-                <Grid container spacing={2}>
+              <FormCard
+                title="Address Information"
+                icon={<LocationOn />}
+                color="info"
+              >
+                <Grid container spacing={3}>
                   <Grid size={{ xs: 12 }}>
                     <TextField
                       fullWidth
                       label="Street Address"
                       value={employee.address?.street || ''}
                       onChange={(e) => handleNestedInputChange('address', 'street', e.target.value)}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
                     />
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -539,6 +512,24 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                       label="City"
                       value={employee.address?.city || ''}
                       onChange={(e) => handleNestedInputChange('address', 'city', e.target.value)}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
                     />
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -547,10 +538,48 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                       label="State/Province"
                       value={employee.address?.state || ''}
                       onChange={(e) => handleNestedInputChange('address', 'state', e.target.value)}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
                     />
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                    <FormControl fullWidth>
+                    <FormControl
+                      fullWidth
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
+                    >
                       <InputLabel>Country</InputLabel>
                       <Select
                         value={employee.address?.country || 'USA'}
@@ -569,10 +598,28 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                       label="Postal Code"
                       value={employee.address?.postalCode || ''}
                       onChange={(e) => handleNestedInputChange('address', 'postalCode', e.target.value)}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
                     />
                   </Grid>
                 </Grid>
-              </Card>
+              </FormCard>
             </Grid>
           </Grid>
         );
@@ -582,15 +629,35 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
           <Grid container spacing={3}>
             {/* Employment Details */}
             <Grid size={{ xs: 12, md: 6 }}>
-              <Card sx={{ p: 3 }}>
-                <Typography variant="h6" sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
-                  <Business sx={{ mr: 1 }} />
-                  Employment Details
-                </Typography>
-
-                <Grid container spacing={2}>
+              <FormCard
+                title="Employment Details"
+                icon={<Business />}
+                color="warning"
+              >
+                <Grid container spacing={3}>
                   <Grid size={{ xs: 12 }}>
-                    <FormControl fullWidth required>
+                    <FormControl
+                      fullWidth
+                      required
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
+                    >
                       <InputLabel>Employment Type</InputLabel>
                       <Select
                         value={employee.employmentDetails?.employmentType || 'full-time'}
@@ -612,6 +679,24 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                       value={employee.employmentDetails?.workLocation || ''}
                       onChange={(e) => handleNestedInputChange('employmentDetails', 'workLocation', e.target.value)}
                       required
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
                     />
                   </Grid>
                   <Grid size={{ xs: 12 }}>
@@ -621,6 +706,24 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                       value={employee.employmentDetails?.workSchedule || ''}
                       onChange={(e) => handleNestedInputChange('employmentDetails', 'workSchedule', e.target.value)}
                       placeholder="e.g., Monday-Friday, 9AM-5PM"
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
                     />
                   </Grid>
                   <Grid size={{ xs: 12 }}>
@@ -632,21 +735,38 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                       onChange={(e) => handleInputChange('hireDate', e.target.value)}
                       InputLabelProps={{ shrink: true }}
                       required
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
                     />
                   </Grid>
                 </Grid>
-              </Card>
+              </FormCard>
             </Grid>
 
             {/* Salary Information */}
             <Grid size={{ xs: 12, md: 6 }}>
-              <Card sx={{ p: 3 }}>
-                <Typography variant="h6" sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
-                  <AccountBalance sx={{ mr: 1 }} />
-                  Salary Information
-                </Typography>
-
-                <Grid container spacing={2}>
+              <FormCard
+                title="Salary Information"
+                icon={<AccountBalance />}
+                color="secondary"
+              >
+                <Grid container spacing={3}>
                   <Grid size={{ xs: 12, sm: 8 }}>
                     <TextField
                       fullWidth
@@ -655,10 +775,48 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                       value={employee.salaryInfo?.baseSalary || ''}
                       onChange={(e) => handleNestedInputChange('salaryInfo', 'baseSalary', parseFloat(e.target.value) || 0)}
                       required
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
                     />
                   </Grid>
                   <Grid size={{ xs: 12, sm: 4 }}>
-                    <FormControl fullWidth>
+                    <FormControl
+                      fullWidth
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
+                    >
                       <InputLabel>Currency</InputLabel>
                       <Select
                         value={employee.salaryInfo?.currency || 'USD'}
@@ -673,7 +831,27 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                     </FormControl>
                   </Grid>
                   <Grid size={{ xs: 12 }}>
-                    <FormControl fullWidth>
+                    <FormControl
+                      fullWidth
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
+                    >
                       <InputLabel>Pay Frequency</InputLabel>
                       <Select
                         value={employee.salaryInfo?.payFrequency || 'monthly'}
@@ -688,24 +866,41 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                     </FormControl>
                   </Grid>
                 </Grid>
-              </Card>
+              </FormCard>
             </Grid>
 
             {/* Emergency Contact */}
             <Grid size={{ xs: 12 }}>
-              <Card sx={{ p: 3 }}>
-                <Typography variant="h6" sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
-                  <ContactEmergency sx={{ mr: 1 }} />
-                  Emergency Contact
-                </Typography>
-
-                <Grid container spacing={2}>
+              <FormCard
+                title="Emergency Contact"
+                icon={<ContactEmergency />}
+                color="error"
+              >
+                <Grid container spacing={3}>
                   <Grid size={{ xs: 12, sm: 6 }}>
                     <TextField
                       fullWidth
                       label="Contact Name"
                       value={employee.emergencyContact?.name || ''}
                       onChange={(e) => handleNestedInputChange('emergencyContact', 'name', e.target.value)}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
                     />
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6 }}>
@@ -714,6 +909,24 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                       label="Relationship"
                       value={employee.emergencyContact?.relationship || ''}
                       onChange={(e) => handleNestedInputChange('emergencyContact', 'relationship', e.target.value)}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
                     />
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6 }}>
@@ -722,6 +935,24 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                       label="Contact Phone"
                       value={employee.emergencyContact?.phone || ''}
                       onChange={(e) => handleNestedInputChange('emergencyContact', 'phone', e.target.value)}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
                     />
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6 }}>
@@ -731,10 +962,28 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                       type="email"
                       value={employee.emergencyContact?.email || ''}
                       onChange={(e) => handleNestedInputChange('emergencyContact', 'email', e.target.value)}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
                     />
                   </Grid>
                 </Grid>
-              </Card>
+              </FormCard>
             </Grid>
           </Grid>
         );

@@ -44,7 +44,9 @@ import {
   ViewList,
   ViewModule,
 } from "@mui/icons-material";
-import { Employee, EmployeeFilters } from "../types/Employee";
+import { Employee, AdvancedEmployeeFilters, SortConfig } from "../types/Employee";
+import { filterEmployees, generateFilterStats, createDefaultFilters, createDefaultSort, exportFilteredEmployees } from "../utils/employeeFilters";
+import EmployeeFilters from "./EmployeeFilters";
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 
 interface EmployeeListProps {
@@ -57,8 +59,10 @@ interface EmployeeListProps {
   onBulkEdit?: (employees: Employee[]) => void;
   onBulkDelete?: (employees: Employee[]) => void;
   onBulkExport?: (employees: Employee[]) => void;
-  filters?: EmployeeFilters;
-  onFiltersChange?: (filters: EmployeeFilters) => void;
+  filters?: AdvancedEmployeeFilters;
+  onFiltersChange?: (filters: AdvancedEmployeeFilters) => void;
+  sortConfig?: SortConfig;
+  onSortChange?: (sort: SortConfig) => void;
 }
 
 const EmployeeList: React.FC<EmployeeListProps> = ({
@@ -71,43 +75,28 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
   onBulkEdit,
   onBulkDelete,
   onBulkExport,
-  filters = {},
+  filters = createDefaultFilters(),
   onFiltersChange,
+  sortConfig = createDefaultSort(),
+  onSortChange,
 }) => {
   const theme = useTheme();
-  const [searchTerm, setSearchTerm] = useState(filters.search || "");
   const [page, setPage] = useState(1);
-  const [showFilters, setShowFilters] = useState(false);
   const [selectedEmployees, setSelectedEmployees] = useState<Employee[]>([]);
   const [selectAll, setSelectAll] = useState(false);
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
 
   const itemsPerPage = 12;
 
-  // Filter employees based on search and filters
-  const filteredEmployees = useMemo(() => {
-    return employees.filter((employee) => {
-      const matchesSearch =
-        !searchTerm ||
-        `${employee.firstName} ${employee.lastName}`
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) ||
-        employee.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        employee.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        employee.department.toLowerCase().includes(searchTerm.toLowerCase());
+  // Generate filter stats for the advanced filters component
+  const filterStats = useMemo(() => generateFilterStats(employees), [employees]);
 
-      const matchesDepartment =
-        !filters.department || employee.department === filters.department;
-      const matchesStatus =
-        !filters.status || employee.status === filters.status;
-      const matchesCountry =
-        !filters.country || employee.address.country === filters.country;
+  // Apply advanced filtering and sorting
+  const searchResult = useMemo(() => {
+    return filterEmployees(employees, filters, sortConfig);
+  }, [employees, filters, sortConfig]);
 
-      return (
-        matchesSearch && matchesDepartment && matchesStatus && matchesCountry
-      );
-    });
-  }, [employees, searchTerm, filters]);
+  const filteredEmployees = searchResult.employees;
 
   // Paginate employees
   const paginatedEmployees = useMemo(() => {
@@ -117,16 +106,21 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
 
   const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
 
-  const handleSearchChange = (value: string) => {
-    setSearchTerm(value);
-    onFiltersChange?.({ ...filters, search: value });
+  const handleFiltersChange = (newFilters: AdvancedEmployeeFilters) => {
+    onFiltersChange?.(newFilters);
     setPage(1); // Reset to first page
   };
 
-  const handleFilterChange = (key: keyof EmployeeFilters, value: any) => {
-    const newFilters = { ...filters, [key]: value };
-    onFiltersChange?.(newFilters);
-    setPage(1); // Reset to first page
+  const handleSortChange = (newSort: SortConfig) => {
+    onSortChange?.(newSort);
+  };
+
+  const handleResetFilters = () => {
+    const defaultFilters = createDefaultFilters();
+    const defaultSort = createDefaultSort();
+    onFiltersChange?.(defaultFilters);
+    onSortChange?.(defaultSort);
+    setPage(1);
   };
 
   const handleSelectEmployee = (employee: Employee, checked: boolean) => {
@@ -156,7 +150,11 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
   };
 
   const handleBulkExport = () => {
-    onBulkExport?.(selectedEmployees);
+    if (selectedEmployees.length > 0) {
+      exportFilteredEmployees(selectedEmployees, 'selected_employees');
+    } else {
+      exportFilteredEmployees(filteredEmployees, 'filtered_employees');
+    }
   };
 
   const clearSelection = () => {
@@ -376,44 +374,25 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
 
   return (
     <Box>
-      {/* Header with search and filters */}
+      {/* Advanced Filters Component */}
+      <EmployeeFilters
+        filters={filters}
+        onFiltersChange={handleFiltersChange}
+        sortConfig={sortConfig}
+        onSortChange={handleSortChange}
+        filterStats={filterStats}
+        onReset={handleResetFilters}
+      />
+
+      {/* View Toggle and Add Button */}
       <Box
         sx={{
           mb: 3,
           display: "flex",
-          flexWrap: "wrap",
-          gap: 2,
+          justifyContent: "space-between",
           alignItems: "center",
         }}
       >
-        <TextField
-          placeholder="Search employees..."
-          value={searchTerm}
-          onChange={(e) => handleSearchChange(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search />
-              </InputAdornment>
-            ),
-          }}
-          sx={{ minWidth: 300 }}
-        />
-
-        <IconButton
-          onClick={() => setShowFilters(!showFilters)}
-          sx={{
-            backgroundColor: showFilters
-              ? alpha(theme.palette.primary.main, 0.1)
-              : "transparent",
-            "&:hover": {
-              backgroundColor: alpha(theme.palette.primary.main, 0.1),
-            },
-          }}
-        >
-          <FilterList />
-        </IconButton>
-
         {/* View Toggle */}
         <Box sx={{ display: 'flex', borderRadius: 1, overflow: 'hidden', border: `1px solid ${theme.palette.divider}` }}>
           <IconButton
@@ -527,82 +506,6 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
         </Box>
       )}
 
-      {/* Filters */}
-      {showFilters && (
-        <Box
-          sx={{
-            mb: 3,
-            p: 2,
-            backgroundColor: alpha(theme.palette.background.paper, 0.5),
-            borderRadius: 2,
-          }}
-        >
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Department</InputLabel>
-                <Select
-                  value={filters.department || ""}
-                  onChange={(e) =>
-                    handleFilterChange("department", e.target.value)
-                  }
-                  label="Department"
-                >
-                  <MenuItem value="">All Departments</MenuItem>
-                  {/* Add department options dynamically */}
-                  {Array.from(
-                    new Set(employees.map((emp) => emp.department))
-                  ).map((dept) => (
-                    <MenuItem key={dept} value={dept}>
-                      {dept}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Status</InputLabel>
-                <Select
-                  value={filters.status || ""}
-                  onChange={(e) => handleFilterChange("status", e.target.value)}
-                  label="Status"
-                >
-                  <MenuItem value="">All Status</MenuItem>
-                  <MenuItem value="active">Active</MenuItem>
-                  <MenuItem value="inactive">Inactive</MenuItem>
-                  <MenuItem value="terminated">Terminated</MenuItem>
-                  <MenuItem value="on-leave">On Leave</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Country</InputLabel>
-                <Select
-                  value={filters.country || ""}
-                  onChange={(e) =>
-                    handleFilterChange("country", e.target.value)
-                  }
-                  label="Country"
-                >
-                  <MenuItem value="">All Countries</MenuItem>
-                  {/* Add country options dynamically */}
-                  {Array.from(
-                    new Set(employees.map((emp) => emp.address.country))
-                  ).map((country) => (
-                    <MenuItem key={country} value={country}>
-                      {country}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
-        </Box>
-      )}
 
       {/* Results count and Select All */}
       <Box
@@ -863,7 +766,14 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
             No employees found
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {searchTerm || Object.keys(filters).length > 0
+            {filters.search || Object.keys(filters).some(key => {
+              const value = filters[key as keyof AdvancedEmployeeFilters];
+              if (Array.isArray(value)) return value.length > 0;
+              if (typeof value === 'object' && value !== null) {
+                return Object.values(value).some(v => v !== undefined && v !== null && v !== '');
+              }
+              return value !== undefined && value !== null && value !== '';
+            })
               ? "Try adjusting your search or filters"
               : "Start by adding your first employee"}
           </Typography>

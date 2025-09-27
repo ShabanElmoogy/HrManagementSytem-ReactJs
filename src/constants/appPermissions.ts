@@ -2,10 +2,11 @@
 
 // Define permission actions and modules
 export type PermissionAction = 'View' | 'Create' | 'Edit' | 'Delete';
-export type PermissionModule = 
-  | 'Addresses' | 'AddressTypes' | 'ApiKeys' | 'Categories' | 'Countries'
-  | 'Districts' | 'ChangeLogs' | 'Localizations' | 'ReportsCategories'
-  | 'Roles' | 'States' | 'SubCategories' | 'Users';
+export type PermissionModule =
+   | 'Addresses' | 'AddressTypes' | 'ApiKeys' | 'Categories' | 'Countries'
+   | 'Districts' | 'ChangeLogs' | 'Localizations' | 'ReportsCategories'
+   | 'Roles' | 'States' | 'SubCategories' | 'Users' | 'Analytics'
+   | 'Communication' | 'Documents';
 
 // Permission string type
 export type PermissionString = `${PermissionModule}:${PermissionAction}` | 'ChangeLogs:View';
@@ -86,6 +87,24 @@ export const Permissions = {
   CreateUsers: "Users:Create",
   EditUsers: "Users:Edit",
   DeleteUsers: "Users:Delete",
+
+  // Analytics
+  ViewAnalytics: "Analytics:View",
+  CreateAnalytics: "Analytics:Create",
+  EditAnalytics: "Analytics:Edit",
+  DeleteAnalytics: "Analytics:Delete",
+
+  // Communication
+  ViewCommunication: "Communication:View",
+  CreateCommunication: "Communication:Create",
+  EditCommunication: "Communication:Edit",
+  DeleteCommunication: "Communication:Delete",
+
+  // Documents
+  ViewDocuments: "Documents:View",
+  CreateDocuments: "Documents:Create",
+  EditDocuments: "Documents:Edit",
+  DeleteDocuments: "Documents:Delete",
 
   // Methods for backward compatibility
   getAllPermissions: () => getAllPermissions(),

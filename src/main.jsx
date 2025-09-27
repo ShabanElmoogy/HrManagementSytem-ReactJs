@@ -1,6 +1,8 @@
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
@@ -47,10 +49,12 @@ const AppWithPullToRefresh = () => {
 ReactDOM.createRoot(document.getElementById("root")).render(
   <GoogleOAuthProvider clientId="438701484360-sb25nra1cea6vhngasldijinaoroislu.apps.googleusercontent.com">
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <AppWithPullToRefresh />
-      </BrowserRouter>
-      <ReactQueryDevtools initialIsOpen={false} />
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <BrowserRouter>
+          <AppWithPullToRefresh />
+        </BrowserRouter>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </LocalizationProvider>
     </QueryClientProvider>
   </GoogleOAuthProvider>
 );

@@ -24,7 +24,7 @@ import ResetPassword from "../features/auth/resetPassword";
 import RolePermissionsPage from "../features/auth/roles/components/rolePermissionsPage";
 import CountriesPage from "../features/basicData/countries/countriesPage";
 import { StatesPage } from "../features/basicData/states";
-import { EmployeePage, EmployeeDetailPage, EmployeeForm } from "../features/employee";
+import { EmployeePage, EmployeeDetailPage, EmployeeForm, DocumentManagementPage } from "../features/employee";
 import UsersPage from "@/features/auth/users/usersPage";
 import RolesPage from "@/features/auth/roles/rolesPage";
 import TrackChangesGrid from "@/features/advancedTools/trackChangesGrid";
@@ -34,6 +34,29 @@ import ApiEndpoints from "@/features/advancedTools/apiEndpoints";
 import HangfireDashboard from "@/features/advancedTools/hangfireDashboard";
 import ChartExamplesPage from "@/features/chartExamples/chartExamplesPage";
 // NotificationExample removed - using simplified notification system
+
+// Analytics imports
+import {
+  HRMainDashboard,
+  PerformanceAnalytics,
+  TimeAttendanceAnalytics,
+  EmployeeEngagementDashboard,
+  DocumentAnalytics,
+  CustomReportBuilder,
+  ReportViewer,
+  DataExportTools
+} from "@/features/analytics";
+
+// Communication imports
+import {
+  MessagingSystem,
+  AnnouncementCenter,
+  FeedbackCollection,
+  CommunicationDashboard,
+  NotificationSystem,
+  CommunicationReports
+} from "@/features/communication";
+
 
 const AppRoutes = () => {
   return (
@@ -200,6 +223,19 @@ const AppRoutes = () => {
               }
             />
 
+            <Route
+              path={appRoutes.basicData.employeeDocuments}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <DocumentManagementPage />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
             {/* Chart Examples */}
             <Route
               path={appRoutes.chartExamples}
@@ -296,6 +332,259 @@ const AppRoutes = () => {
               }
             />
             {/* NotificationExample route removed - using simplified notification system */}
+
+            {/* ========================================================================= */}
+            {/* Analytics Routes */}
+            <Route
+              path={appRoutes.analytics.mainDashboard}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <HRMainDashboard />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.analytics.performanceAnalytics}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <PerformanceAnalytics />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.analytics.timeAttendanceAnalytics}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <TimeAttendanceAnalytics />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.analytics.employeeEngagement}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <EmployeeEngagementDashboard />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.analytics.documentAnalytics}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <DocumentAnalytics />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.analytics.customReports}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <CustomReportBuilder />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.analytics.reportViewer}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <ReportViewer />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.analytics.dataExport}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <DataExportTools />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* ========================================================================= */}
+            {/* Communication Routes */}
+            <Route
+              path={appRoutes.communication.messaging}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <MessagingSystem />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.communication.announcements}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <AnnouncementCenter />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.communication.feedback}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <FeedbackCollection />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.communication.dashboard}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <CommunicationDashboard />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.communication.notifications}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <NotificationSystem />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.communication.reports}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <CommunicationReports />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* ========================================================================= */}
+            {/* Document Management Routes */}
+            <Route
+              path={appRoutes.documents.overview}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <DocumentManagementPage />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.documents.employeeDocuments}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <DocumentManagementPage />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.documents.companyDocuments}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <DocumentManagementPage />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.documents.templates}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <DocumentManagementPage />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.documents.archives}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <DocumentManagementPage />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
 
             {/* Redirect unmatched routes to home */}
             <Route

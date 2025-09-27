@@ -17,7 +17,8 @@ import {
   Public
 } from '@mui/icons-material';
 import EmployeeList from './EmployeeList';
-import { Employee, EmployeeFilters } from '../types/Employee';
+import { Employee, AdvancedEmployeeFilters, SortConfig } from '../types/Employee';
+import { createDefaultFilters, createDefaultSort } from '../utils/employeeFilters';
 
 // Mock data for demonstration
 const mockEmployees: Employee[] = [
@@ -75,18 +76,42 @@ const mockEmployees: Employee[] = [
     documents: [
       {
         id: 'doc1',
+        employeeId: '1',
         type: 'contract',
+        category: 'employment',
         name: 'Employment Contract',
+        description: 'Employee contract document',
         fileUrl: '#',
+        fileSize: 1024000,
+        mimeType: 'application/pdf',
+        version: 1,
+        versions: [],
+        uploadedBy: 'admin',
         uploadedAt: '2023-01-10',
-        expiryDate: '2024-01-10'
+        expiryDate: '2024-01-10',
+        tags: ['contract', 'employment'],
+        permissions: [],
+        status: 'active',
+        lastAccessed: '2023-01-15'
       },
       {
         id: 'doc2',
+        employeeId: '1',
         type: 'id',
+        category: 'identification',
         name: 'ID Card',
+        description: 'Employee identification document',
         fileUrl: '#',
-        uploadedAt: '2023-01-10'
+        fileSize: 512000,
+        mimeType: 'image/jpeg',
+        version: 1,
+        versions: [],
+        uploadedBy: 'admin',
+        uploadedAt: '2023-01-10',
+        tags: ['id', 'identification'],
+        permissions: [],
+        status: 'active',
+        lastAccessed: '2023-01-12'
       }
     ],
     status: 'active',
@@ -148,7 +173,8 @@ const EmployeePage: React.FC = () => {
   const navigate = useNavigate();
 
   const [employees] = useState<Employee[]>(mockEmployees);
-  const [filters, setFilters] = useState<EmployeeFilters>({});
+  const [filters, setFilters] = useState<AdvancedEmployeeFilters>(createDefaultFilters());
+  const [sortConfig, setSortConfig] = useState<SortConfig>(createDefaultSort());
   const [loading, setLoading] = useState(false);
 
   // Calculate stats
@@ -348,6 +374,8 @@ const EmployeePage: React.FC = () => {
         onBulkExport={handleBulkExport}
         filters={filters}
         onFiltersChange={setFilters}
+        sortConfig={sortConfig}
+        onSortChange={setSortConfig}
       />
 
     </Box>

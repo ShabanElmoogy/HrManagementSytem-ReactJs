@@ -9,6 +9,10 @@ export enum NavigationSectionId {
   CHAT = "chat",
   CHART_EXAMPLES = "chartExamples",
   ADVANCED_TOOLS = "advancedTools",
+  HR_MANAGEMENT = "hrManagement",
+  ANALYTICS = "analytics",
+  COMMUNICATION = "communication",
+  DOCUMENTS = "documents",
 }
 
 export enum NavigationColors {
@@ -23,6 +27,15 @@ export enum NavigationColors {
   DARK_PURPLE = "#9c27b0",
   DARK_GRAY = "#352F36FF",
   ORANGE = "#ff5722",
+  // HR Management colors
+  HR_BLUE = "#1565c0",
+  LIGHT_HR_BLUE = "#1976d2",
+  ANALYTICS_GREEN = "#2e7d32",
+  LIGHT_ANALYTICS_GREEN = "#388e3c",
+  COMMUNICATION_PURPLE = "#7b1fa2",
+  LIGHT_COMMUNICATION_PURPLE = "#8e24aa",
+  DOCUMENTS_ORANGE = "#f57c00",
+  LIGHT_DOCUMENTS_ORANGE = "#fb8c00",
 }
 
 export enum UserRoles {
@@ -55,6 +68,33 @@ export enum NavigationTitles {
   HEALTH_CHECK = "advancedTools.healthCheck",
   API_ENDPOINTS = "advancedTools.apiEndPoints",
   HANGFIRE_DASHBOARD = "advancedTools.hangfireDashboard",
+
+  // HR Management
+  HR_MANAGEMENT = "HR Management",
+  ANALYTICS = "Analytics",
+  ANALYTICS_DASHBOARD = "HR Dashboard",
+  PERFORMANCE_ANALYTICS = "Performance Analytics",
+  TIME_ATTENDANCE_ANALYTICS = "Time & Attendance",
+  EMPLOYEE_ENGAGEMENT = "Employee Engagement",
+  DOCUMENT_ANALYTICS = "Document Analytics",
+  CUSTOM_REPORTS = "Custom Reports",
+  REPORT_VIEWER = "Report Viewer",
+  DATA_EXPORT = "Data Export",
+
+  COMMUNICATION = "Communication",
+  MESSAGING = "Messaging",
+  ANNOUNCEMENTS = "Announcements",
+  FEEDBACK = "Feedback",
+  COMMUNICATION_DASHBOARD = "Communication Dashboard",
+  NOTIFICATIONS = "Notifications",
+  COMMUNICATION_REPORTS = "Communication Reports",
+
+  DOCUMENTS = "Documents",
+  DOCUMENT_OVERVIEW = "Document Overview",
+  EMPLOYEE_DOCUMENTS = "Employee Documents",
+  COMPANY_DOCUMENTS = "Company Documents",
+  DOCUMENT_TEMPLATES = "Templates",
+  DOCUMENT_ARCHIVES = "Archives",
 }
 
 // Interface definitions

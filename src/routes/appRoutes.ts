@@ -48,7 +48,37 @@ export interface BasicDataRoutes {
   states: string;
   employees: string;
   employeeDetail: string;
+  employeeEdit: string;
   employeeCreate: string;
+  employeeDocuments: string;
+}
+
+export interface AnalyticsRoutes {
+  mainDashboard: string;
+  performanceAnalytics: string;
+  timeAttendanceAnalytics: string;
+  employeeEngagement: string;
+  documentAnalytics: string;
+  customReports: string;
+  reportViewer: string;
+  dataExport: string;
+}
+
+export interface CommunicationRoutes {
+  messaging: string;
+  announcements: string;
+  feedback: string;
+  dashboard: string;
+  notifications: string;
+  reports: string;
+}
+
+export interface DocumentManagementRoutes {
+  overview: string;
+  employeeDocuments: string;
+  companyDocuments: string;
+  templates: string;
+  archives: string;
 }
 
 export interface AuthRoutes {
@@ -82,6 +112,11 @@ export interface AppRoutes {
   monitors: MonitorsRoutes;
   basicData: BasicDataRoutes;
   auth: AuthRoutes;
+
+  // HR Management routes
+  analytics: AnalyticsRoutes;
+  communication: CommunicationRoutes;
+  documents: DocumentManagementRoutes;
 
   // Simple routes
   codeSnippets: string;
@@ -163,12 +198,41 @@ export const appRoutes: AppRoutes = {
     employeeDetail: "basic-data/employees/:id",
     employeeEdit: "basic-data/employees/:id/edit",
     employeeCreate: "basic-data/employees/create",
+    employeeDocuments: "basic-data/employees/:id/documents",
   },
 
   auth: {
     rolesPage: "auth/roles",
     usersPage: "auth/users",
     rolePermissionsPage: "auth/manage-role-permissions/:id",
+  },
+
+  analytics: {
+    mainDashboard: "analytics/dashboard",
+    performanceAnalytics: "analytics/performance",
+    timeAttendanceAnalytics: "analytics/time-attendance",
+    employeeEngagement: "analytics/engagement",
+    documentAnalytics: "analytics/documents",
+    customReports: "analytics/reports",
+    reportViewer: "analytics/reports/:id",
+    dataExport: "analytics/export",
+  },
+
+  communication: {
+    messaging: "communication/messaging",
+    announcements: "communication/announcements",
+    feedback: "communication/feedback",
+    dashboard: "communication/dashboard",
+    notifications: "communication/notifications",
+    reports: "communication/reports",
+  },
+
+  documents: {
+    overview: "documents",
+    employeeDocuments: "documents/employees/:employeeId",
+    companyDocuments: "documents/company",
+    templates: "documents/templates",
+    archives: "documents/archives",
   },
 
   chat: "chat",
