@@ -48,7 +48,9 @@ export enum NavigationTitles {
   // Menu keys
   BASIC_DATA = "menu.basicData",
   COUNTRIES = "menu.countries",
+  ADDRESS_TYPES = "menu.addressTypes",
   STATES = "menu.states",
+  DISTRICTS = "menu.districts",
   EMPLOYEES = "menu.employees",
   ROLES_AND_USERS_MANAGEMENT = "menu.rolesAndUsersManagement",
   ROLES_MANAGEMENT = "menu.rolesManagement",

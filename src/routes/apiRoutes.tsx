@@ -24,6 +24,12 @@ interface CrudRoutes {
 
 interface StatesRoutes extends CrudRoutes { }
 
+interface DistrictsRoutes extends CrudRoutes {
+  getAllByState: (stateId: string | number) => string;
+  getDistrictWithAddresses: (id: string | number) => string;
+  getCount: string;
+}
+
 interface RolesRoutes extends Omit<CrudRoutes, 'delete'> {
   toggle: (id: string | number) => string;
   getRoleClaims: (id: string | number) => string;
@@ -58,7 +64,9 @@ interface ApiRoutes {
   version: string;
   auth: AuthRoutes;
   countries: CrudRoutes;
+  addressTypes: CrudRoutes;
   states: StatesRoutes;
+  districts: DistrictsRoutes;
   roles: RolesRoutes;
   users: UsersRoutes;
   export: ExportRoutes;
@@ -91,12 +99,29 @@ const apiRoutes: ApiRoutes = {
     update: `${version}/countries/update`,
     delete: (id: string | number) => `${version}/countries/delete/${id}`,
   },
+  addressTypes: {
+    getAll: `${version}/addressTypes/getAll`,
+    getById: (id: string | number) => `${version}/addressTypes/${id}`,
+    add: `${version}/addressTypes/add`,
+    update: `${version}/addressTypes/update`,
+    delete: (id: string | number) => `${version}/addressTypes/delete/${id}`,
+  },
   states: {
     getAll: `${version}/states/getAll`,
     getById: (id: string | number) => `${version}/states/${id}`,
     add: `${version}/states/add`,
     update: `${version}/states/update`,
     delete: (id: string | number) => `${version}/states/delete/${id}`,
+  },
+  districts: {
+    getAll: `${version}/districts/getAll`,
+    getById: (id: string | number) => `${version}/districts/${id}`,
+    getAllByState: (stateId: string | number) => `${version}/districts/getAllByState/by-state/${stateId}`,
+    getDistrictWithAddresses: (id: string | number) => `${version}/districts/getDistrictWithAddresses/${id}/addresses`,
+    add: `${version}/districts/add`,
+    update: `${version}/districts/update`,
+    delete: (id: string | number) => `${version}/districts/delete/${id}`,
+    getCount: `${version}/districts/getCount/count`,
   },
   roles: {
     getAll: `${version}/roles/getAll`,
@@ -133,4 +158,4 @@ const apiRoutes: ApiRoutes = {
 };
 
 export default apiRoutes;
-export type { ApiRoutes, AuthRoutes, CrudRoutes, RolesRoutes, UsersRoutes };
+export type { ApiRoutes, AuthRoutes, CrudRoutes, DistrictsRoutes, RolesRoutes, UsersRoutes };

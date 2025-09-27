@@ -45,7 +45,9 @@ export interface MonitorsRoutes {
 
 export interface BasicDataRoutes {
   countries: string;
+  addressTypes: string;
   states: string;
+  districts: string;
   employees: string;
   employeeDetail: string;
   employeeEdit: string;
@@ -193,7 +195,9 @@ export const appRoutes: AppRoutes = {
 
   basicData: {
     countries: "basic-data/countries",
+    addressTypes: "basic-data/address-types",
     states: "basic-data/states",
+    districts: "basic-data/districts",
     employees: "basic-data/employees",
     employeeDetail: "basic-data/employees/:id",
     employeeEdit: "basic-data/employees/:id/edit",

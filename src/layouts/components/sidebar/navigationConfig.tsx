@@ -78,6 +78,16 @@ export const getNavigationConfig = (): NavigationConfig => {
           permissions: [Permissions.ViewCountries],
         },
         {
+          title: NavigationTitles.ADDRESS_TYPES,
+          icon: (
+            <ColoredIcon color={NavigationColors.SECONDARY_BLUE}>
+              <CategoryIcon />
+            </ColoredIcon>
+          ),
+          path: appRoutes.basicData.addressTypes,
+          permissions: [Permissions.ViewAddressTypes],
+        },
+        {
           title: NavigationTitles.STATES,
           icon: (
             <ColoredIcon color={NavigationColors.SECONDARY_BLUE}>
@@ -86,6 +96,16 @@ export const getNavigationConfig = (): NavigationConfig => {
           ),
           path: appRoutes.basicData.states,
           roles: [UserRoles.ADMIN],
+        },
+        {
+          title: NavigationTitles.DISTRICTS,
+          icon: (
+            <ColoredIcon color={NavigationColors.SECONDARY_BLUE}>
+              <LocationCityIcon />
+            </ColoredIcon>
+          ),
+          path: appRoutes.basicData.districts,
+          permissions: [Permissions.ViewDistricts],
         },
         {
           title: NavigationTitles.EMPLOYEES,

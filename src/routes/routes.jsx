@@ -24,6 +24,8 @@ import ResetPassword from "../features/auth/resetPassword";
 import RolePermissionsPage from "../features/auth/roles/components/rolePermissionsPage";
 import CountriesPage from "../features/basicData/countries/countriesPage";
 import { StatesPage } from "../features/basicData/states";
+import DistrictsPage from "../features/basicData/districts/districtsPage";
+import AddressTypesPage from "../features/basicData/addressesType/addressTypesPage";
 import { EmployeePage, EmployeeDetailPage, EmployeeForm, DocumentManagementPage } from "../features/employee";
 import UsersPage from "@/features/auth/users/usersPage";
 import RolesPage from "@/features/auth/roles/rolesPage";
@@ -166,6 +168,32 @@ const AppRoutes = () => {
                 >
                   <Suspense fallback={<MyLoadingIndicator />}>
                     <StatesPage />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.basicData.addressTypes}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewAddressTypes]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <AddressTypesPage />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.basicData.districts}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewStates]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <DistrictsPage />
                   </Suspense>
                 </ProtectedRoute>
               }

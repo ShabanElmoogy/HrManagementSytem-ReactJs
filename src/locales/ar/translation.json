@@ -46,13 +46,15 @@
     "securitySettings": "الاعدادات الامنية",
     "basicData": "البيانات الأساسية",
     "countries": "الدول",
+    "addressTypes": "انواع العناوين",
     "states": "المحافظات",
     "rolesAndUsersManagement": "المستخدمين و الصلاحيات",
     "rolesManagement": "ادارة الصلاحيات",
     "usersManagement": "ادارة المستخدمين",
     "chat": "المحادثة",
     "chatInterface": "واجهة المحادثة",
-    "employees": "الموظفين"
+    "employees": "الموظفين",
+    "districts" : "الاحياء"
   },
   "actions": {
     "buttons": "العمليات",
@@ -268,6 +270,30 @@
     "goToNextRecord": "الذهاب للسجل التالى",
     "goToLastRecord": "الذهاب للسجل الاخير"
   },
+  "addressTypes": {
+    "views": { "grid": "عرض الجدول" },
+    "title": "انواع العناوين",
+    "subTitle": "قائمة انواع العناوين",
+    "viewTitle": "إدارة انواع العناوين",
+    "view": "عرض نوع العنوان",
+    "add": "إضافة نوع عنوان",
+    "edit": "تعديل نوع العنوان",
+    "delete": "حذف نوع العنوان",
+    "created": "تم انشاء نوع العنوان بنجاح",
+    "updated": "تم تحديث نوع العنوان بنجاح",
+    "deleted": "تم حذف نوع العنوان بنجاح",
+    "creating": "جارى انشاء نوع عنوان",
+    "updating": "جارى تحديث نوع العنوان",
+    "saving": "جارى حفظ نوع العنوان",
+    "errorMessage": "فشل في تحميل انواع العناوين",
+    "fetchError": "فشل في جلب انواع العناوين",
+    "createError": "فشل في إنشاء نوع العنوان",
+    "updateError": "فشل في تحديث نوع العنوان",
+    "deleteError": "فشل في حذف نوع العنوان",
+    "nameArPlaceholder": "أحرف عربية فقط : المنزل , العمل",
+    "nameEnPlaceholder": "أحرف انجليزية فقط : Home , Work",
+    "total": "المجموع"
+  },
   "countries": {
     "dashboard": {
       "totalCountries": "الدول الكلية",
@@ -440,6 +466,67 @@
     "total" : "المجموع",
     "filtered" : "ناتج البحث"
   },
+  "districts": {
+    "dashboard": {
+      "totalDistricts": "إجمالي الأحياء",
+      "completedProfiles": "الملفات المكتملة",
+      "uniqueStates": "المحافظات الفريدة",
+      "withStates": "مع المحافظات",
+      "avgDistrictsPerState": "متوسط الأحياء/المحافظة",
+      "dataQuality": "جودة البيانات",
+      "totalStates": "إجمالي المحافظات",
+      "withCodes": "مع الأكواد",
+      "activeDistricts": "الأحياء النشطة"
+    },
+    "views": {
+      "grid": "عرض الجدول",
+      "cards": "عرض البطاقات",
+      "chart": "عرض الرسوم البيانية"
+    },
+    "title": "الأحياء",
+    "viewTitle": "إدارة الأحياء",
+    "viewSubtitle": "عرض بيانات الحي",
+    "editSubtitle": "تعديل بيانات الحي",
+    "addSubtitle": "إضافة حي جديد",
+    "browseAndManage": "تصفح وادارة",
+    "districts": "الأحياء",
+    "searchPlaceHolder": "ابحث باسم الحي , رمز الحي , اسم المحافظة...",
+    "sort": {
+      "name": "الإسم",
+      "code": "الرمز",
+      "state": "المحافظة",
+      "created": "تاريخ الإنشاء"
+    },
+    "filters": {
+      "all": "كل الأحياء",
+      "recent30Days": "احدث (30 يوما)",
+      "hasState": "مع المحافظة"
+    },
+    "total": "المجموع",
+    "filtered": "ناتج البحث",
+    "state": "المحافظة",
+    "code": "رمز الحي",
+    "view": "عرض الحي",
+    "add": "اضافة حي",
+    "edit": "تعديل الحي",
+    "nameArPlaceholder": "أحرف عربية فقط : الحي الأول , الحي الغربي",
+    "nameEnPlaceholder": "أحرف انجليزية فقط : First District , West District",
+    "selectState": "اختر محافظة",
+    "generateMockData": "توليد بيانات تجريبية",
+    "fetched": "تم تحميل قائمة الأحياء بنجاح",
+    "created": "تم انشاء الحي بنجاح",
+    "updated": "تم تحديث بيانات الحي بنجاح",
+    "deleted": "تم حذف الحي بنجاح",
+    "fetchError": "فشل في جلب الأحياء",
+    "createError": "فشل في إنشاء الحي",
+    "updateError": "فشل في تحديث الحي",
+    "deleteError": "فشل في حذف الحي",
+    "mainTitle": "قائمة الأحياء",
+    "mainSubTitle": "لا توجد أحياء متاحة لعرضها",
+    "noDistrictsAvailable": "لا توجد أحياء متاحة",
+    "noDistrictsAvailableDescription": "ابدء بإضافة حي جديد",
+    "addFirstDistrict": "إضافة حي جديد"
+  },
   "roles": {
     "creatingRole": "جارى انشاء صلاحية جديد",
     "updatingRole": "جارى تحديث تصنيف الصلاحية",
@@ -555,7 +642,10 @@
       "clearSearch": "مسح البحث",
       "clearFilters": "مسح الفلاتر",
       "refresh": "تحديث",
-      "messageWithTerm": "لا توجد نتنائج للبحث"
+      "messageWithTerm": "لا توجد نتنائج للبحث",
+      "noDistrictsFound": "لا توجد أحياء",
+      "noMatchWithTerm": "لا توجد أحياء مطابقة لـ \"{{term}}\". حاول تعديل البحث.",
+      "noAvailableWithFilters": "لا توجد أحياء متاحة مع عوامل التصفية الحالية."
     }
   }
 }
