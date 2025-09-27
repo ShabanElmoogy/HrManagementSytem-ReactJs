@@ -177,7 +177,7 @@ const EmployeePage: React.FC = () => {
 
   const handleAddEmployee = () => {
     // Navigate to add employee page
-    console.log('Add new employee');
+    navigate('/basic-data/employees/create');
   };
 
 

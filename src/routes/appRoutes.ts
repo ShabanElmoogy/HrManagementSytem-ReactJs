@@ -161,6 +161,7 @@ export const appRoutes: AppRoutes = {
     states: "basic-data/states",
     employees: "basic-data/employees",
     employeeDetail: "basic-data/employees/:id",
+    employeeEdit: "basic-data/employees/:id/edit",
     employeeCreate: "basic-data/employees/create",
   },
 

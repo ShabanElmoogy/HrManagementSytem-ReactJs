@@ -24,7 +24,7 @@ import ResetPassword from "../features/auth/resetPassword";
 import RolePermissionsPage from "../features/auth/roles/components/rolePermissionsPage";
 import CountriesPage from "../features/basicData/countries/countriesPage";
 import { StatesPage } from "../features/basicData/states";
-import { EmployeePage, EmployeeDetailPage } from "../features/employee";
+import { EmployeePage, EmployeeDetailPage, EmployeeForm } from "../features/employee";
 import UsersPage from "@/features/auth/users/usersPage";
 import RolesPage from "@/features/auth/roles/rolesPage";
 import TrackChangesGrid from "@/features/advancedTools/trackChangesGrid";
@@ -169,6 +169,32 @@ const AppRoutes = () => {
                 >
                   <Suspense fallback={<MyLoadingIndicator />}>
                     <EmployeeDetailPage />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.basicData.employeeEdit}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewCountries]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <EmployeeForm mode="edit" />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.basicData.employeeCreate}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ManageUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <EmployeeForm mode="create" />
                   </Suspense>
                 </ProtectedRoute>
               }
