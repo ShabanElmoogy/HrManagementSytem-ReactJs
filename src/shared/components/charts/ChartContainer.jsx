@@ -9,7 +9,7 @@ const ChartContainer = ({
   loading = false,
   error = null,
   height = 400,
-  elevation = 2,
+  elevation = 1,
   gradient = false,
   icon: Icon = TrendingUp,
   actions = null,
@@ -19,16 +19,16 @@ const ChartContainer = ({
 
   if (loading) {
     return (
-      <Paper elevation={elevation} sx={{ p: 3, ...props.sx }}>
+      <Paper elevation={elevation} sx={{ p: 3, borderRadius: 2, ...props.sx }}>
         {title && <Skeleton variant="text" width="30%" height={32} />}
-        <Skeleton variant="rectangular" width="100%" height={height} sx={{ mt: 2 }} />
+        <Skeleton variant="rectangular" width="100%" height={height} sx={{ mt: 2, borderRadius: 1 }} />
       </Paper>
     );
   }
 
   if (error) {
     return (
-      <Paper elevation={elevation} sx={{ p: 3, ...props.sx }}>
+      <Paper elevation={elevation} sx={{ p: 3, borderRadius: 2, ...props.sx }}>
         <Box
           sx={{
             display: 'flex',
@@ -56,9 +56,14 @@ const ChartContainer = ({
       elevation={elevation}
       sx={{
         p: 3,
+        borderRadius: 2,
         background: gradient
           ? `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.9)} 0%, ${alpha(theme.palette.background.default, 0.9)} 100%)`
           : theme.palette.background.paper,
+        transition: 'box-shadow 0.3s ease-in-out',
+        '&:hover': {
+          boxShadow: theme.shadows[4]
+        },
         ...props.sx
       }}
     >
@@ -68,7 +73,9 @@ const ChartContainer = ({
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'flex-start',
-            mb: 3
+            mb: 3,
+            pb: 2,
+            borderBottom: `1px solid ${alpha(theme.palette.divider, 0.08)}`
           }}
         >
           <Box>
@@ -79,11 +86,11 @@ const ChartContainer = ({
                   display: 'flex',
                   alignItems: 'center',
                   color: theme.palette.primary.main,
-                  fontWeight: 'bold',
+                  fontWeight: 600,
                   mb: subtitle ? 0.5 : 0
                 }}
               >
-                {Icon && <Icon sx={{ mr: 1 }} />}
+                {Icon && <Icon sx={{ mr: 1.5, color: theme.palette.primary.main }} />}
                 {title}
               </Typography>
             )}
@@ -100,7 +107,7 @@ const ChartContainer = ({
           )}
         </Box>
       )}
-      
+
       <Box sx={{ height, width: '100%' }}>
         {children}
       </Box>

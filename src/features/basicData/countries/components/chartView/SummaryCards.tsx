@@ -17,7 +17,6 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
   totalRegions,
   totalCurrencies,
   totalStates,
-  avgPerRegion,
   t
 }) => {
   const cards = [

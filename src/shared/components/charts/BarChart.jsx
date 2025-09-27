@@ -2,7 +2,7 @@
 import { ResponsiveContainer, BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from 'recharts';
 import { useTheme } from '@mui/material';
 import { getChartTheme } from './chartThemes';
-import { COLOR_PALETTES, formatNumber } from './chartUtils';
+import { getColorPalette, formatNumber } from './chartUtils';
 import ChartContainer from './ChartContainer';
 
 const BarChart = ({
@@ -12,7 +12,7 @@ const BarChart = ({
   title,
   subtitle,
   height = 400,
-  colors = COLOR_PALETTES.primary,
+  colors = 'primary', // Now accepts palette name or array
   showGrid = true,
   showLegend = false,
   showTooltip = true,
@@ -31,6 +31,7 @@ const BarChart = ({
 }) => {
   const theme = useTheme();
   const chartTheme = getChartTheme(theme);
+  const colorPalette = Array.isArray(colors) ? colors : getColorPalette(colors, theme.palette.mode);
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null;
@@ -60,7 +61,7 @@ const BarChart = ({
           key={series.key}
           dataKey={series.key}
           name={series.name}
-          fill={series.color || colors[index % colors.length]}
+          fill={series.color || colorPalette[index % colorPalette.length]}
           radius={orientation === 'vertical' ? [barRadius, barRadius, 0, 0] : [0, barRadius, barRadius, 0]}
           maxBarSize={barSize}
           onClick={handleBarClick}
@@ -71,13 +72,13 @@ const BarChart = ({
     return (
       <Bar
         dataKey={yKey}
-        fill={colors[0]}
+        fill={colorPalette[0]}
         radius={orientation === 'vertical' ? [barRadius, barRadius, 0, 0] : [0, barRadius, barRadius, 0]}
         maxBarSize={barSize}
         onClick={handleBarClick}
       >
         {data.map((entry, index) => (
-          <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+          <Cell key={`cell-${index}`} fill={colorPalette[index % colorPalette.length]} />
         ))}
       </Bar>
     );

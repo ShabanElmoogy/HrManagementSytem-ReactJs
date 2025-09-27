@@ -2,7 +2,7 @@
 import { ResponsiveContainer, LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { useTheme } from '@mui/material';
 import { getChartTheme } from './chartThemes';
-import { COLOR_PALETTES, formatNumber } from './chartUtils';
+import { getColorPalette, formatNumber } from './chartUtils';
 import ChartContainer from './ChartContainer';
 
 const LineChart = ({
@@ -12,7 +12,7 @@ const LineChart = ({
   title,
   subtitle,
   height = 400,
-  colors = COLOR_PALETTES.primary,
+  colors = 'primary', // Now accepts palette name or array
   showGrid = true,
   showLegend = false,
   showTooltip = true,
@@ -32,6 +32,7 @@ const LineChart = ({
 }) => {
   const theme = useTheme();
   const chartTheme = getChartTheme(theme);
+  const colorPalette = Array.isArray(colors) ? colors : getColorPalette(colors, theme.palette.mode);
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null;
@@ -62,10 +63,10 @@ const LineChart = ({
           type={smooth ? "monotone" : "linear"}
           dataKey={series.key}
           name={series.name}
-          stroke={series.color || colors[index % colors.length]}
+          stroke={series.color || colorPalette[index % colorPalette.length]}
           strokeWidth={strokeWidth}
           strokeDasharray={series.dasharray || strokeDasharray}
-          dot={showDots ? { r: dotSize, fill: series.color || colors[index % colors.length] } : false}
+          dot={showDots ? { r: dotSize, fill: series.color || colorPalette[index % colorPalette.length] } : false}
           activeDot={{ r: dotSize + 2, onClick: handleDotClick }}
         />
       ));
@@ -75,10 +76,10 @@ const LineChart = ({
       <Line
         type={smooth ? "monotone" : "linear"}
         dataKey={yKey}
-        stroke={colors[0]}
+        stroke={colorPalette[0]}
         strokeWidth={strokeWidth}
         strokeDasharray={strokeDasharray}
-        dot={showDots ? { r: dotSize, fill: colors[0] } : false}
+        dot={showDots ? { r: dotSize, fill: colorPalette[0] } : false}
         activeDot={{ r: dotSize + 2, onClick: handleDotClick }}
       />
     );

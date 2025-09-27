@@ -47,6 +47,8 @@ export interface BasicDataRoutes {
   countries: string;
   states: string;
   employees: string;
+  employeeDetail: string;
+  employeeCreate: string;
 }
 
 export interface AuthRoutes {
@@ -158,6 +160,8 @@ export const appRoutes: AppRoutes = {
     countries: "basic-data/countries",
     states: "basic-data/states",
     employees: "basic-data/employees",
+    employeeDetail: "basic-data/employees/:id",
+    employeeCreate: "basic-data/employees/create",
   },
 
   auth: {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Chip, alpha } from '@mui/material';
+import { getColorPalette } from '../../../../../shared/components/charts/chartUtils';
 
 interface LegendItem {
   name: string;
@@ -8,33 +9,56 @@ interface LegendItem {
 
 interface ChartLegendProps {
   data: LegendItem[];
-  colors: string[];
+  colors?: string[];
   showValues?: boolean;
 }
 
-const ChartLegend: React.FC<ChartLegendProps> = ({ 
-  data, 
-  colors, 
-  showValues = true 
+const ChartLegend: React.FC<ChartLegendProps> = ({
+  data,
+  colors,
+  showValues = true,
 }) => {
-  if (!data || data.length === 0) {
+  const safeData = Array.isArray(data)
+    ? data.filter((i) => i && typeof i.name === 'string' && typeof i.value === 'number')
+    : [];
+
+  if (safeData.length === 0) {
     return null;
   }
 
+  const defaultColors = getColorPalette('rainbow', 'light');
+
+  const getSafeColor = (idx: number): string => {
+    const palette = Array.isArray(colors) && colors.length > 0 ? colors : defaultColors;
+    const col = palette[idx % palette.length];
+    return typeof col === 'string' ? col : '#90caf9';
+  };
+
+  const applyAlpha = (color: string, value: number) => {
+    try {
+      return alpha(color, value);
+    } catch {
+      return color;
+    }
+  };
+
   return (
-    <Box sx={{ mt: 3, display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 1 }}>
-      {data.map((item, index) => (
-        <Chip
-          key={item.name}
-          label={showValues ? `${item.name} (${item.value})` : item.name}
-          size="small"
-          sx={{
-            backgroundColor: alpha(colors[index % colors.length], 0.1),
-            color: colors[index % colors.length],
-            border: `1px solid ${alpha(colors[index % colors.length], 0.3)}`,
-          }}
-        />
-      ))}
+    <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 1 }}>
+      {safeData.map((item, index) => {
+        const chipColor = getSafeColor(index);
+        return (
+          <Chip
+            key={item.name}
+            label={showValues ? `${item.name} (${item.value})` : item.name}
+            size="small"
+            sx={{
+              backgroundColor: applyAlpha(chipColor, 0.1),
+              color: chipColor,
+              border: `1px solid ${applyAlpha(chipColor, 0.3)}`,
+            }}
+          />
+        );
+      })}
     </Box>
   );
 };

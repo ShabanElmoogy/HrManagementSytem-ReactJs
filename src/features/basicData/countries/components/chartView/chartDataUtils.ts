@@ -110,6 +110,6 @@ export const getCountriesStatesDistribution = (countries: Country[]): {
   return { withStates, withoutStates };
 };
 
-import { COLOR_PALETTES } from '../../../../../shared/components/charts/chartUtils';
+import { getColorPalette } from '../../../../../shared/components/charts/chartUtils';
 
-export const getChartColors = (): string[] => COLOR_PALETTES.rainbow;
+export const getChartColors = (): string[] => getColorPalette('rainbow', 'light');

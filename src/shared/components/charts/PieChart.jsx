@@ -2,7 +2,7 @@
 import { ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 import { useTheme } from '@mui/material';
 import { getChartTheme } from './chartThemes';
-import { COLOR_PALETTES, formatNumber, formatPercentage } from './chartUtils';
+import { getColorPalette, formatNumber, formatPercentage } from './chartUtils';
 import ChartContainer from './ChartContainer';
 
 const PieChart = ({
@@ -12,7 +12,7 @@ const PieChart = ({
   title,
   subtitle,
   height = 400,
-  colors = COLOR_PALETTES.primary,
+  colors = 'primary', // Now accepts palette name or array
   showLegend = true,
   showTooltip = true,
   showLabels = true,
@@ -33,6 +33,7 @@ const PieChart = ({
 }) => {
   const theme = useTheme();
   const chartTheme = getChartTheme(theme);
+  const colorPalette = Array.isArray(colors) ? colors : getColorPalette(colors, theme.palette.mode);
 
   const total = data.reduce((sum, item) => sum + (item[valueKey] || 0), 0);
 
@@ -86,9 +87,9 @@ const PieChart = ({
           onClick={handleSliceClick}
         >
           {data.map((entry, index) => (
-            <Cell 
-              key={`cell-${index}`} 
-              fill={colors[index % colors.length]}
+            <Cell
+              key={`cell-${index}`}
+              fill={colorPalette[index % colorPalette.length]}
               stroke={theme.palette.background.paper}
               strokeWidth={2}
             />

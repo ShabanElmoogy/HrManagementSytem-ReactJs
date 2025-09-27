@@ -24,6 +24,7 @@ import ResetPassword from "../features/auth/resetPassword";
 import RolePermissionsPage from "../features/auth/roles/components/rolePermissionsPage";
 import CountriesPage from "../features/basicData/countries/countriesPage";
 import { StatesPage } from "../features/basicData/states";
+import { EmployeePage, EmployeeDetailPage } from "../features/employee";
 import UsersPage from "@/features/auth/users/usersPage";
 import RolesPage from "@/features/auth/roles/rolesPage";
 import TrackChangesGrid from "@/features/advancedTools/trackChangesGrid";
@@ -31,7 +32,6 @@ import LocalizationGrid from "@/features/advancedTools/localizationGrid";
 import HealthCheck from "@/features/advancedTools/healthCheck";
 import ApiEndpoints from "@/features/advancedTools/apiEndpoints";
 import HangfireDashboard from "@/features/advancedTools/hangfireDashboard";
-import EmployeeContainer from "@/features/basicData/employees/EmployeeContainer";
 import ChartExamplesPage from "@/features/chartExamples/chartExamplesPage";
 // NotificationExample removed - using simplified notification system
 
@@ -148,13 +148,29 @@ const AppRoutes = () => {
               }
             />
 
-            {/* Employees Management */}
             <Route
               path={appRoutes.basicData.employees}
               element={
-                <Suspense fallback={<MyLoadingIndicator />}>
-                  <EmployeeContainer />
-                </Suspense>
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <EmployeePage />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.basicData.employeeDetail}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <EmployeeDetailPage />
+                  </Suspense>
+                </ProtectedRoute>
               }
             />
 
