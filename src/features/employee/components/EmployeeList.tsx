@@ -21,6 +21,8 @@ import {
   alpha,
   Tooltip,
   Badge,
+  Checkbox,
+  Button,
 } from "@mui/material";
 import {
   Search,
@@ -34,8 +36,16 @@ import {
   Delete,
   Visibility,
   Add,
+  CheckBox,
+  CheckBoxOutlineBlank,
+  MoreVert,
+  FileDownload,
+  Clear,
+  ViewList,
+  ViewModule,
 } from "@mui/icons-material";
 import { Employee, EmployeeFilters } from "../types/Employee";
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 
 interface EmployeeListProps {
   employees: Employee[];
@@ -44,6 +54,9 @@ interface EmployeeListProps {
   onEditEmployee?: (employee: Employee) => void;
   onDeleteEmployee?: (employee: Employee) => void;
   onAddEmployee?: () => void;
+  onBulkEdit?: (employees: Employee[]) => void;
+  onBulkDelete?: (employees: Employee[]) => void;
+  onBulkExport?: (employees: Employee[]) => void;
   filters?: EmployeeFilters;
   onFiltersChange?: (filters: EmployeeFilters) => void;
 }
@@ -55,6 +68,9 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
   onEditEmployee,
   onDeleteEmployee,
   onAddEmployee,
+  onBulkEdit,
+  onBulkDelete,
+  onBulkExport,
   filters = {},
   onFiltersChange,
 }) => {
@@ -62,6 +78,9 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
   const [searchTerm, setSearchTerm] = useState(filters.search || "");
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedEmployees, setSelectedEmployees] = useState<Employee[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
 
   const itemsPerPage = 12;
 
@@ -110,6 +129,41 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
     setPage(1); // Reset to first page
   };
 
+  const handleSelectEmployee = (employee: Employee, checked: boolean) => {
+    if (checked) {
+      setSelectedEmployees(prev => [...prev, employee]);
+    } else {
+      setSelectedEmployees(prev => prev.filter(emp => emp.id !== employee.id));
+    }
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedEmployees(paginatedEmployees);
+      setSelectAll(true);
+    } else {
+      setSelectedEmployees([]);
+      setSelectAll(false);
+    }
+  };
+
+  const handleBulkEdit = () => {
+    onBulkEdit?.(selectedEmployees);
+  };
+
+  const handleBulkDelete = () => {
+    onBulkDelete?.(selectedEmployees);
+  };
+
+  const handleBulkExport = () => {
+    onBulkExport?.(selectedEmployees);
+  };
+
+  const clearSelection = () => {
+    setSelectedEmployees([]);
+    setSelectAll(false);
+  };
+
   const getStatusColor = (status: Employee["status"]) => {
     switch (status) {
       case "active":
@@ -139,6 +193,147 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
         return status;
     }
   };
+
+  // Table columns definition
+  const tableColumns: GridColDef<Employee>[] = [
+    {
+      field: 'select',
+      headerName: '',
+      width: 50,
+      renderHeader: () => (
+        <Checkbox
+          checked={selectAll}
+          indeterminate={selectedEmployees.length > 0 && selectedEmployees.length < paginatedEmployees.length}
+          onChange={(e) => handleSelectAll(e.target.checked)}
+          size="small"
+        />
+      ),
+      renderCell: (params) => (
+        <Checkbox
+          checked={selectedEmployees.some(emp => emp.id === params.row.id)}
+          onChange={(e) => handleSelectEmployee(params.row, e.target.checked)}
+          size="small"
+        />
+      ),
+      sortable: false,
+      filterable: false,
+    },
+    {
+      field: 'photo',
+      headerName: 'Photo',
+      width: 80,
+      renderCell: (params) => (
+        <Avatar
+          src={params.row.photo}
+          sx={{ width: 40, height: 40 }}
+        >
+          <Person />
+        </Avatar>
+      ),
+      sortable: false,
+      filterable: false,
+    },
+    // {
+    //   field: 'firstName',
+    //   headerName: 'Name',
+    //   width: 200,
+    //   valueGetter: (params) =>
+    //     `${params} ${params}`,
+    //   renderCell: (params) => (
+    //     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+    //       <Typography variant="body2" sx={{ fontWeight: 600 }}>
+    //         {params.row.firstName} {params.row.lastName}
+    //       </Typography>
+    //     </Box>
+    //   ),
+    // },
+    {
+      field: 'position',
+      headerName: 'Position',
+      width: 150,
+    },
+    {
+      field: 'department',
+      headerName: 'Department',
+      width: 120,
+    },
+    {
+      field: 'email',
+      headerName: 'Email',
+      width: 200,
+    },
+    {
+      field: 'phone',
+      headerName: 'Phone',
+      width: 150,
+    },
+    {
+      field: 'location',
+      headerName: 'Location',
+      width: 150,
+      valueGetter: (params) =>
+      {
+        console.log("params : ",params);
+        // `${params.address}, ${params.address}`;
+
+      }
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      width: 100,
+      renderCell: (params) => (
+        <Chip
+          label={getStatusLabel(params.row.status)}
+          size="small"
+          color={getStatusColor(params.row.status)}
+          variant="outlined"
+        />
+      ),
+    },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      width: 150,
+      renderCell: (params) => (
+        <Box sx={{ display: 'flex', gap: 0.5 }}>
+          {onEmployeeClick && (
+            <Tooltip title="View Details">
+              <IconButton
+                size="small"
+                onClick={() => onEmployeeClick?.(params.row)}
+              >
+                <Visibility fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          )}
+          {onEditEmployee && (
+            <Tooltip title="Edit Employee">
+              <IconButton
+                size="small"
+                onClick={() => onEditEmployee?.(params.row)}
+              >
+                <Edit fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          )}
+          {onDeleteEmployee && (
+            <Tooltip title="Delete Employee">
+              <IconButton
+                size="small"
+                color="error"
+                onClick={() => onDeleteEmployee?.(params.row)}
+              >
+                <Delete fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          )}
+        </Box>
+      ),
+      sortable: false,
+      filterable: false,
+    },
+  ];
 
   if (loading) {
     return (
@@ -219,6 +414,38 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
           <FilterList />
         </IconButton>
 
+        {/* View Toggle */}
+        <Box sx={{ display: 'flex', borderRadius: 1, overflow: 'hidden', border: `1px solid ${theme.palette.divider}` }}>
+          <IconButton
+            onClick={() => setViewMode('cards')}
+            size="small"
+            sx={{
+              borderRadius: 0,
+              backgroundColor: viewMode === 'cards' ? alpha(theme.palette.primary.main, 0.1) : 'transparent',
+              color: viewMode === 'cards' ? theme.palette.primary.main : 'inherit',
+              '&:hover': {
+                backgroundColor: alpha(theme.palette.primary.main, 0.1),
+              }
+            }}
+          >
+            <ViewModule fontSize="small" />
+          </IconButton>
+          <IconButton
+            onClick={() => setViewMode('table')}
+            size="small"
+            sx={{
+              borderRadius: 0,
+              backgroundColor: viewMode === 'table' ? alpha(theme.palette.primary.main, 0.1) : 'transparent',
+              color: viewMode === 'table' ? theme.palette.primary.main : 'inherit',
+              '&:hover': {
+                backgroundColor: alpha(theme.palette.primary.main, 0.1),
+              }
+            }}
+          >
+            <ViewList fontSize="small" />
+          </IconButton>
+        </Box>
+
         {onAddEmployee && (
           <Tooltip title="Add Employee">
             <IconButton
@@ -236,6 +463,69 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
           </Tooltip>
         )}
       </Box>
+
+      {/* Bulk Actions Toolbar */}
+      {selectedEmployees.length > 0 && (
+        <Box
+          sx={{
+            mb: 2,
+            p: 2,
+            backgroundColor: alpha(theme.palette.primary.main, 0.1),
+            borderRadius: 2,
+            border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              {selectedEmployees.length} employee{selectedEmployees.length > 1 ? 's' : ''} selected
+            </Typography>
+            <Button
+              size="small"
+              onClick={clearSelection}
+              startIcon={<Clear />}
+            >
+              Clear Selection
+            </Button>
+          </Box>
+
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            {onBulkExport && (
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={handleBulkExport}
+                startIcon={<FileDownload />}
+              >
+                Export
+              </Button>
+            )}
+            {onBulkEdit && (
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={handleBulkEdit}
+                startIcon={<Edit />}
+              >
+                Bulk Edit
+              </Button>
+            )}
+            {onBulkDelete && (
+              <Button
+                size="small"
+                variant="outlined"
+                color="error"
+                onClick={handleBulkDelete}
+                startIcon={<Delete />}
+              >
+                Bulk Delete
+              </Button>
+            )}
+          </Box>
+        </Box>
+      )}
 
       {/* Filters */}
       {showFilters && (
@@ -314,7 +604,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
         </Box>
       )}
 
-      {/* Results count */}
+      {/* Results count and Select All */}
       <Box
         sx={{
           mb: 2,
@@ -323,176 +613,234 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
           alignItems: "center",
         }}
       >
-        <Typography variant="body2" color="text.secondary">
-          Showing {paginatedEmployees.length} of {filteredEmployees.length}{" "}
-          employees
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography variant="body2" color="text.secondary">
+            Showing {paginatedEmployees.length} of {filteredEmployees.length}{" "}
+            employees
+          </Typography>
+          {paginatedEmployees.length > 0 && (
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Checkbox
+                checked={selectAll}
+                indeterminate={selectedEmployees.length > 0 && selectedEmployees.length < paginatedEmployees.length}
+                onChange={(e) => handleSelectAll(e.target.checked)}
+                size="small"
+              />
+              <Typography variant="body2" sx={{ ml: 1 }}>
+                Select All ({paginatedEmployees.length})
+              </Typography>
+            </Box>
+          )}
+        </Box>
       </Box>
 
-      {/* Employee cards */}
-      <Grid container spacing={3}>
-        {paginatedEmployees.map((employee) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={employee.id}>
-            <Card
-              sx={{
-                height: "100%",
-                cursor: onEmployeeClick ? "pointer" : "default",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  transform: onEmployeeClick ? "translateY(-4px)" : "none",
-                  boxShadow: theme.shadows[8],
-                },
-              }}
-              onClick={() => onEmployeeClick?.(employee)}
-            >
-              <CardContent sx={{ p: 3 }}>
-                {/* Employee header */}
-                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                  <Badge
-                    overlap="circular"
-                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                    badgeContent={
-                      <Box
-                        sx={{
-                          width: 12,
-                          height: 12,
-                          borderRadius: "50%",
-                          backgroundColor:
-                            theme.palette[getStatusColor(employee.status)].main,
-                        }}
-                      />
-                    }
-                  >
-                    <Avatar
-                      src={employee.photo}
-                      sx={{
-                        width: 60,
-                        height: 60,
-                        mr: 2,
-                        border: `2px solid ${alpha(
-                          theme.palette.primary.main,
-                          0.2
-                        )}`,
-                      }}
+      {/* Employee View - Cards or Table */}
+      {viewMode === 'cards' ? (
+        <Grid container spacing={3}>
+          {paginatedEmployees.map((employee) => (
+            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={employee.id}>
+              <Card
+                sx={{
+                  height: "100%",
+                  cursor: onEmployeeClick ? "pointer" : "default",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    transform: onEmployeeClick ? "translateY(-4px)" : "none",
+                    boxShadow: theme.shadows[8],
+                  },
+                }}
+                onClick={() => onEmployeeClick?.(employee)}
+              >
+                <CardContent sx={{ p: 3 }}>
+                  {/* Selection Checkbox */}
+                  <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
+                    <Checkbox
+                      checked={selectedEmployees.some(emp => emp.id === employee.id)}
+                      onChange={(e) => handleSelectEmployee(employee, e.target.checked)}
+                      onClick={(e) => e.stopPropagation()}
+                      size="small"
+                    />
+                  </Box>
+
+                  {/* Employee header */}
+                  <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                    <Badge
+                      overlap="circular"
+                      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                      badgeContent={
+                        <Box
+                          sx={{
+                            width: 12,
+                            height: 12,
+                            borderRadius: "50%",
+                            backgroundColor:
+                              theme.palette[getStatusColor(employee.status)].main,
+                          }}
+                        />
+                      }
                     >
-                      <Person />
-                    </Avatar>
-                  </Badge>
+                      <Avatar
+                        src={employee.photo}
+                        sx={{
+                          width: 60,
+                          height: 60,
+                          mr: 2,
+                          border: `2px solid ${alpha(
+                            theme.palette.primary.main,
+                            0.2
+                          )}`,
+                        }}
+                      >
+                        <Person />
+                      </Avatar>
+                    </Badge>
 
-                  <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Typography variant="h6" noWrap sx={{ fontWeight: 600 }}>
-                      {employee.firstName} {employee.lastName}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      {employee.position}
-                    </Typography>
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Typography variant="h6" noWrap sx={{ fontWeight: 600 }}>
+                        {employee.firstName} {employee.lastName}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" noWrap>
+                        {employee.position}
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
 
-                {/* Employee details */}
-                <Box sx={{ mb: 2 }}>
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                    <Email
-                      sx={{ fontSize: 16, mr: 1, color: "text.secondary" }}
+                  {/* Employee details */}
+                  <Box sx={{ mb: 2 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                      <Email
+                        sx={{ fontSize: 16, mr: 1, color: "text.secondary" }}
+                      />
+                      <Typography variant="body2" noWrap sx={{ flex: 1 }}>
+                        {employee.email}
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                      <Phone
+                        sx={{ fontSize: 16, mr: 1, color: "text.secondary" }}
+                      />
+                      <Typography variant="body2" noWrap>
+                        {employee.phone}
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                      <Business
+                        sx={{ fontSize: 16, mr: 1, color: "text.secondary" }}
+                      />
+                      <Typography variant="body2" noWrap>
+                        {employee.department}
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <LocationOn
+                        sx={{ fontSize: 16, mr: 1, color: "text.secondary" }}
+                      />
+                      <Typography variant="body2" noWrap>
+                        {employee.address.city}, {employee.address.country}
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  {/* Status and actions */}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Chip
+                      label={getStatusLabel(employee.status)}
+                      size="small"
+                      color={getStatusColor(employee.status)}
+                      variant="outlined"
                     />
-                    <Typography variant="body2" noWrap sx={{ flex: 1 }}>
-                      {employee.email}
-                    </Typography>
+
+                    <Box sx={{ display: "flex", gap: 0.5 }}>
+                      {onEmployeeClick && (
+                        <Tooltip title="View Details">
+                          <IconButton
+                            size="small"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onEmployeeClick(employee);
+                            }}
+                          >
+                            <Visibility fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+
+                      {onEditEmployee && (
+                        <Tooltip title="Edit Employee">
+                          <IconButton
+                            size="small"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onEditEmployee(employee);
+                            }}
+                          >
+                            <Edit fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+
+                      {onDeleteEmployee && (
+                        <Tooltip title="Delete Employee">
+                          <IconButton
+                            size="small"
+                            color="error"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDeleteEmployee(employee);
+                            }}
+                          >
+                            <Delete fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                    </Box>
                   </Box>
-
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                    <Phone
-                      sx={{ fontSize: 16, mr: 1, color: "text.secondary" }}
-                    />
-                    <Typography variant="body2" noWrap>
-                      {employee.phone}
-                    </Typography>
-                  </Box>
-
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                    <Business
-                      sx={{ fontSize: 16, mr: 1, color: "text.secondary" }}
-                    />
-                    <Typography variant="body2" noWrap>
-                      {employee.department}
-                    </Typography>
-                  </Box>
-
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <LocationOn
-                      sx={{ fontSize: 16, mr: 1, color: "text.secondary" }}
-                    />
-                    <Typography variant="body2" noWrap>
-                      {employee.address.city}, {employee.address.country}
-                    </Typography>
-                  </Box>
-                </Box>
-
-                {/* Status and actions */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <Chip
-                    label={getStatusLabel(employee.status)}
-                    size="small"
-                    color={getStatusColor(employee.status)}
-                    variant="outlined"
-                  />
-
-                  <Box sx={{ display: "flex", gap: 0.5 }}>
-                    {onEmployeeClick && (
-                      <Tooltip title="View Details">
-                        <IconButton
-                          size="small"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onEmployeeClick(employee);
-                          }}
-                        >
-                          <Visibility fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    )}
-
-                    {onEditEmployee && (
-                      <Tooltip title="Edit Employee">
-                        <IconButton
-                          size="small"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onEditEmployee(employee);
-                          }}
-                        >
-                          <Edit fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    )}
-
-                    {onDeleteEmployee && (
-                      <Tooltip title="Delete Employee">
-                        <IconButton
-                          size="small"
-                          color="error"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onDeleteEmployee(employee);
-                          }}
-                        >
-                          <Delete fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    )}
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      ) : (
+        /* Table View */
+        <Box sx={{ height: 600, width: '100%' }}>
+          <DataGrid
+            rows={paginatedEmployees}
+            columns={tableColumns}
+            initialState={{
+              pagination: {
+                paginationModel: { pageSize: itemsPerPage },
+              },
+            }}
+            pageSizeOptions={[12, 25, 50]}
+            checkboxSelection={false}
+            disableRowSelectionOnClick
+            disableColumnFilter
+            disableColumnSelector
+            disableDensitySelector
+            hideFooterPagination
+            sx={{
+              border: `1px solid ${theme.palette.divider}`,
+              borderRadius: 2,
+              '& .MuiDataGrid-cell': {
+                borderBottom: `1px solid ${theme.palette.divider}`,
+              },
+              '& .MuiDataGrid-columnHeaders': {
+                backgroundColor: alpha(theme.palette.primary.main, 0.05),
+                borderBottom: `2px solid ${theme.palette.primary.main}`,
+              },
+            }}
+          />
+        </Box>
+      )}
 
       {/* Pagination */}
       {totalPages > 1 && (

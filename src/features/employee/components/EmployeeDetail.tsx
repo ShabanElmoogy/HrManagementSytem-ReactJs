@@ -121,8 +121,28 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
   return (
     <>
       {/* Top Section with Photo and Basic Data */}
-      <Card sx={{ maxWidth: 1200, mx: "auto", mb: 3 }}>
-        <CardContent sx={{ pb: 3 }}>
+      <Card
+        sx={{
+          maxWidth: 1200,
+          mx: "auto",
+          mb: 3,
+          background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.95)} 0%, ${alpha(theme.palette.background.default, 0.95)} 100%)`,
+          backdropFilter: 'blur(10px)',
+          border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+          borderRadius: 4,
+          boxShadow: theme.palette.mode === 'dark'
+            ? '0 8px 32px rgba(0, 0, 0, 0.3)'
+            : '0 8px 32px rgba(0, 0, 0, 0.08)',
+          transition: 'all 0.3s ease-in-out',
+          '&:hover': {
+            boxShadow: theme.palette.mode === 'dark'
+              ? '0 12px 40px rgba(0, 0, 0, 0.4)'
+              : '0 12px 40px rgba(0, 0, 0, 0.12)',
+            transform: 'translateY(-2px)'
+          }
+        }}
+      >
+        <CardContent sx={{ pb: 3, px: 4, pt: 4 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
               <Badge
@@ -131,14 +151,16 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
                 badgeContent={
                   <Box
                     sx={{
-                      width: 20,
-                      height: 20,
+                      width: 24,
+                      height: 24,
                       borderRadius: '50%',
-                      backgroundColor: theme.palette[getStatusColor(employee.status)].main,
+                      background: `linear-gradient(135deg, ${theme.palette[getStatusColor(employee.status)].main}, ${alpha(theme.palette[getStatusColor(employee.status)].main, 0.8)})`,
                       border: `3px solid ${theme.palette.background.paper}`,
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center'
+                      justifyContent: 'center',
+                      boxShadow: `0 2px 8px ${alpha(theme.palette[getStatusColor(employee.status)].main, 0.3)}`,
+                      animation: 'pulse 2s infinite'
                     }}
                   >
                     {getStatusIcon(employee.status)}
@@ -148,108 +170,204 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
                 <Avatar
                   src={employee.photo}
                   sx={{
-                    width: 120,
-                    height: 120,
-                    border: `4px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-                    boxShadow: theme.shadows[4]
+                    width: 140,
+                    height: 140,
+                    border: `4px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+                    boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.2)}`,
+                    background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(theme.palette.primary.light, 0.2)})`,
+                    transition: 'all 0.3s ease-in-out',
+                    '&:hover': {
+                      transform: 'scale(1.05)',
+                      boxShadow: `0 12px 32px ${alpha(theme.palette.primary.main, 0.3)}`
+                    }
                   }}
                 >
-                  <Person sx={{ fontSize: 60 }} />
+                  <Person sx={{ fontSize: 70, color: theme.palette.primary.main }} />
                 </Avatar>
               </Badge>
 
-              <Box sx={{ ml: 4, flex: 1 }}>
-                <Typography variant="h3" sx={{ fontWeight: 700, mb: 1 }}>
+              <Box sx={{ ml: 5, flex: 1 }}>
+                <Typography
+                  variant="h3"
+                  sx={{
+                    fontWeight: 800,
+                    mb: 1,
+                    background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
                   {employee.firstName} {employee.lastName}
                 </Typography>
-                <Typography variant="h5" color="text.secondary" sx={{ mb: 1 }}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    mb: 1,
+                    fontWeight: 500
+                  }}
+                >
                   {employee.position}
                 </Typography>
-                <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    mb: 3,
+                    fontWeight: 400
+                  }}
+                >
                   {employee.department} • Employee ID: {employee.employeeId}
                 </Typography>
 
-                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2 }}>
+                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 3 }}>
                   <Chip
                     icon={<LocationOn />}
                     label={`${employee.address.city}, ${employee.address.country}`}
-                    variant="outlined"
+                    variant="filled"
                     size="medium"
+                    sx={{
+                      background: `linear-gradient(135deg, ${alpha(theme.palette.info.main, 0.1)}, ${alpha(theme.palette.info.light, 0.2)})`,
+                      color: theme.palette.info.main,
+                      border: `1px solid ${alpha(theme.palette.info.main, 0.2)}`,
+                      '& .MuiChip-icon': {
+                        color: theme.palette.info.main
+                      }
+                    }}
                   />
                   <Chip
                     icon={<CalendarToday />}
                     label={`Hired ${formatDate(employee.hireDate)}`}
-                    variant="outlined"
+                    variant="filled"
                     size="medium"
+                    sx={{
+                      background: `linear-gradient(135deg, ${alpha(theme.palette.success.main, 0.1)}, ${alpha(theme.palette.success.light, 0.2)})`,
+                      color: theme.palette.success.main,
+                      border: `1px solid ${alpha(theme.palette.success.main, 0.2)}`,
+                      '& .MuiChip-icon': {
+                        color: theme.palette.success.main
+                      }
+                    }}
                   />
                   <Chip
                     icon={<Business />}
                     label={employee.employmentDetails.employmentType.replace('-', ' ')}
-                    variant="outlined"
+                    variant="filled"
                     size="medium"
+                    sx={{
+                      background: `linear-gradient(135deg, ${alpha(theme.palette.warning.main, 0.1)}, ${alpha(theme.palette.warning.light, 0.2)})`,
+                      color: theme.palette.warning.main,
+                      border: `1px solid ${alpha(theme.palette.warning.main, 0.2)}`,
+                      '& .MuiChip-icon': {
+                        color: theme.palette.warning.main
+                      }
+                    }}
                   />
                 </Box>
 
-                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
                   <Chip
                     label={employee.status.charAt(0).toUpperCase() + employee.status.slice(1).replace('-', ' ')}
                     color={getStatusColor(employee.status)}
                     size="medium"
-                    sx={{ fontWeight: 600 }}
+                    sx={{
+                      fontWeight: 700,
+                      fontSize: '0.875rem',
+                      px: 2,
+                      py: 1,
+                      boxShadow: `0 2px 8px ${alpha(theme.palette[getStatusColor(employee.status)].main, 0.2)}`
+                    }}
                   />
                   <Chip
                     icon={<Email />}
                     label={employee.email}
                     variant="outlined"
                     size="medium"
+                    sx={{
+                      borderColor: alpha(theme.palette.primary.main, 0.3),
+                      color: theme.palette.primary.main,
+                      '& .MuiChip-icon': {
+                        color: theme.palette.primary.main
+                      },
+                      '&:hover': {
+                        backgroundColor: alpha(theme.palette.primary.main, 0.05)
+                      }
+                    }}
                   />
                   <Chip
                     icon={<Phone />}
                     label={employee.phone}
                     variant="outlined"
                     size="medium"
+                    sx={{
+                      borderColor: alpha(theme.palette.secondary.main, 0.3),
+                      color: theme.palette.secondary.main,
+                      '& .MuiChip-icon': {
+                        color: theme.palette.secondary.main
+                      },
+                      '&:hover': {
+                        backgroundColor: alpha(theme.palette.secondary.main, 0.05)
+                      }
+                    }}
                   />
                 </Box>
               </Box>
             </Box>
 
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              {onEdit && (
-                <Button
-                  variant="contained"
-                  startIcon={<Edit />}
-                  onClick={() => onEdit(employee)}
-                  sx={{
-                    px: 3,
-                    py: 1.5,
-                    borderRadius: 2,
-                    fontWeight: 600,
-                    background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${alpha(theme.palette.primary.main, 0.8)})`,
-                    '&:hover': {
-                      background: `linear-gradient(135deg, ${theme.palette.primary.dark}, ${alpha(theme.palette.primary.dark, 0.8)})`
-                    }
-                  }}
-                >
-                  Edit Profile
-                </Button>
-              )}
+            <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column', alignItems: 'flex-end' }}>
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                {onEdit && (
+                  <Button
+                    variant="contained"
+                    startIcon={<Edit />}
+                    onClick={() => onEdit(employee)}
+                    sx={{
+                      px: 4,
+                      py: 1.5,
+                      borderRadius: 3,
+                      fontWeight: 600,
+                      fontSize: '0.95rem',
+                      background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${alpha(theme.palette.primary.main, 0.8)})`,
+                      boxShadow: `0 4px 16px ${alpha(theme.palette.primary.main, 0.3)}`,
+                      transition: 'all 0.3s ease-in-out',
+                      '&:hover': {
+                        background: `linear-gradient(135deg, ${theme.palette.primary.dark}, ${alpha(theme.palette.primary.dark, 0.8)})`,
+                        boxShadow: `0 6px 20px ${alpha(theme.palette.primary.main, 0.4)}`,
+                        transform: 'translateY(-2px)'
+                      }
+                    }}
+                  >
+                    Edit Profile
+                  </Button>
+                )}
 
-              {onDelete && (
-                <Button
-                  variant="outlined"
-                  color="error"
-                  startIcon={<Delete />}
-                  onClick={() => setDeleteDialogOpen(true)}
-                  sx={{
-                    px: 3,
-                    py: 1.5,
-                    borderRadius: 2,
-                    fontWeight: 600
-                  }}
-                >
-                  Delete Employee
-                </Button>
-              )}
+                {onDelete && (
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    startIcon={<Delete />}
+                    onClick={() => setDeleteDialogOpen(true)}
+                    sx={{
+                      px: 4,
+                      py: 1.5,
+                      borderRadius: 3,
+                      fontWeight: 600,
+                      fontSize: '0.95rem',
+                      borderWidth: 2,
+                      transition: 'all 0.3s ease-in-out',
+                      '&:hover': {
+                        borderWidth: 2,
+                        backgroundColor: alpha(theme.palette.error.main, 0.05),
+                        transform: 'translateY(-1px)',
+                        boxShadow: `0 4px 12px ${alpha(theme.palette.error.main, 0.2)}`
+                      }
+                    }}
+                  >
+                    Delete Employee
+                  </Button>
+                )}
+              </Box>
 
               {onClose && (
                 <IconButton
@@ -258,8 +376,12 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
                     width: 48,
                     height: 48,
                     backgroundColor: alpha(theme.palette.grey[500], 0.1),
+                    border: `1px solid ${alpha(theme.palette.divider, 0.2)}`,
+                    borderRadius: 2,
+                    transition: 'all 0.2s ease-in-out',
                     '&:hover': {
-                      backgroundColor: alpha(theme.palette.grey[500], 0.2)
+                      backgroundColor: alpha(theme.palette.grey[500], 0.2),
+                      transform: 'scale(1.05)'
                     }
                   }}
                 >
@@ -272,67 +394,213 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
       </Card>
 
       {/* Tabbed Content */}
-      <Card sx={{ maxWidth: 1200, mx: "auto" }}>
+      <Card
+        sx={{
+          maxWidth: 1200,
+          mx: "auto",
+          background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.95)} 0%, ${alpha(theme.palette.background.default, 0.95)} 100%)`,
+          backdropFilter: 'blur(10px)',
+          border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+          borderRadius: 4,
+          boxShadow: theme.palette.mode === 'dark'
+            ? '0 8px 32px rgba(0, 0, 0, 0.3)'
+            : '0 8px 32px rgba(0, 0, 0, 0.08)',
+        }}
+      >
 
         {/* Tabs */}
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Box sx={{
+          borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+          background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.02)} 0%, ${alpha(theme.palette.secondary.main, 0.02)} 100%)`,
+          px: 2
+        }}>
           <Tabs
             value={activeTab}
             onChange={(_, newValue) => setActiveTab(newValue)}
             sx={{
               "& .MuiTab-root": {
-                minHeight: 48,
+                minHeight: 56,
                 textTransform: "none",
-                fontWeight: 500,
+                fontWeight: 600,
+                fontSize: '0.95rem',
+                borderRadius: 2,
+                mx: 0.5,
+                transition: 'all 0.3s ease-in-out',
+                '&:hover': {
+                  backgroundColor: alpha(theme.palette.primary.main, 0.05),
+                },
+                '&.Mui-selected': {
+                  background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(theme.palette.primary.light, 0.1)})`,
+                  color: theme.palette.primary.main,
+                  fontWeight: 700,
+                  boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.2)}`
+                }
               },
+              "& .MuiTabs-indicator": {
+                height: 3,
+                borderRadius: 2,
+                background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`
+              }
             }}
           >
-            <Tab label="Overview" />
-            <Tab label="Personal Info" />
-            <Tab label="Employment" />
-            <Tab label="Salary & Benefits" />
-            <Tab label="Documents" />
+            <Tab
+              label="Overview"
+              icon={<Person sx={{ fontSize: 20 }} />}
+              iconPosition="start"
+            />
+            <Tab
+              label="Personal Info"
+              icon={<ContactEmergency sx={{ fontSize: 20 }} />}
+              iconPosition="start"
+            />
+            <Tab
+              label="Employment"
+              icon={<Business sx={{ fontSize: 20 }} />}
+              iconPosition="start"
+            />
+            <Tab
+              label="Salary & Benefits"
+              icon={<AccountBalance sx={{ fontSize: 20 }} />}
+              iconPosition="start"
+            />
+            <Tab
+              label="Documents"
+              icon={<Description sx={{ fontSize: 20 }} />}
+              iconPosition="start"
+            />
           </Tabs>
         </Box>
 
         {/* Tab Content */}
         <TabPanel value={activeTab} index={0}>
           {/* Overview Tab */}
-          <Grid container spacing={3}>
+          <Grid container spacing={4}>
             <Grid size={{ xs: 12, md: 6 }}>
-              <Card variant="outlined" sx={{ height: "100%" }}>
-                <CardContent>
+              <Card
+                variant="outlined"
+                sx={{
+                  height: "100%",
+                  background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.8)} 0%, ${alpha(theme.palette.primary.light, 0.05)} 100%)`,
+                  border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+                  borderRadius: 3,
+                  transition: 'all 0.3s ease-in-out',
+                  '&:hover': {
+                    boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.15)}`,
+                    transform: 'translateY(-2px)'
+                  }
+                }}
+              >
+                <CardContent sx={{ p: 4 }}>
                   <Typography
                     variant="h6"
-                    sx={{ mb: 2, display: "flex", alignItems: "center" }}
+                    sx={{
+                      mb: 3,
+                      display: "flex",
+                      alignItems: "center",
+                      fontWeight: 700,
+                      color: theme.palette.primary.main
+                    }}
                   >
-                    <Person sx={{ mr: 1 }} />
+                    <Box
+                      sx={{
+                        p: 1,
+                        borderRadius: 2,
+                        background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(theme.palette.primary.light, 0.1)})`,
+                        mr: 2
+                      }}
+                    >
+                      <Email sx={{ color: theme.palette.primary.main }} />
+                    </Box>
                     Contact Information
                   </Typography>
                   <Box
-                    sx={{ display: "flex", flexDirection: "column", gap: 1 }}
+                    sx={{ display: "flex", flexDirection: "column", gap: 2 }}
                   >
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.primary.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`
+                      }}
+                    >
                       <Email
-                        sx={{ mr: 2, color: "text.secondary", fontSize: 20 }}
+                        sx={{
+                          mr: 3,
+                          color: theme.palette.primary.main,
+                          fontSize: 24,
+                          p: 1,
+                          borderRadius: 2,
+                          backgroundColor: alpha(theme.palette.primary.main, 0.1)
+                        }}
                       />
-                      <Typography>{employee.email}</Typography>
+                      <Box>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600 }}>
+                          Email Address
+                        </Typography>
+                        <Typography sx={{ fontWeight: 500 }}>{employee.email}</Typography>
+                      </Box>
                     </Box>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.secondary.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.secondary.main, 0.1)}`
+                      }}
+                    >
                       <Phone
-                        sx={{ mr: 2, color: "text.secondary", fontSize: 20 }}
+                        sx={{
+                          mr: 3,
+                          color: theme.palette.secondary.main,
+                          fontSize: 24,
+                          p: 1,
+                          borderRadius: 2,
+                          backgroundColor: alpha(theme.palette.secondary.main, 0.1)
+                        }}
                       />
-                      <Typography>{employee.phone}</Typography>
+                      <Box>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600 }}>
+                          Phone Number
+                        </Typography>
+                        <Typography sx={{ fontWeight: 500 }}>{employee.phone}</Typography>
+                      </Box>
                     </Box>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.info.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.info.main, 0.1)}`
+                      }}
+                    >
                       <LocationOn
-                        sx={{ mr: 2, color: "text.secondary", fontSize: 20 }}
+                        sx={{
+                          mr: 3,
+                          color: theme.palette.info.main,
+                          fontSize: 24,
+                          p: 1,
+                          borderRadius: 2,
+                          backgroundColor: alpha(theme.palette.info.main, 0.1)
+                        }}
                       />
-                      <Typography>
-                        {employee.address.street}, {employee.address.city},{" "}
-                        {employee.address.state} {employee.address.postalCode},{" "}
-                        {employee.address.country}
-                      </Typography>
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600 }}>
+                          Address
+                        </Typography>
+                        <Typography sx={{ fontWeight: 500 }}>
+                          {employee.address.street}, {employee.address.city}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {employee.address.state} {employee.address.postalCode}, {employee.address.country}
+                        </Typography>
+                      </Box>
                     </Box>
                   </Box>
                 </CardContent>
@@ -340,46 +608,99 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-              <Card variant="outlined" sx={{ height: "100%" }}>
-                <CardContent>
+              <Card
+                variant="outlined"
+                sx={{
+                  height: "100%",
+                  background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.8)} 0%, ${alpha(theme.palette.success.light, 0.05)} 100%)`,
+                  border: `1px solid ${alpha(theme.palette.success.main, 0.1)}`,
+                  borderRadius: 3,
+                  transition: 'all 0.3s ease-in-out',
+                  '&:hover': {
+                    boxShadow: `0 8px 24px ${alpha(theme.palette.success.main, 0.15)}`,
+                    transform: 'translateY(-2px)'
+                  }
+                }}
+              >
+                <CardContent sx={{ p: 4 }}>
                   <Typography
                     variant="h6"
-                    sx={{ mb: 2, display: "flex", alignItems: "center" }}
+                    sx={{
+                      mb: 3,
+                      display: "flex",
+                      alignItems: "center",
+                      fontWeight: 700,
+                      color: theme.palette.success.main
+                    }}
                   >
-                    <Business sx={{ mr: 1 }} />
+                    <Box
+                      sx={{
+                        p: 1,
+                        borderRadius: 2,
+                        background: `linear-gradient(135deg, ${alpha(theme.palette.success.main, 0.1)}, ${alpha(theme.palette.success.light, 0.1)})`,
+                        mr: 2
+                      }}
+                    >
+                      <Business sx={{ color: theme.palette.success.main }} />
+                    </Box>
                     Employment Details
                   </Typography>
                   <Box
-                    sx={{ display: "flex", flexDirection: "column", gap: 1 }}
+                    sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}
                   >
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.success.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.success.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Department
                       </Typography>
-                      <Typography>{employee.department}</Typography>
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>{employee.department}</Typography>
                     </Box>
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.warning.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.warning.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Position
                       </Typography>
-                      <Typography>{employee.position}</Typography>
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>{employee.position}</Typography>
                     </Box>
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.info.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.info.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Employment Type
                       </Typography>
-                      <Typography>
-                        {employee.employmentDetails.employmentType.replace(
-                          "-",
-                          " "
-                        )}
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
+                        {employee.employmentDetails.employmentType.replace("-", " ")}
                       </Typography>
                     </Box>
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: alpha(theme.palette.secondary.main, 0.02),
+                        border: `1px solid ${alpha(theme.palette.secondary.main, 0.1)}`
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, mb: 0.5 }}>
                         Work Location
                       </Typography>
-                      <Typography>
+                      <Typography sx={{ fontWeight: 600, fontSize: '1.1rem' }}>
                         {employee.employmentDetails.workLocation}
                       </Typography>
                     </Box>

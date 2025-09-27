@@ -180,6 +180,29 @@ const EmployeePage: React.FC = () => {
     navigate('/basic-data/employees/create');
   };
 
+  const handleBulkEdit = (selectedEmployees: Employee[]) => {
+    // Handle bulk edit - could open a bulk edit dialog or navigate to bulk edit page
+    console.log('Bulk edit employees:', selectedEmployees);
+    // For now, just show an alert
+    alert(`Bulk edit ${selectedEmployees.length} employees - Feature coming soon!`);
+  };
+
+  const handleBulkDelete = (selectedEmployees: Employee[]) => {
+    // Handle bulk delete - could open a confirmation dialog
+    console.log('Bulk delete employees:', selectedEmployees);
+    if (window.confirm(`Are you sure you want to delete ${selectedEmployees.length} employees?`)) {
+      // Implement bulk delete logic
+      alert(`Bulk delete ${selectedEmployees.length} employees - Feature coming soon!`);
+    }
+  };
+
+  const handleBulkExport = (selectedEmployees: Employee[]) => {
+    // Handle bulk export - could export to CSV, Excel, etc.
+    console.log('Bulk export employees:', selectedEmployees);
+    // For now, just show an alert
+    alert(`Bulk export ${selectedEmployees.length} employees - Feature coming soon!`);
+  };
+
 
   return (
     <Box sx={{ p: 3 }}>
@@ -320,6 +343,9 @@ const EmployeePage: React.FC = () => {
         onEditEmployee={handleEditEmployee}
         onDeleteEmployee={handleDeleteEmployee}
         onAddEmployee={handleAddEmployee}
+        onBulkEdit={handleBulkEdit}
+        onBulkDelete={handleBulkDelete}
+        onBulkExport={handleBulkExport}
         filters={filters}
         onFiltersChange={setFilters}
       />

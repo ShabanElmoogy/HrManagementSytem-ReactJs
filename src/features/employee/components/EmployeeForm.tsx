@@ -204,54 +204,135 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
           <Grid container spacing={3}>
             {/* Photo Upload */}
             <Grid size={{ xs: 12, md: 4 }}>
-              <Card sx={{ p: 3, textAlign: 'center' }}>
-                <Typography variant="h6" sx={{ mb: 2 }}>
+              <Card
+                sx={{
+                  p: 4,
+                  textAlign: 'center',
+                  background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.8)} 0%, ${alpha(theme.palette.primary.light, 0.05)} 100%)`,
+                  border: `2px dashed ${alpha(theme.palette.primary.main, 0.3)}`,
+                  borderRadius: 4,
+                  transition: 'all 0.3s ease-in-out',
+                  '&:hover': {
+                    borderColor: theme.palette.primary.main,
+                    boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.15)}`,
+                    transform: 'translateY(-2px)'
+                  }
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  sx={{
+                    mb: 3,
+                    fontWeight: 700,
+                    color: theme.palette.primary.main
+                  }}
+                >
                   Profile Photo
                 </Typography>
-                <Box sx={{ position: 'relative', display: 'inline-block' }}>
+                <Box sx={{ position: 'relative', display: 'inline-block', mb: 3 }}>
                   <Avatar
                     src={employee.photo}
                     sx={{
-                      width: 120,
-                      height: 120,
+                      width: 140,
+                      height: 140,
                       mx: 'auto',
-                      mb: 2,
-                      border: `3px solid ${alpha(theme.palette.primary.main, 0.2)}`
+                      border: `4px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+                      boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.2)}`,
+                      background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(theme.palette.primary.light, 0.2)})`,
+                      transition: 'all 0.3s ease-in-out',
+                      '&:hover': {
+                        transform: 'scale(1.05)',
+                        boxShadow: `0 12px 32px ${alpha(theme.palette.primary.main, 0.3)}`
+                      }
                     }}
                   >
-                    <Person sx={{ fontSize: 60 }} />
+                    <Person sx={{ fontSize: 70, color: theme.palette.primary.main }} />
                   </Avatar>
                   <IconButton
                     sx={{
                       position: 'absolute',
-                      bottom: 16,
-                      right: -8,
-                      backgroundColor: theme.palette.primary.main,
+                      bottom: 20,
+                      right: -10,
+                      background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${alpha(theme.palette.primary.main, 0.8)})`,
                       color: 'white',
+                      width: 48,
+                      height: 48,
+                      boxShadow: `0 4px 16px ${alpha(theme.palette.primary.main, 0.3)}`,
+                      transition: 'all 0.3s ease-in-out',
                       '&:hover': {
-                        backgroundColor: theme.palette.primary.dark
+                        background: `linear-gradient(135deg, ${theme.palette.primary.dark}, ${alpha(theme.palette.primary.dark, 0.8)})`,
+                        transform: 'scale(1.1)',
+                        boxShadow: `0 6px 20px ${alpha(theme.palette.primary.main, 0.4)}`
                       }
                     }}
-                    size="small"
+                    size="large"
                   >
-                    <PhotoCamera />
+                    <PhotoCamera sx={{ fontSize: 24 }} />
                   </IconButton>
                 </Box>
-                <Typography variant="body2" color="text.secondary">
-                  Click to upload a new photo
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                    fontWeight: 500,
+                    mb: 1
+                  }}
+                >
+                  Upload Profile Picture
+                </Typography>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: 'text.secondary',
+                    display: 'block',
+                    opacity: 0.7
+                  }}
+                >
+                  JPG, PNG or GIF (max. 5MB)
                 </Typography>
               </Card>
             </Grid>
 
             {/* Basic Information */}
             <Grid size={{ xs: 12, md: 8 }}>
-              <Card sx={{ p: 3 }}>
-                <Typography variant="h6" sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
-                  <Person sx={{ mr: 1 }} />
+              <Card
+                sx={{
+                  p: 4,
+                  background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.8)} 0%, ${alpha(theme.palette.success.light, 0.05)} 100%)`,
+                  border: `1px solid ${alpha(theme.palette.success.main, 0.1)}`,
+                  borderRadius: 4,
+                  boxShadow: `0 4px 16px ${alpha(theme.palette.success.main, 0.1)}`,
+                  transition: 'all 0.3s ease-in-out',
+                  '&:hover': {
+                    boxShadow: `0 8px 24px ${alpha(theme.palette.success.main, 0.15)}`,
+                    transform: 'translateY(-1px)'
+                  }
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  sx={{
+                    mb: 4,
+                    display: 'flex',
+                    alignItems: 'center',
+                    fontWeight: 700,
+                    color: theme.palette.success.main
+                  }}
+                >
+                  <Box
+                    sx={{
+                      p: 1,
+                      borderRadius: 2,
+                      background: `linear-gradient(135deg, ${alpha(theme.palette.success.main, 0.1)}, ${alpha(theme.palette.success.light, 0.1)})`,
+                      mr: 2
+                    }}
+                  >
+                    <Person sx={{ color: theme.palette.success.main }} />
+                  </Box>
                   Basic Information
                 </Typography>
 
-                <Grid container spacing={2}>
+                <Grid container spacing={3}>
                   <Grid size={{ xs: 12, sm: 6 }}>
                     <TextField
                       fullWidth
@@ -259,6 +340,24 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                       value={employee.firstName || ''}
                       onChange={(e) => handleInputChange('firstName', e.target.value)}
                       required
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
                     />
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6 }}>
@@ -268,6 +367,24 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                       value={employee.lastName || ''}
                       onChange={(e) => handleInputChange('lastName', e.target.value)}
                       required
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
                     />
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6 }}>
@@ -278,6 +395,24 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                       value={employee.email || ''}
                       onChange={(e) => handleInputChange('email', e.target.value)}
                       required
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
                     />
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6 }}>
@@ -287,10 +422,49 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                       value={employee.phone || ''}
                       onChange={(e) => handleInputChange('phone', e.target.value)}
                       required
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
                     />
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6 }}>
-                    <FormControl fullWidth required>
+                    <FormControl
+                      fullWidth
+                      required
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
+                    >
                       <InputLabel>Department</InputLabel>
                       <Select
                         value={employee.department || ''}
@@ -304,7 +478,28 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                     </FormControl>
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6 }}>
-                    <FormControl fullWidth required>
+                    <FormControl
+                      fullWidth
+                      required
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 3,
+                          backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                          transition: 'all 0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: theme.palette.primary.main,
+                              borderWidth: 2
+                            }
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                          }
+                        }
+                      }}
+                    >
                       <InputLabel>Position</InputLabel>
                       <Select
                         value={employee.position || ''}
@@ -550,29 +745,108 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
   };
 
   return (
-    <Box>
+    <Box sx={{
+      minHeight: '100vh',
+      background: `linear-gradient(135deg, ${alpha(theme.palette.background.default, 0.5)} 0%, ${alpha(theme.palette.primary.light, 0.1)} 100%)`,
+      '@keyframes spin': {
+        '0%': { transform: 'rotate(0deg)' },
+        '100%': { transform: 'rotate(360deg)' }
+      }
+    }}>
       {/* Breadcrumbs */}
-      <Box sx={{ p: 3, pb: 0 }}>
-        <Breadcrumbs sx={{ mb: 2 }}>
-          <MuiLink component={Link} to="/" color="inherit">
+      <Box sx={{
+        p: 4,
+        pb: 2,
+        background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.95)} 0%, ${alpha(theme.palette.background.default, 0.95)} 100%)`,
+        backdropFilter: 'blur(10px)',
+        borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`
+      }}>
+        <Breadcrumbs
+          sx={{
+            mb: 3,
+            '& .MuiBreadcrumbs-separator': {
+              color: theme.palette.primary.main
+            }
+          }}
+        >
+          <MuiLink
+            component={Link}
+            to="/"
+            sx={{
+              color: theme.palette.primary.main,
+              textDecoration: 'none',
+              fontWeight: 500,
+              '&:hover': {
+                textDecoration: 'underline'
+              }
+            }}
+          >
             Home
           </MuiLink>
-          <MuiLink component={Link} to="/basic-data/employees" color="inherit">
+          <MuiLink
+            component={Link}
+            to="/basic-data/employees"
+            sx={{
+              color: theme.palette.primary.main,
+              textDecoration: 'none',
+              fontWeight: 500,
+              '&:hover': {
+                textDecoration: 'underline'
+              }
+            }}
+          >
             Employees
           </MuiLink>
-          <Typography color="text.primary">
+          <Typography
+            color="text.primary"
+            sx={{
+              fontWeight: 600,
+              color: theme.palette.secondary.main
+            }}
+          >
             {mode === 'create' ? 'Create Employee' : 'Edit Employee'}
           </Typography>
         </Breadcrumbs>
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h4" sx={{ fontWeight: 700 }}>
-            {mode === 'create' ? 'Create New Employee' : 'Edit Employee'}
-          </Typography>
+          <Box>
+            <Typography
+              variant="h3"
+              sx={{
+                fontWeight: 800,
+                mb: 1,
+                background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            >
+              {mode === 'create' ? 'Create New Employee' : 'Edit Employee'}
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              {mode === 'create'
+                ? 'Fill in the details below to add a new employee to your organization'
+                : 'Update employee information and settings'
+              }
+            </Typography>
+          </Box>
           <Button
             startIcon={<ArrowBack />}
             onClick={() => navigate('/basic-data/employees')}
             variant="outlined"
+            sx={{
+              px: 3,
+              py: 1.5,
+              borderRadius: 3,
+              fontWeight: 600,
+              borderWidth: 2,
+              '&:hover': {
+                borderWidth: 2,
+                transform: 'translateY(-2px)',
+                boxShadow: `0 6px 20px ${alpha(theme.palette.primary.main, 0.2)}`
+              },
+              transition: 'all 0.3s ease-in-out'
+            }}
           >
             Back to Employees
           </Button>
@@ -580,11 +854,53 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
       </Box>
 
       {/* Stepper */}
-      <Box sx={{ px: 3, pb: 2 }}>
-        <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
-          {steps.map((label) => (
+      <Box sx={{ px: 4, pb: 3 }}>
+        <Stepper
+          activeStep={activeStep}
+          sx={{
+            mb: 5,
+            '& .MuiStepConnector-line': {
+              borderColor: alpha(theme.palette.primary.main, 0.3),
+              borderWidth: 2
+            },
+            '& .MuiStepConnector-root.Mui-active .MuiStepConnector-line': {
+              borderColor: theme.palette.primary.main,
+              background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`
+            },
+            '& .MuiStepConnector-root.Mui-completed .MuiStepConnector-line': {
+              borderColor: theme.palette.success.main,
+              background: theme.palette.success.main
+            }
+          }}
+        >
+          {steps.map((label, index) => (
             <Step key={label}>
-              <StepLabel>{label}</StepLabel>
+              <StepLabel
+                sx={{
+                  '& .MuiStepLabel-label': {
+                    fontWeight: activeStep === index ? 700 : 500,
+                    fontSize: '1rem',
+                    color: activeStep === index ? theme.palette.primary.main : 'text.secondary'
+                  },
+                  '& .MuiStepIcon-root': {
+                    width: 50,
+                    height: 50,
+                    color: activeStep === index
+                      ? theme.palette.primary.main
+                      : alpha(theme.palette.text.secondary, 0.3),
+                    '&.Mui-active': {
+                      color: theme.palette.primary.main,
+                      boxShadow: `0 0 0 4px ${alpha(theme.palette.primary.main, 0.2)}`
+                    },
+                    '&.Mui-completed': {
+                      color: theme.palette.success.main,
+                      boxShadow: `0 0 0 4px ${alpha(theme.palette.success.main, 0.2)}`
+                    }
+                  }
+                }}
+              >
+                {label}
+              </StepLabel>
             </Step>
           ))}
         </Stepper>
@@ -595,33 +911,88 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
         {renderStepContent(activeStep)}
 
         {/* Navigation Buttons */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4, mb: 4 }}>
+        <Box sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          mt: 6,
+          mb: 6,
+          p: 4,
+          background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.8)} 0%, ${alpha(theme.palette.background.default, 0.8)} 100%)`,
+          borderRadius: 4,
+          border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+          backdropFilter: 'blur(10px)'
+        }}>
           <Button
             disabled={activeStep === 0}
             onClick={handleBack}
             startIcon={<ArrowBack />}
             variant="outlined"
+            sx={{
+              px: 4,
+              py: 1.5,
+              borderRadius: 3,
+              fontWeight: 600,
+              borderWidth: 2,
+              transition: 'all 0.3s ease-in-out',
+              '&:hover': {
+                borderWidth: 2,
+                transform: 'translateY(-2px)',
+                boxShadow: `0 6px 20px ${alpha(theme.palette.primary.main, 0.2)}`
+              },
+              '&:disabled': {
+                opacity: 0.5,
+                transform: 'none'
+              }
+            }}
           >
             Back
           </Button>
 
-          <Box sx={{ display: 'flex', gap: 2 }}>
+          <Box sx={{ display: 'flex', gap: 3 }}>
             {activeStep === steps.length - 1 ? (
               <Button
                 variant="contained"
                 onClick={handleSave}
                 disabled={loading}
-                startIcon={<Save />}
+                startIcon={loading ? undefined : <Save />}
                 sx={{
-                  px: 4,
-                  py: 1.5,
-                  background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${alpha(theme.palette.primary.main, 0.8)})`,
+                  px: 6,
+                  py: 2,
+                  borderRadius: 3,
+                  fontWeight: 700,
+                  fontSize: '1rem',
+                  background: `linear-gradient(135deg, ${theme.palette.success.main}, ${alpha(theme.palette.success.main, 0.8)})`,
+                  boxShadow: `0 4px 16px ${alpha(theme.palette.success.main, 0.3)}`,
+                  transition: 'all 0.3s ease-in-out',
                   '&:hover': {
-                    background: `linear-gradient(135deg, ${theme.palette.primary.dark}, ${alpha(theme.palette.primary.dark, 0.8)})`
+                    background: `linear-gradient(135deg, ${theme.palette.success.dark}, ${alpha(theme.palette.success.dark, 0.8)})`,
+                    boxShadow: `0 6px 20px ${alpha(theme.palette.success.main, 0.4)}`,
+                    transform: 'translateY(-2px)'
+                  },
+                  '&:disabled': {
+                    opacity: 0.7,
+                    transform: 'none',
+                    background: theme.palette.grey[400]
                   }
                 }}
               >
-                {loading ? 'Saving...' : mode === 'create' ? 'Create Employee' : 'Save Changes'}
+                {loading ? (
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box
+                      sx={{
+                        width: 20,
+                        height: 20,
+                        border: `2px solid ${theme.palette.common.white}`,
+                        borderTop: '2px solid transparent',
+                        borderRadius: '50%',
+                        animation: 'spin 1s linear infinite'
+                      }}
+                    />
+                    Saving...
+                  </Box>
+                ) : (
+                  mode === 'create' ? 'Create Employee' : 'Save Changes'
+                )}
               </Button>
             ) : (
               <Button
@@ -629,15 +1000,22 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ mode }) => {
                 onClick={handleNext}
                 endIcon={<ArrowForward />}
                 sx={{
-                  px: 4,
-                  py: 1.5,
+                  px: 6,
+                  py: 2,
+                  borderRadius: 3,
+                  fontWeight: 700,
+                  fontSize: '1rem',
                   background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${alpha(theme.palette.primary.main, 0.8)})`,
+                  boxShadow: `0 4px 16px ${alpha(theme.palette.primary.main, 0.3)}`,
+                  transition: 'all 0.3s ease-in-out',
                   '&:hover': {
-                    background: `linear-gradient(135deg, ${theme.palette.primary.dark}, ${alpha(theme.palette.primary.dark, 0.8)})`
+                    background: `linear-gradient(135deg, ${theme.palette.primary.dark}, ${alpha(theme.palette.primary.dark, 0.8)})`,
+                    boxShadow: `0 6px 20px ${alpha(theme.palette.primary.main, 0.4)}`,
+                    transform: 'translateY(-2px)'
                   }
                 }}
               >
-                Next
+                Next Step
               </Button>
             )}
           </Box>
