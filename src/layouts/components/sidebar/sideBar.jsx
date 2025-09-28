@@ -147,11 +147,24 @@ function SideBar({ open, handleDrawerClose }) {
     }
   };
 
-  // Find which section contains a specific path
+  // Find which section contains a specific path (recursive for nested items)
   const findSectionByPath = (path) => {
+    const findInItems = (items) => {
+      for (const item of items) {
+        if (item.path === path) {
+          return true;
+        }
+        if (item.items && item.items.length > 0) {
+          if (findInItems(item.items)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    };
+
     for (const section of navigationSections) {
-      const itemWithPath = section.items.find((item) => item.path === path);
-      if (itemWithPath) {
+      if (findInItems(section.items)) {
         return section.id;
       }
     }

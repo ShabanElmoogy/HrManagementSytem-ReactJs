@@ -1,11 +1,14 @@
 /* eslint-disable react/prop-types */
 // NavigationItem.jsx
-import { ListItemIcon, ListItemText, Tooltip } from "@mui/material";
+import { ListItemIcon, ListItemText, Tooltip, Collapse, List } from "@mui/material";
 import ListItemButton from "@mui/material/ListItemButton";
 import { useTheme } from "@mui/material/styles";
 import { useLocation, useNavigate } from "react-router-dom";
 import { grey } from "@mui/material/colors";
 import { alpha } from "@mui/material/styles";
+import { useState } from "react";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import AuthService from "../../../shared/services/authService";
 
 function NavigationItem({
@@ -18,10 +21,13 @@ function NavigationItem({
   onNavigate,
   roles = [],
   permissions = [],
+  items = [],
 }) {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
+  const [expanded, setExpanded] = useState(false);
+  const hasChildren = items && items.length > 0;
 
   // Check if user has access based on roles or permissions
   const hasAccess = () => {
@@ -63,65 +69,120 @@ function NavigationItem({
   };
 
   const handleClick = () => {
-    // Pass the path to onNavigate so we know which section to keep expanded
-    if (onNavigate) {
-      onNavigate(path);
-    }
+    if (hasChildren) {
+      setExpanded(!expanded);
+    } else {
+      // Pass the path to onNavigate so we know which section to keep expanded
+      if (onNavigate) {
+        onNavigate(path);
+      }
 
-    // Navigate to the page
-    navigate(`/${path}`);
+      // Navigate to the page
+      navigate(`/${path}`);
+    }
   };
 
   return (
-    <Tooltip title={open ? null : title} placement="left">
-      <ListItemButton
-        onClick={handleClick}
-        sx={[
-          {
-            minHeight: 48,
-            pl: 4,
-            bgcolor: getBgColor(),
-          },
-          open
-            ? {
-                justifyContent: "initial",
-              }
-            : {
-                justifyContent: "center",
-              },
-        ]}
-      >
-        <ListItemIcon
+    <>
+      <Tooltip title={open ? null : title} placement="left">
+        <ListItemButton
+          onClick={handleClick}
           sx={[
             {
-              minWidth: 0,
-              justifyContent: "center",
+              minHeight: 48,
+              pl: 4,
+              bgcolor: getBgColor(),
             },
             open
               ? {
-                  mr: 3,
+                  justifyContent: "initial",
                 }
               : {
-                  mr: "auto",
+                  justifyContent: "center",
                 },
           ]}
         >
-          {icon}
-        </ListItemIcon>
-        <ListItemText
-          primary={titleComponent || title}
-          sx={[
-            open
-              ? {
-                  opacity: 1,
+          <ListItemIcon
+            sx={[
+              {
+                minWidth: 0,
+                justifyContent: "center",
+              },
+              open
+                ? {
+                    mr: 3,
+                  }
+                : {
+                    mr: "auto",
+                  },
+            ]}
+          >
+            {icon}
+          </ListItemIcon>
+          <ListItemText
+            primary={titleComponent || title}
+            sx={[
+              open
+                ? {
+                    opacity: 1,
+                  }
+                : {
+                    opacity: 0,
+                  },
+            ]}
+          />
+          {open && hasChildren && (expanded ? <ExpandLess /> : <ExpandMore />)}
+        </ListItemButton>
+      </Tooltip>
+      {hasChildren && (
+        <Collapse in={expanded && open} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            {items.map((childItem) => (
+              <NavigationItem
+                key={childItem.path}
+                open={open}
+                title={childItem.title}
+                titleComponent={
+                  <span
+                    style={{
+                      backgroundColor:
+                        searchTerm &&
+                        childItem.title.toLowerCase().includes(searchTerm.toLowerCase())
+                          ? alpha(theme.palette.primary.main, 0.2)
+                          : "transparent",
+                      fontWeight:
+                        searchTerm &&
+                        childItem.title.toLowerCase().includes(searchTerm.toLowerCase())
+                          ? "bold"
+                          : "inherit",
+                      padding:
+                        searchTerm &&
+                        childItem.title.toLowerCase().includes(searchTerm.toLowerCase())
+                          ? "0 2px"
+                          : "0",
+                      borderRadius:
+                        searchTerm &&
+                        childItem.title.toLowerCase().includes(searchTerm.toLowerCase())
+                          ? "2px"
+                          : "0",
+                    }}
+                  >
+                    {childItem.title}
+                  </span>
                 }
-              : {
-                  opacity: 0,
-                },
-          ]}
-        />
-      </ListItemButton>
-    </Tooltip>
+                icon={childItem.icon}
+                path={childItem.path}
+                searchTerm={searchTerm}
+                onNavigate={onNavigate}
+                roles={childItem.roles || []}
+                permissions={childItem.permissions || []}
+                items={childItem.items || []}
+              />
+            ))}
+          </List>
+        </Collapse>
+      )}
+    </>
   );
 }
 

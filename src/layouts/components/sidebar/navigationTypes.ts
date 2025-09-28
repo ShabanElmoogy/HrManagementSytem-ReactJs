@@ -47,6 +47,7 @@ export enum UserRoles {
 export enum NavigationTitles {
   // Menu keys
   BASIC_DATA = "menu.basicData",
+  GEOGRAPHIC_DATA = "Geographic Data",
   COUNTRIES = "menu.countries",
   ADDRESS_TYPES = "menu.addressTypes",
   STATES = "menu.states",

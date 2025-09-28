@@ -68,12 +68,24 @@ function NavigationSection({
     searchTerm &&
     t(section.title).toLowerCase().includes(searchTerm.toLowerCase());
 
-  // Check if any items match the search
-  const matchingItems = section.items.filter(
-    (item) =>
-      searchTerm &&
-      t(item.title).toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Check if any items match the search (recursive)
+  const findMatchingItems = (items) => {
+    const matches = [];
+    for (const item of items) {
+      if (
+        searchTerm &&
+        t(item.title).toLowerCase().includes(searchTerm.toLowerCase())
+      ) {
+        matches.push(item);
+      }
+      if (item.items && item.items.length > 0) {
+        matches.push(...findMatchingItems(item.items));
+      }
+    }
+    return matches;
+  };
+
+  const matchingItems = findMatchingItems(section.items);
 
   const hasMatchingItems = matchingItems.length > 0;
 
@@ -169,7 +181,7 @@ function NavigationSection({
         <List component="div" disablePadding>
           {itemsToShow.map((item) => (
             <NavigationItem
-              key={item.path}
+              key={item.path || item.title}
               open={open}
               title={t(item.title)}
               titleComponent={
@@ -181,6 +193,7 @@ function NavigationSection({
               onNavigate={onNavigate}
               roles={item.roles || []}
               permissions={item.permissions || []}
+              items={item.items || []}
             />
           ))}
         </List>
