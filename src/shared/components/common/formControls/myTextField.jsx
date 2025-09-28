@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import React from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import ClearIcon from "@mui/icons-material/Clear";
 import {
@@ -307,7 +308,11 @@ const MyTextField = ({
 
     // If custom endAdornment is provided, add it
     if (endAdornment) {
-      elements.push(endAdornment);
+      elements.push(
+        <React.Fragment key="custom-endAdornment">
+          {endAdornment}
+        </React.Fragment>
+      );
     }
 
     return elements.length > 0 ? (

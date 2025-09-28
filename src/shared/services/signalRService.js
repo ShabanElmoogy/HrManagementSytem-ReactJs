@@ -6,7 +6,6 @@ class SignalRService {
       .withUrl(hubUrl, {
         accessTokenFactory: () => {
           const token = sessionStorage.getItem('token'); // Make sure this matches your token key
-          console.log('Sending token:', token ? 'Token present' : 'No token found');
           return token;
         }
       })

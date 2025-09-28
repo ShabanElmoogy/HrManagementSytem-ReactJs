@@ -281,7 +281,19 @@
     "goToLastRecord": "Go to last record"
   },
   "addressTypes": {
-    "views": { "grid": "Grid" },
+    "dashboard": {
+      "totalAddressTypes": "Total Address Types",
+      "completeProfiles": "Complete Profiles",
+      "recentlyAdded": "Recently Added",
+      "avgNameLength": "Avg Name Length"
+    },
+    "charts": {
+      "byInitialLetter": "Address Types by Initial Letter",
+      "languageDistribution": "Language Distribution",
+      "nameLength": "Name Length Distribution",
+      "timeline": "Address Types Added Over Time"
+    },
+    "views": { "grid": "Grid", "chart": "Chart","card" : "Card" },
     "title": "Address Types",
     "subTitle": "List of address types",
     "viewTitle": "Address Types Management",
@@ -302,7 +314,17 @@
     "deleteError": "Failed to delete address type",
     "nameArPlaceholder": "Arabic only like : المنزل , العمل",
     "nameEnPlaceholder": "English only like : Home , Work",
-    "total": "Total"
+    "noData": "No Address Types Available",
+    "noDataDescription": "Start by adding your first address type to see analytics",
+    "total": "Total",
+    "mainTitle": "Address Types Card View",
+    "mainSubTitle": "No Address Types Available To Display",
+    "browseAndManage": "Browse and manage",
+    "browseDescription": "address types with enhanced search and filtering",
+    "searchPlaceHolder": "Search address types by name...",
+    "addressType": "Address Type",
+    "all": "All Address Types",
+    "recent30Days": "Recent (30 days)"
   },
   "countries": {
     "dashboard": {

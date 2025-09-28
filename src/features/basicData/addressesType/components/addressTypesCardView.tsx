@@ -1,120 +1,22 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useMemo, useState, useCallback } from "react";
-import { Box, Grid } from "@mui/material";
+// components/AddressTypesCardView.jsx
+import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material/Select";
-import { format } from "date-fns";
-
-import { CardView } from "@/shared/components/cardView";
-import UnifiedCardViewHeader from "@/shared/components/common/cardView/cardHeader/UnifiedCardViewHeader";
-import UnifiedCardViewPagination from "@/shared/components/common/cardView/UnifiedCardViewPagination";
-import { BadgePercentage, CreatedDateRow, HighlightBadge } from "@/shared/components/common/cardView/cardBody/UnifiedCardParts";
-import { AppChip } from "@/shared/components";
+import { useEffect, useMemo, useState } from "react";
 import { useAddressTypeSearch } from "../hooks/useAddressTypeQueries";
 import type { AddressType } from "../types/AddressType";
-import { useTheme } from "@mui/material/styles";
+import {
+  CardViewHeader,
+  CardViewPagination,
+  AddressTypeCard,
+  EmptyState,
+  LoadingState,
+  NoResultsState
+} from "./cardView";
 
-// Local lightweight loading/empty states using shared components
-import UnifiedLoadingState from "@/shared/components/common/cardView/UnifiedLoadingState";
-import { EmptyState as ReusableEmptyState, NoResultsState as ReusableNoResultsState } from "@/shared/components/common/feedback";
-import { useTranslation } from "react-i18next";
-import { Delete, Edit, Visibility } from "@mui/icons-material";
-import { CardActionsRow } from "@/shared/components/common/cardView/cardBody/UnifiedCardParts";
-import { appPermissions } from "@/constants";
+import { AddressTypesCardViewProps } from "./cardView/AddressTypeCard.types";
 
-export interface AddressTypesCardViewProps {
-  items: AddressType[];
-  loading: boolean;
-  onEdit: (item: AddressType) => void;
-  onDelete: (item: AddressType) => void;
-  onView: (item: AddressType) => void;
-  onAdd: () => void;
-  t: (key: string) => string;
-  lastAddedId?: string | number | null;
-  lastEditedId?: string | number | null;
-  lastDeletedIndex?: number | null;
-}
-
-// Quality score is minimal for AddressType. Names present => quality up.
-const getQualityScore = (item: AddressType) => {
-  let score = 50;
-  if (item.nameEn) score += 25;
-  if (item.nameAr) score += 25;
-  return Math.min(score, 100);
-};
-
-const AddressTypeCard: React.FC<{
-  item: AddressType;
-  index: number;
-  isHovered: boolean;
-  isHighlighted: boolean;
-  highlightLabel?: string | null;
-  onEdit: (item: AddressType) => void;
-  onDelete: (item: AddressType) => void;
-  onView: (item: AddressType) => void;
-  onHover: (id: string | number | null) => void;
-  t: (key: string) => string;
-}> = ({ item, index, isHovered, isHighlighted, highlightLabel, onEdit, onDelete, onView, onHover, t }) => {
-  const theme = useTheme();
-  const qualityScore = getQualityScore(item);
-
-  return (
-    <CardView
-      index={index}
-      highlighted={isHighlighted}
-      isHovered={isHovered}
-      onMouseEnter={() => onHover(item.id)}
-      onMouseLeave={() => onHover(null)}
-      height={320}
-      topRightBadge={<BadgePercentage value={qualityScore} highlighted={isHighlighted} color={theme.palette.primary.main} />}
-      leftBadge={isHighlighted && highlightLabel ? <HighlightBadge label={highlightLabel} /> : undefined}
-      title={item.nameEn || "N/A"}
-      subtitle={item.nameAr || undefined}
-      chips={
-        <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
-          <AppChip label={`ID: ${item.id}`} colorKey="secondary" variant="outlined" monospace sx={{ fontSize: "0.7rem" }} />
-        </Box>
-      }
-      content={
-        <>
-          <CreatedDateRow
-            date={item.createdOn ? new Date(item.createdOn as any) : null}
-            formatter={(d) => format(d, "MMM dd, yyyy")}
-          />
-        </>
-      }
-      footer={
-        <CardActionsRow
-          actions={[
-            {
-              key: "view",
-              title: t("actions.view") || "View",
-              color: "info",
-              icon: <Visibility sx={{ fontSize: 16 }} />,
-              onClick: () => onView(item),
-            },
-            {
-              key: "edit",
-              title: t("actions.edit") || "Edit",
-              color: "primary",
-              icon: <Edit sx={{ fontSize: 16 }} />,
-              onClick: () => onEdit(item),
-            },
-            {
-              key: "delete",
-              title: t("actions.delete") || "Delete",
-              color: "error",
-              icon: <Delete sx={{ fontSize: 16 }} />,
-              onClick: () => onDelete(item),
-              requiredPermissions: [appPermissions.DeleteAddressTypes],
-            },
-          ]}
-        />
-      }
-    />
-  );
-};
-
-const AddressTypesCardView: React.FC<AddressTypesCardViewProps> = ({
+const AddressTypesCardView = ({
   items,
   loading,
   onEdit,
@@ -125,117 +27,168 @@ const AddressTypesCardView: React.FC<AddressTypesCardViewProps> = ({
   lastAddedId,
   lastEditedId,
   lastDeletedIndex,
-}) => {
+}: AddressTypesCardViewProps) => {
   const theme = useTheme();
-  const { t: tr } = useTranslation();
-
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("created");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState("asc");
   const [filterBy, setFilterBy] = useState("all");
   const [hoveredCard, setHoveredCard] = useState<string | number | null>(null);
   const [highlightedCard, setHighlightedCard] = useState<string | number | null>(null);
   const [highlightLabel, setHighlightLabel] = useState<string | null>(null);
 
-  const normalizedSearch = useMemo(() => searchTerm.trim(), [searchTerm]);
-  const searchedItems = useAddressTypeSearch(normalizedSearch, items || []);
+  // Search derived state using the new hook
+  const normalizedSearch = useMemo(() => {
+    const s = searchTerm.trim();
+    return s.startsWith("+") ? s.slice(1) : s;
+  }, [searchTerm]);
+  const searchedAddressTypes = useAddressTypeSearch(normalizedSearch, items || []);
 
-  const getResponsiveItemsPerPage = () => 12; // simplified; Unified header/pagination will remain responsive visually
+  // Responsive breakpoints
+  const isXs = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSm = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  const isMd = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+  const isLg = useMediaQuery(theme.breakpoints.between('lg', 'xl'));
+  const isXl = useMediaQuery(theme.breakpoints.up('xl'));
+
+  // Responsive items per page calculation
+  const getResponsiveItemsPerPage = () => {
+    if (isXs) return 6;   // Mobile: 1 column
+    if (isSm) return 8;   // Small tablet: 2 columns
+    if (isMd) return 12;  // Medium tablet: 3 columns
+    if (isLg) return 12;  // Desktop: 4 columns
+    if (isXl) return 12;  // Large desktop: 5+ columns
+    return 12; // Default
+  };
+
+  // Pagination state with responsive default
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(() => getResponsiveItemsPerPage());
 
+  // Update items per page when screen size changes
+  useEffect(() => {
+    const newItemsPerPage = getResponsiveItemsPerPage();
+    if (newItemsPerPage !== rowsPerPage) {
+      setRowsPerPage(newItemsPerPage);
+      setPage(0); // Reset to first page
+    }
+  }, [isXs, isSm, isMd, isLg, isXl]);
+
+  // Reset to first page when search or filters change
   useEffect(() => {
     setPage(0);
   }, [normalizedSearch, filterBy, sortBy]);
 
-  const processedItems = useMemo(() => {
+  // Enhanced data processing with search, filter, and sort
+  const processedAddressTypes = useMemo(() => {
     if (!items) return [];
 
-    let filtered = [...searchedItems];
+    let filteredAddressTypes = [...searchedAddressTypes];
 
+    // Apply additional filters
     if (filterBy !== "all") {
       switch (filterBy) {
-        case "recent": {
+        case "recent":
           const thirtyDaysAgo = new Date();
           thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-          filtered = filtered.filter((it: any) => it.createdOn && new Date(it.createdOn) > thirtyDaysAgo);
+          filteredAddressTypes = filteredAddressTypes.filter(addressType =>
+            addressType.createdOn && new Date(addressType.createdOn) > thirtyDaysAgo
+          );
           break;
-        }
         default:
           break;
       }
     }
 
-    filtered.sort((a, b) => {
-      let cmp = 0;
+    // Apply sorting
+    filteredAddressTypes.sort((a, b) => {
+      let comparison = 0;
       switch (sortBy) {
         case "name":
-          cmp = (a.nameEn || "").localeCompare(b.nameEn || "");
+          comparison = (a.nameEn || "").localeCompare(b.nameEn || "");
           break;
         case "created":
-          cmp = new Date(a.createdOn || 0).getTime() - new Date(b.createdOn || 0).getTime();
+          comparison = new Date(a.createdOn || 0).getTime() - new Date(b.createdOn || 0).getTime();
           break;
         default:
-          cmp = 0;
+          comparison = 0;
       }
-      return sortOrder === "asc" ? cmp : -cmp;
+      return sortOrder === "asc" ? comparison : -comparison;
     });
 
-    return filtered;
-  }, [searchedItems, sortBy, sortOrder, filterBy, items]);
+    return filteredAddressTypes;
+  }, [searchedAddressTypes, sortBy, sortOrder, filterBy]);
 
+  // Handle highlighting and navigation for add/edit/delete operations
   useEffect(() => {
-    if (lastAddedId && processedItems.length > 0) {
-      const idx = processedItems.findIndex((c) => c.id === lastAddedId);
-      if (idx !== -1) {
-        const targetPage = Math.floor(idx / rowsPerPage);
+    if (lastAddedId && processedAddressTypes.length > 0) {
+      // Navigate to the newly added address type in the processed (sorted) list
+      const addedAddressTypeIndex = processedAddressTypes.findIndex(c => c.id === lastAddedId);
+      if (addedAddressTypeIndex !== -1) {
+        const targetPage = Math.floor(addedAddressTypeIndex / rowsPerPage);
         setPage(targetPage);
         setHighlightedCard(lastAddedId);
-        setHighlightLabel("New");
+        setHighlightLabel('New');
+
+        // Clear highlight after 3 seconds
         setTimeout(() => {
           setHighlightedCard(null);
           setHighlightLabel(null);
         }, 5000);
+      } else {
+        console.log("🎯 CardView: Added address type not found in processed address types list");
       }
     }
-  }, [lastAddedId, processedItems, rowsPerPage]);
+  }, [lastAddedId, processedAddressTypes, rowsPerPage]);
 
   useEffect(() => {
-    if (lastEditedId && processedItems.length > 0) {
-      const idx = processedItems.findIndex((c) => c.id === lastEditedId);
-      if (idx !== -1) {
-        const targetPage = Math.floor(idx / rowsPerPage);
+    if (lastEditedId && processedAddressTypes.length > 0) {
+      // Navigate to the edited address type in the processed (sorted) list
+      const editedAddressTypeIndex = processedAddressTypes.findIndex(c => c.id === lastEditedId);
+      if (editedAddressTypeIndex !== -1) {
+        const targetPage = Math.floor(editedAddressTypeIndex / rowsPerPage);
         setPage(targetPage);
         setHighlightedCard(lastEditedId);
-        setHighlightLabel("Edited");
+        setHighlightLabel('Edited');
+
+        // Clear highlight after 3 seconds
         setTimeout(() => {
           setHighlightedCard(null);
           setHighlightLabel(null);
         }, 5000);
+      } else {
+        console.log("🎯 CardView: Edited address type not found in processed address types list");
       }
     }
-  }, [lastEditedId, processedItems, rowsPerPage]);
+  }, [lastEditedId, processedAddressTypes, rowsPerPage]);
 
   useEffect(() => {
-    if (lastDeletedIndex !== null && lastDeletedIndex !== undefined && processedItems.length > 0) {
-      const targetIndex = Math.max(0, Math.min((lastDeletedIndex as number) - 1, processedItems.length - 1));
+    if (lastDeletedIndex !== null && lastDeletedIndex !== undefined && processedAddressTypes.length > 0) {
+
+      // Navigate to the previous address type or stay on same page in the processed list
+      const targetIndex = Math.max(0, Math.min(lastDeletedIndex - 1, processedAddressTypes.length - 1));
       const targetPage = Math.floor(targetIndex / rowsPerPage);
       setPage(targetPage);
-      if (processedItems[targetIndex]) {
-        setHighlightedCard(processedItems[targetIndex].id);
+
+      // Highlight the previous address type if it exists
+      if (processedAddressTypes[targetIndex]) {
+        setHighlightedCard(processedAddressTypes[targetIndex].id);
         setHighlightLabel(null);
+
+        // Clear highlight after 3 seconds
         setTimeout(() => {
           setHighlightedCard(null);
           setHighlightLabel(null);
         }, 5000);
       }
     }
-  }, [lastDeletedIndex, processedItems, rowsPerPage]);
+  }, [lastDeletedIndex, processedAddressTypes, rowsPerPage]);
 
-  const paginatedItems = useMemo(() => {
+  // Paginated data
+  const paginatedAddressTypes = useMemo(() => {
     const startIndex = page * rowsPerPage;
-    return processedItems.slice(startIndex, startIndex + rowsPerPage);
-  }, [processedItems, page, rowsPerPage]);
+    return processedAddressTypes.slice(startIndex, startIndex + rowsPerPage);
+  }, [processedAddressTypes, page, rowsPerPage]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     void event;
@@ -247,84 +200,83 @@ const AddressTypesCardView: React.FC<AddressTypesCardViewProps> = ({
     setPage(0);
   };
 
-  const getItemsPerPageOptions = () => [6, 12, 24, 36];
+  // Enhanced onAdd function
+  const handleAdd = () => {
+    if (onAdd) {
+      onAdd();
+    }
+  };
 
+  // Get responsive items per page options
+  const getItemsPerPageOptions = () => {
+    // For larger screens (lg and xl), use fixed options: 12, 24, 36, 48
+    if (isLg || isXl) {
+      return [12, 24, 36, 48];
+    }
+
+    const base = getResponsiveItemsPerPage();
+    return [
+      Math.max(4, Math.floor(base * 0.5)),  // Half
+      base,                                  // Default
+      Math.floor(base * 1.5),               // 1.5x
+      base * 2,                             // Double
+      base * 3                              // Triple
+    ].filter((value, index, array) => array.indexOf(value) === index); // Remove duplicates
+  };
+
+  // Handler functions
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
     setPage(0);
   };
 
   const handleClearSearch = () => {
-    setSearchTerm("");
+    setSearchTerm('');
     setPage(0);
   };
 
   const handleReset = () => {
-    setSearchTerm("");
-    setSortBy("created");
-    setSortOrder("asc");
-    setFilterBy("all");
+    setSearchTerm('');
+    setSortBy('created');
+    setSortOrder('asc');
+    setFilterBy('all');
     setPage(0);
   };
 
-  const handleAdd = useCallback(() => { onAdd && onAdd(); }, [onAdd]);
-
   if (loading) {
-    return <UnifiedLoadingState />;
+    return <LoadingState />;
   }
 
   if (!items || items.length === 0) {
-    return (
-      <Box>
-        <ReusableEmptyState
-          icon={Visibility}
-          title={tr("addressTypes.noData") || "No address types"}
-          subtitle={tr("addressTypes.noDataDescription") || "Start by adding your first address type"}
-          actionText={tr("addressTypes.add") || "Add Address Type"}
-          onAction={handleAdd}
-          iconSize="large"
-        />
-      </Box>
-    );
+    return <EmptyState onAdd={handleAdd} />;
   }
 
   return (
     <Box>
-      <UnifiedCardViewHeader
-        title={tr("addressTypes.mainTitle") || "Address Types Card View"}
-        subtitle={`${tr("addressTypes.browseAndManage") || "Browse and manage"} ${processedItems.length} ${tr("addressTypes.browseDescription") || "address types with enhanced search and filtering"}`}
-        mainChipLabel={`${processedItems.length} ${tr("addressTypes.addressType") || "Address Type"}`}
-        page={page}
+      <CardViewHeader
         searchTerm={searchTerm}
-        searchPlaceholder={tr("addressTypes.searchPlaceHolder") || "Search address types by name..."}
-        onSearchChange={handleSearchChange}
-        onClearSearch={handleClearSearch}
         sortBy={sortBy}
-        sortByOptions={[
-          { value: "name", label: tr("general.nameEn") },
-          { value: "created", label: tr("addressTypes.createdDate") || "Created Date" },
-        ]}
-        onSortByChange={(v) => setSortBy(v)}
         sortOrder={sortOrder}
-        onSortOrderChange={(v) => setSortOrder(v)}
         filterBy={filterBy}
-        filterOptions={[
-          { value: "all", label: tr("addressTypes.all") || "All" },
-          { value: "recent", label: tr("addressTypes.recent30Days") || "Recent (30 days)" },
-        ]}
-        onFilterByChange={(v) => setFilterBy(v)}
+        processedAddressTypesLength={processedAddressTypes.length}
+        page={page}
+        onSearchChange={handleSearchChange}
+        onSortByChange={setSortBy}
+        onSortOrderChange={setSortOrder}
+        onFilterByChange={setFilterBy}
+        onClearSearch={handleClearSearch}
         onReset={handleReset}
       />
 
       <Grid container spacing={3}>
-        {paginatedItems.map((item, index) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={item.id}>
+        {paginatedAddressTypes.map((addressType, index) => (
+          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={addressType.id}>
             <AddressTypeCard
-              item={item}
+              addressType={addressType}
               index={index}
-              isHovered={hoveredCard === item.id}
-              isHighlighted={highlightedCard === item.id}
-              highlightLabel={highlightedCard === item.id ? highlightLabel ?? undefined : undefined}
+              isHovered={hoveredCard === addressType.id}
+              isHighlighted={highlightedCard === addressType.id}
+              highlightLabel={highlightedCard === addressType.id ? highlightLabel ?? undefined : undefined}
               onEdit={onEdit}
               onDelete={onDelete}
               onView={onView}
@@ -335,25 +287,23 @@ const AddressTypesCardView: React.FC<AddressTypesCardViewProps> = ({
         ))}
       </Grid>
 
-      {processedItems.length > 0 && (
-        <UnifiedCardViewPagination
+      {processedAddressTypes.length > 0 && (
+        <CardViewPagination
           page={page}
           rowsPerPage={rowsPerPage}
-          totalItems={processedItems.length}
+          totalItems={processedAddressTypes.length}
           itemsPerPageOptions={getItemsPerPageOptions()}
-          itemsLabel={tr("addressTypes.addressType") || "Address Type"}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       )}
 
-      {searchTerm && processedItems.length === 0 && (
-        <ReusableNoResultsState
+      {searchTerm && processedAddressTypes.length === 0 && (
+        <NoResultsState
           searchTerm={searchTerm}
           onClearSearch={handleClearSearch}
-          onClearFilters={filterBy !== "all" ? () => setFilterBy("all") : undefined}
+          onClearFilters={filterBy !== 'all' ? () => setFilterBy('all') : undefined}
           onRefresh={() => window.location.reload()}
-          sx={{ mt: 3 }}
         />
       )}
     </Box>

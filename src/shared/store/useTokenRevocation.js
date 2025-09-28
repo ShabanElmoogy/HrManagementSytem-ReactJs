@@ -9,7 +9,7 @@ const useTokenRevocation = () => {
   useEffect(() => {
     // When you connect with JWT token, SignalR knows who you are
     signalRService.start();
-    console.log("Revoke Token Start");
+
     // This will ONLY trigger for the specific user whose token was revoked
     signalRService.on("ReceiveTokenRevoked", (message) => {
       localStorage.removeItem("token");

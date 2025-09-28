@@ -74,8 +74,6 @@ export default class AuthService {
       roles: getRoles(),
       permissions: getPermissions(),
     };
-
-    console.log("AuthService.getCurrentUser result:", user);
     return user;
   }
 
