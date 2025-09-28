@@ -2,9 +2,9 @@
 import CategoryIcon from "@mui/icons-material/Category";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import PeopleIcon from "@mui/icons-material/People";
-import { appRoutes } from "../../../../routes/appRoutes";
+import { appRoutes } from "@/routes/appRoutes";
 import { NavigationColors, NavigationTitles, NavigationSectionId } from "../navigationTypes";
-import Permissions from "../../../../constants/appPermissions";
+import Permissions from "@/constants/appPermissions";
 import { UserRoles } from "../navigationTypes";
 import { createColoredIcon, createNavItem, createNavSection } from "../navigationUtils";
 
