@@ -293,7 +293,7 @@
       "nameLength": "Name Length Distribution",
       "timeline": "Address Types Added Over Time"
     },
-    "views": { "grid": "Grid", "chart": "Chart" },
+    "views": { "grid": "Grid", "chart": "Chart","card" : "Card" },
     "title": "Address Types",
     "subTitle": "List of address types",
     "viewTitle": "Address Types Management",
@@ -316,7 +316,15 @@
     "nameEnPlaceholder": "English only like : Home , Work",
     "noData": "No Address Types Available",
     "noDataDescription": "Start by adding your first address type to see analytics",
-    "total": "Total"
+    "total": "Total",
+    "mainTitle": "Address Types Card View",
+    "mainSubTitle": "No Address Types Available To Display",
+    "browseAndManage": "Browse and manage",
+    "browseDescription": "address types with enhanced search and filtering",
+    "searchPlaceHolder": "Search address types by name...",
+    "addressType": "Address Type",
+    "all": "All Address Types",
+    "recent30Days": "Recent (30 days)"
   },
   "countries": {
     "dashboard": {

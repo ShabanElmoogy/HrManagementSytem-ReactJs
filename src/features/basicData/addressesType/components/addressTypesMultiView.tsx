@@ -37,8 +37,10 @@ const AddressTypesMultiView = ({
   lastEditedId,
   lastDeletedIndex,
 }: AddressTypesMultiViewProps) => {
-  const [currentViewType, setCurrentViewType] = useState<"grid" | "cards" | "chart">("grid");
-const [searchTerm] = useState("");
+  const [currentViewType, setCurrentViewType] = useState<
+    "grid" | "cards" | "chart"
+  >("grid");
+  const [searchTerm] = useState("");
 
   const displayItems = items;
   const displayLoading = loading;
@@ -55,9 +57,12 @@ const [searchTerm] = useState("");
     console.log("Export address types data");
   };
 
-  const handleViewTypeChange = useCallback((newViewType: "grid" | "cards" | "chart") => {
-  setCurrentViewType(newViewType);
-  }, []);
+  const handleViewTypeChange = useCallback(
+    (newViewType: "grid" | "cards" | "chart") => {
+      setCurrentViewType(newViewType);
+    },
+    []
+  );
 
   const renderView = () => {
     switch (currentViewType) {
@@ -115,7 +120,15 @@ const [searchTerm] = useState("");
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%", width: "100%", position: "relative" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        width: "100%",
+        position: "relative",
+      }}
+    >
       <MultiViewHeader
         title={t("addressTypes.viewTitle") || "Address Types Management"}
         storageKey="addressTypes-view-layout"
@@ -123,20 +136,27 @@ const [searchTerm] = useState("");
         availableViews={["grid", "cards", "chart"]}
         viewLabels={{
           grid: t("addressTypes.views.grid") || "Grid",
-          cards: t("addressTypes.views.cards") || "Cards",
+          cards: t("addressTypes.views.card") || "Cards",
           chart: t("addressTypes.views.chart") || "Chart",
         }}
         onAdd={onAdd}
         dataCount={displayItems?.length || 0}
-        totalLabel={searchTerm ? (t("addressTypes.filtered") || "Filtered") : (t("addressTypes.total") || "Total")}
+        totalLabel={
+          searchTerm
+            ? t("addressTypes.filtered") || "Filtered"
+            : t("addressTypes.total") || "Total"
+        }
         onRefresh={handleRefresh}
         onExport={handleExport}
         onViewTypeChange={handleViewTypeChange}
         t={t}
         showActions={{ add: true, refresh: true, export: false, filter: false }}
+        onFilter={undefined}
       />
 
-      <Box sx={{ flex: 1, minHeight: 0, overflow: "auto", position: "relative" }}>
+      <Box
+        sx={{ flex: 1, minHeight: 0, overflow: "auto", position: "relative" }}
+      >
         {renderView()}
       </Box>
     </Box>
