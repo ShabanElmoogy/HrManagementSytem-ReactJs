@@ -9,6 +9,7 @@ import { alpha } from "@mui/material/styles";
 import { useState } from "react";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import { useTranslation } from "react-i18next";
 import AuthService from "../../../shared/services/authService";
 
 function NavigationItem({
@@ -26,6 +27,7 @@ function NavigationItem({
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const hasChildren = items && items.length > 0;
 
@@ -141,33 +143,33 @@ function NavigationItem({
               <NavigationItem
                 key={childItem.path}
                 open={open}
-                title={childItem.title}
+                title={t(childItem.title)}
                 titleComponent={
                   <span
                     style={{
                       backgroundColor:
                         searchTerm &&
-                        childItem.title.toLowerCase().includes(searchTerm.toLowerCase())
+                        t(childItem.title).toLowerCase().includes(searchTerm.toLowerCase())
                           ? alpha(theme.palette.primary.main, 0.2)
                           : "transparent",
                       fontWeight:
                         searchTerm &&
-                        childItem.title.toLowerCase().includes(searchTerm.toLowerCase())
+                        t(childItem.title).toLowerCase().includes(searchTerm.toLowerCase())
                           ? "bold"
                           : "inherit",
                       padding:
                         searchTerm &&
-                        childItem.title.toLowerCase().includes(searchTerm.toLowerCase())
+                        t(childItem.title).toLowerCase().includes(searchTerm.toLowerCase())
                           ? "0 2px"
                           : "0",
                       borderRadius:
                         searchTerm &&
-                        childItem.title.toLowerCase().includes(searchTerm.toLowerCase())
+                        t(childItem.title).toLowerCase().includes(searchTerm.toLowerCase())
                           ? "2px"
                           : "0",
                     }}
                   >
-                    {childItem.title}
+                    {t(childItem.title)}
                   </span>
                 }
                 icon={childItem.icon}

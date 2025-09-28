@@ -47,7 +47,7 @@ export enum UserRoles {
 export enum NavigationTitles {
   // Menu keys
   BASIC_DATA = "menu.basicData",
-  GEOGRAPHIC_DATA = "Geographic Data",
+  GEOGRAPHIC_DATA = "menu.geographicData",
   COUNTRIES = "menu.countries",
   ADDRESS_TYPES = "menu.addressTypes",
   STATES = "menu.states",
@@ -60,9 +60,9 @@ export enum NavigationTitles {
   CHAT_INTERFACE = "menu.chatInterface",
 
   // Direct titles
-  CHART_EXAMPLES = "Chart Examples",
-  CHART_LIBRARY = "Chart Library",
-  NOTIFICATION_TEST = "Notification Test",
+  CHART_EXAMPLES = "menu.chartExamples",
+  CHART_LIBRARY = "menu.chartLibrary",
+  NOTIFICATION_TEST = "menu.notificationTest",
 
   // Advanced tools
   ADVANCED_TOOLS_TITLE = "advancedTools.title",
@@ -73,31 +73,31 @@ export enum NavigationTitles {
   HANGFIRE_DASHBOARD = "advancedTools.hangfireDashboard",
 
   // HR Management
-  HR_MANAGEMENT = "HR Management",
-  ANALYTICS = "Analytics",
-  ANALYTICS_DASHBOARD = "HR Dashboard",
-  PERFORMANCE_ANALYTICS = "Performance Analytics",
-  TIME_ATTENDANCE_ANALYTICS = "Time & Attendance",
-  EMPLOYEE_ENGAGEMENT = "Employee Engagement",
-  DOCUMENT_ANALYTICS = "Document Analytics",
-  CUSTOM_REPORTS = "Custom Reports",
-  REPORT_VIEWER = "Report Viewer",
-  DATA_EXPORT = "Data Export",
+  HR_MANAGEMENT = "menu.hrManagement",
+  ANALYTICS = "menu.analytics",
+  ANALYTICS_DASHBOARD = "menu.analyticsDashboard",
+  PERFORMANCE_ANALYTICS = "menu.performanceAnalytics",
+  TIME_ATTENDANCE_ANALYTICS = "menu.timeAttendanceAnalytics",
+  EMPLOYEE_ENGAGEMENT = "menu.employeeEngagement",
+  DOCUMENT_ANALYTICS = "menu.documentAnalytics",
+  CUSTOM_REPORTS = "menu.customReports",
+  REPORT_VIEWER = "menu.reportViewer",
+  DATA_EXPORT = "menu.dataExport",
 
-  COMMUNICATION = "Communication",
-  MESSAGING = "Messaging",
-  ANNOUNCEMENTS = "Announcements",
-  FEEDBACK = "Feedback",
-  COMMUNICATION_DASHBOARD = "Communication Dashboard",
-  NOTIFICATIONS = "Notifications",
-  COMMUNICATION_REPORTS = "Communication Reports",
+  COMMUNICATION = "menu.communication",
+  MESSAGING = "menu.messaging",
+  ANNOUNCEMENTS = "menu.announcements",
+  FEEDBACK = "menu.feedback",
+  COMMUNICATION_DASHBOARD = "menu.communicationDashboard",
+  NOTIFICATIONS = "menu.notifications",
+  COMMUNICATION_REPORTS = "menu.communicationReports",
 
-  DOCUMENTS = "Documents",
-  DOCUMENT_OVERVIEW = "Document Overview",
-  EMPLOYEE_DOCUMENTS = "Employee Documents",
-  COMPANY_DOCUMENTS = "Company Documents",
-  DOCUMENT_TEMPLATES = "Templates",
-  DOCUMENT_ARCHIVES = "Archives",
+  DOCUMENTS = "menu.documents",
+  DOCUMENT_OVERVIEW = "menu.documentOverview",
+  EMPLOYEE_DOCUMENTS = "menu.employeeDocuments",
+  COMPANY_DOCUMENTS = "menu.companyDocuments",
+  DOCUMENT_TEMPLATES = "menu.documentTemplates",
+  DOCUMENT_ARCHIVES = "menu.documentArchives",
 }
 
 // Interface definitions
