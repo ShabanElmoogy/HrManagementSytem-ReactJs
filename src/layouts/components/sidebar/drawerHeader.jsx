@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-// DrawerHeader.jsx
 import { styled, useTheme, IconButton, Collapse } from "@mui/material";
 import ChevronLeft from "@mui/icons-material/ChevronLeft";
 import ChevronRight from "@mui/icons-material/ChevronRight";
