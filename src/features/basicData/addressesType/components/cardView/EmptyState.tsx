@@ -6,10 +6,7 @@ import {
 } from "@mui/material";
 import { EmptyState as ReusableEmptyState } from "@/shared/components/common/feedback";
 import { useTranslation } from "react-i18next";
-
-interface EmptyStateProps {
-  onAdd: () => void;
-}
+import { EmptyStateProps } from "./AddressTypeCard.types";
 
 const EmptyState = ({ onAdd }: EmptyStateProps) => {
   const {t} = useTranslation();

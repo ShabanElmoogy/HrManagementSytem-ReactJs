@@ -1,3 +1,5 @@
+import { AddressType } from "../../addressesType";
+
 export interface Country {
   id: string | number;
   nameAr: string;
@@ -64,3 +66,4 @@ export interface CountryQueryParams {
   sortDirection?: 'asc' | 'desc';
   filters?: CountryFilters;
 }
+

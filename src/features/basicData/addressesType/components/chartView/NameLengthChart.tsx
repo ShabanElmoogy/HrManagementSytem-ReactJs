@@ -1,12 +1,7 @@
 import { BarChart } from '@/shared/components/charts';
 import { Card, CardContent, CardHeader } from '@mui/material';
 import React from 'react';
-import { LengthData } from './chartDataUtils';
-
-interface NameLengthChartProps {
-  data: LengthData[];
-  t: (key: string) => string;
-}
+import { NameLengthChartProps } from './AddressTypeChart.types';
 
 const NameLengthChart: React.FC<NameLengthChartProps> = ({ data, t }) => {
   return (
@@ -20,6 +15,8 @@ const NameLengthChart: React.FC<NameLengthChartProps> = ({ data, t }) => {
           data={data}
           xKey="name"
           yKey="value"
+          title=""
+          subtitle=""
           height={300}
           colors="purple"
           showGrid={true}

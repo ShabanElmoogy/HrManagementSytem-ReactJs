@@ -1,11 +1,8 @@
 import React from "react";
 import { Stack } from "@mui/material";
 import { AppChip } from "@/shared/components";
-import type { AddressType } from "../../types/AddressType";
+import { AddressTypeCardChipsProps } from "./AddressTypeCard.types";
 
-interface AddressTypeCardChipsProps {
-  addressType: AddressType;
-}
 
 const AddressTypeCardChips: React.FC<AddressTypeCardChipsProps> = ({ addressType }) => {
   return (

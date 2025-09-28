@@ -1,9 +1,6 @@
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import React from 'react';
-
-interface LoadingChartStateProps {
-  t: (key: string) => string;
-}
+import { LoadingChartStateProps } from './AddressTypeChart.types';
 
 const LoadingChartState: React.FC<LoadingChartStateProps> = ({ t }) => {
   return (

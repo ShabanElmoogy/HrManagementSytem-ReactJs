@@ -24,6 +24,8 @@ interface EmptyStateProps {
   actionText?: string;
   /** Primary action button handler */
   onAction?: () => void;
+  /** Custom action element (takes precedence over actionText/onAction) */
+  action?: React.ReactNode;
   /** Secondary action button text */
   secondaryActionText?: string;
   /** Secondary action button handler */
@@ -46,6 +48,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
   subtitle,
   actionText,
   onAction,
+  action,
   secondaryActionText,
   onSecondaryAction,
   withPaper = true,
@@ -108,17 +111,21 @@ const EmptyState: React.FC<EmptyStateProps> = ({
       )}
       
       <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
-        {actionText && onAction && (
-          <Button
-            variant="contained"
-            onClick={onAction}
-            startIcon={<Add />}
-            sx={{ minWidth: 120 }}
-          >
-            {actionText}
-          </Button>
+        {action ? (
+          action
+        ) : (
+          actionText && onAction && (
+            <Button
+              variant="contained"
+              onClick={onAction}
+              startIcon={<Add />}
+              sx={{ minWidth: 120 }}
+            >
+              {actionText}
+            </Button>
+          )
         )}
-        
+
         {secondaryActionText && onSecondaryAction && (
           <Button
             variant="outlined"
@@ -128,7 +135,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
             {secondaryActionText}
           </Button>
         )}
-        
+
         {showRefresh && onRefresh && (
           <Button
             variant="text"

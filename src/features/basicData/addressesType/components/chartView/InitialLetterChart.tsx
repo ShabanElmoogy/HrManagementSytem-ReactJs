@@ -1,12 +1,7 @@
 import { BarChart } from '@/shared/components/charts';
 import { Card, CardContent, CardHeader } from '@mui/material';
 import React from 'react';
-import { InitialLetterData } from './chartDataUtils';
-
-interface InitialLetterChartProps {
-  data: InitialLetterData[];
-  t: (key: string) => string;
-}
+import { InitialLetterChartProps } from './AddressTypeChart.types';
 
 const InitialLetterChart: React.FC<InitialLetterChartProps> = ({ data, t }) => {
   return (
@@ -20,6 +15,8 @@ const InitialLetterChart: React.FC<InitialLetterChartProps> = ({ data, t }) => {
           data={data}
           xKey="name"
           yKey="value"
+          title=""
+          subtitle=""
           height={300}
           colors="teal"
           showGrid={true}

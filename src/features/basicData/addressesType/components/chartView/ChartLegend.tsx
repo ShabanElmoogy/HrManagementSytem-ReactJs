@@ -1,11 +1,6 @@
-import { Box, Card, CardContent, CardHeader, Chip, Stack } from '@mui/material';
+import { Card, CardContent, CardHeader, Chip, Stack } from '@mui/material';
 import React from 'react';
-import { InitialLetterData } from './chartDataUtils';
-
-interface ChartLegendProps {
-  data: InitialLetterData[];
-  colors: string[];
-}
+import { ChartLegendProps } from './AddressTypeChart.types';
 
 const ChartLegend: React.FC<ChartLegendProps> = ({ data, colors }) => {
   if (!data || data.length === 0) return null;

@@ -1,12 +1,9 @@
 import { EmptyState } from '@/shared/components/common/feedback';
 import { Add, BarChart } from '@mui/icons-material';
-import { Box, Button, Card, CardContent, Typography } from '@mui/material';
+import {Button, Card, CardContent } from '@mui/material';
 import React from 'react';
+import { EmptyChartStateProps } from './AddressTypeChart.types';
 
-interface EmptyChartStateProps {
-  t: (key: string) => string;
-  onAdd?: () => void;
-}
 
 const EmptyChartState: React.FC<EmptyChartStateProps> = ({ t, onAdd }) => {
   return (

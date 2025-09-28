@@ -1,26 +1,5 @@
 import { AddressType } from "../../types/AddressType";
 
-export interface InitialLetterData {
-  name: string;
-  value: number;
-}
-
-export interface TimelineData {
-  month: string;
-  count: number;
-  cumulative: number;
-}
-
-export interface LanguageData {
-  name: string;
-  value: number;
-}
-
-export interface LengthData {
-  name: string;
-  value: number;
-}
-
 export const prepareInitialLetterData = (addressTypes: AddressType[]): InitialLetterData[] => {
   const counts: Record<string, number> = {};
   
@@ -136,5 +115,6 @@ export const getRecentAddressTypes = (addressTypes: AddressType[]): number => {
 };
 
 import { getColorPalette } from '../../../../../shared/components/charts/chartUtils';
+import { InitialLetterData, LanguageData, LengthData, TimelineData } from "./AddressTypeChart.types";
 
 export const getChartColors = (): string[] => getColorPalette('rainbow', 'light');

@@ -50,3 +50,26 @@ export interface AddressTypesCardViewProps {
   lastEditedId?: string | number | null;
   lastDeletedIndex?: number | null;
 }
+
+export interface AddressTypeCardFooterProps {
+  addressType: AddressType;
+  onView: (addressType: AddressType) => void;
+  onEdit: (addressType: AddressType) => void;
+  onDelete: (addressType: AddressType) => void;
+  t: (key: string) => string;
+}
+
+export interface AddressTypeCardChipsProps {
+  addressType: AddressType;
+}
+
+export interface EmptyStateProps {
+  onAdd: () => void;
+}
+
+export interface NoResultsStateProps {
+  searchTerm: string;
+  onClearSearch: () => void;
+  onClearFilters?: () => void;
+  onRefresh?: () => void;
+}

@@ -3,23 +3,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, TextField } from "@mui/material";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { AddressType } from "../types/AddressType";
 import { getAddressTypeValidationSchema } from "../utils/validation";
-
-interface AddressTypeFormData {
-  nameAr: string;
-  nameEn: string;
-}
-
-interface AddressTypeFormProps {
-  open: boolean;
-  dialogType: "add" | "edit" | "view";
-  selectedItem?: AddressType | null;
-  onClose: () => void;
-  onSubmit: (data: AddressTypeFormData) => void;
-  loading: boolean;
-  t: (key: string) => string;
-}
+import { CreateAddressTypeRequest, AddressTypeFormProps } from "../types/AddressType";
 
 const AddressTypeForm = ({
   open,
@@ -44,7 +29,7 @@ const AddressTypeForm = ({
     reset,
     control,
     formState: { errors },
-  } = useForm<AddressTypeFormData>({
+  } = useForm<CreateAddressTypeRequest>({
     resolver: yupResolver(schema),
     mode: "onChange",
     defaultValues: { nameAr: "", nameEn: "" },
@@ -84,8 +69,8 @@ const AddressTypeForm = ({
   const getErrorMessages = (): Record<string, string> => {
     const errorMessages: Record<string, string> = {};
     Object.keys(errors).forEach((key) => {
-      if (errors[key as keyof AddressTypeFormData]?.message) {
-        errorMessages[key] = errors[key as keyof AddressTypeFormData]
+      if (errors[key as keyof CreateAddressTypeRequest]?.message) {
+        errorMessages[key] = errors[key as keyof CreateAddressTypeRequest]
           ?.message as string;
       }
     });

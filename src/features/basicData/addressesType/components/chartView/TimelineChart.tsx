@@ -1,12 +1,7 @@
 import { LineChart } from '@/shared/components/charts';
 import { Card, CardContent, CardHeader } from '@mui/material';
 import React from 'react';
-import { TimelineData } from './chartDataUtils';
-
-interface TimelineChartProps {
-  data: TimelineData[];
-  t: (key: string) => string;
-}
+import { TimelineChartProps } from './AddressTypeChart.types';
 
 const TimelineChart: React.FC<TimelineChartProps> = ({ data, t }) => {
   return (
@@ -20,6 +15,8 @@ const TimelineChart: React.FC<TimelineChartProps> = ({ data, t }) => {
           data={data}
           xKey="month"
           yKey="count"
+          title=""
+          subtitle=""
           height={300}
           colors="blue"
           showGrid={true}

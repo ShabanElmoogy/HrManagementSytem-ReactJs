@@ -2,14 +2,7 @@ import { MetricCard } from '@/shared/components/charts';
 import { Assessment, Language, Schedule, TextFields } from '@mui/icons-material';
 import { Grid } from '@mui/material';
 import React from 'react';
-
-interface SummaryCardsProps {
-  totalAddressTypes: number;
-  completeAddressTypes: number;
-  recentAddressTypes: number;
-  averageNameLength: number;
-  t: (key: string) => string;
-}
+import { SummaryCardsProps } from './AddressTypeChart.types';
 
 const SummaryCards: React.FC<SummaryCardsProps> = ({
   totalAddressTypes,

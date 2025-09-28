@@ -10,11 +10,11 @@ import {
   CardViewPagination,
   AddressTypeCard,
   EmptyState,
-  LoadingState,
   NoResultsState
 } from "./cardView";
 
 import { AddressTypesCardViewProps } from "./cardView/AddressTypeCard.types";
+import UnifiedLoadingState from "@/shared/components/common/cardView/UnifiedLoadingState";
 
 const AddressTypesCardView = ({
   items,
@@ -244,7 +244,7 @@ const AddressTypesCardView = ({
   };
 
   if (loading) {
-    return <LoadingState />;
+    return <UnifiedLoadingState />;
   }
 
   if (!items || items.length === 0) {

@@ -1,11 +1,5 @@
 import { NoResultsState as ReusableNoResultsState } from "@/shared/components/common/feedback";
-
-interface NoResultsStateProps {
-  searchTerm: string;
-  onClearSearch: () => void;
-  onClearFilters?: () => void;
-  onRefresh?: () => void;
-}
+import { NoResultsStateProps } from "./AddressTypeCard.types";
 
 const NoResultsState = ({ 
   searchTerm, 

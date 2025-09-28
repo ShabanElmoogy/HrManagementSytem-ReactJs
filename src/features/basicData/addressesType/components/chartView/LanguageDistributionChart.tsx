@@ -1,19 +1,12 @@
 import { PieChart } from '@/shared/components/charts';
 import { Card, CardContent, CardHeader } from '@mui/material';
 import React from 'react';
-import { LanguageData, getChartColors } from './chartDataUtils';
-
-interface LanguageDistributionChartProps {
-  data: LanguageData[];
-  t: (key: string) => string;
-}
+import { LanguageDistributionChartProps } from './AddressTypeChart.types';
 
 const LanguageDistributionChart: React.FC<LanguageDistributionChartProps> = ({ data, t }) => {
-  const colors = getChartColors();
-
   return (
     <Card elevation={2}>
-      <CardHeader 
+      <CardHeader
         title={t("addressTypes.charts.languageDistribution") || "Language Distribution"}
         titleTypographyProps={{ variant: 'h6', fontWeight: 600 }}
       />
@@ -22,8 +15,10 @@ const LanguageDistributionChart: React.FC<LanguageDistributionChartProps> = ({ d
           data={data}
           nameKey="name"
           valueKey="value"
+          title=""
+          subtitle=""
           height={300}
-          colors={colors}
+          colors="rainbow"
           showLegend={true}
           showTooltip={true}
         />

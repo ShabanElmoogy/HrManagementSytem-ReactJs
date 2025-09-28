@@ -17,3 +17,13 @@ export interface UpdateAddressTypeRequest {
   nameAr: string;
   nameEn: string;
 }
+
+export interface AddressTypeFormProps {
+  open: boolean;
+  dialogType: "add" | "edit" | "view";
+  selectedItem?: AddressType | null;
+  onClose: () => void;
+  onSubmit: (data: CreateAddressTypeRequest) => void;
+  loading: boolean;
+  t: (key: string) => string;
+}

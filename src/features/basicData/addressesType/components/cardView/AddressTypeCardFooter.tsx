@@ -2,15 +2,7 @@ import React from "react";
 import { Delete, Edit, Visibility } from "@mui/icons-material";
 import { CardActionsRow } from "@/shared/components/common/cardView/cardBody/UnifiedCardParts";
 import { appPermissions } from "@/constants";
-import type { AddressType } from "../../types/AddressType";
-
-export interface AddressTypeCardFooterProps {
-  addressType: AddressType;
-  onView: (addressType: AddressType) => void;
-  onEdit: (addressType: AddressType) => void;
-  onDelete: (addressType: AddressType) => void;
-  t: (key: string) => string;
-}
+import { AddressTypeCardFooterProps } from "./AddressTypeCard.types";
 
 const AddressTypeCardFooter: React.FC<AddressTypeCardFooterProps> = ({ addressType, onView, onEdit, onDelete, t }) => {
   return (
