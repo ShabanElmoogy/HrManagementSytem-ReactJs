@@ -5,6 +5,7 @@ import type { GridApiCommon } from "@mui/x-data-grid";
 import type { AddressType } from "../types/AddressType";
 import AddressTypesDataGrid from "./gridView/addressTypesDataGrid";
 import AddressTypesCardView from "./addressTypesCardView";
+import AddressTypesChartView from "./addressTypesChartView";
 
 interface AddressTypesMultiViewProps {
   items: AddressType[];
@@ -36,7 +37,7 @@ const AddressTypesMultiView = ({
   lastEditedId,
   lastDeletedIndex,
 }: AddressTypesMultiViewProps) => {
-  const [currentViewType, setCurrentViewType] = useState<"grid" | "cards">("grid");
+  const [currentViewType, setCurrentViewType] = useState<"grid" | "cards" | "chart">("grid");
 const [searchTerm] = useState("");
 
   const displayItems = items;
@@ -54,7 +55,7 @@ const [searchTerm] = useState("");
     console.log("Export address types data");
   };
 
-  const handleViewTypeChange = useCallback((newViewType: "grid" | "cards") => {
+  const handleViewTypeChange = useCallback((newViewType: "grid" | "cards" | "chart") => {
   setCurrentViewType(newViewType);
   }, []);
 
@@ -88,6 +89,15 @@ const [searchTerm] = useState("");
             lastDeletedIndex={lastDeletedIndex}
           />
         );
+      case "chart":
+        return (
+          <AddressTypesChartView
+            items={displayItems}
+            loading={displayLoading}
+            onAdd={onAdd}
+            t={t}
+          />
+        );
       default:
         return (
           <AddressTypesDataGrid
@@ -110,10 +120,11 @@ const [searchTerm] = useState("");
         title={t("addressTypes.viewTitle") || "Address Types Management"}
         storageKey="addressTypes-view-layout"
         defaultView="grid"
-        availableViews={["grid", "cards"]}
+        availableViews={["grid", "cards", "chart"]}
         viewLabels={{
           grid: t("addressTypes.views.grid") || "Grid",
           cards: t("addressTypes.views.cards") || "Cards",
+          chart: t("addressTypes.views.chart") || "Chart",
         }}
         onAdd={onAdd}
         dataCount={displayItems?.length || 0}

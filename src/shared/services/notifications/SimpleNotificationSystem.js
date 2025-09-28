@@ -18,7 +18,6 @@ class SimpleNotificationSystem {
    */
   initialize() {
     if (this.isInitialized) {
-      console.log("⚠️ Notification system already initialized");
       return this;
     }
 
@@ -28,7 +27,6 @@ class SimpleNotificationSystem {
     this.startSignalR();
     this.isInitialized = true;
 
-    console.log("🔔 Simple Notification System initialized");
     return this;
   }
 
@@ -45,7 +43,6 @@ class SimpleNotificationSystem {
   registerHandler(entityType, handler) {
     this.handlers.set(entityType, handler);
     handler.initialize(this);
-    console.log(`✅ Registered ${entityType} handler`);
     return this;
   }
 

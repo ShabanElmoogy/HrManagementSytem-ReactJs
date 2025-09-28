@@ -36,8 +36,7 @@ const UserProfile = ({ open, onLogout }) => {
 
         // Get user role from JWT token
         const currentUser = AuthService.getCurrentUser();
-        console.log("Current User from Token:", currentUser);
-        
+      
         if (currentUser?.roles && currentUser.roles.length > 0) {
           const role = currentUser.roles[0];
           setUserRole(role.charAt(0).toUpperCase() + role.slice(1).toLowerCase());
@@ -47,19 +46,9 @@ const UserProfile = ({ open, onLogout }) => {
 
         // Get user info from API
         const response = await apiService.get(apiRoutes.auth.getUserInfo);
-        console.log("User Info from API:", response);
 
         setUserInfo(response);
       } catch (err) {
-        console.error("Failed to fetch user info:", err);
-        setError(true);
-        // Set fallback user info
-        setUserInfo({
-          userName: "User",
-          firstName: "",
-          lastName: "",
-          email: "",
-        });
         setUserRole("User");
       } finally {
         setLoading(false);
@@ -114,15 +103,6 @@ const UserProfile = ({ open, onLogout }) => {
 
   const displayName = getDisplayName();
   const initials = getInitials();
-
-  console.log("UserProfile Display:", {
-    displayName,
-    initials,
-    userRole,
-    userInfo,
-    loading,
-    error,
-  });
 
   // Show loading state
   if (loading) {

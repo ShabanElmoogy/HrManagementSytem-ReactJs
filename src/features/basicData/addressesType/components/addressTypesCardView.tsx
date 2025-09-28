@@ -126,7 +126,6 @@ const AddressTypesCardView: React.FC<AddressTypesCardViewProps> = ({
   lastEditedId,
   lastDeletedIndex,
 }) => {
-  const theme = useTheme();
   const { t: tr } = useTranslation();
 
   const [searchTerm, setSearchTerm] = useState("");

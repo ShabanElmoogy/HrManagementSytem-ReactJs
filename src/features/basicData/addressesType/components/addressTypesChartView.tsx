@@ -1,8 +1,23 @@
-import React, { useMemo } from "react";
-import { Box, Grid } from "@mui/material";
-import type { AddressType } from "../types/AddressType";
-import { BarChart } from "@/shared/components/charts";
-import { EmptyChartState } from "@/shared/components/common/feedback";
+import { Box, Grid } from '@mui/material';
+import React from 'react';
+import { AddressType } from '../types/AddressType';
+import {
+  ChartLegend,
+  EmptyChartState,
+  getChartColors,
+  getCompleteAddressTypes,
+  getRecentAddressTypes,
+  InitialLetterChart,
+  LanguageDistributionChart,
+  LoadingChartState,
+  NameLengthChart,
+  prepareInitialLetterData,
+  prepareLanguageData,
+  prepareNameLengthData,
+  prepareTimelineData,
+  SummaryCards,
+  TimelineChart,
+} from './chartView';
 
 interface AddressTypesChartViewProps {
   items: AddressType[];
@@ -11,80 +26,78 @@ interface AddressTypesChartViewProps {
   t: (key: string) => string;
 }
 
-// Prepare counts by initial letter (A, B, C, ...)
-const prepareInitialData = (items: AddressType[]): { name: string; value: number }[] => {
-  const counts: Record<string, number> = {};
-  items.forEach((it) => {
-    const first = (it.nameEn || it.nameAr || "?").trim().charAt(0).toUpperCase() || "?";
-    const key = /[A-Z]/.test(first) ? first : "?";
-    counts[key] = (counts[key] || 0) + 1;
-  });
-  return Object.entries(counts)
-    .map(([name, value]) => ({ name, value }))
-    .sort((a, b) => a.name.localeCompare(b.name));
-};
+const AddressTypesChartView: React.FC<AddressTypesChartViewProps> = ({
+  items,
+  loading,
+  onAdd,
+  t
+}) => {
 
-// Prepare monthly timeline counts (YYYY-MM)
-const prepareMonthlyTimeline = (items: AddressType[]): { name: string; value: number }[] => {
-  const timeline: Record<string, number> = {};
-  items.forEach((it) => {
-    const created = (it as any).createdOn;
-    if (created) {
-      const month = new Date(created).toISOString().slice(0, 7); // YYYY-MM
-      timeline[month] = (timeline[month] || 0) + 1;
-    }
-  });
-  return Object.entries(timeline)
-    .map(([name, value]) => ({ name, value }))
-    .sort((a, b) => a.name.localeCompare(b.name));
-};
-
-const AddressTypesChartView: React.FC<AddressTypesChartViewProps> = ({ items, loading, onAdd, t }) => {
-  // Show empty state when no data
-  if (!loading && (!items || items.length === 0)) {
-    return (
-      <EmptyChartState
-        title={t("addressTypes.title") || "Address Types"}
-        subtitle={t("addressTypes.noDataDescription") || "Start by adding your first address type"}
-        actionText={onAdd ? (t("addressTypes.add") || "Add Address Type") : undefined}
-        onAction={onAdd}
-        height={400}
-      />
-    );
+  // Handle loading state
+  if (loading) {
+    return <LoadingChartState t={t} />;
   }
 
-  const initialData = useMemo(() => prepareInitialData(items || []), [items]);
-  const monthlyData = useMemo(() => prepareMonthlyTimeline(items || []), [items]);
+  // Handle empty state
+  if (!items || items.length === 0) {
+    return <EmptyChartState t={t} onAdd={onAdd} />;
+  }
+
+  // Prepare chart data
+  const initialLetterData = prepareInitialLetterData(items);
+  const languageData = prepareLanguageData(items);
+  const nameLengthData = prepareNameLengthData(items);
+  const timelineData = prepareTimelineData(items);
+  const colors = getChartColors();
+
+  // Calculate summary metrics
+  const totalAddressTypes = items.length;
+  const completeAddressTypes = getCompleteAddressTypes(items);
+  const recentAddressTypes = getRecentAddressTypes(items);
+  const averageNameLength = items.reduce((sum, item) => {
+    const maxLength = Math.max(
+      item.nameAr?.length || 0,
+      item.nameEn?.length || 0
+    );
+    return sum + maxLength;
+  }, 0) / items.length;
 
   return (
     <Box sx={{ width: "100%" }}>
+      {/* Summary Cards */}
+      <SummaryCards
+        totalAddressTypes={totalAddressTypes}
+        completeAddressTypes={completeAddressTypes}
+        recentAddressTypes={recentAddressTypes}
+        averageNameLength={averageNameLength}
+        t={t}
+      />
+
+      {/* Charts */}
       <Grid container spacing={3}>
-        {/* By Initial Letter */}
+        {/* Address Types by Initial Letter */}
         <Grid size={{ xs: 12, md: 6 }}>
-          <BarChart
-            data={initialData}
-            xKey="name"
-            yKey="value"
-            title={t("addressTypes.byInitial") || "Address Types by Initial Letter"}
-            height={380}
-            loading={loading}
-            colors="teal"
-          />
+          <InitialLetterChart data={initialLetterData} t={t} />
         </Grid>
 
-        {/* Timeline by Month */}
+        {/* Language Distribution */}
         <Grid size={{ xs: 12, md: 6 }}>
-          <BarChart
-            data={monthlyData}
-            xKey="name"
-            yKey="value"
-            title={t("addressTypes.timeline") || "Address Types Added Over Time"}
-            height={380}
-            loading={loading}
-            colors="blue"
-          />
+          <LanguageDistributionChart data={languageData} t={t} />
+        </Grid>
+
+        {/* Name Length Distribution */}
+        <Grid size={{ xs: 12, md: 6 }}>
+          <NameLengthChart data={nameLengthData} t={t} />
+        </Grid>
+
+        {/* Timeline */}
+        <Grid size={{ xs: 12, md: 6 }}>
+          <TimelineChart data={timelineData} t={t} />
         </Grid>
       </Grid>
+
+      {/* Legend */}
+      <ChartLegend data={initialLetterData} colors={colors} />
     </Box>
   );
 };

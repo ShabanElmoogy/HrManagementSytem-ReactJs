@@ -271,7 +271,19 @@
     "goToLastRecord": "الذهاب للسجل الاخير"
   },
   "addressTypes": {
-    "views": { "grid": "عرض الجدول" },
+    "dashboard": {
+      "totalAddressTypes": "إجمالي أنواع العناوين",
+      "completeProfiles": "الملفات المكتملة",
+      "recentlyAdded": "المضافة حديثاً",
+      "avgNameLength": "متوسط طول الاسم"
+    },
+    "charts": {
+      "byInitialLetter": "أنواع العناوين حسب الحرف الأول",
+      "languageDistribution": "توزيع اللغات",
+      "nameLength": "توزيع طول الأسماء",
+      "timeline": "أنواع العناوين المضافة عبر الوقت"
+    },
+    "views": { "grid": "عرض الجدول", "chart": "الرسم البياني" },
     "title": "انواع العناوين",
     "subTitle": "قائمة انواع العناوين",
     "viewTitle": "إدارة انواع العناوين",
@@ -292,6 +304,8 @@
     "deleteError": "فشل في حذف نوع العنوان",
     "nameArPlaceholder": "أحرف عربية فقط : المنزل , العمل",
     "nameEnPlaceholder": "أحرف انجليزية فقط : Home , Work",
+    "noData": "لا توجد أنواع عناوين متاحة",
+    "noDataDescription": "ابدأ بإضافة أول نوع عنوان لرؤية التحليلات",
     "total": "المجموع"
   },
   "countries": {

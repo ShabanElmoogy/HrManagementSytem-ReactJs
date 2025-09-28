@@ -179,7 +179,7 @@ const MyDeleteConfirmation = ({
       >
         <Typography
           variant="h5"
-          component="h2"
+          component="span"
           sx={{
             fontWeight: 600,
             color: theme.palette.error.main,

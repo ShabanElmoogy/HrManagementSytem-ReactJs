@@ -97,7 +97,9 @@ const ScrollableContent = styled(Box)(({ theme }) => ({
   },
 }));
 
-const ToggleButton = styled(Button)(({ theme, open }) => ({
+const ToggleButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== 'expanded',
+})(({ theme, open, expanded }) => ({
   display: open ? "flex" : "none",
   width: "100%",
   justifyContent: "flex-start",
