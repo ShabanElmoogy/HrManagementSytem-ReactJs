@@ -126,6 +126,7 @@ export interface AppRoutes {
   servers: string;
   chat: string;
   chartExamples: string;
+  countryReport : string;
 }
 
 // Route constants with full type safety
@@ -241,6 +242,7 @@ export const appRoutes: AppRoutes = {
 
   chat: "chat",
   chartExamples: "chart-examples",
+  countryReport : "country-report"
 } as const;
 
 // Utility types for better type checking

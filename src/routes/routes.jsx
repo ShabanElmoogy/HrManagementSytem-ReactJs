@@ -26,7 +26,12 @@ import CountriesPage from "../features/basicData/countries/countriesPage";
 import { StatesPage } from "../features/basicData/states";
 import DistrictsPage from "../features/basicData/districts/districtsPage";
 import AddressTypesPage from "../features/basicData/addressesType/addressTypesPage";
-import { EmployeePage, EmployeeDetailPage, EmployeeForm, DocumentManagementPage } from "../features/employee";
+import {
+  EmployeePage,
+  EmployeeDetailPage,
+  EmployeeForm,
+  DocumentManagementPage,
+} from "../features/employee";
 import UsersPage from "@/features/auth/users/usersPage";
 import RolesPage from "@/features/auth/roles/rolesPage";
 import TrackChangesGrid from "@/features/advancedTools/trackChangesGrid";
@@ -35,6 +40,7 @@ import HealthCheck from "@/features/advancedTools/healthCheck";
 import ApiEndpoints from "@/features/advancedTools/apiEndpoints";
 import HangfireDashboard from "@/features/advancedTools/hangfireDashboard";
 import ChartExamplesPage from "@/features/chartExamples/chartExamplesPage";
+import CountryReport from "@/features/basicData/countries/reports/CountryReport";
 // NotificationExample removed - using simplified notification system
 
 // Analytics imports
@@ -46,7 +52,7 @@ import {
   DocumentAnalytics,
   CustomReportBuilder,
   ReportViewer,
-  DataExportTools
+  DataExportTools,
 } from "@/features/analytics";
 
 // Communication imports
@@ -56,9 +62,8 @@ import {
   FeedbackCollection,
   CommunicationDashboard,
   NotificationSystem,
-  CommunicationReports
+  CommunicationReports,
 } from "@/features/communication";
-
 
 const AppRoutes = () => {
   return (
@@ -155,6 +160,19 @@ const AppRoutes = () => {
                 >
                   <Suspense fallback={<MyLoadingIndicator />}>
                     <CountriesPage />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.countryReport}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewCountries]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <CountryReport />
                   </Suspense>
                 </ProtectedRoute>
               }
