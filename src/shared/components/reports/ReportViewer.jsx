@@ -74,21 +74,23 @@ const ReportViewer = ({
       // Get the response as a blob (PDF)
       const blob = await response.blob();
 
-      // If blob is empty or too small to be a valid PDF
-      if (blob.size === 0 || blob.size < 100) {
+      // If blob is empty, too small, or not a PDF
+      if (blob.size === 0 || blob.size < 100 || blob.type !== "application/pdf") {
+        console.log("Blob invalid (size or type), no content");
         return { url: null, hasContent: false };
       }
 
       // Create a temporary URL for the blob
       const blobUrl = URL.createObjectURL(blob);
+
       return { url: blobUrl, hasContent: true };
     } catch (err) {
-      console.error("Error generating report:", err);
       return { url: null, hasContent: false, error: err.message };
     }
   };
 
   const handleSearch = async () => {
+
     setLoading(true);
     setError(null);
     setNoResults(false);
@@ -126,7 +128,17 @@ const ReportViewer = ({
 
   // Function to be passed to children to update search params
   const updateSearchParams = (newParams) => {
-    setSearchParams((prev) => ({ ...prev, ...newParams }));
+    setSearchParams((prev) => {
+      const updated = { ...prev, ...newParams };
+      
+      // Remove keys with null or empty string values to avoid sending invalid params
+      Object.keys(updated).forEach(key => {
+        if (updated[key] === null || updated[key] === '') {
+          delete updated[key];
+        }
+      });
+      return updated;
+    });
   };
 
   // Clean up blob URL when component unmounts

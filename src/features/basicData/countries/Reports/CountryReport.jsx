@@ -45,7 +45,7 @@ const CountryReport = () => {
 
       const data = await response.json();
 
-      // Move "Companies" to the top using sort
+      // Move "Countries" to the top using sort
       const sorted = data.sort((a, b) =>
         a.Id === "Countries" ? -1 : b.Id === "Countries" ? 1 : 0
       );
