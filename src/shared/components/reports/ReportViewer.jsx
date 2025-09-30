@@ -16,6 +16,7 @@ import {
   KeyboardArrowDown,
   KeyboardArrowUp,
   DescriptionOutlined,
+  Clear,
 } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import reportApiService from "@/shared/services/reportApiService";
@@ -69,13 +70,20 @@ const ReportViewer = ({
         ...params,
       };
 
-      const response = await reportApiService.post("report/generate", allParams);
+      const response = await reportApiService.post(
+        "report/generate",
+        allParams
+      );
 
       // Get the response as a blob (PDF)
       const blob = await response.blob();
 
       // If blob is empty, too small, or not a PDF
-      if (blob.size === 0 || blob.size < 100 || blob.type !== "application/pdf") {
+      if (
+        blob.size === 0 ||
+        blob.size < 100 ||
+        blob.type !== "application/pdf"
+      ) {
         console.log("Blob invalid (size or type), no content");
         return { url: null, hasContent: false };
       }
@@ -90,7 +98,6 @@ const ReportViewer = ({
   };
 
   const handleSearch = async () => {
-
     setLoading(true);
     setError(null);
     setNoResults(false);
@@ -130,10 +137,10 @@ const ReportViewer = ({
   const updateSearchParams = (newParams) => {
     setSearchParams((prev) => {
       const updated = { ...prev, ...newParams };
-      
+
       // Remove keys with null or empty string values to avoid sending invalid params
-      Object.keys(updated).forEach(key => {
-        if (updated[key] === null || updated[key] === '') {
+      Object.keys(updated).forEach((key) => {
+        if (updated[key] === null || updated[key] === "") {
           delete updated[key];
         }
       });
@@ -186,7 +193,10 @@ const ReportViewer = ({
         color="textSecondary"
         align="center"
         sx={{ maxWidth: 400 }}
-      ></Typography>
+      >
+        No data matches your current search criteria. Try adjusting your filters
+        or clearing them to view all results.
+      </Typography>
     </Box>
   );
 
@@ -228,16 +238,13 @@ const ReportViewer = ({
         elevation={3}
         sx={{
           width: isMobile ? "100%" : sidebarOpen ? SIDEBAR_WIDTH : 0,
-          height: isMobile 
-            ? (sidebarOpen ? "auto" : "0px") 
-            : "100%",
-          minHeight: isMobile && sidebarOpen ? MOBILE_SIDEBAR_MIN_HEIGHT : 0, // Added minimum height
-          maxHeight: isMobile && sidebarOpen ? "60vh" : "100%", // Added maximum height constraint
-          display: isMobile && !sidebarOpen ? "none" : "flex",
+          height: isMobile ? "auto" : "100%",
+          maxHeight: isMobile ? (sidebarOpen ? "60vh" : "0px") : "100%",
+          display: "flex",
           transition: isMobile
-            ? "height 0.3s ease-in-out"
+            ? "maxHeight 0.3s ease-in-out"
             : "width 0.3s ease-in-out",
-          overflow: "auto", // Changed from "hidden" to "auto" to allow scrolling if content is larger
+          overflow: isMobile ? "hidden" : "auto",
           borderRadius: 0,
           position: "relative",
           zIndex: 10,
@@ -269,6 +276,17 @@ const ReportViewer = ({
             sx={{ mt: 1, mb: isMobile ? 2 : 0 }} // Added bottom margin for mobile
           >
             SEARCH
+          </Button>
+
+          <Button
+            variant="outlined"
+            onClick={() => setSearchParams({})}
+            startIcon={<Clear />}
+            fullWidth
+            sx={{ mt: 1, mb: isMobile ? 2 : 0 }}
+            disabled={Object.keys(searchParams).length === 0}
+          >
+            Clear Filters
           </Button>
         </Box>
       </Paper>
@@ -316,41 +334,50 @@ const ReportViewer = ({
           zIndex: 5,
           overflow: "hidden",
           marginTop: isMobile ? MARGIN_BETWEEN : 0,
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        {error && (
-          <Typography color="error" sx={{ p: 2, textAlign: "center" }}>
-            {error}
-          </Typography>
-        )}
 
-        {loading ? (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100%",
-              width: "100%",
-            }}
-          >
-            <CircularProgress />
-          </Box>
-        ) : noResults ? (
-          <NoResultsMessage />
-        ) : reportUrl ? (
-          <iframe
-            src={reportUrl}
-            style={{
-              width: "100%",
-              height: "100%",
-              border: "none",
-              display: "block",
-            }}
-            title="Report Viewer"
-            allowFullScreen
-          />
-        ) : null}
+        <Box sx={{ flexGrow: 1, position: "relative" }}>
+          {error && (
+            <Typography color="error" sx={{ p: 2, textAlign: "center" }}>
+              {error}
+            </Typography>
+          )}
+
+          {loading ? (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+                width: "100%",
+              }}
+            >
+              <CircularProgress sx={{ mb: 2 }} />
+              <Typography variant="body1" color="textSecondary">
+                Generating Report...
+              </Typography>
+            </Box>
+          ) : noResults ? (
+            <NoResultsMessage />
+          ) : reportUrl ? (
+            <iframe
+              src={reportUrl}
+              style={{
+                width: "100%",
+                height: "100%",
+                border: "none",
+                display: "block",
+              }}
+              title="Report Viewer"
+              allowFullScreen
+            />
+          ) : null}
+        </Box>
       </Box>
     </Box>
   );
