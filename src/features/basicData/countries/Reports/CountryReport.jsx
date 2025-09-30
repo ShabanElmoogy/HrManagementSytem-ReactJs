@@ -69,28 +69,28 @@ const CountryReport = () => {
       {(updateSearchParams, currentParams) => (
         <>
           <TextFieldWithClear
-            searchText={currentParams.companyAr || ""}
-            label={t("countries.nameAr")}
+            searchText={currentParams.NameAr || ""}
+            label={t("countries.arabicName")}
             handleSearch={(e) =>
               updateSearchParams({ NameAr: e.target.value })
             }
-            handleClearSearch={() => updateSearchParams({ companyAr: null })}
+            handleClearSearch={() => updateSearchParams({ NameAr: null })}
           />
 
           <TextFieldWithClear
-            searchText={currentParams.companyEn || ""}
-            label={t("countries.nameEn")}
+            searchText={currentParams.NameEn || ""}
+            label={t("countries.englishName")}
             handleSearch={(e) =>
               updateSearchParams({ NameEn: e.target.value })
             }
-            handleClearSearch={() => updateSearchParams({ companyEn: null })}
+            handleClearSearch={() => updateSearchParams({ NameEn: null })}
           />
 
           <MySelect
             dataSource={reportsInfo}
             selectedItem={selectedReport?.Id || null}
             handleSelectionChange={handleReportChange}
-            label={t("reportsForms")}
+            label={t("reports.reportForms")}
             displayValue="Id"
             displayMember={lang === "ar" ? "Title" : "Subject"}
             all={false}

@@ -427,7 +427,9 @@
     "all": "كل الدول",
     "recent30Days": "احدث (30 يوما)",
     "hasPhone": "مع كود الهاتف",
-    "hasCurrency": "مع كود العملة"
+    "hasCurrency": "مع كود العملة",
+    "arabicName" : "الإسم عربى",
+    "englishName" : "الإسم إنجليزى"
   },
   "states": {
     "dashboard": {
@@ -694,5 +696,8 @@
       "noMatchWithTerm": "لا توجد أحياء مطابقة لـ \"{{term}}\". حاول تعديل البحث.",
       "noAvailableWithFilters": "لا توجد أحياء متاحة مع عوامل التصفية الحالية."
     }
+  },
+  "reports" : {
+    "reportForms" : "اشكال التقارير"
   }
 }

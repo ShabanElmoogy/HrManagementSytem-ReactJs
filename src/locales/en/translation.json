@@ -438,7 +438,9 @@
     "all": "All Countries",
     "recent30Days": "Recent (30 days)",
     "hasPhone": "Has Phone Code",
-    "hasCurrency": "Has Currency"
+    "hasCurrency": "Has Currency",
+    "arabicName" : "Arabic Name",
+    "englishName" : "English Name"
   },
   "states": {
     "dashboard": {
@@ -741,5 +743,8 @@
       "noMatchWithTerm": "No districts match \"{{term}}\". Try adjusting your search.",
       "noAvailableWithFilters": "No districts available with the current filters."
     }
+  },
+    "reports" : {
+    "reportForms" : "Report Forms"
   }
 }
