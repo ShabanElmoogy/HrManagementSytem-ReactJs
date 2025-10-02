@@ -62,6 +62,7 @@ const CountryReport = () => {
   const handleReportChange = (e) => {
     const selected = reportsInfo.find((r) => r.Id === (e?.target?.value ?? e));
     setSelectedReport(selected ?? null);
+    console.log("reportName",selected)
   };
 
   return (
@@ -69,21 +70,21 @@ const CountryReport = () => {
       {(updateSearchParams, currentParams) => (
         <>
           <TextFieldWithClear
-            searchText={currentParams.NameAr || ""}
+            searchText={currentParams.CountryAr || ""}
             label={t("countries.arabicName")}
             handleSearch={(e) =>
-              updateSearchParams({ NameAr: e.target.value })
+              updateSearchParams({ CountryAr: e.target.value })
             }
-            handleClearSearch={() => updateSearchParams({ NameAr: null })}
+            handleClearSearch={() => updateSearchParams({ CountryAr: null })}
           />
 
           <TextFieldWithClear
-            searchText={currentParams.NameEn || ""}
+            searchText={currentParams.CountryEn || ""}
             label={t("countries.englishName")}
             handleSearch={(e) =>
-              updateSearchParams({ NameEn: e.target.value })
+              updateSearchParams({ CountryEn: e.target.value })
             }
-            handleClearSearch={() => updateSearchParams({ NameEn: null })}
+            handleClearSearch={() => updateSearchParams({ CountryEn: null })}
           />
 
           <MySelect
