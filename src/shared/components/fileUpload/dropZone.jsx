@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 // components/FileUpload/DropZone.jsx
+import { useRef } from "react";
 import { Button, Typography } from "@mui/material";
 import { CloudUpload as CloudUploadIcon } from "@mui/icons-material";
 import { VisuallyHiddenInput, StyledDropZone } from "./styledComponents";
@@ -8,6 +9,7 @@ const DropZone = ({
   dragActive,
   isUploading,
   multiple,
+  accept,
   onDragEnter,
   onDragLeave,
   onDragOver,
@@ -15,6 +17,19 @@ const DropZone = ({
   onFileInput,
   onClick,
 }) => {
+  const inputRef = useRef(null);
+
+  const handleInputChange = (e) => {
+    onFileInput?.(e);
+    // Allow selecting the same file again by resetting the input value
+    if (inputRef.current) inputRef.current.value = "";
+  };
+
+  const handleClick = () => {
+    // Reset value before opening dialog so same-file selection triggers onChange
+    if (inputRef.current) inputRef.current.value = "";
+    inputRef.current?.click();
+  };
   return (
     <StyledDropZone
       className={dragActive ? "dragover" : ""}
@@ -22,7 +37,7 @@ const DropZone = ({
       onDragLeave={onDragLeave}
       onDragOver={onDragOver}
       onDrop={onDrop}
-      onClick={onClick}
+      onClick={onClick || handleClick}
     >
       <CloudUploadIcon sx={{ fontSize: 48, color: "text.secondary", mb: 2 }} />
       <Typography variant="h6" color="text.secondary" gutterBottom>
@@ -32,17 +47,19 @@ const DropZone = ({
         or click to select
       </Typography>
       <Button
-        component="label"
         variant="contained"
         startIcon={<CloudUploadIcon />}
         disabled={isUploading}
+        onClick={(e) => { e.stopPropagation(); handleClick(); }}
       >
         Select Files
         <VisuallyHiddenInput
+          ref={inputRef}
           type="file"
-          onChange={onFileInput}
+          onChange={handleInputChange}
           multiple={multiple}
           disabled={isUploading}
+          accept={accept}
         />
       </Button>
     </StyledDropZone>

@@ -20,7 +20,7 @@ import {
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { useParams, useNavigate } from "react-router-dom";
-import { fileService } from "../../services/fileService";
+import { fileService } from "@/shared/services/fileService";
 
 const Container = styled(Box)(({ theme }) => ({
   height: "calc(100vh - 120px)",
@@ -163,9 +163,7 @@ const MediaViewer = () => {
 
         if (!isMounted) return;
 
-        const streamUrl = `${localStorage.getItem(
-          "baseApiUrl"
-        )}/v1/api/Files/Stream/${id}`;
+        const streamUrl = `https://localhost:7037/api/v1/Files/Stream/${id}`;
         console.log("streamUrl", streamUrl);
 
         if (isMounted) {
@@ -230,7 +228,7 @@ const MediaViewer = () => {
     try {
       // Use the fileService to trigger download
       const response = await fileService.downloadFile(
-        `v1/api/Files/Download`,
+        `api/v1/Files/Download`,
         storedFileName,
         fileName
       );

@@ -1,16 +1,29 @@
-// FilesGrid.jsx - EXACT copy of applicationsGrid pattern
+// FilesGrid.tsx - Modern implementation with TypeScript
 import { useEffect, useMemo, useCallback } from "react";
 import { useGridApiRef } from "@mui/x-data-grid";
-import useSnackbar from "../../Utilites/CustomHooks/useSnackbar";
 import { useTranslation } from "react-i18next";
 import { Dialog } from "@mui/material";
-import ContentsWrapper from "../../Layouts/ContentsWrapper";
-import Header from "../../Shared/Header";
-import FilesDataGrid from "./Components/FilesDataGrid";
-import FileUpload from "./FileUpload"; // YOUR original component
-import FileDeleteDialog from "./Components/FileDeleteDialog";
-import useFileGridLogic from "./Hooks/useFileGridLogic";
+import { useSnackbar } from "@/shared/hooks";
+import ContentsWrapper from "@/layouts/components/myContentsWrapper";
+import Header from "@/shared/components/common/header/myHeader";
+import FilesDataGrid from "./components/FilesDataGrid";
+import FileUpload from "./FileUpload";
+import FileDeleteDialog from "./components/FileDeleteDialog";
+import useFileGridLogic from "./hooks/useFileGridLogic";
+import type { FileItem } from "./types/File";
 
+/**
+ * FilesGrid Component
+ * 
+ * Main component for managing files with grid display.
+ * Supports upload, download, view, and delete operations.
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * <FilesGrid />
+ * ```
+ */
 const FilesGrid = () => {
   // Hooks
   const { showSnackbar, SnackbarComponent } = useSnackbar();
@@ -28,7 +41,7 @@ const FilesGrid = () => {
     getAllFiles,
     openDialog,
     closeDialog,
-    uploadFile, // Like addApplication
+    refreshFiles,
     deleteFile,
     handleDownload,
     handleView,
@@ -37,16 +50,16 @@ const FilesGrid = () => {
   // Memoized values
   const stableFiles = useMemo(() => files, [files]);
 
-  // Form submission handler - EXACT COPY of your handleFormSubmit
+  // Form submission handler
   const handleFormSubmit = useCallback(
-    async (fileName) => {
+    async (fileName: string) => {
       let gridAction = null;
       if (dialogType === "upload") {
         const response = await handleApiCall(
-          () => uploadFile(),
+          () => refreshFiles(),
           t("fileUploaded")
         );
-        gridAction = { type: "add", id: response.id };
+        gridAction = { type: "add", id: response?.id };
       }
       closeDialog();
       if (gridAction) {
@@ -54,10 +67,10 @@ const FilesGrid = () => {
         handleGridNavigation();
       }
     },
-    [dialogType, uploadFile, handleApiCall, t, closeDialog, gridActionRef]
+    [dialogType, refreshFiles, handleApiCall, t, closeDialog, gridActionRef]
   );
 
-  // Delete handler - EXACT copy of your delete pattern
+  // Delete handler
   const handleDelete = useCallback(async () => {
     if (!selectedFile?.storedFileName) return;
 
@@ -72,7 +85,7 @@ const FilesGrid = () => {
     handleGridNavigation();
   }, [selectedFile, deleteFile, handleApiCall, t, closeDialog, gridActionRef]);
 
-  // Grid navigation - EXACT COPY of your navigation pattern
+  // Grid navigation
   const handleGridNavigation = useCallback(() => {
     const gridAction = gridActionRef.current;
     if (!gridAction || !apiRef.current || !stableFiles.length) {
@@ -82,14 +95,14 @@ const FilesGrid = () => {
 
     const { type, id } = gridAction;
     const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
-    let targetIndex;
+    let targetIndex: number = -1;
 
     if (type === "add") {
       targetIndex = stableFiles.length - 1;
     } else if (type === "edit") {
-      targetIndex = stableFiles.findIndex((row) => row.id === id);
+      targetIndex = stableFiles.findIndex((row: FileItem) => row.id === id);
     } else if (type === "delete") {
-      const deletedIndex = stableFiles.findIndex((row) => row.id === id);
+      const deletedIndex = stableFiles.findIndex((row: FileItem) => row.id === id);
       targetIndex = Math.max(0, deletedIndex - 1);
     }
 
@@ -99,15 +112,14 @@ const FilesGrid = () => {
       apiRef.current.scrollToIndexes({ rowIndex: targetIndex, colIndex: 0 });
       const selectId = type === "delete" ? stableFiles[targetIndex]?.id : id;
       if (selectId) {
-        // Clear existing selection first, then select the new row
         apiRef.current.setRowSelectionModel([selectId]);
       }
     }
 
     gridActionRef.current = null;
-  }, [stableFiles, gridActionRef]);
+  }, [stableFiles, gridActionRef, apiRef]);
 
-  // Initial fetch - EXACT copy
+  // Initial fetch
   useEffect(() => {
     getAllFiles();
   }, [getAllFiles]);
@@ -123,22 +135,20 @@ const FilesGrid = () => {
           apiRef={apiRef}
           onDownload={handleDownload}
           onView={handleView}
-          onDelete={(file) => openDialog("delete", file)}
+          onDelete={(file: FileItem) => openDialog("delete", file)}
           onAdd={() => openDialog("upload")}
           t={t}
         />
 
-        {/* Using YOUR original FileUpload - EXACT pattern like ApplicationForm */}
         <Dialog
           open={dialogType === "upload"}
           onClose={closeDialog}
           maxWidth="sm"
           fullWidth
-          disableEscapeKeyDown={loading} // Prevent closing during upload
+          disableEscapeKeyDown={loading}
         >
           <FileUpload
             onSuccess={handleFormSubmit}
-            onError={(errors) => console.error("Upload error:", errors)}
             onClose={closeDialog}
             multiple={true}
           />
@@ -148,6 +158,8 @@ const FilesGrid = () => {
           open={dialogType === "delete"}
           onClose={closeDialog}
           onConfirm={handleDelete}
+          selectedFile={selectedFile}
+          loading={loading}
           t={t}
         />
       </ContentsWrapper>

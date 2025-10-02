@@ -1,9 +1,17 @@
 /* eslint-disable react/prop-types */
-// Components/FileUploadForm.jsx
+// Components/FileUploadForm.tsx
 import { useEffect, useRef } from "react";
 import { TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
-import MyForm from "../../../Shared/MyForm";
+import MyForm from "@/shared/components/common/form/myForm";
+
+interface FileUploadFormProps {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (data: FormData) => void;
+  loading?: boolean;
+  t: (key: string) => string;
+}
 
 const FileUploadForm = ({
   open,
@@ -11,8 +19,8 @@ const FileUploadForm = ({
   onSubmit,
   loading,
   t,
-}) => {
-  const fileInputRef = useRef(null);
+}: FileUploadFormProps) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
     register,
@@ -38,7 +46,7 @@ const FileUploadForm = ({
     }
   }, [open]);
 
-  const handleFormSubmit = (formData) => {
+  const handleFormSubmit = (formData: { files: FileList | null }) => {
     const files = formData.files;
     if (!files || files.length === 0) {
       return;
@@ -60,7 +68,7 @@ const FileUploadForm = ({
       title={t("uploadFiles")}
       submitButtonText={t("upload")}
       onSubmit={handleSubmit(handleFormSubmit)}
-      loading={loading}
+      isSubmitting={loading}
     >
       <TextField
         {...register("files", {
@@ -73,7 +81,7 @@ const FileUploadForm = ({
         fullWidth
         disabled={loading}
         error={!!errors.files}
-        helperText={errors.files?.message}
+        helperText={errors.files?.message as string}
         InputLabelProps={{
           shrink: true,
         }}

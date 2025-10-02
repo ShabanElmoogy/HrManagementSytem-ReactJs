@@ -1,13 +1,44 @@
-/* eslint-disable react/prop-types */
-// Components/FilesDataGrid.jsx
+// Components/FilesDataGrid.tsx - TypeScript implementation
 import { useMemo, useCallback } from "react";
-import { GridActionsCellItem } from "@mui/x-data-grid";
+import { GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { Tooltip, Chip } from "@mui/material";
 import { Delete, Download, Visibility } from "@mui/icons-material";
-import MyDataGrid from "../../../Shared/MyDataGrid";
-import dayjs from "dayjs";
-import { dateFormat } from "../../../Const/Strings";
+import MyDataGrid from "@/shared/components/common/datagrid/myDataGrid";
+import type { FileItem } from "../types/File";
+import type { TFunction } from "i18next";
+import { renderDate } from "@/shared/components";
 
+interface FilesDataGridProps {
+  files: FileItem[];
+  loading: boolean;
+  apiRef: any;
+  onDownload: (file: FileItem) => void;
+  onView: (file: FileItem) => void;
+  onDelete: (file: FileItem) => void;
+  onAdd: () => void;
+  t: TFunction;
+}
+
+/**
+ * Supported file extensions for preview
+ */
+const VIEWABLE_EXTENSIONS = [
+  "mp4",
+  "webm",
+  "pdf",
+  "mp3",
+  "png",
+  "jpg",
+  "jpeg",
+  "gif",
+  "bmp",
+] as const;
+
+/**
+ * FilesDataGrid Component
+ *
+ * Displays files in a data grid with actions for download, view, and delete
+ */
 const FilesDataGrid = ({
   files,
   loading,
@@ -17,69 +48,59 @@ const FilesDataGrid = ({
   onDelete,
   onAdd,
   t,
-}) => {
-  const showViewButton = [
-    "mp4",
-    "webm",
-    "pdf",
-    "mp3",
-    "png",
-    "jpg",
-    "jpeg",
-    "gif",
-    "bmp",
-  ];
+}: FilesDataGridProps) => {
+  /**
+   * Check if file can be viewed based on extension
+   */
+  const canViewFile = useCallback((file: FileItem): boolean => {
+    const extension = file.fileExtension;
+    if (!extension) return false;
 
-  // Helper function to check if file can be viewed
-  const canViewFile = useCallback(
-    (file) => {
-      const extension = file.fileExtension;
-      if (!extension) return false;
+    const cleanExtension = extension.startsWith(".")
+      ? extension.substring(1).toLowerCase()
+      : extension.toLowerCase();
 
-      const cleanExtension = extension.startsWith(".")
-        ? extension.substring(1).toLowerCase()
-        : extension.toLowerCase();
+    return VIEWABLE_EXTENSIONS.includes(cleanExtension as any);
+  }, []);
 
-      return showViewButton.includes(cleanExtension);
-    },
-    [showViewButton]
-  );
-
-  // Memoized action buttons
+  /**
+   * Generate action buttons for each row
+   */
   const getActions = useCallback(
-    (params) => {
+    (params: any) => {
+      const file = params.row as FileItem;
       const actions = [
-        <Tooltip title={t("download")} key={`download-${params.row.id}`} arrow>
+        <Tooltip title={t("download")} key={`download-${file.id}`} arrow>
           <GridActionsCellItem
             icon={<Download sx={{ fontSize: 25 }} />}
             label={t("download")}
             color="primary"
-            onClick={() => onDownload(params.row)}
+            onClick={() => onDownload(file)}
           />
         </Tooltip>,
       ];
 
       // Add view button for supported file types
-      if (canViewFile(params.row)) {
+      if (canViewFile(file)) {
         actions.push(
-          <Tooltip title={t("view")} key={`view-${params.row.id}`} arrow>
+          <Tooltip title={t("view")} key={`view-${file.id}`} arrow>
             <GridActionsCellItem
               icon={<Visibility sx={{ fontSize: 25 }} />}
               label={t("view")}
               color="info"
-              onClick={() => onView(params.row)}
+              onClick={() => onView(file)}
             />
           </Tooltip>
         );
       }
 
       actions.push(
-        <Tooltip title={t("delete")} key={`delete-${params.row.id}`} arrow>
+        <Tooltip title={t("delete")} key={`delete-${file.id}`} arrow>
           <GridActionsCellItem
             icon={<Delete sx={{ fontSize: 25 }} />}
             label={t("delete")}
             color="error"
-            onClick={() => onDelete(params.row)}
+            onClick={() => onDelete(file)}
           />
         </Tooltip>
       );
@@ -89,8 +110,10 @@ const FilesDataGrid = ({
     [t, onDownload, onView, onDelete, canViewFile]
   );
 
-  // Memoized columns
-  const columns = useMemo(
+  /**
+   * Column definitions
+   */
+  const columns = useMemo<GridColDef[]>(
     () => [
       {
         field: "id",
@@ -140,8 +163,7 @@ const FilesDataGrid = ({
         flex: 1,
         align: "center",
         headerAlign: "center",
-        valueFormatter: (params) =>
-          params ? dayjs(params.value).format(dateFormat) : "",
+        valueFormatter: renderDate,
       },
       {
         field: "updatedOn",
@@ -149,8 +171,7 @@ const FilesDataGrid = ({
         flex: 1,
         align: "center",
         headerAlign: "center",
-        valueFormatter: (params) =>
-          params ? dayjs(params.value).format(dateFormat) : "",
+        valueFormatter: renderDate,
       },
       {
         field: "actions",
@@ -172,10 +193,12 @@ const FilesDataGrid = ({
       loading={loading}
       apiRef={apiRef}
       filterMode="client"
-      sortModel={[{ field: "createdOn", sort: "asc" }]}
+      sortModel={[{ field: "createdOn", sort: "desc" }]}
       addNewRow={onAdd}
       pagination
-      pageSizeOptions={[5, 10, 25]}
+      pageSizeOptions={[5, 10, 25, 50]}
+      fileName="files"
+      reportPdfHeader="Files Report"
     />
   );
 };

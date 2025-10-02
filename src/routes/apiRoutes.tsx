@@ -155,6 +155,9 @@ const apiRoutes: ApiRoutes = {
   google: {
     auth: "/api/account/google-auth",
   },
+  fileManager :{
+    getAll : `${version}Files/GetAll`
+  }
 };
 
 export default apiRoutes;

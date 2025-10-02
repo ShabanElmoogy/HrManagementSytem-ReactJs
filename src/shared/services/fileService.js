@@ -5,7 +5,7 @@ class FileService {
   constructor() {
     // Create a separate axios instance without auth interceptors
     this.client = axios.create({
-      baseURL: localStorage.getItem("baseApiUrl") || "https://localhost:7037", // Or get from config
+      baseURL: "https://localhost:7037", // Or get from config
     });
   }
 

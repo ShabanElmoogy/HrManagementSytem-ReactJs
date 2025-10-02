@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { Delete as DeleteIcon } from "@mui/icons-material";
 import FileStatusIcon from "./FileStatusIcon";
-import { formatFileSize } from "../../Utilites/Functions/FormatFileSize";
+import { formatFileSize } from "@/shared/utils/formatFileSize";
 
 const FileListItem = ({ fileItem, index, isUploading, onRemove }) => {
   return (

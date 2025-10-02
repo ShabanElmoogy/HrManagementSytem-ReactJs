@@ -2,16 +2,10 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { Suspense } from "react";
 import { MyLoadingIndicator } from "@/shared/components";
 import { appPermissions } from "@/constants";
-
-// Layouts
 import AuthLayout from "../layouts/authLayout/authLayout";
 import MainLayout from "../layouts/mainLayout/mainLayout";
-
-// Components
 import ProtectedRoute from "../shared/components/auth/protectedRoute";
 import { appRoutes } from "./appRoutes";
-
-// Pages
 import Home from "../features/home/home";
 import EmailConfirmed from "../features/auth/emailConfirmed";
 import ForgetPassword from "../features/auth/forgetPassword";
@@ -41,9 +35,7 @@ import ApiEndpoints from "@/features/advancedTools/apiEndpoints";
 import HangfireDashboard from "@/features/advancedTools/hangfireDashboard";
 import ChartExamplesPage from "@/features/chartExamples/chartExamplesPage";
 import CountryReport from "@/features/basicData/countries/reports/CountryReport";
-// NotificationExample removed - using simplified notification system
 
-// Analytics imports
 import {
   HRMainDashboard,
   PerformanceAnalytics,
@@ -54,6 +46,10 @@ import {
   ReportViewer,
   DataExportTools,
 } from "@/features/analytics";
+
+// File Manager
+import FilesGrid from "@/features/FileManager/FilesGrid";
+import MediaViewer from "@/features/FileManager/MediaViewer";
 
 // Communication imports
 import {
@@ -377,6 +373,34 @@ const AppRoutes = () => {
                 </ProtectedRoute>
               }
             />
+
+            {/* File Manager */}
+            <Route
+              path={appRoutes.extras.filesManager}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <FilesGrid />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+                  <Route
+              path={appRoutes.extras.mediaViewer}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <MediaViewer />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
             {/* NotificationExample route removed - using simplified notification system */}
 
             {/* ========================================================================= */}

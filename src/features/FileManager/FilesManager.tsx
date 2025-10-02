@@ -1,4 +1,4 @@
-// components/FilesManager.jsx
+// components/FilesManager.tsx
 import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Box,
@@ -70,6 +70,16 @@ const LoadingOverlay = styled(Box)({
   zIndex: 10,
 });
 
+interface FileItem {
+  id: number;
+  fileName: string;
+  storedFileName: string;
+  fileExtension: string;
+  contentType?: string;
+  isDeleted?: boolean;
+  createdOn: string;
+}
+
 const FilesManager = () => {
   // Hooks
   const navigate = useNavigate();
@@ -77,15 +87,15 @@ const FilesManager = () => {
   const { t } = useTranslation();
 
   // State
-  const [files, setFiles] = useState([]);
-  const [originalFiles, setOriginalFiles] = useState([]);
+  const [files, setFiles] = useState<FileItem[]>([]);
+  const [originalFiles, setOriginalFiles] = useState<FileItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [selectedColumn, setSelectedColumn] = useState("fileName");
   const [deleteFilter, setDeleteFilter] = useState("active");
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [fileToDelete, setFileToDelete] = useState(null);
+  const [fileToDelete, setFileToDelete] = useState<FileItem | null>(null);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const showViewButton = [
@@ -108,13 +118,13 @@ const FilesManager = () => {
       const result = await apiService.get(`v1/api/Files/GetAll`);
       const sortedFiles =
         result?.sort(
-          (a, b) =>
+          (a: FileItem, b: FileItem) =>
             new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime()
         ) || [];
       setFiles(sortedFiles);
       setOriginalFiles(sortedFiles);
-    } catch (error) {
-      HandleApiError(error, (updatedState) => {
+    } catch (error: any) {
+      HandleApiError(error, (updatedState: any) => {
         showSnackbar("error", updatedState.messages, error.title);
       });
       setIsLoading(false);
@@ -141,7 +151,7 @@ const FilesManager = () => {
     // Apply search
     if (searchText) {
       result = result.filter((file) => {
-        const value = String(file[selectedColumn] || "").toLowerCase();
+        const value = String(file[selectedColumn as keyof FileItem] || "").toLowerCase();
         return value.includes(searchText.toLowerCase());
       });
     }
@@ -150,17 +160,17 @@ const FilesManager = () => {
   }, [originalFiles, deleteFilter, searchText, selectedColumn]);
 
   // Handlers
-  const handleUploadSuccess = async (fileName) => {
+  const handleUploadSuccess = async (fileName: string) => {
     await loadFiles();
     showSnackbar("success", [t("companyAdded")], t("success"));
     setUploadDialogOpen(false);
   };
 
-  const handleUploadError = (errors) => {
+  const handleUploadError = (errors: any) => {
     showSnackbar("error", [t("error")], t("error"));
   };
 
-  const handleDownloadFile = async (file) => {
+  const handleDownloadFile = async (file: FileItem) => {
     try {
       const response = await fileService.downloadFile(
         `v1/api/Files/Download`,
@@ -172,14 +182,14 @@ const FilesManager = () => {
       }
 
       showSnackbar("success", ["File downloaded successfully"], t("success"));
-    } catch (error) {
-      HandleApiError(error, (updatedState) => {
+    } catch (error: any) {
+      HandleApiError(error, (updatedState: any) => {
         showSnackbar("error", updatedState.messages, error.title);
       });
     }
   };
 
-  const handleViewFile = (file) => {
+  const handleViewFile = (file: FileItem) => {
     navigate(
       `/extras-show-media/${file.id}/${file.fileExtension}/${file.storedFileName}/${file.fileName}`
     );
@@ -194,8 +204,8 @@ const FilesManager = () => {
       );
       await loadFiles();
       showSnackbar("success", ["File deleted successfully"], t("success"));
-    } catch (error) {
-      HandleApiError(error, (updatedState) => {
+    } catch (error: any) {
+      HandleApiError(error, (updatedState: any) => {
         showSnackbar("error", updatedState.messages, error.title);
       });
     } finally {
@@ -216,7 +226,7 @@ const FilesManager = () => {
       field: "createdOn",
       headerName: "Created On",
       width: 180,
-      valueFormatter: (params) => new Date(params.value).toLocaleString(),
+      valueFormatter: (params: { value: string }) => new Date(params.value).toLocaleString(),
     },
     {
       field: "contentType",
@@ -232,7 +242,7 @@ const FilesManager = () => {
       field: "isDeleted",
       headerName: "Status",
       width: 120,
-      renderCell: (params) => (
+      renderCell: (params: { value: boolean }) => (
         <Chip
           size="small"
           label={params.value ? "Deleted" : "Active"}
@@ -246,7 +256,7 @@ const FilesManager = () => {
       width: 150,
       sortable: false,
       filterable: false,
-      renderCell: (params) => (
+      renderCell: (params: { row: FileItem }) => (
         <Stack direction="row" spacing={1}>
           <Tooltip title="Download">
             <IconButton
@@ -357,7 +367,7 @@ const FilesManager = () => {
           rows={filteredFiles}
           columns={columns}
           pageSize={rowsPerPage}
-          onPageSizeChange={(newPageSize) => setRowsPerPage(newPageSize)}
+          onPageSizeChange={(newPageSize: number) => setRowsPerPage(newPageSize)}
           rowsPerPageOptions={[5, 10, 25, 50]}
           checkboxSelection
           disableSelectionOnClick
