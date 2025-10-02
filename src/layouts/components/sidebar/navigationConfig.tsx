@@ -13,11 +13,13 @@ import { filterNavigationConfig } from "./navigationUtils";
 import {
   NavigationConfig,
 } from './navigationTypes';
+import { getExtrasConfig } from "./configs/extrasConfig";
 
 export const getNavigationConfig = (): NavigationConfig => {
   // Full navigation configuration
   const fullConfig: NavigationConfig = [
     getBasicDataConfig(),
+    getExtrasConfig(),
     getUsersAndRolesConfig(),
     getAnalyticsConfig(),
     getCommunicationConfig(),

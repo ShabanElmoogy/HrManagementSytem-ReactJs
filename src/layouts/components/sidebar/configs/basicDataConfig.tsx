@@ -16,6 +16,7 @@ import {
   createNavSection,
 } from "../navigationUtils";
 
+
 export const getBasicDataConfig = () => {
   const sectionIcon = createColoredIcon(
     <CategoryIcon />,
@@ -70,7 +71,7 @@ export const getBasicDataConfig = () => {
   );
 
   return createNavSection(
-    NavigationSectionId.ARCHIVE,
+    NavigationSectionId.Basic_DATA,
     NavigationTitles.BASIC_DATA,
     sectionIcon,
     [geographicDataItem, employeesItem]

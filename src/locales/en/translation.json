@@ -84,7 +84,9 @@
     "employeeDocuments": "Employee Documents",
     "companyDocuments": "Company Documents",
     "documentTemplates": "Templates",
-    "documentArchives": "Archives"
+    "documentArchives": "Archives",
+    "extras" : "Extras",
+    "filemanager" : "File Manager"
   },
   "actions": {
     "buttons": "Actions",

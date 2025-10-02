@@ -4,7 +4,7 @@ import { PermissionString } from "@/constants/appPermissions";
 
 // Enums for better type safety
 export enum NavigationSectionId {
-  ARCHIVE = "archive",
+  Basic_DATA = "basic-data",
   USERS_AND_ROLES = "usersAndRoles",
   CHAT = "chat",
   CHART_EXAMPLES = "chartExamples",
@@ -13,6 +13,7 @@ export enum NavigationSectionId {
   ANALYTICS = "analytics",
   COMMUNICATION = "communication",
   DOCUMENTS = "documents",
+  EXTRAS = "extras",
 }
 
 export enum NavigationColors {
@@ -59,6 +60,9 @@ export enum NavigationTitles {
   CHAT = "menu.chat",
   CHAT_INTERFACE = "menu.chatInterface",
   REPORTS = "menu.reports",
+  EXTRAS = "menu.extras",
+  FILEMANAGER = "menu.filemanager",
+
 
   // Direct titles
   CHART_EXAMPLES = "menu.chartExamples",

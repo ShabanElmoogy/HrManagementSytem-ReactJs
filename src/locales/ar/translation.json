@@ -79,7 +79,9 @@
     "employeeDocuments": "مستندات الموظفين",
     "companyDocuments": "مستندات الشركة",
     "documentTemplates": "القوالب",
-    "documentArchives": "الأرشيف"
+    "documentArchives": "الأرشيف",
+    "extras" : "الاضافات",
+    "filemanager" : "مدير الملفات"
   },
   "actions": {
     "buttons": "العمليات",
