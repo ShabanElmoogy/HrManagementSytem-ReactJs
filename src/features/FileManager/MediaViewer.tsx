@@ -1,5 +1,4 @@
-// components/MediaViewer.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Box,
   CircularProgress,
@@ -21,6 +20,10 @@ import {
 import { styled } from "@mui/material/styles";
 import { useParams, useNavigate } from "react-router-dom";
 import { fileService } from "@/shared/services/fileService";
+
+// Types
+type MediaType = "iframe" | "image" | "video" | "audio" | "unsupported";
+
 
 const Container = styled(Box)(({ theme }) => ({
   height: "calc(100vh - 120px)",
@@ -100,38 +103,48 @@ const LoadingOverlay = styled(Box)({
   backgroundColor: "rgba(0, 0, 0, 0.5)",
 });
 
+const allowedIframeExtensions = ["pdf"] as const;
+const imageExtensions = [
+  "jpg",
+  "jpeg",
+  "png",
+  "gif",
+  "bmp",
+  "svg",
+  "webp",
+] as const;
+const videoExtensions = ["mp4", "webm", "mov", "avi", "mkv"] as const;
+const audioExtensions = ["mp3", "wav", "ogg", "m4a"] as const;
+
 const MediaViewer = () => {
   const { id, fileExtension, storedFileName, fileName } = useParams();
   const navigate = useNavigate();
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [mediaUrl, setMediaUrl] = useState("");
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [mediaUrl, setMediaUrl] = useState<string>("");
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
-  const allowedIframeExtensions = ["pdf"];
-  const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "svg", "webp"];
-  const videoExtensions = ["mp4", "webm", "mov", "avi", "mkv"];
-  const audioExtensions = ["mp3", "wav", "ogg", "m4a"];
+  // Track object URL cleanup to avoid leaks
+  const cleanupRef = useRef<null | (() => void)>(null);
 
-  const getFileExtension = () => {
-    // Remove the dot from the extension
+  const getFileExtension = (): string => {
     return fileExtension?.substring(1).toLowerCase() || "";
   };
 
-  const getMediaType = () => {
+  const getMediaType = (): MediaType => {
     const ext = getFileExtension();
 
-    if (allowedIframeExtensions.includes(ext)) {
+    if (allowedIframeExtensions.includes(ext as typeof allowedIframeExtensions[number])) {
       return "iframe";
     }
-    if (imageExtensions.includes(ext)) {
+    if (imageExtensions.includes(ext as typeof imageExtensions[number])) {
       return "image";
     }
-    if (videoExtensions.includes(ext)) {
+    if (videoExtensions.includes(ext as typeof videoExtensions[number])) {
       return "video";
     }
-    if (audioExtensions.includes(ext)) {
+    if (audioExtensions.includes(ext as typeof audioExtensions[number])) {
       return "audio";
     }
 
@@ -140,7 +153,7 @@ const MediaViewer = () => {
 
   useEffect(() => {
     let isMounted = true;
-    let timeoutId;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     const loadMedia = async () => {
       try {
@@ -156,23 +169,35 @@ const MediaViewer = () => {
           return;
         }
 
-        // Add delay to prevent rapid navigation issues
+        // Debounce rapid navigation
         await new Promise((resolve) => {
           timeoutId = setTimeout(resolve, 300);
         });
 
         if (!isMounted) return;
 
-        const streamUrl = `https://localhost:7037/api/v1/Files/Stream/${id}`;
-        console.log("streamUrl", streamUrl);
+        // Use blob URL to support secured endpoints and avoid CORS/auth issues
+  
+        const streamEndpoint = `api/v1/Files/Stream`;
+        const res = await fileService.downloadStream(streamEndpoint, id);
 
-        if (isMounted) {
-          setMediaUrl(streamUrl);
+        if (!isMounted) return;
+
+        if (res.success) {
+          // cleanup previous blob url if exists
+          if (cleanupRef.current) {
+            cleanupRef.current();
+          }
+          cleanupRef.current = res.data.cleanup;
+          setMediaUrl(res.data.url);
+        } else {
+          setError("Failed to load media stream");
         }
-      } catch (err) {
+      } catch (err: unknown) {
         console.error("Error loading media:", err);
+        const message = err instanceof Error ? err.message : "Error loading media";
         if (isMounted) {
-          setError(err.message || "Error loading media");
+          setError(message);
         }
       } finally {
         if (isMounted) {
@@ -183,18 +208,18 @@ const MediaViewer = () => {
 
     loadMedia();
 
-    // Cleanup function
     return () => {
       isMounted = false;
-      if (timeoutId) {
-        clearTimeout(timeoutId);
+      if (timeoutId) clearTimeout(timeoutId);
+      if (cleanupRef.current) {
+        cleanupRef.current();
+        cleanupRef.current = null;
       }
     };
   }, [id, fileExtension]);
 
   const handleBack = () => {
-    // Navigate back to FilesGrid - update this path to match your route
-    navigate(-1); // Go back to previous page
+    navigate(-1);
   };
 
   const handleFullscreen = () => {
@@ -211,7 +236,6 @@ const MediaViewer = () => {
     }
   };
 
-  // Listen for fullscreen changes
   useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
@@ -224,13 +248,11 @@ const MediaViewer = () => {
 
   const handleDownload = async () => {
     if (!storedFileName) return;
-    console.log("storedFileName", storedFileName);
     try {
-      // Use the fileService to trigger download
       const response = await fileService.downloadFile(
         `api/v1/Files/Download`,
         storedFileName,
-        fileName
+        fileName || storedFileName
       );
 
       if (!response.success) {
@@ -291,7 +313,7 @@ const MediaViewer = () => {
             alt="Image"
             onLoad={() => {
               console.log("Image loaded successfully");
-              setError(null); // Clear any previous errors
+              setError(null);
             }}
             onError={(e) => {
               console.error("Image error:", e);
@@ -312,30 +334,25 @@ const MediaViewer = () => {
       case "video":
         return (
           <video
-            key={`${mediaUrl}-${Date.now()}`} // Force reload with timestamp
+            key={`${mediaUrl}-${Date.now()}`}
             id="media-content"
             src={mediaUrl}
             controls
-            controlsList="nodownload"
+            {...({ controlsList: "nodownload" } as any)}
             preload="metadata"
             onLoadStart={() => console.log("Video load started")}
             onLoadedMetadata={() => {
               console.log("Video metadata loaded");
-              setError(null); // Clear any previous errors
+              setError(null);
             }}
             onCanPlay={() => console.log("Video can play")}
-            onError={(e) => {
-              console.error("Video error:", e);
-              console.error("Video error details:", e.target.error);
+            onError={(e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
+              const mediaError = e.currentTarget.error;
+              console.error("Video error:", mediaError);
               console.error("Video src:", mediaUrl);
               setTimeout(() => {
                 setError(
-                  `Failed to load video. Error code: ${
-                    e.target.error?.code || "unknown"
-                  } - ${
-                    e.target.error?.message ||
-                    "The file might be corrupted or in an unsupported format."
-                  }`
+                  `Failed to load video. Error code: ${mediaError?.code ?? "unknown"}`
                 );
               }, 100);
             }}
@@ -359,10 +376,9 @@ const MediaViewer = () => {
                 id="media-content"
                 src={mediaUrl}
                 controls
-                controlsList="nodownload"
+                {...({ controlsList: "nodownload" } as any)}
                 style={{ width: "100%" }}
-                onError={(e) => {
-                  console.error("Audio error:", e);
+                onError={() => {
                   setTimeout(() => {
                     setError("Failed to load audio");
                   }, 100);
@@ -381,7 +397,6 @@ const MediaViewer = () => {
 
   return (
     <Container>
-      {/* Back Button - Always visible at top-left */}
       <BackButtonOverlay>
         <Tooltip title="Back to Files">
           <IconButton onClick={handleBack} size="small" color="primary">
@@ -408,7 +423,6 @@ const MediaViewer = () => {
       {!error && !isLoading && mediaUrl && (
         <Fade in={true}>
           <MediaContainer>
-            {/* Control Buttons - Right Side */}
             <ControlsOverlay>
               <Tooltip title="Download">
                 <IconButton onClick={handleDownload} size="small">
@@ -417,9 +431,7 @@ const MediaViewer = () => {
               </Tooltip>
 
               {getMediaType() !== "audio" && (
-                <Tooltip
-                  title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
-                >
+                <Tooltip title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}>
                   <IconButton onClick={handleFullscreen} size="small">
                     {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
                   </IconButton>
