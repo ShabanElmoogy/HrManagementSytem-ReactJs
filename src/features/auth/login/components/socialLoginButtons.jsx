@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { alpha } from "@mui/material/styles";
 import { useGoogleLogin } from "@react-oauth/google";
 
-const SocialLoginButtons = ({ handleSocialLogin, isDarkMode, loading }) => {
+const SocialLoginButtons = ({ handleSocialLogin, isDarkMode, loading, disabled }) => {
   const theme = useTheme();
   const { t } = useTranslation();
 
@@ -25,7 +25,7 @@ const SocialLoginButtons = ({ handleSocialLogin, isDarkMode, loading }) => {
         variant="outlined"
         fullWidth
         onClick={() => googleLogin()}
-        disabled={loading}
+        disabled={loading || disabled}
         startIcon={<GoogleIcon />}
         sx={{
           textTransform: "none",

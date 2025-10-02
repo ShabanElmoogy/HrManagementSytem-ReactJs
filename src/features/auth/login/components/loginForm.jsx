@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { MyButton, MyTextField } from "@/shared/components";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -27,18 +28,39 @@ const LoginForm = ({
   setValue,
   onOpenApiSettings,
 }) => {
+  const [isMainSubmitting, setIsMainSubmitting] = useState(false);
+  const [isUserSubmitting, setIsUserSubmitting] = useState(false);
+  const [isAdminSubmitting, setIsAdminSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!loading) {
+      setIsMainSubmitting(false);
+      setIsUserSubmitting(false);
+      setIsAdminSubmitting(false);
+    }
+  }, [loading]);
+
+  const submit = handleSubmit(onSubmit);
+
+  const wrappedSubmit = async (data) => {
+    setIsMainSubmitting(true);
+    await submit(data);
+  };
+
   // Handle login as user
-  const handleUserLogin = () => {
+  const handleUserLogin = async () => {
+    setIsUserSubmitting(true);
     setValue("username", "user");
     setValue("password", "P@ssword123");
-    handleSubmit(onSubmit)();
+    await submit();
   };
 
   // Handle login as admin
-  const handleAdminLogin = () => {
+  const handleAdminLogin = async () => {
+    setIsAdminSubmitting(true);
     setValue("username", "admin");
     setValue("password", "P@ssword123");
-    handleSubmit(onSubmit)();
+    await submit();
   };
 
   return (
@@ -66,7 +88,7 @@ const LoginForm = ({
       {/* Header Section */}
       <FormHeader t={t} theme={theme} />
       {/* Form Section */}
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={wrappedSubmit}>
         <MyTextField
           fieldName="username"
           margin="normal"
@@ -95,14 +117,15 @@ const LoginForm = ({
 
         <ForgotPasswordLink t={t} theme={theme} appRoutes={appRoutes} />
         {/* Original login button */}
-        <LoginButton t={t} loading={loading} />
+        <LoginButton t={t} loading={isMainSubmitting} disabled={isMainSubmitting || isUserSubmitting || isAdminSubmitting} />
         {/* Quick login buttons in a row */}
         <Box sx={{ display: "flex", gap: 2, mt: 2, mb: 2 }}>
-          <UserLoginButton t={t} loading={loading} onClick={handleUserLogin} />
+          <UserLoginButton t={t} loading={isUserSubmitting} onClick={handleUserLogin} disabled={isMainSubmitting || isUserSubmitting || isAdminSubmitting} />
           <AdminLoginButton
             t={t}
-            loading={loading}
+            loading={isAdminSubmitting}
             onClick={handleAdminLogin}
+            disabled={isMainSubmitting || isUserSubmitting || isAdminSubmitting}
           />
         </Box>
       </form>
@@ -111,7 +134,8 @@ const LoginForm = ({
       <SocialLoginButtons
         handleSocialLogin={handleSocialLogin}
         isDarkMode={isDarkMode}
-        loading={undefined}
+        loading={false}
+        disabled={isMainSubmitting || isUserSubmitting || isAdminSubmitting}
       />
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         {/* Register Link */}
@@ -181,8 +205,8 @@ const ForgotPasswordLink = ({ t, theme, appRoutes }) => (
  * LoginButton component
  * Displays the login button with loading state
  */
-const LoginButton = ({ t, loading }) => (
-  <MyButton type="submit" fullWidth loading={loading} startIcon={<LoginIcon />}>
+const LoginButton = ({ t, loading, disabled }) => (
+  <MyButton type="submit" fullWidth loading={loading} disabled={disabled} startIcon={<LoginIcon />}>
     {t("auth.login")}
   </MyButton>
 );
@@ -191,7 +215,7 @@ const LoginButton = ({ t, loading }) => (
  * UserLoginButton component
  * Displays the login as user button
  */
-const UserLoginButton = ({ t, loading, onClick }) => (
+const UserLoginButton = ({ t, loading, onClick, disabled }) => (
   <MyButton
     type="button"
     fullWidth
@@ -199,6 +223,7 @@ const UserLoginButton = ({ t, loading, onClick }) => (
     onClick={onClick}
     size="medium"
     startIcon={<PersonIcon />}
+    disabled={disabled}
   >
     {t("auth.loginAsUser")}
   </MyButton>
@@ -208,7 +233,7 @@ const UserLoginButton = ({ t, loading, onClick }) => (
  * AdminLoginButton component
  * Displays the login as admin button
  */
-const AdminLoginButton = ({ t, loading, onClick }) => (
+const AdminLoginButton = ({ t, loading, onClick, disabled }) => (
   <MyButton
     type="button"
     fullWidth
@@ -218,6 +243,7 @@ const AdminLoginButton = ({ t, loading, onClick }) => (
     hoverColors={["#d32f2f", "#c2185b"]}
     size="medium"
     startIcon={<AdminPanelSettingsIcon />}
+    disabled={disabled}
   >
     {t("auth.loginAsAdmin")}
   </MyButton>
