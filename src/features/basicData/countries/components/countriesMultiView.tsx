@@ -6,6 +6,7 @@ import type { Country } from "../types/Country";
 import CountriesCardView from "./countriesCardView";
 import CountriesChartView from "./countriesChartView";
 import CountriesDataGrid from "./gridView/countriesDataGrid";
+import CountryReport from "../Reports/CountryReport";
 
 interface CountriesMultiViewProps {
   countries: Country[];
@@ -38,7 +39,7 @@ const CountriesMultiView = ({
   lastDeletedIndex,
 }: CountriesMultiViewProps) => {
   // Initialize with default, will be updated by MultiViewHeader
-  const [currentViewType, setCurrentViewType] = useState<"grid" | "cards" | "chart">("grid");
+  const [currentViewType, setCurrentViewType] = useState<"grid" | "cards" | "chart" | "report">("grid");
   const [searchTerm] = useState("");
 
   // Use original countries and loading states (search is handled within specific views when applicable)
@@ -60,7 +61,7 @@ const CountriesMultiView = ({
     console.log("Export countries data");
   };
 
-  const handleViewTypeChange = useCallback((newViewType: "grid" | "cards" | "chart") => {
+  const handleViewTypeChange = useCallback((newViewType: "grid" | "cards" | "chart" | "report") => {
     setCurrentViewType(newViewType);
   }, []);
 
@@ -103,6 +104,8 @@ const CountriesMultiView = ({
             t={t}
           />
         );
+      case "report":
+        return <CountryReport />;
       default:
         return (
           <CountriesDataGrid
@@ -134,11 +137,12 @@ const CountriesMultiView = ({
         title={t("countries.viewTitle") || "Countries Management"}
         storageKey="countries-view-layout"
         defaultView="grid"
-        availableViews={["grid", "cards", "chart"]}
+        availableViews={["grid", "cards", "chart", "report"]}
         viewLabels={{
           grid: t("countries.views.grid") || "Grid",
           cards: t("countries.views.cards") || "Cards",
           chart: t("countries.views.chart") || "Chart",
+          report: t("countries.views.report") || "Report",
         }}
         onAdd={onAdd}
         dataCount={displayCountries?.length || 0}

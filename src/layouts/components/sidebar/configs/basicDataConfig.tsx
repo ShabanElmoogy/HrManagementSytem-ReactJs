@@ -3,14 +3,26 @@ import CategoryIcon from "@mui/icons-material/Category";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import PeopleIcon from "@mui/icons-material/People";
 import { appRoutes } from "@/routes/appRoutes";
-import { NavigationColors, NavigationTitles, NavigationSectionId } from "../navigationTypes";
+import {
+  NavigationColors,
+  NavigationTitles,
+  NavigationSectionId,
+} from "../navigationTypes";
 import Permissions from "@/constants/appPermissions";
 import { UserRoles } from "../navigationTypes";
-import { createColoredIcon, createNavItem, createNavSection } from "../navigationUtils";
+import {
+  createColoredIcon,
+  createNavItem,
+  createNavSection,
+} from "../navigationUtils";
 
 export const getBasicDataConfig = () => {
-  const sectionIcon = createColoredIcon(<CategoryIcon />, NavigationColors.PRIMARY_BLUE);
-  const secondaryIcon = (icon: React.ReactElement) => createColoredIcon(icon, NavigationColors.SECONDARY_BLUE);
+  const sectionIcon = createColoredIcon(
+    <CategoryIcon />,
+    NavigationColors.PRIMARY_BLUE
+  );
+  const secondaryIcon = (icon: React.ReactElement) =>
+    createColoredIcon(icon, NavigationColors.SECONDARY_BLUE);
 
   const geographicItems = [
     createNavItem(

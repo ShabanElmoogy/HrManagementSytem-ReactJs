@@ -367,7 +367,8 @@
       "grid": "Grid",
       "cards": "Cards",
       "map": "Map",
-      "chart": "Chart"
+      "chart": "Chart",
+      "report" : "Reports"
     },
     "charts": {
       "byRegion": "Countries by Region",

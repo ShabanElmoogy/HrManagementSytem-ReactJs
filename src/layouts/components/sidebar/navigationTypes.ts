@@ -58,6 +58,7 @@ export enum NavigationTitles {
   USERS_MANAGEMENT = "menu.usersManagement",
   CHAT = "menu.chat",
   CHAT_INTERFACE = "menu.chatInterface",
+  REPORTS = "menu.reports",
 
   // Direct titles
   CHART_EXAMPLES = "menu.chartExamples",
