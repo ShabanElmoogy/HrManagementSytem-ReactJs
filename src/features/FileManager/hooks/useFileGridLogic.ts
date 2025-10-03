@@ -87,7 +87,7 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
       // Clear the highlight after 4 seconds
       setTimeout(() => {
         console.log("🔄 Clearing lastDeletedIndex");
-        setLastDeletedRowIndex(null);
+        setLastDeletedSortedIndex(null);
       }, 4000);
     },
     onError: (error: any) => {
@@ -168,29 +168,52 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
     }
   }, [rowDeleted, lastDeletedSortedIndex]);
 
-  // Scroll to the uploaded file
+  // Scroll to the uploaded file (or fallback to last row)
   useEffect(() => {
-    if (newFileAdded && uploadedRowId !== null && apiRef.current) {
-      const sortedIds = apiRef.current.getSortedRowIds();
-      const sortedIndex = sortedIds.indexOf(uploadedRowId);
-      if (sortedIndex >= 0) {
-        const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
-        const newPage = Math.floor(sortedIndex / pageSize);
+    if (newFileAdded && apiRef.current) {
+      const api: any = apiRef.current;
 
-        apiRef.current.setPage(newPage);
-        apiRef.current.setRowSelectionModel([uploadedRowId]);
-
-        setTimeout(() => {
-          if (apiRef.current) {
-            apiRef.current.scrollToIndexes({ rowIndex: sortedIndex, colIndex: 0 });
-          }
-        }, 500);
+      let sortedIds: any[] | null = null;
+      if (typeof api.getSortedRowIds === "function") {
+        sortedIds = api.getSortedRowIds();
       }
+
+      let targetIndex = -1;
+      let targetRowId: any = null;
+
+      if (sortedIds && sortedIds.length > 0) {
+        if (uploadedRowId !== null) {
+          const idx = sortedIds.findIndex((id: any) => String(id) === String(uploadedRowId));
+          targetIndex = idx >= 0 ? idx : sortedIds.length - 1;
+        } else {
+          targetIndex = sortedIds.length - 1;
+        }
+        targetRowId = sortedIds[targetIndex];
+      } else {
+        // Fallback using files array if sorted ids are unavailable
+        targetIndex = Math.max(0, files.length - 1);
+        targetRowId = (files[targetIndex] as any)?.id ?? null;
+      }
+
+      const pageSize = api.state.pagination.paginationModel.pageSize;
+      const newPage = Math.floor(targetIndex / pageSize);
+
+      api.setPage(newPage);
+
+      if (targetRowId !== null && targetRowId !== undefined) {
+        api.setRowSelectionModel([targetRowId]);
+      }
+
+      setTimeout(() => {
+        if (apiRef.current) {
+          apiRef.current.scrollToIndexes({ rowIndex: targetIndex, colIndex: 0 });
+        }
+      }, 300);
 
       setNewFileAdded(false);
       setUploadedRowId(null);
     }
-  }, [newFileAdded, uploadedRowId]);
+  }, [newFileAdded, uploadedRowId, files]);
 
   // Delete handler
   const handleDelete = useCallback(async (): Promise<void> => {
@@ -266,8 +289,9 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
     const uploadedFile = files.find((file) => file.fileName === fileName);
     if (uploadedFile) {
       setUploadedRowId(uploadedFile.id);
-      setNewFileAdded(true);
     }
+    // Always trigger navigation after refresh; fallback to last row if ID not found yet
+    setNewFileAdded(true);
   }, [files]);
 
   return {
