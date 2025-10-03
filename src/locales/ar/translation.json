@@ -20,18 +20,18 @@
     "value": "القيمة",
     "key": "المفتاح",
     "country": "الدولة",
-    "clear" : "حذف",
-    "reset":"اعادة تعيين",
-    "sortBy" : "ترتيب حسب",
-    "filter" : "تصفية ب",
-    "ascending" : "تصاعدي",
-    "descending" : "تنازلي",
-    "page" : "الصفحة",
-    "dataQuality" : "جودة البيانات",
-    "excellent" : "ممتاز",
-    "good" : "جيد",
-    "average" : "متوسط",
-    "poor" : "ضعيف"
+    "clear": "حذف",
+    "reset": "اعادة تعيين",
+    "sortBy": "ترتيب حسب",
+    "filter": "تصفية ب",
+    "ascending": "تصاعدي",
+    "descending": "تنازلي",
+    "page": "الصفحة",
+    "dataQuality": "جودة البيانات",
+    "excellent": "ممتاز",
+    "good": "جيد",
+    "average": "متوسط",
+    "poor": "ضعيف"
   },
   "menu": {
     "dashboard": "لوحة التحكم",
@@ -55,7 +55,7 @@
     "chat": "المحادثة",
     "chatInterface": "واجهة المحادثة",
     "employees": "الموظفين",
-    "districts" : "الاحياء",
+    "districts": "الاحياء",
     "chartExamples": "أمثلة الرسوم البيانية",
     "chartLibrary": "مكتبة الرسوم البيانية",
     "notificationTest": "اختبار الإشعارات",
@@ -80,8 +80,8 @@
     "companyDocuments": "مستندات الشركة",
     "documentTemplates": "القوالب",
     "documentArchives": "الأرشيف",
-    "extras" : "الاضافات",
-    "filemanager" : "مدير الملفات"
+    "extras": "الاضافات",
+    "filemanager": "مدير الملفات"
   },
   "actions": {
     "buttons": "العمليات",
@@ -310,7 +310,11 @@
       "nameLength": "توزيع طول الأسماء",
       "timeline": "أنواع العناوين المضافة عبر الوقت"
     },
-    "views": { "grid": "عرض الجدول", "chart": "الرسم البياني","card" : "عرض البطاقات" },
+    "views": {
+      "grid": "عرض الجدول",
+      "chart": "الرسم البياني",
+      "card": "عرض البطاقات"
+    },
     "title": "انواع العناوين",
     "subTitle": "قائمة انواع العناوين",
     "viewTitle": "إدارة انواع العناوين",
@@ -360,7 +364,7 @@
       "cards": "البطاقات",
       "map": "الخريطة",
       "chart": "الرسم البياني",
-      "report" : "التقارير"
+      "report": "التقارير"
     },
     "charts": {
       "byRegion": "الدول حسب المنطقة",
@@ -431,8 +435,8 @@
     "recent30Days": "احدث (30 يوما)",
     "hasPhone": "مع كود الهاتف",
     "hasCurrency": "مع كود العملة",
-    "arabicName" : "الإسم عربى",
-    "englishName" : "الإسم إنجليزى"
+    "arabicName": "الإسم عربى",
+    "englishName": "الإسم إنجليزى"
   },
   "states": {
     "dashboard": {
@@ -513,10 +517,10 @@
     "all": "كل المحافظات",
     "recent30Days": "احدث (30 يوما)",
     "recent60Days": "احدث (60 يوما)",
-    "recent90Days" : "احدث (90 يوما)",
-    "recent120Days" : "احدث (120 يوما)",
-    "total" : "المجموع",
-    "filtered" : "ناتج البحث"
+    "recent90Days": "احدث (90 يوما)",
+    "recent120Days": "احدث (120 يوما)",
+    "total": "المجموع",
+    "filtered": "ناتج البحث"
   },
   "districts": {
     "dashboard": {
@@ -700,7 +704,26 @@
       "noAvailableWithFilters": "لا توجد أحياء متاحة مع عوامل التصفية الحالية."
     }
   },
-  "reports" : {
-    "reportForms" : "اشكال التقارير"
+  "reports": {
+    "reportForms": "اشكال التقارير"
+  },
+  "files": {
+    "download": "تحميل",
+    "view": "عرض",
+    "delete": "حذف",
+    "fileName": "اسم الملف",
+    "extension": "الامتداد",
+    "contentType": "نوع المحتوى",
+    "status": "الحالة",
+    "uploadFiles": "رفع ملفات",
+    "upload": "رفع",
+    "pleaseSelectFiles": "يرجى اختيار ملفات للرفع",
+    "selectFiles": "اختر ملفات",
+    "dragAndDropFiles": "اسحب وافلت الملفات هنا او انقر للاختيار",
+    "orClick": "او انقر للاختيار",
+    "selectedFiles": "الملفات المختارة",
+    "removeFiles": "إزالة الملفات",
+    "Uploading" : "جارى الرفع ...",
+    "close" : "إغلاق"
   }
 }

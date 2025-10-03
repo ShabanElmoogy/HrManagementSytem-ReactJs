@@ -1,9 +1,25 @@
-/* eslint-disable react/prop-types */
-// components/FileUpload/FileUploadActions.jsx
 import { CardActions, Button } from "@mui/material";
 import { Save as SaveIcon, Close as CloseIcon } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
-const FileUploadActions = ({ files, isUploading, onUpload, onClose }) => {
+interface FileItem {
+  file: File;
+  status: string;
+  progress?: number;
+  error?: string;
+}
+
+interface FileUploadActionsProps {
+  files: FileItem[];
+  isUploading: boolean;
+  onUpload: () => void;
+  onClose: () => void;
+}
+
+const FileUploadActions = ({ files, isUploading, onUpload, onClose }: FileUploadActionsProps) => {
+
+  const { t } = useTranslation();
+
   return (
     <CardActions sx={{ justifyContent: "space-between", px: 2, pb: 2 }}>
       <Button
@@ -14,7 +30,7 @@ const FileUploadActions = ({ files, isUploading, onUpload, onClose }) => {
         fullWidth
         sx={{ mr: 1 }}
       >
-        {isUploading ? "Uploading..." : "Upload"}
+        {isUploading ? t("files.Uploading") : t("files.upload")}
       </Button>
       <Button
         variant="outlined"
@@ -23,7 +39,7 @@ const FileUploadActions = ({ files, isUploading, onUpload, onClose }) => {
         disabled={isUploading}
         fullWidth
       >
-        Close
+        {t("files.close")}
       </Button>
     </CardActions>
   );

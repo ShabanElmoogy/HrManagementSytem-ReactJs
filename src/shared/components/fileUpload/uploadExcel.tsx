@@ -20,7 +20,7 @@ const Input = styled("input")({
   display: "none",
 });
 
-const DropZone = styled(Box)(({ theme, isDragActive }) => ({
+const DropZone = styled(Box)<{ isDragActive: boolean }>(({ theme, isDragActive }) => ({
   border: `2px dashed ${
     isDragActive ? theme.palette.primary.main : theme.palette.divider
   }`,
@@ -40,6 +40,19 @@ const DropZone = styled(Box)(({ theme, isDragActive }) => ({
   },
 }));
 
+interface UploadExcelProps {
+  title?: string;
+  description?: string;
+  acceptedFileTypes?: string | string[];
+  onFileSelect?: (file: File) => void;
+  validateFile?: (file: File) => boolean;
+  selectedFile?: File | null;
+  isLoading?: boolean;
+  progress?: number;
+  getFileInfo?: () => string;
+  icon?: React.ReactElement;
+}
+
 const UploadExcel = ({
   title = "Drag and drop your file here or click to browse",
   description = "Supported formats: all files",
@@ -51,7 +64,7 @@ const UploadExcel = ({
   progress = 0,
   getFileInfo,
   icon = <CloudUploadIcon sx={{ fontSize: { xs: 32, sm: 40 }, mb: 1 }} />,
-}) => {
+}: UploadExcelProps) => {
   const [isDragActive, setIsDragActive] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -67,24 +80,24 @@ const UploadExcel = ({
     ? acceptedFileTypes.join(",")
     : acceptedFileTypes;
 
-  const handleDragEnter = (e) => {
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragActive(true);
   };
 
-  const handleDragLeave = (e) => {
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragActive(false);
   };
 
-  const handleDragOver = (e) => {
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragActive(false);
@@ -95,14 +108,14 @@ const UploadExcel = ({
     }
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file) {
       handleFile(file);
     }
   };
 
-  const handleFile = (file) => {
+  const handleFile = (file: File) => {
     // If a custom validation function is provided, use it
     if (validateFile && !validateFile(file)) {
       return;
@@ -138,7 +151,7 @@ const UploadExcel = ({
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
       >
-        {React.cloneElement(icon, {
+        {React.cloneElement(icon as React.ReactElement<any>, {
           color: isDragActive ? "primary" : "text.secondary",
         })}
 

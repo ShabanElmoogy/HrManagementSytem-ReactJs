@@ -1,20 +1,35 @@
-/* eslint-disable react/prop-types */
-// components/FileUpload/FileListItem.jsx
 import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  ListItemSecondaryAction,
   Box,
   Typography,
   LinearProgress,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import { Delete as DeleteIcon } from "@mui/icons-material";
-import FileStatusIcon from "./FileStatusIcon";
+import { useTranslation } from "react-i18next";
+import FileStatusIcon from "./fileStatusIcon";
 import { formatFileSize } from "@/shared/utils/formatFileSize";
 
-const FileListItem = ({ fileItem, index, isUploading, onRemove }) => {
+interface FileItem {
+  file: File;
+  status: string;
+  progress?: number;
+  error?: string;
+}
+
+interface FileListItemProps {
+  fileItem: FileItem;
+  index: number;
+  isUploading: boolean;
+  onRemove: (index: number) => void;
+}
+
+const FileListItem = ({ fileItem, index, isUploading, onRemove }: FileListItemProps) => {
+  const { t } = useTranslation();
+
   return (
     <ListItem
       sx={{
@@ -50,16 +65,16 @@ const FileListItem = ({ fileItem, index, isUploading, onRemove }) => {
           </Box>
         }
       />
-      <ListItemSecondaryAction>
-        <IconButton
-          edge="end"
-          aria-label="delete"
-          onClick={() => onRemove(index)}
-          disabled={isUploading && fileItem.status === "uploading"}
-        >
-          <DeleteIcon />
-        </IconButton>
-      </ListItemSecondaryAction>
+        <Tooltip title={t("files.removeFiles")}>
+          <IconButton
+            edge="end"
+            aria-label="delete"
+            onClick={() => onRemove(index)}
+            disabled={isUploading && fileItem.status === "uploading"}
+          >
+            <DeleteIcon sx={{ color: (theme) => theme.palette.error.main }} />
+          </IconButton>
+        </Tooltip>
     </ListItem>
   );
 };

@@ -7,7 +7,7 @@ import { useSnackbar } from "@/shared/hooks";
 import ContentsWrapper from "@/layouts/components/myContentsWrapper";
 import Header from "@/shared/components/common/header/myHeader";
 import FilesDataGrid from "./components/FilesDataGrid";
-import FileUpload from "./FileUpload";
+import FileUpload from "./components/FileUpload";
 import FileDeleteDialog from "./components/FileDeleteDialog";
 import useFileGridLogic from "./hooks/useFileGridLogic";
 import type { FileItem } from "./types/File";

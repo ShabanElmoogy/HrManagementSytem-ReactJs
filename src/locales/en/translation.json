@@ -60,7 +60,7 @@
     "chat": "Chat",
     "chatInterface": "Chat Interface",
     "employees": "Employees",
-    "districts" : "Districts",
+    "districts": "Districts",
     "chartExamples": "Chart Examples",
     "chartLibrary": "Chart Library",
     "notificationTest": "Notification Test",
@@ -85,8 +85,8 @@
     "companyDocuments": "Company Documents",
     "documentTemplates": "Templates",
     "documentArchives": "Archives",
-    "extras" : "Extras",
-    "filemanager" : "File Manager"
+    "extras": "Extras",
+    "filemanager": "File Manager"
   },
   "actions": {
     "buttons": "Actions",
@@ -320,7 +320,7 @@
       "nameLength": "Name Length Distribution",
       "timeline": "Address Types Added Over Time"
     },
-    "views": { "grid": "Grid", "chart": "Chart","card" : "Card" },
+    "views": { "grid": "Grid", "chart": "Chart", "card": "Card" },
     "title": "Address Types",
     "subTitle": "List of address types",
     "viewTitle": "Address Types Management",
@@ -370,7 +370,7 @@
       "cards": "Cards",
       "map": "Map",
       "chart": "Chart",
-      "report" : "Reports"
+      "report": "Reports"
     },
     "charts": {
       "byRegion": "Countries by Region",
@@ -442,8 +442,8 @@
     "recent30Days": "Recent (30 days)",
     "hasPhone": "Has Phone Code",
     "hasCurrency": "Has Currency",
-    "arabicName" : "Arabic Name",
-    "englishName" : "English Name"
+    "arabicName": "Arabic Name",
+    "englishName": "English Name"
   },
   "states": {
     "dashboard": {
@@ -747,7 +747,26 @@
       "noAvailableWithFilters": "No districts available with the current filters."
     }
   },
-    "reports" : {
-    "reportForms" : "Report Forms"
+  "reports": {
+    "reportForms": "Report Forms"
+  },
+  "files": {
+    "download": "Download",
+    "view": "View",
+    "delete": "Delete",
+    "fileName": "File Name",
+    "extension": "Extension",
+    "contentType": "Content Type",
+    "status": "Status",
+    "uploadFiles": "Upload Files",
+    "upload": "Upload",
+    "pleaseSelectFiles": "Please select files to upload",
+    "selectFiles": "Select Files",
+    "dragAndDropFiles": "Drag and drop files here",
+    "orClick": "or click to select",
+    "selectedFiles": "Selected Files",
+    "removeFiles" : "Remove Files",
+    "Uploading" : "Uploading...",
+    "close" : "Close"
   }
 }

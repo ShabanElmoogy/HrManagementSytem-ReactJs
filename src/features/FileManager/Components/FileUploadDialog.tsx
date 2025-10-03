@@ -1,7 +1,5 @@
-/* eslint-disable react/prop-types */
-// components/FileUploadDialog.tsx
 import { Dialog } from "@mui/material";
-import FileUpload from "../FileUpload";
+import FileUpload from "./FileUpload";
 
 interface FileUploadDialogProps {
   open: boolean;
@@ -11,14 +9,12 @@ interface FileUploadDialogProps {
   loading?: boolean;
 }
 
-const FileUploadDialog = ({ open, onClose, onSuccess, onError, loading }: FileUploadDialogProps) => {
+const FileUploadDialog = ({ open, onClose, onSuccess}: FileUploadDialogProps) => {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <FileUpload
         onSuccess={onSuccess}
-        onError={onError}
         onClose={onClose}
-        loading={loading}
       />
     </Dialog>
   );

@@ -5,7 +5,7 @@ class FileService {
   constructor() {
     // Create a separate axios instance without auth interceptors
     this.client = axios.create({
-      baseURL: "https://localhost:7037", // Or get from config
+      baseURL: this.getBaseURL(), // Or get from config
     });
   }
 
@@ -26,6 +26,18 @@ class FileService {
       errors: data?.errors ? Object.values(data.errors).flat() : null,
       message: data?.title || `Request failed with status ${status}`,
     };
+  }
+
+    getBaseURL() {
+    // Development URL
+    if (import.meta.env.MODE === "development") {
+      return "https://localhost:7037";
+    }
+
+    // Production URL
+    return (
+      localStorage.getItem("baseApiUrl") || "https://myarchieve-last.runasp.net"
+    ); // Replace with your actual production URL
   }
 
   // async uploadFile(formData, uploadUrl, onProgress) {

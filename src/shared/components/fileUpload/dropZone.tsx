@@ -1,9 +1,21 @@
-/* eslint-disable react/prop-types */
-// components/FileUpload/DropZone.jsx
 import { useRef } from "react";
 import { Button, Typography } from "@mui/material";
 import { CloudUpload as CloudUploadIcon } from "@mui/icons-material";
 import { VisuallyHiddenInput, StyledDropZone } from "./styledComponents";
+import { useTranslation } from "react-i18next";
+
+interface DropZoneProps {
+  dragActive: boolean;
+  isUploading: boolean;
+  multiple: boolean;
+  accept: string;
+  onDragEnter: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDragLeave: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDragOver: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDrop: (e: React.DragEvent<HTMLDivElement>) => void;
+  onFileInput?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClick?: () => void;
+}
 
 const DropZone = ({
   dragActive,
@@ -16,10 +28,10 @@ const DropZone = ({
   onDrop,
   onFileInput,
   onClick,
-}) => {
+}: DropZoneProps) => {
   const inputRef = useRef(null);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onFileInput?.(e);
     // Allow selecting the same file again by resetting the input value
     if (inputRef.current) inputRef.current.value = "";
@@ -30,6 +42,9 @@ const DropZone = ({
     if (inputRef.current) inputRef.current.value = "";
     inputRef.current?.click();
   };
+
+  const { t } = useTranslation();
+
   return (
     <StyledDropZone
       className={dragActive ? "dragover" : ""}
@@ -41,18 +56,19 @@ const DropZone = ({
     >
       <CloudUploadIcon sx={{ fontSize: 48, color: "text.secondary", mb: 2 }} />
       <Typography variant="h6" color="text.secondary" gutterBottom>
-        Drag and Drop Files
+        {t("files.dragAndDropFiles")}
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        or click to select
+        {t("files.orClick")}
       </Typography>
+
       <Button
         variant="contained"
         startIcon={<CloudUploadIcon />}
         disabled={isUploading}
         onClick={(e) => { e.stopPropagation(); handleClick(); }}
       >
-        Select Files
+        {t("files.selectFiles")}
         <VisuallyHiddenInput
           ref={inputRef}
           type="file"

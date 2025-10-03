@@ -2,15 +2,30 @@
 // components/FileUpload/FileList.jsx
 import { Box, Typography, List, Fade } from "@mui/material";
 import FileListItem from "./fileListItem";
+import { useTranslation } from "react-i18next";
 
-const FileList = ({ files, isUploading, onRemoveFile }) => {
+interface FileItem {
+  file: File;
+  status: string;
+  progress?: number;
+  error?: string;
+}
+
+interface FileListProps {
+  files: FileItem[];
+  isUploading: boolean;
+  onRemoveFile: (index: number) => void;
+}
+
+const FileList = ({ files, isUploading, onRemoveFile }: FileListProps) => {
   if (files.length === 0) return null;
+  const { t } = useTranslation();
 
   return (
     <Fade in={true}>
       <Box sx={{ mt: 3 }}>
         <Typography variant="subtitle1" gutterBottom>
-          Selected Files ({files.length})
+          {t("files.selectedFiles")} ({files.length})
         </Typography>
         <List>
           {files.map((fileItem, index) => (

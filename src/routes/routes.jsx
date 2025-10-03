@@ -49,7 +49,7 @@ import {
 
 // File Manager
 import FilesGrid from "@/features/FileManager/FilesGrid";
-import MediaViewer from "@/features/FileManager/MediaViewer";
+import MediaViewer from "@/features/FileManager/components/MediaViewer";
 
 // Communication imports
 import {

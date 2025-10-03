@@ -6,7 +6,11 @@ import {
   InsertDriveFile as FileIcon,
 } from "@mui/icons-material";
 
-const FileStatusIcon = ({ status }) => {
+interface FileStatusIconProps {
+  status: string;
+}
+
+const FileStatusIcon = ({ status }: FileStatusIconProps) => {
   switch (status) {
     case "success":
       return <CheckCircleIcon color="success" />;

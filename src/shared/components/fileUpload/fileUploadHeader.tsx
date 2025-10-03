@@ -1,9 +1,13 @@
-/* eslint-disable react/prop-types */
-// components/FileUpload/FileUploadHeader.jsx
 import { Typography, Alert } from "@mui/material";
 import { CloudUpload as CloudUploadIcon } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
-const FileUploadHeader = ({ globalError }) => {
+interface FileUploadHeaderProps {
+  globalError: string | null;
+}
+
+const FileUploadHeader = ({ globalError }: FileUploadHeaderProps) => {
+  const { t } = useTranslation();
   return (
     <>
       <Typography
@@ -12,7 +16,7 @@ const FileUploadHeader = ({ globalError }) => {
         sx={{ display: "flex", alignItems: "center", gap: 1 }}
       >
         <CloudUploadIcon color="primary" />
-        Upload Files
+        {t("files.uploadFiles")}
       </Typography>
 
       {globalError && (

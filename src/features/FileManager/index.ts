@@ -7,8 +7,8 @@
 
 // Main Components
 export { default as FilesGrid } from "./FilesGrid";
-export { default as FileUpload } from "./FileUpload";
-export { default as MediaViewer } from "./MediaViewer";
+export { default as FileUpload } from "./components/FileUpload";
+export { default as MediaViewer } from "./components/MediaViewer";
 
 // Sub-components
 export { default as FilesDataGrid } from "./components/FilesDataGrid";
@@ -36,4 +36,4 @@ export {
   DIALOG_TYPES,
   GRID_ACTION_TYPES,
   QUERY_CONFIG,
-} from "./constants";
+} from "./utils/constants";

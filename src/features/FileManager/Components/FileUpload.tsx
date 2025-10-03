@@ -250,7 +250,9 @@ const FileUpload = ({ onSuccess, onClose, multiple = true }: FileUploadProps) =>
 
   return (
     <StyledCard>
+      
       <CardContent>
+
         <FileUploadHeader globalError={globalError} />
 
         <DropZone
@@ -262,14 +264,15 @@ const FileUpload = ({ onSuccess, onClose, multiple = true }: FileUploadProps) =>
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
-          onFileInput={handleFileInput}
-        />
+          onFileInput={handleFileInput} 
+          onClick={undefined}        />
 
         <FileList
           files={files}
           isUploading={isUploading}
           onRemoveFile={removeFile}
         />
+
       </CardContent>
 
       <FileUploadActions
