@@ -111,13 +111,6 @@ const FilesDataGrid = ({
   const columns = useMemo<GridColDef[]>(
     () => [
       {
-        field: "id",
-        headerName: t("general.id"),
-        flex: 0.5,
-        align: "center",
-        headerAlign: "center",
-      },
-      {
         field: "fileName",
         headerName: t("files.fileName"),
         flex: 2,
@@ -174,7 +167,6 @@ const FilesDataGrid = ({
       loading={loading}
       apiRef={apiRef}
       filterMode="client"
-      sortModel={[{ field: "createdOn", sort: "desc" }]}
       addNewRow={onAdd}
       pagination
       pageSizeOptions={[5, 10, 25, 50]}

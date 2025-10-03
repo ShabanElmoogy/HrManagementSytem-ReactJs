@@ -50,11 +50,27 @@ const FileListItem = ({ fileItem, index, isUploading, onRemove }: FileListItemPr
             <Typography variant="caption" display="block">
               {formatFileSize(fileItem.file.size)}
             </Typography>
-            {fileItem.status === "uploading" && (
+            {(fileItem.status === "uploading" || fileItem.status === "success") && (
               <LinearProgress
-                variant="determinate"
-                value={fileItem.progress}
-                sx={{ mt: 1 }}
+                variant={fileItem.status === "uploading" ? "determinate" : "determinate"}
+                value={
+                  fileItem.status === "success"
+                    ? 100
+                    : fileItem.progress || 0
+                }
+                sx={{ 
+                  mt: 1,
+                  height: 6,
+                  borderRadius: 1,
+                  backgroundColor: (theme) => theme.palette.grey[200],
+                  '& .MuiLinearProgress-bar': {
+                    transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                    backgroundColor: fileItem.status === "success" 
+                      ? (theme) => theme.palette.success.main
+                      : (theme) => theme.palette.primary.main,
+                    borderRadius: 1,
+                  },
+                }}
               />
             )}
             {fileItem.error && (
