@@ -1,16 +1,14 @@
-// FilesGrid.tsx - Modern implementation with TypeScript
-import { useEffect, useMemo, useCallback } from "react";
-import { useGridApiRef } from "@mui/x-data-grid";
+import { useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Dialog } from "@mui/material";
 import { useSnackbar } from "@/shared/hooks";
 import ContentsWrapper from "@/layouts/components/myContentsWrapper";
 import Header from "@/shared/components/common/header/myHeader";
 import FilesDataGrid from "./components/gridView/FilesDataGrid";
-import FileUpload from "./components/FileUpload";
+import FileUpload from "./components/fileUpload/FileUpload";
 import FileDeleteDialog from "./components/FileDeleteDialog";
 import useFileGridLogic from "./hooks/useFileGridLogic";
-import type { FileItem } from "./types/File";
+
 
 /**
  * FilesGrid Component

@@ -725,5 +725,25 @@
     "removeFiles": "إزالة الملفات",
     "Uploading" : "جارى الرفع ...",
     "close" : "إغلاق"
+  },
+  "media" : {
+    "unsupportedFormat" : "صيغة غير مدعومة",
+    "unsupportedExtension" : "امتداد غير مدعوم",
+    "documentViewer" : "معاينة المستند",
+    "failedToLoadDocument" : "فشل تحميل المستند",
+    "image" : "صورة",
+    "failedToLoadImage" : "فشل تحميل الصورة",
+    "failedToLoadVideo" : "فشل تحميل الفيديو",
+    "failedToLoadAudio" : "فشل تحميل الصوت",
+    "videoNotSupported" : "الفيديو غير مدعوم",
+    "audioNotSupported" : "الصوت غير مدعوم",
+    "audioPlayer" : "مشغل الصوت",
+    "backToFiles" : "العودة للملفات",
+    "download" : "تحميل",
+    "exitFullscreen" : "خروج من الشاشة الكاملة",
+    "fullscreen" : "شاشة كاملة",
+    "next" : "التالى",
+    "previous" : "السابق",
+    "close" : "اغلاق"
   }
 }

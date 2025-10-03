@@ -79,14 +79,12 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
         t("files.deleted") || "File deleted successfully!"
       );
 
-      console.log("🔴 File deleted");
       setRowDeleted(true);
       setDialogType(null);
       setSelectedFile(null);
 
       // Clear the highlight after 4 seconds
       setTimeout(() => {
-        console.log("🔄 Clearing lastDeletedIndex");
         setLastDeletedSortedIndex(null);
       }, 4000);
     },

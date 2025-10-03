@@ -7,8 +7,8 @@
 
 // Main Components
 export { default as FilesGrid } from "./FilesGrid";
-export { default as FileUpload } from "./components/FileUpload";
-export { default as MediaViewer } from "./components/MediaViewer";
+export { default as FileUpload } from "./components/fileUpload/FileUpload";
+export { default as MediaViewer } from "./mediaViewer/MediaViewer";
 
 // Sub-components
 export { default as FilesDataGrid } from "./components/gridView/FilesDataGrid";

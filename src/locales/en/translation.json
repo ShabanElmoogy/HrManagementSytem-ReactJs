@@ -765,8 +765,28 @@
     "dragAndDropFiles": "Drag and drop files here",
     "orClick": "or click to select",
     "selectedFiles": "Selected Files",
-    "removeFiles" : "Remove Files",
-    "Uploading" : "Uploading...",
-    "close" : "Close"
+    "removeFiles": "Remove Files",
+    "Uploading": "Uploading...",
+    "close": "Close"
+  },
+  "media": {
+    "unsupportedFormat": "Unsupported file format",
+    "unsupportedExtension": "Unsupported file extension",
+    "documentViewer": "Document Viewer",
+    "failedToLoadDocument": "Failed to load document",
+    "image": "Image",
+    "failedToLoadImage": "Failed to load image",
+    "failedToLoadVideo": "Failed to load video",
+    "failedToLoadAudio": "Failed to load audio",
+    "videoNotSupported": "Video not supported",
+    "audioNotSupported": "Audio not supported",
+    "audioPlayer": "Audio Player",
+    "backToFiles": "Back to Files",
+    "download": "Download",
+    "exitFullscreen": "Exit Fullscreen",
+    "fullscreen": "Fullscreen",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close"
   }
 }
