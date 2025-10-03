@@ -28,7 +28,6 @@ const FilesGrid = () => {
   // Hooks
   const { showSnackbar, SnackbarComponent } = useSnackbar();
   const { t } = useTranslation();
-  const apiRef = useGridApiRef();
 
   // Custom logic hook
   const {
@@ -36,93 +35,28 @@ const FilesGrid = () => {
     selectedFile,
     loading,
     files,
-    gridActionRef,
-    handleApiCall,
-    getAllFiles,
+    apiRef,
     openDialog,
     closeDialog,
-    refreshFiles,
-    deleteFile,
+    handleDelete,
+    handleRefresh,
+    onDelete,
+    onUpload,
     handleDownload,
     handleView,
-  } = useFileGridLogic(t, showSnackbar);
+  } = useFileGridLogic();
 
   // Memoized values
   const stableFiles = useMemo(() => files, [files]);
 
-  // Form submission handler
+  // Form submission handler for upload success
   const handleFormSubmit = useCallback(
     async (fileName: string) => {
-      let gridAction = null;
-      if (dialogType === "upload") {
-        const response = await handleApiCall(
-          () => refreshFiles(),
-          t("fileUploaded")
-        );
-        gridAction = { type: "add", id: response?.id };
-      }
-      closeDialog();
-      if (gridAction) {
-        gridActionRef.current = gridAction;
-        handleGridNavigation();
-      }
+      // Refetch files after upload
+      handleRefresh();
     },
-    [dialogType, refreshFiles, handleApiCall, t, closeDialog, gridActionRef]
+    [handleRefresh]
   );
-
-  // Delete handler
-  const handleDelete = useCallback(async () => {
-    if (!selectedFile?.storedFileName) return;
-
-    const deletedId = selectedFile.id;
-    await handleApiCall(
-      () => deleteFile(selectedFile.storedFileName),
-      t("fileDeleted")
-    );
-    closeDialog();
-
-    gridActionRef.current = { type: "delete", id: deletedId };
-    handleGridNavigation();
-  }, [selectedFile, deleteFile, handleApiCall, t, closeDialog, gridActionRef]);
-
-  // Grid navigation
-  const handleGridNavigation = useCallback(() => {
-    const gridAction = gridActionRef.current;
-    if (!gridAction || !apiRef.current || !stableFiles.length) {
-      gridActionRef.current = null;
-      return;
-    }
-
-    const { type, id } = gridAction;
-    const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
-    let targetIndex: number = -1;
-
-    if (type === "add") {
-      targetIndex = stableFiles.length - 1;
-    } else if (type === "edit") {
-      targetIndex = stableFiles.findIndex((row: FileItem) => row.id === id);
-    } else if (type === "delete") {
-      const deletedIndex = stableFiles.findIndex((row: FileItem) => row.id === id);
-      targetIndex = Math.max(0, deletedIndex - 1);
-    }
-
-    if (targetIndex >= 0 && targetIndex < stableFiles.length) {
-      const newPage = Math.floor(targetIndex / pageSize);
-      apiRef.current.setPage(newPage);
-      apiRef.current.scrollToIndexes({ rowIndex: targetIndex, colIndex: 0 });
-      const selectId = type === "delete" ? stableFiles[targetIndex]?.id : id;
-      if (selectId) {
-        apiRef.current.setRowSelectionModel([selectId]);
-      }
-    }
-
-    gridActionRef.current = null;
-  }, [stableFiles, gridActionRef, apiRef]);
-
-  // Initial fetch
-  useEffect(() => {
-    getAllFiles();
-  }, [getAllFiles]);
 
   return (
     <>
@@ -135,8 +69,8 @@ const FilesGrid = () => {
           apiRef={apiRef}
           onDownload={handleDownload}
           onView={handleView}
-          onDelete={(file: FileItem) => openDialog("delete", file)}
-          onAdd={() => openDialog("upload")}
+          onDelete={onDelete}
+          onAdd={onUpload}
           t={t}
         />
 

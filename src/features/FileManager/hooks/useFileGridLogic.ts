@@ -1,126 +1,222 @@
-// Hooks/useFileGridLogic.ts - TypeScript implementation with improved error handling
-import { useState, useCallback, useRef } from "react";
+// hooks/useFileGridLogic.ts - TanStack Query Implementation
+import { showToast } from "@/shared/components";
+import { extractErrorMessage } from "@/shared/utils";
+import { useGridApiRef, GridApiCommon } from "@mui/x-data-grid";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import HandleApiError from "@/shared/services/apiError";
-import { useFiles, useDeleteFile, useInvalidateFiles } from "./useFileQueries";
-import type { FileItem } from "../types/File";
-import type { TFunction } from "i18next";
+import { FileItem } from "../types/File";
+import {
+  useFiles,
+  useDeleteFile,
+  useUploadFiles,
+} from "./useFileQueries";
 
 type DialogType = "upload" | "delete" | null;
 
-interface GridAction {
-  type: "add" | "edit" | "delete";
-  id: number;
-}
-
-export interface UseFileGridLogicReturn {
+interface UseFileGridLogicReturn {
+  // State
   dialogType: DialogType;
   selectedFile: FileItem | null;
   loading: boolean;
   files: FileItem[];
-  gridActionRef: React.MutableRefObject<GridAction | null>;
-  handleApiCall: <T>(apiCall: () => Promise<T>, successMessage: string) => Promise<T | null>;
-  getAllFiles: () => Promise<void>;
+  apiRef: React.MutableRefObject<GridApiCommon>;
+  error: any;
+  isFetching: boolean;
+
+  // Dialog methods
   openDialog: (type: DialogType, file?: FileItem | null) => void;
   closeDialog: () => void;
-  refreshFiles: () => Promise<void>;
-  deleteFile: (storedFileName: string) => Promise<void>;
+
+  // Form and action handlers
+  handleDelete: () => Promise<void>;
+  handleRefresh: () => void;
+
+  // Action methods
+  onDelete: (file: FileItem) => void;
+  onUpload: () => void;
   handleDownload: (file: FileItem) => Promise<void>;
   handleView: (file: FileItem) => void;
+
+  // Mutation states for advanced UI feedback
+  isUploading: boolean;
+  isDeleting: boolean;
+
+  // Highlighting/Navigation state for card view
+  lastDeletedIndex: number | null;
 }
 
-/**
- * Custom hook for file grid logic
- * Handles all file operations and state management
- */
-const useFileGridLogic = (
-  t: TFunction,
-  showSnackbar: (type: string, messages: string[], title: string) => void
-): UseFileGridLogicReturn => {
+const useFileGridLogic = (): UseFileGridLogicReturn => {
+  // Hooks
+  const { t } = useTranslation();
   const navigate = useNavigate();
+
+  // TanStack Query hooks
+  const {
+    data: files = [],
+    isLoading: loading,
+    error,
+    refetch,
+    isFetching,
+  } = useFiles();
+
+  // Handle query error separately using useEffect
+  useEffect(() => {
+    if (error) {
+      const errorMessage = extractErrorMessage(error);
+      showToast.error(
+        errorMessage || t("files.fetchError") || "Failed to fetch files"
+      );
+    }
+  }, [error, t]);
+
+  const deleteFileMutation = useDeleteFile({
+    onSuccess: () => {
+      showToast.success(
+        t("files.deleted") || "File deleted successfully!"
+      );
+
+      console.log("🔴 File deleted");
+      setRowDeleted(true);
+      setDialogType(null);
+      setSelectedFile(null);
+
+      // Clear the highlight after 4 seconds
+      setTimeout(() => {
+        console.log("🔄 Clearing lastDeletedIndex");
+        setLastDeletedRowIndex(null);
+      }, 4000);
+    },
+    onError: (error: any) => {
+      const errorMessage = extractErrorMessage(error);
+      showToast.error(
+        t("files.deleteError") || errorMessage || "Failed to delete file"
+      );
+    },
+  });
+
+  const uploadFilesMutation = useUploadFiles({
+    onSuccess: (result) => {
+      if (result.success) {
+        showToast.success(
+          t("files.uploaded") || "Files uploaded successfully!"
+        );
+        setDialogType(null);
+      } else {
+        showToast.error(result.message || "Upload failed");
+      }
+    },
+    onError: (error: any) => {
+      const errorMessage = extractErrorMessage(error);
+      showToast.error(
+        t("files.uploadError") || errorMessage || "Failed to upload files"
+      );
+    },
+  });
 
   // State management
   const [dialogType, setDialogType] = useState<DialogType>(null);
   const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [fetchTriggered, setFetchTriggered] = useState(false);
 
-  // React Query hooks (inside the hook function per Rules of Hooks)
-  const { data: files = [], refetch: refetchFiles } = useFiles();
-  const deleteFileMutation = useDeleteFile();
-  const invalidateFiles = useInvalidateFiles();
+  // Navigation state variables
+  const [rowDeleted, setRowDeleted] = useState<boolean>(false);
+  const [lastDeletedRowIndex, setLastDeletedRowIndex] = useState<number | null>(null);
 
-  // Refs for grid navigation
-  const gridActionRef = useRef<GridAction | null>(null);
+  const apiRef = useGridApiRef<GridApiCommon>();
 
-  /**
-   * Generic API call handler with error handling
-   */
-  const handleApiCall = useCallback(
-    async <T,>(apiCall: () => Promise<T>, successMessage: string): Promise<T | null> => {
-      if (loading) return null;
+  // Memoized files
+  const stableFiles = useMemo((): FileItem[] => files, [files]);
 
-      setLoading(true);
-      try {
-        const result = await apiCall();
-        showSnackbar("success", [successMessage], t("success"));
-        return result;
-      } catch (error: any) {
-        HandleApiError(error, (updatedState: any) => {
-          showSnackbar("error", updatedState.messages, error?.title || t("error"));
-        });
-        throw error;
-      } finally {
-        setLoading(false);
-      }
-    },
-    [loading, showSnackbar, t]
-  );
+  // Check for any loading state from mutations
+  const isAnyLoading: boolean =
+    loading ||
+    uploadFilesMutation.isPending ||
+    deleteFileMutation.isPending;
 
-  /**
-   * Fetch all files and filter deleted ones
-   */
-  const getAllFiles = useCallback(async () => {
-    if (loading || fetchTriggered) return;
-
-    setFetchTriggered(true);
-    await handleApiCall(async () => {
-      await refetchFiles();
-      await invalidateFiles();
-      return files.filter((f: FileItem) => !f.isDeleted);
-    }, t("filesFetched"));
-  }, [handleApiCall, loading, fetchTriggered, t, refetchFiles, invalidateFiles, files]);
-
-  /**
-   * Open dialog with optional file selection
-   */
+  // Dialog management
   const openDialog = useCallback((type: DialogType, file: FileItem | null = null) => {
     setDialogType(type);
     setSelectedFile(file);
   }, []);
 
-  /**
-   * Close dialog and reset selection
-   */
   const closeDialog = useCallback(() => {
     setDialogType(null);
     setSelectedFile(null);
   }, []);
 
-  /**
-   * Download file handler
-   */
+  // Scroll to the previous row after deletion
+  useEffect(() => {
+    if (rowDeleted && files.length > 0 && apiRef.current) {
+      let prevRowIndex = lastDeletedRowIndex - 1;
+      if (prevRowIndex < 0) {
+        prevRowIndex = 0;
+      }
+
+      if (prevRowIndex >= 0 && prevRowIndex < files.length) {
+        const prevRowId = files[prevRowIndex].id;
+        const pageSize =
+          apiRef.current.state.pagination.paginationModel.pageSize;
+        const newPage = Math.floor(prevRowIndex / pageSize);
+
+        apiRef.current.setPage(newPage);
+        apiRef.current.scrollToIndexes({ rowIndex: prevRowIndex, colIndex: 0 });
+        apiRef.current.setRowSelectionModel([prevRowId]);
+      }
+      setRowDeleted(false);
+    }
+  }, [rowDeleted, files.length, lastDeletedRowIndex]);
+
+  // Delete handler
+  const handleDelete = useCallback(async (): Promise<void> => {
+    if (!selectedFile?.storedFileName) return;
+
+    try {
+      const currentIndex: number = files.findIndex(
+        (file) => file.id === selectedFile.id
+      );
+
+      await deleteFileMutation.mutateAsync(selectedFile.storedFileName);
+
+      // Update selected file for navigation
+      let newSelectedFile: FileItem | null = null;
+      if (files.length > 1) {
+        // Will be length - 1 after deletion
+        newSelectedFile =
+          currentIndex > 0
+            ? files[Math.min(currentIndex - 1, files.length - 2)]
+            : files[1]; // Take the second item since first will be deleted
+      }
+
+      setSelectedFile(newSelectedFile);
+      setLastDeletedRowIndex(currentIndex);
+    } catch (error) {
+      console.error("Delete error:", error);
+      // Error handling is done in the mutation's onError callback
+    }
+  }, [selectedFile, files, deleteFileMutation]);
+
+  // Action handlers
+  const handleDeleteDialog = useCallback(
+    (file: FileItem) => {
+      openDialog("delete", file);
+    },
+    [openDialog]
+  );
+
+  const handleUpload = useCallback(() => {
+    openDialog("upload");
+  }, [openDialog]);
+
+  // Download file handler
   const handleDownload = useCallback(
     async (file: FileItem) => {
       // Download logic not implemented in FileService. Implement as needed.
-      showSnackbar("info", [t("downloadNotImplemented")], t("info"));
+      showToast.info(t("files.downloadNotImplemented") || "Download not implemented");
     },
-    [t, showSnackbar]
+    [t]
   );
 
-  /**
-   * View file handler - navigates to media viewer
-   */
+  // View file handler - navigates to media viewer
   const handleView = useCallback(
     (file: FileItem) => {
       try {
@@ -128,35 +224,47 @@ const useFileGridLogic = (
         navigate(url);
       } catch (error) {
         console.error("Failed to open viewer:", error);
-        showSnackbar("error", [t("failedToOpenViewer")], t("error"));
+        showToast.error(t("files.failedToOpenViewer") || "Failed to open viewer");
       }
     },
-    [navigate, showSnackbar, t]
+    [navigate, t]
   );
+
+  // Refresh handler
+  const handleRefresh = useCallback(() => {
+    refetch();
+  }, [refetch]);
 
   return {
     // State
     dialogType,
     selectedFile,
-    loading,
-    files,
-    gridActionRef,
+    loading: isAnyLoading,
+    files: stableFiles,
+    apiRef,
+    error,
+    isFetching,
 
-    // Methods
-    handleApiCall,
-    getAllFiles,
+    // Dialog methods
     openDialog,
     closeDialog,
-    refreshFiles: async () => {
-      await refetchFiles();
-      await invalidateFiles();
-    },
-    deleteFile: async (storedFileName: string) => {
-      await deleteFileMutation.mutateAsync(storedFileName);
-      await invalidateFiles();
-    },
+
+    // Form and action handlers
+    handleDelete,
+    handleRefresh,
+
+    // Action methods
+    onDelete: handleDeleteDialog,
+    onUpload: handleUpload,
     handleDownload,
     handleView,
+
+    // Mutation states for advanced UI feedback
+    isUploading: uploadFilesMutation.isPending,
+    isDeleting: deleteFileMutation.isPending,
+
+    // Highlighting/Navigation state for card view
+    lastDeletedIndex: lastDeletedRowIndex,
   };
 };
 

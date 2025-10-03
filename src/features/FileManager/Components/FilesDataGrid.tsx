@@ -167,6 +167,7 @@ const FilesDataGrid = ({
       loading={loading}
       apiRef={apiRef}
       filterMode="client"
+      sortModel={[{ field: "createdOn", sort: "asc" }]}
       addNewRow={onAdd}
       pagination
       pageSizeOptions={[5, 10, 25, 50]}
