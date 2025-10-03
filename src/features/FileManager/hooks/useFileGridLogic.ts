@@ -5,7 +5,7 @@ import { useGridApiRef, GridApiCommon } from "@mui/x-data-grid";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { FileItem } from "../types/File";
+import { FileItem, UseFileGridLogicReturn } from "../types/File";
 import {
   useFiles,
   useDeleteFile,
@@ -13,41 +13,6 @@ import {
 } from "./useFileQueries";
 
 type DialogType = "upload" | "delete" | null;
-
-interface UseFileGridLogicReturn {
-  // State
-  dialogType: DialogType;
-  selectedFile: FileItem | null;
-  loading: boolean;
-  files: FileItem[];
-  apiRef: React.MutableRefObject<GridApiCommon>;
-  error: any;
-  isFetching: boolean;
-
-  // Dialog methods
-  openDialog: (type: DialogType, file?: FileItem | null) => void;
-  closeDialog: () => void;
-
-  // Form and action handlers
-  handleDelete: () => Promise<void>;
-  handleRefresh: () => void;
-
-  // Action methods
-  onDelete: (file: FileItem) => void;
-  onUpload: () => void;
-  handleDownload: (file: FileItem) => Promise<void>;
-  handleView: (file: FileItem) => void;
-
-  // Mutation states for advanced UI feedback
-  isUploading: boolean;
-  isDeleting: boolean;
-
-  // Highlighting/Navigation state for card view
-  lastDeletedIndex: number | null;
-
-  // Upload success handler
-  handleUploadSuccess: (fileName: string) => void;
-}
 
 const useFileGridLogic = (): UseFileGridLogicReturn => {
   // Hooks

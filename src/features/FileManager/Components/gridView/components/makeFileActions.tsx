@@ -1,19 +1,9 @@
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import { Delete, Download, Visibility } from "@mui/icons-material";
 import type { TFunction } from "i18next";
-import type { FileItem } from "../../types/File";
+import type { FileItem } from "../../../types/File";
+import { VIEWABLE_EXTENSIONS } from "../constants/constants";
 
-export const VIEWABLE_EXTENSIONS = [
-  "mp4",
-  "webm",
-  "pdf",
-  "mp3",
-  "png",
-  "jpg",
-  "jpeg",
-  "gif",
-  "bmp",
-] as const;
 
 export const canViewFile = (file: FileItem): boolean => {
   const extension = file.fileExtension;

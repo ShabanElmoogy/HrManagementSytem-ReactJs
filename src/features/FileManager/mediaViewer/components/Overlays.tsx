@@ -1,6 +1,5 @@
 import React from "react";
-import { Box, Tooltip, IconButton, CircularProgress } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import {Tooltip, IconButton, CircularProgress } from "@mui/material";
 import {
   FullscreenExit as FullscreenExitIcon,
   Fullscreen as FullscreenIcon,
@@ -10,43 +9,8 @@ import {
 } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@mui/material/styles";
+import { BackButtonOverlay } from "../constants/styles";
 
-export const ControlsOverlay = styled(Box)(({ theme }) => ({
-  position: "absolute",
-  top: theme.spacing(2),
-  right: theme.spacing(2),
-  display: "flex",
-  gap: theme.spacing(1),
-  zIndex: 10,
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: theme.shape.borderRadius,
-  padding: theme.spacing(0.5),
-  boxShadow: theme.shadows[2],
-}));
-
-export const BackButtonOverlay = styled(Box)(({ theme }) => ({
-  position: "absolute",
-  top: theme.spacing(2),
-  left: theme.spacing(2),
-  zIndex: 10,
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: theme.shape.borderRadius,
-  padding: theme.spacing(0.5),
-  boxShadow: theme.shadows[2],
-}));
-
-export const LoadingOverlay = styled(Box)({
-  position: "absolute",
-  top: 0,
-  left: 0,
-  zIndex: 20,
-  width: "100%",
-  height: "100%",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: "rgba(0, 0, 0, 0.5)",
-});
 
 export const BackOverlayButton: React.FC<{ onBack: () => void }> = ({
   onBack,
@@ -65,6 +29,7 @@ export const BackOverlayButton: React.FC<{ onBack: () => void }> = ({
     </BackButtonOverlay>
   );
 };
+
 
 export const ViewerControls: React.FC<{
   onDownload: () => void;

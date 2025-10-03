@@ -1,6 +1,6 @@
 import { GridColDef, GridActionsColDef } from "@mui/x-data-grid";
 import type { TFunction } from "i18next";
-import type { FileItem } from "../../types/File";
+import type { FileItem } from "../../../types/File";
 import FileTypeIcon from "./FileTypeIcon";
 import { renderDate } from "@/shared/components";
 

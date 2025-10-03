@@ -1,21 +1,8 @@
 import { useMemo, useCallback } from "react";
 import MyDataGrid from "@/shared/components/common/datagrid/myDataGrid";
-import type { FileItem } from "../../types/File";
-import type { TFunction } from "i18next";
-import makeFileActions from "./makeFileActions";
-import makeFileColumns from "./makeFileColumns";
-
-interface FilesDataGridProps {
-  files: FileItem[];
-  loading: boolean;
-  apiRef: any;
-  onDownload: (file: FileItem) => void;
-  onView: (file: FileItem) => void;
-  onDelete: (file: FileItem) => void;
-  onAdd: () => void;
-  t: TFunction;
-}
-
+import makeFileActions from "./components/makeFileActions";
+import makeFileColumns from "./components/makeFileColumns";
+import { FilesDataGridProps } from "./types/gridView.type";
 
 const FilesDataGrid = ({
   files,

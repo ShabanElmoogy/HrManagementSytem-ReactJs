@@ -1,5 +1,5 @@
 import { MyDeleteConfirmation } from "@/shared/components";
-import type { FileItem } from "../types/File";
+import type { FileItem } from "../../types/File";
 
 interface FileDeleteDialogProps {
   open: boolean;

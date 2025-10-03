@@ -3,16 +3,7 @@ import React from "react";
 import { Card, CardContent, Typography, Box } from "@mui/material";
 import { Error as ErrorIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-
-export type MediaType = "iframe" | "image" | "video" | "audio" | "unsupported";
-
-export interface MediaContentProps {
-  mediaType: MediaType;
-  mediaUrl: string;
-  isLoading: boolean;
-  getFileExtension: () => string;
-  onError: (message: string) => void;
-}
+import { MediaContentProps } from "../types/mediaViewer.type";
 
 const MediaContent: React.FC<MediaContentProps> = ({
   mediaType,

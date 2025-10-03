@@ -1,5 +1,3 @@
-import React from "react";
-import { Box, Avatar } from "@mui/material";
 import {
   InsertDriveFile,
   Description,
@@ -12,17 +10,20 @@ import {
   TableChart,
   Slideshow,
 } from "@mui/icons-material";
-import type { FileItem } from "../../types/File";
-
-// Normalize extension from a FileItem
-const getExtension = (file: FileItem): string => {
-  const ext = file?.fileExtension || "";
-  const clean = ext.startsWith(".") ? ext.substring(1) : ext;
-  return clean.toLowerCase();
-};
+export const VIEWABLE_EXTENSIONS = [
+  "mp4",
+  "webm",
+  "pdf",
+  "mp3",
+  "png",
+  "jpg",
+  "jpeg",
+  "gif",
+  "bmp",
+] as const;
 
 // Map extension to icon and colors
-const getFileTypeMeta = (
+export const getFileTypeMeta = (
   ext: string
 ): { Icon: React.ElementType; fg: string; bg: string } => {
   const images = new Set(["png", "jpg", "jpeg", "gif", "bmp", "svg", "webp"]);
@@ -56,34 +57,3 @@ const getFileTypeMeta = (
   if (codes.has(ext)) return { Icon: Code, fg: "#1A237E", bg: "#E8EAF6" };
   return { Icon: InsertDriveFile, fg: "#37474F", bg: "#ECEFF1" };
 };
-
-export type FileTypeIconProps = {
-  file: FileItem;
-};
-
-const FileTypeIcon: React.FC<FileTypeIconProps> = ({ file }) => {
-  const ext = getExtension(file);
-  const meta = getFileTypeMeta(ext);
-  const Ico = meta.Icon;
-
-  return (
-    <Box
-      sx={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Avatar
-        variant="rounded"
-        sx={{ width: 28, height: 28, bgcolor: meta.bg, color: meta.fg }}
-      >
-        <Ico fontSize="small" />
-      </Avatar>
-    </Box>
-  );
-};
-
-export default FileTypeIcon;
