@@ -124,8 +124,42 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
   const [lastDeletedSortedIndex, setLastDeletedSortedIndex] = useState<number | null>(null);
   const [newRowAdded, setNewRowAdded] = useState<boolean>(false);
   const [lastAddedRowId, setLastAddedRowId] = useState<number | null>(null);
+  const [pendingAddedFileName, setPendingAddedFileName] = useState<string | null>(null);
 
   const apiRef = useGridApiRef<GridApiCommon>();
+
+  // Reliable navigation helper: change page if needed, then select and scroll
+  const navigateTo = useCallback((targetIndex: number, targetRowId: any) => {
+    const api: any = apiRef.current;
+    if (!api || targetIndex < 0) return;
+
+    const pageSize = api.state?.pagination?.paginationModel?.pageSize || 5;
+    const targetPage = Math.floor(targetIndex / pageSize);
+    const rowIndexOnPage = targetIndex % pageSize;
+
+    const finalize = () => {
+      const cur: any = apiRef.current;
+      if (!cur) return;
+      cur.setRowSelectionModel([targetRowId]);
+      cur.scrollToIndexes({ rowIndex: rowIndexOnPage, colIndex: 0 });
+    };
+
+    const currentPage = api.state?.pagination?.paginationModel?.page ?? 0;
+    if (currentPage === targetPage) {
+      setTimeout(finalize, 0);
+    } else {
+      let unsub: any = null;
+      const onPageChange = (model: any) => {
+        const page = model?.page ?? api.state?.pagination?.paginationModel?.page;
+        if (page === targetPage) {
+          if (typeof unsub === "function") unsub();
+          setTimeout(finalize, 50);
+        }
+      };
+      unsub = api.subscribeEvent("paginationModelChange", onPageChange);
+      api.setPage(targetPage);
+    }
+  }, [apiRef]);
 
   // Memoized files
   const stableFiles = useMemo((): FileItem[] => files, [files]);
@@ -156,149 +190,105 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
         const prevRowId = newSortedIds[prevSortedIndex];
         const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
         const newPage = Math.floor(prevSortedIndex / pageSize);
+        const rowIndexOnPage = prevSortedIndex % pageSize;
 
         apiRef.current.setPage(newPage);
         apiRef.current.setRowSelectionModel([prevRowId]);
-        apiRef.current.scrollToIndexes({ rowIndex: prevSortedIndex, colIndex: 0 });
+        apiRef.current.scrollToIndexes({ rowIndex: rowIndexOnPage, colIndex: 0 });
       }
       setRowDeleted(false);
       setLastDeletedSortedIndex(null);
     }
   }, [rowDeleted, lastDeletedSortedIndex]);
 
-  // Robust: navigate to the newly added row using sorted order and wait for pagination render
+  // Scroll to the last added row (match Countries logic, with filename fallback)
   useEffect(() => {
-    if (!newRowAdded || !lastAddedRowId || !apiRef.current) return;
+    if (!newRowAdded || !apiRef.current || files.length === 0) return;
 
     const api: any = apiRef.current;
 
-    const schedule = (fn: () => void) => {
-      setTimeout(() => {
-        if (typeof window !== "undefined" && "requestAnimationFrame" in window) {
-          requestAnimationFrame(fn);
-        } else {
-          fn();
-        }
-      }, 0);
-    };
-
-    const navigateToTarget = () => {
-      let sortedIds: any[] | null = null;
-      if (typeof api.getSortedRowIds === "function") {
-        sortedIds = api.getSortedRowIds();
+    // Resolve effective ID
+    let effectiveId: any = lastAddedRowId;
+    if (!effectiveId && pendingAddedFileName) {
+      const uploadedFile = files.find((f: any) => f.fileName === pendingAddedFileName);
+      if (uploadedFile) {
+        effectiveId = typeof uploadedFile.id === "string" ? parseInt(uploadedFile.id, 10) : uploadedFile.id;
+        setLastAddedRowId(effectiveId);
       }
-
-      let targetIndex = -1;
-      let targetRowId: any = null;
-
-      if (sortedIds && sortedIds.length > 0) {
-        const idx = sortedIds.findIndex((id: any) => String(id) === String(lastAddedRowId));
-        if (idx >= 0) {
-          targetIndex = idx;
-          targetRowId = sortedIds[idx];
-        }
-      }
-
-      if (targetIndex < 0) {
-        const idx = files.findIndex((f) => String((f as any).id) === String(lastAddedRowId));
-        if (idx >= 0) {
-          targetIndex = idx;
-          targetRowId = (files[idx] as any)?.id ?? null;
-        } else if (sortedIds && sortedIds.length > 0) {
-          targetIndex = sortedIds.length - 1;
-          targetRowId = sortedIds[targetIndex];
-        } else if (files.length > 0) {
-          targetIndex = files.length - 1;
-          targetRowId = (files[targetIndex] as any)?.id ?? null;
-        }
-      }
-
-      if (targetIndex < 0) {
-        setNewRowAdded(false);
-        setLastAddedRowId(null);
-        return;
-      }
-
-      const pageSize = api.state?.pagination?.paginationModel?.pageSize || 5;
-      const targetPage = Math.floor(targetIndex / pageSize);
-      const rowIndexOnPage = targetIndex % pageSize;
-
-      const finalize = () => {
-        const apiCurrent: any = apiRef.current;
-        if (!apiCurrent) return;
-        if (targetRowId !== null && targetRowId !== undefined) {
-          apiCurrent.setRowSelectionModel([targetRowId]);
-        }
-        apiCurrent.scrollToIndexes({ rowIndex: targetIndex, colIndex: 0 });
-        setNewRowAdded(false);
-        setLastAddedRowId(null);
-      };
-
-      const currentPage = api.state?.pagination?.paginationModel?.page ?? 0;
-      if (currentPage === targetPage) {
-        finalize();
-      } else {
-        let unsub: any = null;
-        const onPageChange = (model: any) => {
-          const page = model?.page ?? api.state?.pagination?.paginationModel?.page;
-          if (page === targetPage) {
-            if (typeof unsub === "function") unsub();
-            schedule(finalize);
-          }
-        };
-        unsub = api.subscribeEvent("paginationModelChange", onPageChange);
-        api.setPage(targetPage);
-      }
-    };
-
-    schedule(navigateToTarget);
-  }, [newRowAdded, lastAddedRowId, files]);
-
-  // Additional effect to handle selection after refetch/settle (mirrors countries logic)
-  useEffect(() => {
-    if (
-      !isFetching &&
-      !loading &&
-      lastAddedRowId &&
-      newRowAdded &&
-      apiRef.current
-    ) {
-      const api: any = apiRef.current;
-
-      // Prefer sorted order if available to compute correct index
-      let targetIndex = -1;
-      if (typeof api.getSortedRowIds === "function") {
-        const sortedIds = api.getSortedRowIds();
-        targetIndex = sortedIds.findIndex((id: any) => String(id) === String(lastAddedRowId));
-      }
-      if (targetIndex < 0 && files.length > 0) {
-        targetIndex = files.findIndex((f) => String((f as any).id) === String(lastAddedRowId));
-      }
-
-      if (targetIndex >= 0) {
-        setTimeout(() => {
-          if (apiRef.current) {
-            const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
-            const newPage = Math.floor(targetIndex / pageSize);
-
-            apiRef.current.setPage(newPage);
-            apiRef.current.setRowSelectionModel([lastAddedRowId]);
-
-            setTimeout(() => {
-              if (apiRef.current) {
-                apiRef.current.scrollToIndexes({ rowIndex: targetIndex, colIndex: 0 });
-              }
-            }, 200);
-          }
-        }, 300);
-      }
-
-      setNewRowAdded(false);
-      // Do not clear lastAddedRowId here to allow other effects to still access it shortly if needed
     }
-  }, [isFetching, loading, lastAddedRowId, newRowAdded, files]);
+
+    // Compute target index and row id
+    let targetIndex = -1;
+    let targetRowId: any = null;
+    if (effectiveId) {
+      const sortedIds = typeof api.getSortedRowIds === "function" ? api.getSortedRowIds() : files.map((r: any) => r.id);
+      targetIndex = sortedIds.findIndex((id: any) => String(id) === String(effectiveId));
+      if (targetIndex >= 0) targetRowId = sortedIds[targetIndex];
+    }
+
+    // Fallback to last row if ID not resolved
+    if (targetIndex < 0) {
+      const sortedIds = typeof api.getSortedRowIds === "function" ? api.getSortedRowIds() : files.map((r: any) => r.id);
+      if (sortedIds.length > 0) {
+        targetIndex = sortedIds.length - 1;
+        targetRowId = sortedIds[targetIndex];
+      }
+    }
+
+    if (targetIndex >= 0) {
+      navigateTo(targetIndex, targetRowId);
+      setNewRowAdded(false);
+      setLastAddedRowId(null);
+      setPendingAddedFileName(null);
+    }
+  }, [newRowAdded, files, lastAddedRowId, pendingAddedFileName, navigateTo]);
 
   
+  
+  // Additional effect to handle row selection when data is refetched (match Countries logic)
+  useEffect(() => {
+    if (!newRowAdded || isFetching || loading || !apiRef.current || files.length === 0) return;
+
+    const api: any = apiRef.current;
+
+    // Resolve effective ID
+    let effectiveId: any = lastAddedRowId;
+    if (!effectiveId && pendingAddedFileName) {
+      const uploadedFile = files.find((f: any) => f.fileName === pendingAddedFileName);
+      if (uploadedFile) {
+        effectiveId = typeof uploadedFile.id === "string" ? parseInt(uploadedFile.id, 10) : uploadedFile.id;
+        setLastAddedRowId(effectiveId);
+      }
+    }
+
+    // Compute target index and row id
+    let targetIndex = -1;
+    let targetRowId: any = null;
+    if (effectiveId) {
+      const sortedIds = typeof api.getSortedRowIds === "function" ? api.getSortedRowIds() : files.map((r: any) => r.id);
+      targetIndex = sortedIds.findIndex((id: any) => String(id) === String(effectiveId));
+      if (targetIndex >= 0) targetRowId = sortedIds[targetIndex];
+    }
+
+    // Fallback to last row if ID not resolved
+    if (targetIndex < 0) {
+      const sortedIds = typeof api.getSortedRowIds === "function" ? api.getSortedRowIds() : files.map((r: any) => r.id);
+      if (sortedIds.length > 0) {
+        targetIndex = sortedIds.length - 1;
+        targetRowId = sortedIds[targetIndex];
+      }
+    }
+
+    if (targetIndex >= 0) {
+      setTimeout(() => {
+        navigateTo(targetIndex, targetRowId);
+        setNewRowAdded(false);
+        setLastAddedRowId(null);
+        setPendingAddedFileName(null);
+      }, 150);
+    }
+  }, [isFetching, loading, lastAddedRowId, newRowAdded, files, pendingAddedFileName, navigateTo]);
+
   // Delete handler
   const handleDelete = useCallback(async (): Promise<void> => {
     if (!selectedFile?.storedFileName || !apiRef.current) return;
@@ -370,6 +360,10 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
 
   // Upload success handler
   const handleUploadSuccess = useCallback((fileName: string) => {
+    // Track the file name to resolve ID after refetch if needed
+    setPendingAddedFileName(fileName);
+
+    // Try immediate ID resolution if available to speed up navigation
     const uploadedFile = files.find((file) => file.fileName === fileName);
     if (uploadedFile) {
       const idNum: number =
@@ -378,6 +372,7 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
           : (uploadedFile as any).id;
       setLastAddedRowId(idNum);
     }
+
     setNewRowAdded(true);
   }, [files]);
 
