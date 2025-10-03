@@ -6,7 +6,7 @@ import ContentsWrapper from "@/layouts/components/myContentsWrapper";
 import Header from "@/shared/components/common/header/myHeader";
 import FilesDataGrid from "./components/gridView/FilesDataGrid";
 import FileUpload from "./components/fileUpload/FileUpload";
-import FileDeleteDialog from "./components/FileDeleteDialog";
+import FileDeleteDialog from "./components/dialog/FileDeleteDialog";
 import useFileGridLogic from "./hooks/useFileGridLogic";
 
 
