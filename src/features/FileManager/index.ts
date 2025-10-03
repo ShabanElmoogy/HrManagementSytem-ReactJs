@@ -11,7 +11,7 @@ export { default as FileUpload } from "./components/FileUpload";
 export { default as MediaViewer } from "./components/MediaViewer";
 
 // Sub-components
-export { default as FilesDataGrid } from "./components/FilesDataGrid";
+export { default as FilesDataGrid } from "./components/gridView/FilesDataGrid";
 export { default as FileDeleteDialog } from "./components/FileDeleteDialog";
 
 // Hooks
