@@ -44,6 +44,9 @@ interface UseFileGridLogicReturn {
 
   // Highlighting/Navigation state for card view
   lastDeletedIndex: number | null;
+
+  // Upload success handler
+  handleUploadSuccess: (fileName: string) => void;
 }
 
 const useFileGridLogic = (): UseFileGridLogicReturn => {
@@ -120,7 +123,9 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
 
   // Navigation state variables
   const [rowDeleted, setRowDeleted] = useState<boolean>(false);
-  const [lastDeletedRowIndex, setLastDeletedRowIndex] = useState<number | null>(null);
+  const [lastDeletedSortedIndex, setLastDeletedSortedIndex] = useState<number | null>(null);
+  const [newFileAdded, setNewFileAdded] = useState<boolean>(false);
+  const [uploadedRowId, setUploadedRowId] = useState<number | null>(null);
 
   const apiRef = useGridApiRef<GridApiCommon>();
 
@@ -146,34 +151,54 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
 
   // Scroll to the previous row after deletion
   useEffect(() => {
-    if (rowDeleted && files.length > 0 && apiRef.current) {
-      let prevRowIndex = lastDeletedRowIndex - 1;
-      if (prevRowIndex < 0) {
-        prevRowIndex = 0;
-      }
-
-      if (prevRowIndex >= 0 && prevRowIndex < files.length) {
-        const prevRowId = files[prevRowIndex].id;
-        const pageSize =
-          apiRef.current.state.pagination.paginationModel.pageSize;
-        const newPage = Math.floor(prevRowIndex / pageSize);
+    if (rowDeleted && lastDeletedSortedIndex !== null && apiRef.current) {
+      const newSortedIds = apiRef.current.getSortedRowIds();
+      const prevSortedIndex = lastDeletedSortedIndex - 1;
+      if (prevSortedIndex >= 0 && prevSortedIndex < newSortedIds.length) {
+        const prevRowId = newSortedIds[prevSortedIndex];
+        const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
+        const newPage = Math.floor(prevSortedIndex / pageSize);
 
         apiRef.current.setPage(newPage);
-        apiRef.current.scrollToIndexes({ rowIndex: prevRowIndex, colIndex: 0 });
         apiRef.current.setRowSelectionModel([prevRowId]);
+        apiRef.current.scrollToIndexes({ rowIndex: prevSortedIndex, colIndex: 0 });
       }
       setRowDeleted(false);
+      setLastDeletedSortedIndex(null);
     }
-  }, [rowDeleted, files.length, lastDeletedRowIndex]);
+  }, [rowDeleted, lastDeletedSortedIndex]);
+
+  // Scroll to the uploaded file
+  useEffect(() => {
+    if (newFileAdded && uploadedRowId !== null && apiRef.current) {
+      const sortedIds = apiRef.current.getSortedRowIds();
+      const sortedIndex = sortedIds.indexOf(uploadedRowId);
+      if (sortedIndex >= 0) {
+        const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
+        const newPage = Math.floor(sortedIndex / pageSize);
+
+        apiRef.current.setPage(newPage);
+        apiRef.current.setRowSelectionModel([uploadedRowId]);
+
+        setTimeout(() => {
+          if (apiRef.current) {
+            apiRef.current.scrollToIndexes({ rowIndex: sortedIndex, colIndex: 0 });
+          }
+        }, 500);
+      }
+
+      setNewFileAdded(false);
+      setUploadedRowId(null);
+    }
+  }, [newFileAdded, uploadedRowId]);
 
   // Delete handler
   const handleDelete = useCallback(async (): Promise<void> => {
-    if (!selectedFile?.storedFileName) return;
+    if (!selectedFile?.storedFileName || !apiRef.current) return;
 
     try {
-      const currentIndex: number = files.findIndex(
-        (file) => file.id === selectedFile.id
-      );
+      const sortedIds = apiRef.current.getSortedRowIds();
+      const deletedSortedIndex = sortedIds.indexOf(selectedFile.id);
 
       await deleteFileMutation.mutateAsync(selectedFile.storedFileName);
 
@@ -181,6 +206,7 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
       let newSelectedFile: FileItem | null = null;
       if (files.length > 1) {
         // Will be length - 1 after deletion
+        const currentIndex = files.findIndex((file) => file.id === selectedFile.id);
         newSelectedFile =
           currentIndex > 0
             ? files[Math.min(currentIndex - 1, files.length - 2)]
@@ -188,12 +214,12 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
       }
 
       setSelectedFile(newSelectedFile);
-      setLastDeletedRowIndex(currentIndex);
+      setLastDeletedSortedIndex(deletedSortedIndex);
     } catch (error) {
       console.error("Delete error:", error);
       // Error handling is done in the mutation's onError callback
     }
-  }, [selectedFile, files, deleteFileMutation]);
+  }, [selectedFile, files, deleteFileMutation, apiRef]);
 
   // Action handlers
   const handleDeleteDialog = useCallback(
@@ -231,9 +257,18 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
   );
 
   // Refresh handler
-  const handleRefresh = useCallback(() => {
-    refetch();
+  const handleRefresh = useCallback(async () => {
+    await refetch();
   }, [refetch]);
+
+  // Upload success handler
+  const handleUploadSuccess = useCallback((fileName: string) => {
+    const uploadedFile = files.find((file) => file.fileName === fileName);
+    if (uploadedFile) {
+      setUploadedRowId(uploadedFile.id);
+      setNewFileAdded(true);
+    }
+  }, [files]);
 
   return {
     // State
@@ -264,7 +299,10 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
     isDeleting: deleteFileMutation.isPending,
 
     // Highlighting/Navigation state for card view
-    lastDeletedIndex: lastDeletedRowIndex,
+    lastDeletedIndex: lastDeletedSortedIndex,
+
+    // Upload success handler
+    handleUploadSuccess,
   };
 };
 

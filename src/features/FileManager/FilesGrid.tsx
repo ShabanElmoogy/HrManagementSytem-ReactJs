@@ -44,6 +44,7 @@ const FilesGrid = () => {
     onUpload,
     handleDownload,
     handleView,
+    handleUploadSuccess,
   } = useFileGridLogic();
 
   // Memoized values
@@ -53,9 +54,11 @@ const FilesGrid = () => {
   const handleFormSubmit = useCallback(
     async (fileName: string) => {
       // Refetch files after upload
-      handleRefresh();
+      await handleRefresh();
+      // Trigger navigation to uploaded file
+      handleUploadSuccess(fileName);
     },
-    [handleRefresh]
+    [handleRefresh, handleUploadSuccess]
   );
 
   return (
