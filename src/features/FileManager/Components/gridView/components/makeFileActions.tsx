@@ -2,7 +2,7 @@ import { GridActionsCellItem } from "@mui/x-data-grid";
 import { Delete, Download, Visibility } from "@mui/icons-material";
 import type { TFunction } from "i18next";
 import type { FileItem } from "../../../types/File";
-import { VIEWABLE_EXTENSIONS } from "../constants/constants";
+import { VIEWABLE_EXTENSIONS } from "../constants/fileTypes.type";
 
 
 export const canViewFile = (file: FileItem): boolean => {

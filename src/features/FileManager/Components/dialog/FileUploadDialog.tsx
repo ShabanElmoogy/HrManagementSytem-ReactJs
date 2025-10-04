@@ -1,5 +1,5 @@
 import { Dialog } from "@mui/material";
-import FileUpload from "../fileUpload/FileUpload";
+import FileUpload from "../fileUpload/FileUpload"
 
 interface FileUploadDialogProps {
   open: boolean;

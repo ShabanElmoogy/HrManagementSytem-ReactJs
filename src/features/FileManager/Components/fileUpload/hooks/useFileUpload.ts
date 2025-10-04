@@ -2,8 +2,8 @@ import { useState } from "react";
 import { apiService } from "@/shared/services";
 import { useSnackbar } from "@/shared/hooks";
 import HandleApiError from "@/shared/services/apiError";
+import { FILE_CONFIG } from "../constants/fileUpload.type";
 import { FileUploadItem, UseFileUploadArgs } from "../types/fileUpload.type";
-import { FILE_CONFIG } from "../constants/constants";
 
 export default function useFileUpload({ onSuccess, onClose, multiple = true }: UseFileUploadArgs) {
 

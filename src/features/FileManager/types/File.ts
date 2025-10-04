@@ -1,5 +1,5 @@
-import { DialogType } from "@/features/basicData/districts/hooks/useDistrictGridLogic";
 import { GridApiCommon } from "@mui/x-data-grid";
+export type FileDialogType = "upload" | "delete" | null;
 
 export interface FileItem {
   id: number;
@@ -19,7 +19,7 @@ export interface UploadResult {
 
 export interface UseFileGridLogicReturn {
   // State
-  dialogType: DialogType;
+  dialogType: FileDialogType;
   selectedFile: FileItem | null;
   loading: boolean;
   files: FileItem[];
@@ -28,7 +28,7 @@ export interface UseFileGridLogicReturn {
   isFetching: boolean;
 
   // Dialog methods
-  openDialog: (type: DialogType, file?: FileItem | null) => void;
+  openDialog: (type: FileDialogType, file?: FileItem | null) => void;
   closeDialog: () => void;
 
   // Form and action handlers

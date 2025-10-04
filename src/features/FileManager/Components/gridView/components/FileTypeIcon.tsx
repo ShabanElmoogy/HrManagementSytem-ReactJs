@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Avatar } from "@mui/material";
 import type { FileItem } from "../../../types/File";
-import { getFileTypeMeta } from "../constants/constants";
+import { getFileTypeMeta } from "../constants/fileTypes.type";
 
 // Normalize extension from a FileItem
 const getExtension = (file: FileItem): string => {
