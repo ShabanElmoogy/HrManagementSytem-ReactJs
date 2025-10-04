@@ -8,37 +8,41 @@ import {
   LinearProgress,
   Fade,
   CardContent,
+  Stack,
 } from "@mui/material";
 import {
   CloudUpload as CloudUploadIcon,
   Description as FileIcon,
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 // Styled components
 const Input = styled("input")({
   display: "none",
 });
 
-const DropZone = styled(Box)<{ isDragActive: boolean }>(({ theme, isDragActive }) => ({
-  border: `2px dashed ${
-    isDragActive ? theme.palette.primary.main : theme.palette.divider
-  }`,
-  borderRadius: theme.shape.borderRadius,
-  padding: theme.spacing(2.5),
-  textAlign: "center",
-  cursor: "pointer",
-  backgroundColor: isDragActive
-    ? theme.palette.action.hover
-    : theme.palette.background.paper,
-  transition: theme.transitions.create(["border-color", "background-color"], {
-    duration: theme.transitions.duration.short,
-  }),
-  "&:hover": {
-    borderColor: theme.palette.primary.main,
-    backgroundColor: theme.palette.action.hover,
-  },
-}));
+const DropZone = styled(Box)<{ isDragActive: boolean }>(
+  ({ theme, isDragActive }) => ({
+    border: `2px dashed ${
+      isDragActive ? theme.palette.primary.main : theme.palette.divider
+    }`,
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(2.5),
+    textAlign: "center",
+    cursor: "pointer",
+    backgroundColor: isDragActive
+      ? theme.palette.action.hover
+      : theme.palette.background.paper,
+    transition: theme.transitions.create(["border-color", "background-color"], {
+      duration: theme.transitions.duration.short,
+    }),
+    "&:hover": {
+      borderColor: theme.palette.primary.main,
+      backgroundColor: theme.palette.action.hover,
+    },
+  })
+);
 
 interface UploadExcelProps {
   title?: string;
@@ -67,6 +71,7 @@ const UploadExcel = ({
 }: UploadExcelProps) => {
   const [isDragActive, setIsDragActive] = useState(false);
   const fileInputRef = useRef(null);
+  const { t } = useTranslation();
 
   // Reset file input when selectedFile is null
   useEffect(() => {
@@ -155,22 +160,24 @@ const UploadExcel = ({
           color: isDragActive ? "primary" : "text.secondary",
         })}
 
-        <Typography
-          variant="h6"
-          color="text.secondary"
-          gutterBottom
-          sx={{ fontSize: { xs: "1rem", sm: "1.25rem" } }}
-        >
-          {title}
-        </Typography>
+        <Stack direction={"row"} alignItems={"center"} justifyContent={"center"} spacing={2}>
+          <Typography
+            variant="h6"
+            color="text.secondary"
+            gutterBottom
+            sx={{ fontSize: { xs: "1rem", sm: "1.25rem" } }}
+          >
+            {title}
+          </Typography>
 
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
-        >
-          {description}
-        </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+          >
+            {description}
+          </Typography>
+        </Stack>
 
         <Input
           ref={fileInputRef}
@@ -200,7 +207,7 @@ const UploadExcel = ({
                   wordBreak: "break-word",
                 }}
               >
-                File selected: {selectedFile.name}
+                {t("imports.selectedFile")}: {selectedFile.name}
               </Typography>
             </Box>
 

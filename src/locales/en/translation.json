@@ -791,5 +791,12 @@
     "next": "Next",
     "previous": "Previous",
     "close": "Close"
+  },
+    "imports" : {
+    "dragDropText" : "Drag and drop your file here or click to browse",
+    "supportedFormats" : "Supported formats ( xls - xlsx )",
+    "uploadData" : "Upload Data",
+    "clearData" : "Clear Data Table",
+    "selectedFile" : "Selected File  "
   }
 }

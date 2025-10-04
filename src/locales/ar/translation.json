@@ -748,5 +748,12 @@
     "next": "التالى",
     "previous": "السابق",
     "close": "اغلاق"
+  },
+  "imports" : {
+    "dragDropText" : "اسحب وافلت الملفات هنا او انقر للاختيار",
+    "supportedFormats" : "الصيغ المدعومة ( xls - xlsx )",
+    "uploadData" : "رفع البيانات",
+    "clearData" : "افراغ بيانات الجدول",
+    "selectedFile" : " الملف المحدد"
   }
 }

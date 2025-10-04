@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Button,
-  Card,
-  CardActions,
-  Divider,
-  Stack,
-} from "@mui/material";
+import { Button, Card, CardActions, Divider, Stack, Typography } from "@mui/material";
 import {
   Upload as UploadIcon,
   Cancel as CancelIcon,
@@ -41,15 +35,20 @@ const UploadSection: React.FC<UploadSectionProps> = ({
   return (
     <Card sx={{ mb: { xs: 3, sm: 4 }, overflow: "visible" }}>
       <UploadExcel
-        title={t("dragDropText") || "Drag and drop your file here or click to browse"}
-        description={t("supportedFormats") || "Supported format: .xlsx"}
+        title={
+          t("imports.dragDropText") ||
+          "Drag and drop your file here or click to browse"
+        }
+        description={t("imports.supportedFormats") || "Supported format: .xlsx"}
         acceptedFileTypes=".xlsx"
         onFileSelect={onFileSelect}
         validateFile={validateFile}
         selectedFile={selectedFile}
         isLoading={loading && loadingText !== ""}
         progress={uploadProgress}
-        getFileInfo={() => `${countriesCount} ${(t("countries.title") || "Countries")}`}
+        getFileInfo={() =>
+          `${countriesCount} ${t("countries.title") || "Countries"}`
+        }
       />
 
       <Divider />
@@ -74,16 +73,20 @@ const UploadSection: React.FC<UploadSectionProps> = ({
             disabled={countriesCount === 0 || loading}
             size="large"
           >
-            {t("uploadData") || "Upload"}
+            {t("imports.uploadData") || "Upload"}
           </Button>
           {countriesCount > 0 && (
             <Button
               variant="outlined"
-              startIcon={<CancelIcon />}
+              startIcon={
+                <CancelIcon
+                  sx={{ color: (theme) => theme.palette.error.light }}
+                />
+              }
               onClick={onClear}
               disabled={loading}
             >
-              {t("clearData") || "Clear"}
+              <Typography sx={{ color: (theme) => theme.palette.error.light }} >{t("imports.clearData") || "Clear"}</Typography>
             </Button>
           )}
         </Stack>
