@@ -365,7 +365,7 @@
       "map": "الخريطة",
       "chart": "الرسم البياني",
       "report": "التقارير",
-      "import" : "استيراد البيانات"
+      "import": "استيراد البيانات"
     },
     "charts": {
       "byRegion": "الدول حسب المنطقة",
@@ -749,11 +749,13 @@
     "previous": "السابق",
     "close": "اغلاق"
   },
-  "imports" : {
-    "dragDropText" : "اسحب وافلت الملفات هنا او انقر للاختيار",
-    "supportedFormats" : "الصيغ المدعومة ( xls - xlsx )",
-    "uploadData" : "رفع البيانات",
-    "clearData" : "افراغ بيانات الجدول",
-    "selectedFile" : " الملف المحدد"
+  "imports": {
+    "dragDropText": "اسحب وافلت الملفات هنا او انقر للاختيار",
+    "supportedFormats": "الصيغ المدعومة ( xls - xlsx )",
+    "uploadData": "رفع البيانات",
+    "clearData": "افراغ بيانات الجدول",
+    "selectedFile": " الملف المحدد",
+    "noDataAvailable": "لا توجد بيانات",
+    "startExcelUpload": "ابدأ رفع ملف اكسل (.xlsx)"
   }
 }

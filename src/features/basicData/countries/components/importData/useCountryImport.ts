@@ -63,7 +63,7 @@ export const useCountryImport = () => {
     } catch (error) {
       showSnackbar(
         "error",
-        [(error as Error).message || (t("messages.error") || "Error")],
+        [(error as Error).message || t("messages.error") || "Error"],
         t("messages.error") || "Error"
       );
       setSelectedFile(null);
@@ -97,7 +97,9 @@ export const useCountryImport = () => {
       setLoadingText(t("uploading") || "Uploading...");
 
       timerRef.current = setInterval(() => {
-        const seconds = Math.floor((Date.now() - (startTimeRef.current || 0)) / 1000);
+        const seconds = Math.floor(
+          (Date.now() - (startTimeRef.current || 0)) / 1000
+        );
         setElapsedTime(`${seconds}s`);
       }, 1000);
 
@@ -117,33 +119,38 @@ export const useCountryImport = () => {
           success++;
           // update progress
           setUploadProgress(Math.round(((i + 1) / countries.length) * 100));
+          showSnackbar(
+            "success",
+            [
+              `${success}/${countries.length} ${
+                t("countries.uploaded") || "countries uploaded"
+              }`,
+            ],
+            t("messages.success") || "Success"
+          );
+
+          setCountries([]);
+          setSelectedFile(null);
         } catch (err) {
           // Continue uploading remaining items; collect errors via snackbar
           HandleApiError(err, (updatedState: any) => {
             showSnackbar(
               "error",
-              updatedState?.messages || [(err as any)?.message || "Upload error"],
-              (err as any)?.title || (t("messages.error") || "Error")
+              updatedState?.messages || [
+                (err as any)?.message || "Upload error",
+              ],
+              (err as any)?.title || t("messages.error") || "Error"
             );
+            return;
           });
         }
       }
-
-      showSnackbar(
-        "success",
-        [
-          `${success}/${countries.length} ${(t("countries.uploaded") || "countries uploaded")}`,
-        ],
-        t("messages.success") || "Success"
-      );
-      setCountries([]);
-      setSelectedFile(null);
     } catch (error) {
       HandleApiError(error, (updatedState: any) => {
         showSnackbar(
           "error",
           updatedState?.messages,
-          (error as any)?.title || (t("messages.error") || "Error")
+          (error as any)?.title || t("messages.error") || "Error"
         );
       });
     } finally {

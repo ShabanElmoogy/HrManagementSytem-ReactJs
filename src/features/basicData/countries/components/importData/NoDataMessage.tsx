@@ -18,14 +18,14 @@ const NoDataMessage: React.FC<NoDataMessageProps> = ({ show }) => {
         variant="h6"
         sx={{ fontSize: { xs: "1rem", sm: "1.25rem" } }}
       >
-        {t("noDataAvailable") || "No data available"}
+        {t("imports.noDataAvailable") || "No data available"}
       </Typography>
       <Typography
         color="text.secondary"
         variant="body2"
         sx={{ mt: 1, fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
       >
-        {t("startExcelUpload") || "Start by uploading an Excel file (.xlsx)"}
+        {t("imports.startExcelUpload") || "Start by uploading an Excel file (.xlsx)"}
       </Typography>
     </Paper>
   );

@@ -797,6 +797,8 @@
     "supportedFormats" : "Supported formats ( xls - xlsx )",
     "uploadData" : "Upload Data",
     "clearData" : "Clear Data Table",
-    "selectedFile" : "Selected File  "
+    "selectedFile" : "Selected File  ",
+    "noDataAvailable" : "No data available",
+    "startExcelUpload" : "Start by uploading an Excel file (.xlsx)"
   }
 }
