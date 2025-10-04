@@ -1,5 +1,3 @@
-import { AddressType } from "../../addressesType";
-
 export interface Country {
   id: string | number;
   nameAr: string;

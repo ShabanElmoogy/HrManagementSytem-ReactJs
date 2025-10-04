@@ -364,7 +364,8 @@
       "cards": "البطاقات",
       "map": "الخريطة",
       "chart": "الرسم البياني",
-      "report": "التقارير"
+      "report": "التقارير",
+      "import" : "استيراد البيانات"
     },
     "charts": {
       "byRegion": "الدول حسب المنطقة",
@@ -382,6 +383,8 @@
     "viewSubtitle": "اظهار بيانات الدولة",
     "editSubtitle": "تعديل بيانات الدولة",
     "addSubtitle": "إضافة دولة جديدة",
+    "arabicName": "الإسم عربى",
+    "englishName": "الإسم إنجليزى",
     "alpha2Code": "الكود الثنائى",
     "alpha3Code": "الكود الثلاثى",
     "currencyCode": "كود العملة",
@@ -434,9 +437,7 @@
     "all": "كل الدول",
     "recent30Days": "احدث (30 يوما)",
     "hasPhone": "مع كود الهاتف",
-    "hasCurrency": "مع كود العملة",
-    "arabicName": "الإسم عربى",
-    "englishName": "الإسم إنجليزى"
+    "hasCurrency": "مع كود العملة"
   },
   "states": {
     "dashboard": {
@@ -723,27 +724,29 @@
     "orClick": "او انقر للاختيار",
     "selectedFiles": "الملفات المختارة",
     "removeFiles": "إزالة الملفات",
-    "Uploading" : "جارى الرفع ...",
-    "close" : "إغلاق"
+    "Uploading": "جارى الرفع ...",
+    "close": "إغلاق",
+    "title": "مدير الملفات",
+    "subTitle": "قائمة الملفات"
   },
-  "media" : {
-    "unsupportedFormat" : "صيغة غير مدعومة",
-    "unsupportedExtension" : "امتداد غير مدعوم",
-    "documentViewer" : "معاينة المستند",
-    "failedToLoadDocument" : "فشل تحميل المستند",
-    "image" : "صورة",
-    "failedToLoadImage" : "فشل تحميل الصورة",
-    "failedToLoadVideo" : "فشل تحميل الفيديو",
-    "failedToLoadAudio" : "فشل تحميل الصوت",
-    "videoNotSupported" : "الفيديو غير مدعوم",
-    "audioNotSupported" : "الصوت غير مدعوم",
-    "audioPlayer" : "مشغل الصوت",
-    "backToFiles" : "العودة للملفات",
-    "download" : "تحميل",
-    "exitFullscreen" : "خروج من الشاشة الكاملة",
-    "fullscreen" : "شاشة كاملة",
-    "next" : "التالى",
-    "previous" : "السابق",
-    "close" : "اغلاق"
+  "media": {
+    "unsupportedFormat": "صيغة غير مدعومة",
+    "unsupportedExtension": "امتداد غير مدعوم",
+    "documentViewer": "معاينة المستند",
+    "failedToLoadDocument": "فشل تحميل المستند",
+    "image": "صورة",
+    "failedToLoadImage": "فشل تحميل الصورة",
+    "failedToLoadVideo": "فشل تحميل الفيديو",
+    "failedToLoadAudio": "فشل تحميل الصوت",
+    "videoNotSupported": "الفيديو غير مدعوم",
+    "audioNotSupported": "الصوت غير مدعوم",
+    "audioPlayer": "مشغل الصوت",
+    "backToFiles": "العودة للملفات",
+    "download": "تحميل",
+    "exitFullscreen": "خروج من الشاشة الكاملة",
+    "fullscreen": "شاشة كاملة",
+    "next": "التالى",
+    "previous": "السابق",
+    "close": "اغلاق"
   }
 }

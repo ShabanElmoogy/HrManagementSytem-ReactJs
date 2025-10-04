@@ -5,8 +5,9 @@ import { appPermissions } from "@/constants";
 import { appRoutes } from "./appRoutes";
 import Login from "../features/auth/login/login";
 import AuthLayout from "../layouts/authLayout/authLayout";
+import MainLayout from "../layouts/mainLayout/mainLayout";
 
-const MainLayout = lazy(() => import("../layouts/mainLayout/mainLayout"));
+
 const ProtectedRoute = lazy(() => import("../shared/components/auth/protectedRoute"));
 const Home = lazy(() => import("../features/home/home"));
 const EmailConfirmed = lazy(() => import("../features/auth/emailConfirmed"));

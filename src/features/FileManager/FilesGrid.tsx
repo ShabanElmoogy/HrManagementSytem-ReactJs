@@ -9,13 +9,12 @@ import FileUpload from "./components/fileUpload/FileUpload";
 import FileDeleteDialog from "./components/dialog/FileDeleteDialog";
 import useFileGridLogic from "./hooks/useFileGridLogic";
 
-
 /**
  * FilesGrid Component
- * 
+ *
  * Main component for managing files with grid display.
  * Supports upload, download, view, and delete operations.
- * 
+ *
  * @component
  * @example
  * ```tsx
@@ -62,7 +61,7 @@ const FilesGrid = () => {
   return (
     <>
       <ContentsWrapper>
-        <Header title={t("files")} subTitle={t("filesSubTitle")} />
+        <Header title={t("files.title")} subTitle={t("files.subTitle")} />
 
         <FilesDataGrid
           files={stableFiles}

@@ -7,6 +7,7 @@ import CountriesCardView from "./countriesCardView";
 import CountriesChartView from "./countriesChartView";
 import CountriesDataGrid from "./gridView/countriesDataGrid";
 import CountryReport from "../Reports/CountryReport";
+import ImportCountries from "./importData/ImportCountries";
 
 interface CountriesMultiViewProps {
   countries: Country[];
@@ -39,7 +40,7 @@ const CountriesMultiView = ({
   lastDeletedIndex,
 }: CountriesMultiViewProps) => {
   // Initialize with default, will be updated by MultiViewHeader
-  const [currentViewType, setCurrentViewType] = useState<"grid" | "cards" | "chart" | "report">("grid");
+  const [currentViewType, setCurrentViewType] = useState<"grid" | "cards" | "chart" | "report" | "import">("grid");
   const [searchTerm] = useState("");
 
   // Use original countries and loading states (search is handled within specific views when applicable)
@@ -61,7 +62,7 @@ const CountriesMultiView = ({
     console.log("Export countries data");
   };
 
-  const handleViewTypeChange = useCallback((newViewType: "grid" | "cards" | "chart" | "report") => {
+  const handleViewTypeChange = useCallback((newViewType: "grid" | "cards" | "chart" | "report" | "import") => {
     setCurrentViewType(newViewType);
   }, []);
 
@@ -106,6 +107,8 @@ const CountriesMultiView = ({
         );
       case "report":
         return <CountryReport />;
+      case "import":
+        return <ImportCountries />;
       default:
         return (
           <CountriesDataGrid
@@ -137,12 +140,13 @@ const CountriesMultiView = ({
         title={t("countries.viewTitle") || "Countries Management"}
         storageKey="countries-view-layout"
         defaultView="grid"
-        availableViews={["grid", "cards", "chart", "report"]}
+        availableViews={["grid", "cards", "chart", "report", "import"]}
         viewLabels={{
           grid: t("countries.views.grid") || "Grid",
           cards: t("countries.views.cards") || "Cards",
           chart: t("countries.views.chart") || "Chart",
           report: t("countries.views.report") || "Report",
+          import: t("countries.views.import") || "Import",
         }}
         onAdd={onAdd}
         dataCount={displayCountries?.length || 0}

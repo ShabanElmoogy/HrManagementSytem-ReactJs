@@ -370,7 +370,8 @@
       "cards": "Cards",
       "map": "Map",
       "chart": "Chart",
-      "report": "Reports"
+      "report": "Reports",
+      "import": "Import Data"
     },
     "charts": {
       "byRegion": "Countries by Region",
@@ -389,6 +390,8 @@
     "viewSubtitle": "View country details",
     "editSubtitle": "Edit country details",
     "addSubtitle": "Add new country",
+    "arabicName": "Arabic Name",
+    "englishName": "English Name",
     "alpha2Code": "Alpha-2 Code",
     "alpha3Code": "Alpha-3 Code",
     "currencyCode": "Currency Code",
@@ -441,9 +444,7 @@
     "all": "All Countries",
     "recent30Days": "Recent (30 days)",
     "hasPhone": "Has Phone Code",
-    "hasCurrency": "Has Currency",
-    "arabicName": "Arabic Name",
-    "englishName": "English Name"
+    "hasCurrency": "Has Currency"
   },
   "states": {
     "dashboard": {
@@ -767,7 +768,9 @@
     "selectedFiles": "Selected Files",
     "removeFiles": "Remove Files",
     "Uploading": "Uploading...",
-    "close": "Close"
+    "close": "Close",
+    "title": "Files Manager",
+    "subTitle": "List of files"
   },
   "media": {
     "unsupportedFormat": "Unsupported file format",
