@@ -25,6 +25,15 @@ const CustomFooterWithNavigation = ({
   const { t } = useTranslation();
   const isRTL = theme.direction === "rtl";
 
+  // Get the current ordered row IDs (sorted order if grid sorting is active)
+  const getOrderedIds = React.useCallback(() => {
+    const api = apiRef?.current;
+    if (api && typeof api.getSortedRowIds === "function") {
+      return api.getSortedRowIds();
+    }
+    return rows.map((r) => r.id);
+  }, [apiRef, rows]);
+
   // Separate state for navigation counter - NEVER auto-updated
   const [navigationCounter, setNavigationCounter] = React.useState(1);
   const [paginationModel, setPaginationModel] = React.useState({
@@ -34,23 +43,24 @@ const CustomFooterWithNavigation = ({
 
   // Function to sync navigation with current selection
   const syncNavigationWithSelection = React.useCallback(() => {
-    if (!apiRef?.current || rows.length === 0) {
-      setNavigationCounter(rows.length > 0 ? 1 : 0);
+    const orderedIds = getOrderedIds();
+    if (!apiRef?.current || orderedIds.length === 0) {
+      setNavigationCounter(orderedIds.length > 0 ? 1 : 0);
       return;
     }
 
     const selection = apiRef.current.getSelectedRows();
     if (selection && selection.size > 0) {
       const selectedId = Array.from(selection.keys())[0];
-      const rowIndex = rows.findIndex((row) => row.id === selectedId);
+      const rowIndex = orderedIds.findIndex((id) => id === selectedId);
       if (rowIndex !== -1) {
         setNavigationCounter(rowIndex + 1);
+        return;
       }
-    } else {
-      // No selection, set to first record
-      setNavigationCounter(1);
     }
-  }, [apiRef, rows]);
+    // No selection or not found, set to first record
+    setNavigationCounter(1);
+  }, [apiRef, getOrderedIds]);
 
   // Expose the sync function to parent component
   React.useEffect(() => {
@@ -59,16 +69,17 @@ const CustomFooterWithNavigation = ({
     }
   }, [onNavigationUpdate, syncNavigationWithSelection]);
 
-  // Initialize counter when data loads
+  // Initialize counter when data loads or order changes
   React.useEffect(() => {
-    if (rows.length > 0) {
+    const orderedIds = getOrderedIds();
+    if (orderedIds.length > 0) {
       syncNavigationWithSelection();
     } else {
       setNavigationCounter(0);
     }
-  }, [rows.length, syncNavigationWithSelection]);
+  }, [getOrderedIds, syncNavigationWithSelection]);
 
-  // Listen ONLY to pagination changes
+  // Listen to pagination and sort changes
   React.useEffect(() => {
     if (!apiRef?.current) return;
 
@@ -89,20 +100,30 @@ const CustomFooterWithNavigation = ({
       handlePaginationChange
     );
 
+    const unsubscribeSort = apiRef.current.subscribeEvent(
+      "sortModelChange",
+      () => {
+        // When sorting changes, sync the counter with the current selection and new order
+        syncNavigationWithSelection();
+      }
+    );
+
     return () => {
       unsubscribeSelection();
       unsubscribePagination();
+      unsubscribeSort();
     };
-  }, [apiRef]);
+  }, [apiRef, syncNavigationWithSelection]);
 
   // Manual navigation - DIRECT counter control
   const handleGoToFirstRecord = () => {
-    if (rows.length === 0) return;
+    const orderedIds = getOrderedIds();
+    if (orderedIds.length === 0) return;
 
     setNavigationCounter(1); // Force counter to 1
 
     if (apiRef?.current) {
-      const targetRowId = rows[0].id;
+      const targetRowId = orderedIds[0];
       apiRef.current.setPage(0);
 
       setTimeout(() => {
@@ -113,14 +134,15 @@ const CustomFooterWithNavigation = ({
   };
 
   const handleGoToPreviousRecord = () => {
-    if (rows.length === 0 || navigationCounter <= 1) return;
+    const orderedIds = getOrderedIds();
+    if (orderedIds.length === 0 || navigationCounter <= 1) return;
 
     const newCounter = navigationCounter - 1;
     setNavigationCounter(newCounter); // Force counter update
 
     if (apiRef?.current) {
       const targetIndex = newCounter - 1; // 0-based
-      const targetRowId = rows[targetIndex].id;
+      const targetRowId = orderedIds[targetIndex];
       const pageSize = paginationModel.pageSize || 5;
       const targetPage = Math.floor(targetIndex / pageSize);
 
@@ -140,14 +162,15 @@ const CustomFooterWithNavigation = ({
   };
 
   const handleGoToNextRecord = () => {
-    if (rows.length === 0 || navigationCounter >= rows.length) return;
+    const orderedIds = getOrderedIds();
+    if (orderedIds.length === 0 || navigationCounter >= orderedIds.length) return;
 
     const newCounter = navigationCounter + 1;
     setNavigationCounter(newCounter); // Force counter update
 
     if (apiRef?.current) {
       const targetIndex = newCounter - 1; // 0-based
-      const targetRowId = rows[targetIndex].id;
+      const targetRowId = orderedIds[targetIndex];
       const pageSize = paginationModel.pageSize || 5;
       const targetPage = Math.floor(targetIndex / pageSize);
 
@@ -167,15 +190,16 @@ const CustomFooterWithNavigation = ({
   };
 
   const handleGoToLastRecord = () => {
-    if (rows.length === 0) return;
+    const orderedIds = getOrderedIds();
+    if (orderedIds.length === 0) return;
 
-    setNavigationCounter(rows.length); // Force counter to last
+    setNavigationCounter(orderedIds.length); // Force counter to last
 
     if (apiRef?.current) {
-      const targetIndex = rows.length - 1;
-      const targetRowId = rows[targetIndex].id;
+      const targetIndex = orderedIds.length - 1;
+      const targetRowId = orderedIds[targetIndex];
       const pageSize = paginationModel.pageSize || 5;
-      const lastPage = Math.max(0, Math.ceil(rows.length / pageSize) - 1);
+      const lastPage = Math.max(0, Math.ceil(orderedIds.length / pageSize) - 1);
 
       apiRef.current.setPage(lastPage);
       setTimeout(() => {
@@ -186,7 +210,8 @@ const CustomFooterWithNavigation = ({
     }
   };
 
-  const totalPages = Math.ceil(rows.length / paginationModel.pageSize);
+  const orderedCount = getOrderedIds().length;
+  const totalPages = Math.ceil(orderedCount / paginationModel.pageSize);
   const currentPage = paginationModel.page + 1;
 
   // Icon components based on direction
@@ -223,7 +248,7 @@ const CustomFooterWithNavigation = ({
           <span>
             <IconButton
               onClick={handleGoToFirstRecord}
-              disabled={rows.length === 0 || navigationCounter <= 1}
+              disabled={orderedCount === 0 || navigationCounter <= 1}
               size="small"
               sx={{
                 padding: "6px",
@@ -248,7 +273,7 @@ const CustomFooterWithNavigation = ({
           <span>
             <IconButton
               onClick={handleGoToPreviousRecord}
-              disabled={rows.length === 0 || navigationCounter <= 1}
+              disabled={orderedCount === 0 || navigationCounter <= 1}
               size="small"
               sx={{
                 padding: "6px",
@@ -289,8 +314,8 @@ const CustomFooterWithNavigation = ({
               direction: "ltr", // Keep numbers in LTR even in RTL mode
             }}
           >
-            {rows.length > 0
-              ? `${navigationCounter} / ${rows.length}`
+            {orderedCount > 0
+              ? `${navigationCounter} / ${orderedCount}`
               : "0 / 0"}
           </Typography>
         </Box>
@@ -299,7 +324,7 @@ const CustomFooterWithNavigation = ({
           <span>
             <IconButton
               onClick={handleGoToNextRecord}
-              disabled={rows.length === 0 || navigationCounter >= rows.length}
+              disabled={orderedCount === 0 || navigationCounter >= orderedCount}
               size="small"
               sx={{
                 padding: "6px",
@@ -322,7 +347,7 @@ const CustomFooterWithNavigation = ({
           <span>
             <IconButton
               onClick={handleGoToLastRecord}
-              disabled={rows.length === 0 || navigationCounter >= rows.length}
+              disabled={orderedCount === 0 || navigationCounter >= orderedCount}
               size="small"
               sx={{
                 padding: "6px",
