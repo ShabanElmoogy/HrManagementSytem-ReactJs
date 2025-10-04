@@ -1,65 +1,61 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { Suspense } from "react";
+import { Suspense, lazy } from "react";
 import { MyLoadingIndicator } from "@/shared/components";
 import { appPermissions } from "@/constants";
-import AuthLayout from "../layouts/authLayout/authLayout";
-import MainLayout from "../layouts/mainLayout/mainLayout";
-import ProtectedRoute from "../shared/components/auth/protectedRoute";
 import { appRoutes } from "./appRoutes";
-import Home from "../features/home/home";
-import EmailConfirmed from "../features/auth/emailConfirmed";
-import ForgetPassword from "../features/auth/forgetPassword";
 import Login from "../features/auth/login/login";
-import ProfilePage from "../features/auth/profile/profilePage";
-import ChangePassword from "../features/auth/profile/profileTabs/changePassword/changePassword";
-import Register from "../features/auth/register/register";
-import ResendEmailConfirmation from "../features/auth/resendEmailConfirmation";
-import ResetPassword from "../features/auth/resetPassword";
-import RolePermissionsPage from "../features/auth/roles/components/rolePermissionsPage";
-import CountriesPage from "../features/basicData/countries/countriesPage";
-import { StatesPage } from "../features/basicData/states";
-import DistrictsPage from "../features/basicData/districts/districtsPage";
-import AddressTypesPage from "../features/basicData/addressesType/addressTypesPage";
-import {
-  EmployeePage,
-  EmployeeDetailPage,
-  EmployeeForm,
-  DocumentManagementPage,
-} from "../features/employee";
-import UsersPage from "@/features/auth/users/usersPage";
-import RolesPage from "@/features/auth/roles/rolesPage";
-import TrackChangesGrid from "@/features/advancedTools/trackChangesGrid";
-import LocalizationGrid from "@/features/advancedTools/localizationGrid";
-import HealthCheck from "@/features/advancedTools/healthCheck";
-import ApiEndpoints from "@/features/advancedTools/apiEndpoints";
-import HangfireDashboard from "@/features/advancedTools/hangfireDashboard";
-import ChartExamplesPage from "@/features/chartExamples/chartExamplesPage";
-import CountryReport from "@/features/basicData/countries/reports/CountryReport";
+import AuthLayout from "../layouts/authLayout/authLayout";
 
-import {
-  HRMainDashboard,
-  PerformanceAnalytics,
-  TimeAttendanceAnalytics,
-  EmployeeEngagementDashboard,
-  DocumentAnalytics,
-  CustomReportBuilder,
-  ReportViewer,
-  DataExportTools,
-} from "@/features/analytics";
+const MainLayout = lazy(() => import("../layouts/mainLayout/mainLayout"));
+const ProtectedRoute = lazy(() => import("../shared/components/auth/protectedRoute"));
+const Home = lazy(() => import("../features/home/home"));
+const EmailConfirmed = lazy(() => import("../features/auth/emailConfirmed"));
+const ForgetPassword = lazy(() => import("../features/auth/forgetPassword"));
+const ProfilePage = lazy(() => import("../features/auth/profile/profilePage"));
+const ChangePassword = lazy(() => import("../features/auth/profile/profileTabs/changePassword/changePassword"));
+const Register = lazy(() => import("../features/auth/register/register"));
+const ResendEmailConfirmation = lazy(() => import("../features/auth/resendEmailConfirmation"));
+const ResetPassword = lazy(() => import("../features/auth/resetPassword"));
+const RolePermissionsPage = lazy(() => import("../features/auth/roles/components/rolePermissionsPage"));
+const CountriesPage = lazy(() => import("../features/basicData/countries/countriesPage"));
+const StatesPage = lazy(() => import("../features/basicData/states").then(m => ({ default: m.StatesPage })));
+const DistrictsPage = lazy(() => import("../features/basicData/districts/districtsPage"));
+const AddressTypesPage = lazy(() => import("../features/basicData/addressesType/addressTypesPage"));
+const EmployeePage = lazy(() => import("../features/employee").then(m => ({ default: m.EmployeePage })));
+const EmployeeDetailPage = lazy(() => import("../features/employee").then(m => ({ default: m.EmployeeDetailPage })));
+const EmployeeForm = lazy(() => import("../features/employee").then(m => ({ default: m.EmployeeForm })));
+const DocumentManagementPage = lazy(() => import("../features/employee").then(m => ({ default: m.DocumentManagementPage })));
+const UsersPage = lazy(() => import("@/features/auth/users/usersPage"));
+const RolesPage = lazy(() => import("@/features/auth/roles/rolesPage"));
+const TrackChangesGrid = lazy(() => import("@/features/advancedTools/trackChangesGrid"));
+const LocalizationGrid = lazy(() => import("@/features/advancedTools/localizationGrid"));
+const HealthCheck = lazy(() => import("@/features/advancedTools/healthCheck"));
+const ApiEndpoints = lazy(() => import("@/features/advancedTools/apiEndpoints"));
+const HangfireDashboard = lazy(() => import("@/features/advancedTools/hangfireDashboard"));
+const ChartExamplesPage = lazy(() => import("@/features/chartExamples/chartExamplesPage"));
+const CountryReport = lazy(() => import("@/features/basicData/countries/reports/CountryReport"));
+
+// Analytics
+const HRMainDashboard = lazy(() => import("@/features/analytics/components/HRMainDashboard"));
+const PerformanceAnalytics = lazy(() => import("@/features/analytics/components/PerformanceAnalytics"));
+const TimeAttendanceAnalytics = lazy(() => import("@/features/analytics/components/TimeAttendanceAnalytics"));
+const EmployeeEngagementDashboard = lazy(() => import("@/features/analytics/components/EmployeeEngagementDashboard"));
+const DocumentAnalytics = lazy(() => import("@/features/analytics/components/DocumentAnalytics"));
+const CustomReportBuilder = lazy(() => import("@/features/analytics/components/CustomReportBuilder"));
+const ReportViewer = lazy(() => import("@/features/analytics/components/ReportViewer"));
+const DataExportTools = lazy(() => import("@/features/analytics/components/DataExportTools"));
 
 // File Manager
-import FilesGrid from "@/features/FileManager/FilesGrid";
-import MediaViewer from "@/features/FileManager/mediaViewer/MediaViewer";
+const FilesGrid = lazy(() => import("@/features/FileManager/FilesGrid"));
+const MediaViewer = lazy(() => import("@/features/FileManager/mediaViewer/MediaViewer"));
 
 // Communication imports
-import {
-  MessagingSystem,
-  AnnouncementCenter,
-  FeedbackCollection,
-  CommunicationDashboard,
-  NotificationSystem,
-  CommunicationReports,
-} from "@/features/communication";
+const MessagingSystem = lazy(() => import("@/features/communication").then(m => ({ default: m.MessagingSystem })));
+const AnnouncementCenter = lazy(() => import("@/features/communication").then(m => ({ default: m.AnnouncementCenter })));
+const FeedbackCollection = lazy(() => import("@/features/communication").then(m => ({ default: m.FeedbackCollection })));
+const CommunicationDashboard = lazy(() => import("@/features/communication").then(m => ({ default: m.CommunicationDashboard })));
+const NotificationSystem = lazy(() => import("@/features/communication").then(m => ({ default: m.NotificationSystem })));
+const CommunicationReports = lazy(() => import("@/features/communication").then(m => ({ default: m.CommunicationReports })));
 
 const AppRoutes = () => {
   return (
