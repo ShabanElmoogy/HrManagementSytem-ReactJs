@@ -1,10 +1,9 @@
-// components/StateForm.tsx
 import { MyForm, MyTextField, MySelectForm } from "@/shared/components";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Casino } from "@mui/icons-material";
 import { Box, TextField, Button } from "@mui/material";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Resolver, SubmitHandler } from "react-hook-form";
 import { getStateValidationSchema } from "../utils/validation";
 import { useCountries } from "../../countries/hooks/useCountryQueries";
 import { states } from "../utils/fakeData";
@@ -52,8 +51,8 @@ const StateForm = ({
     setValue,
     watch,
     formState: { errors },
-  } = useForm<StateFormData>({
-    resolver: yupResolver(schema),
+  } = useForm<StateFormData, any, StateFormData>({
+    resolver: yupResolver<StateFormData, any, StateFormData>(schema) as unknown as Resolver<StateFormData, any, StateFormData>,
     mode: "onChange",
     defaultValues: {
       nameAr: "",
@@ -132,21 +131,11 @@ const StateForm = ({
     displayName: `${country.nameEn} (${country.nameAr})`,
   }));
 
-  // Debug logging for countries data
-  useEffect(() => {
-    if (countries.length > 0) {
-      console.log("🔍 StateForm: Countries data:", countries.slice(0, 3));
-      console.log("🔍 StateForm: Processed countriesData:", countriesData.slice(0, 3));
-    }
-  }, [countries, countriesData]);
-
   // Additional effect to handle late-loading countries data
   useEffect(() => {
     if (open && (isEditMode || isViewMode) && selectedState && countries.length > 0) {
       const countryId = selectedState.countryId || selectedState.country?.id;
       if (countryId && watchedCountryId !== Number(countryId)) {
-        console.log("🔄 StateForm: Updating countryId after countries loaded:", countryId);
-        console.log("🔄 StateForm: Current watchedCountryId:", watchedCountryId);
         setValue("countryId", Number(countryId));
       }
     }
@@ -159,7 +148,6 @@ const StateForm = ({
       const timer = setTimeout(() => {
         const countryId = selectedState.countryId || selectedState.country?.id;
         if (countryId && watchedCountryId !== Number(countryId)) {
-          console.log("🔄 StateForm: Force updating countryId:", countryId);
           setValue("countryId", Number(countryId), { shouldValidate: true });
         }
       }, 100);
@@ -176,7 +164,6 @@ const StateForm = ({
 
   const generateMockData = (): void => {
     if (usedIndexes.size === states.length) {
-      console.warn("⚠️ كل الولايات استخدمت بالفعل!");
       return;
     }
 
@@ -197,9 +184,9 @@ const StateForm = ({
     setValue("nameEn", mockData.nameEn);
     setValue("nameAr", mockData.nameAr);
     setValue("code", mockData.code);
-
-    console.log("✅ Generated mock state data:", mockData);
   };
+
+  const onSubmitHandler: SubmitHandler<StateFormData> = (data) => onSubmit(data);
 
   return (
     <MyForm
@@ -227,7 +214,7 @@ const StateForm = ({
             ? t("actions.update")
             : t("actions.create")
       }
-      onSubmit={isViewMode ? undefined : handleSubmit(onSubmit)}
+      onSubmit={isViewMode ? undefined : handleSubmit(onSubmitHandler)}
       isSubmitting={loading}
       hideFooter={isViewMode}
       recordId={selectedState?.id}

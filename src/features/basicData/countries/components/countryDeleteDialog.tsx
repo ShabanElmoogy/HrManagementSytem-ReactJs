@@ -1,10 +1,6 @@
 import { MyDeleteConfirmation } from "@/shared/components";
+import { Country } from "../types/Country";
 
-interface Country {
-  id: number;
-  nameEn: string;
-  nameAr?: string;
-}
 
 interface CountryDeleteDialogProps {
   open: boolean;
