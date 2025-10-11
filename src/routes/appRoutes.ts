@@ -83,6 +83,11 @@ export interface DocumentManagementRoutes {
   archives: string;
 }
 
+export interface KanbanRoutes {
+  boards: string;
+  boardView: string; // with :id
+}
+
 export interface AuthRoutes {
   rolesPage: string;
   usersPage: string;
@@ -119,6 +124,7 @@ export interface AppRoutes {
   analytics: AnalyticsRoutes;
   communication: CommunicationRoutes;
   documents: DocumentManagementRoutes;
+  kanban: KanbanRoutes;
 
   // Simple routes
   codeSnippets: string;
@@ -238,6 +244,11 @@ export const appRoutes: AppRoutes = {
     companyDocuments: "documents/company",
     templates: "documents/templates",
     archives: "documents/archives",
+  },
+
+  kanban: {
+    boards: "kanban/boards",
+    boardView: "kanban/board/:id",
   },
 
   chat: "chat",

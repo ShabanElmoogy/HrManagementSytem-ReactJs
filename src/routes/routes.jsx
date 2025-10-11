@@ -1,62 +1,153 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import { Suspense, lazy } from "react";
-import { MyLoadingIndicator } from "@/shared/components";
 import { appPermissions } from "@/constants";
-import { appRoutes } from "./appRoutes";
+import { MyLoadingIndicator } from "@/shared/components";
+import { Suspense, lazy } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Login from "../features/auth/login/login";
 import AuthLayout from "../layouts/authLayout/authLayout";
 import MainLayout from "../layouts/mainLayout/mainLayout";
+import { appRoutes } from "./appRoutes";
 
-
-const ProtectedRoute = lazy(() => import("../shared/components/auth/protectedRoute"));
+const ProtectedRoute = lazy(() =>
+  import("../shared/components/auth/protectedRoute")
+);
 const Home = lazy(() => import("../features/home/home"));
 const EmailConfirmed = lazy(() => import("../features/auth/emailConfirmed"));
 const ForgetPassword = lazy(() => import("../features/auth/forgetPassword"));
 const ProfilePage = lazy(() => import("../features/auth/profile/profilePage"));
-const ChangePassword = lazy(() => import("../features/auth/profile/profileTabs/changePassword/changePassword"));
+const ChangePassword = lazy(() =>
+  import("../features/auth/profile/profileTabs/changePassword/changePassword")
+);
 const Register = lazy(() => import("../features/auth/register/register"));
-const ResendEmailConfirmation = lazy(() => import("../features/auth/resendEmailConfirmation"));
+const ResendEmailConfirmation = lazy(() =>
+  import("../features/auth/resendEmailConfirmation")
+);
 const ResetPassword = lazy(() => import("../features/auth/resetPassword"));
-const RolePermissionsPage = lazy(() => import("../features/auth/roles/components/rolePermissionsPage"));
-const CountriesPage = lazy(() => import("../features/basicData/countries/countriesPage"));
-const StatesPage = lazy(() => import("../features/basicData/states").then(m => ({ default: m.StatesPage })));
-const DistrictsPage = lazy(() => import("../features/basicData/districts/districtsPage"));
-const AddressTypesPage = lazy(() => import("../features/basicData/addressesType/addressTypesPage"));
-const EmployeePage = lazy(() => import("../features/employee").then(m => ({ default: m.EmployeePage })));
-const EmployeeDetailPage = lazy(() => import("../features/employee").then(m => ({ default: m.EmployeeDetailPage })));
-const EmployeeForm = lazy(() => import("../features/employee").then(m => ({ default: m.EmployeeForm })));
-const DocumentManagementPage = lazy(() => import("../features/employee").then(m => ({ default: m.DocumentManagementPage })));
+const RolePermissionsPage = lazy(() =>
+  import("../features/auth/roles/components/rolePermissionsPage")
+);
+const CountriesPage = lazy(() =>
+  import("../features/basicData/countries/countriesPage")
+);
+const StatesPage = lazy(() =>
+  import("../features/basicData/states").then((m) => ({
+    default: m.StatesPage,
+  }))
+);
+const DistrictsPage = lazy(() =>
+  import("../features/basicData/districts/districtsPage")
+);
+const AddressTypesPage = lazy(() =>
+  import("../features/basicData/addressesType/addressTypesPage")
+);
+const EmployeePage = lazy(() =>
+  import("../features/employee").then((m) => ({ default: m.EmployeePage }))
+);
+const EmployeeDetailPage = lazy(() =>
+  import("../features/employee").then((m) => ({
+    default: m.EmployeeDetailPage,
+  }))
+);
+const EmployeeForm = lazy(() =>
+  import("../features/employee").then((m) => ({ default: m.EmployeeForm }))
+);
+const DocumentManagementPage = lazy(() =>
+  import("../features/employee").then((m) => ({
+    default: m.DocumentManagementPage,
+  }))
+);
 const UsersPage = lazy(() => import("@/features/auth/users/usersPage"));
 const RolesPage = lazy(() => import("@/features/auth/roles/rolesPage"));
-const TrackChangesGrid = lazy(() => import("@/features/advancedTools/trackChangesGrid"));
-const LocalizationGrid = lazy(() => import("@/features/advancedTools/localizationGrid"));
+const TrackChangesGrid = lazy(() =>
+  import("@/features/advancedTools/trackChangesGrid")
+);
+const LocalizationGrid = lazy(() =>
+  import("@/features/advancedTools/localizationGrid")
+);
 const HealthCheck = lazy(() => import("@/features/advancedTools/healthCheck"));
-const ApiEndpoints = lazy(() => import("@/features/advancedTools/apiEndpoints"));
-const HangfireDashboard = lazy(() => import("@/features/advancedTools/hangfireDashboard"));
-const ChartExamplesPage = lazy(() => import("@/features/chartExamples/chartExamplesPage"));
-const CountryReport = lazy(() => import("@/features/basicData/countries/reports/CountryReport"));
+const ApiEndpoints = lazy(() =>
+  import("@/features/advancedTools/apiEndpoints")
+);
+const HangfireDashboard = lazy(() =>
+  import("@/features/advancedTools/hangfireDashboard")
+);
+const ChartExamplesPage = lazy(() =>
+  import("@/features/chartExamples/chartExamplesPage")
+);
+const CountryReport = lazy(() =>
+  import("@/features/basicData/countries/reports/CountryReport")
+);
 
 // Analytics
-const HRMainDashboard = lazy(() => import("@/features/analytics/components/HRMainDashboard"));
-const PerformanceAnalytics = lazy(() => import("@/features/analytics/components/PerformanceAnalytics"));
-const TimeAttendanceAnalytics = lazy(() => import("@/features/analytics/components/TimeAttendanceAnalytics"));
-const EmployeeEngagementDashboard = lazy(() => import("@/features/analytics/components/EmployeeEngagementDashboard"));
-const DocumentAnalytics = lazy(() => import("@/features/analytics/components/DocumentAnalytics"));
-const CustomReportBuilder = lazy(() => import("@/features/analytics/components/CustomReportBuilder"));
-const ReportViewer = lazy(() => import("@/features/analytics/components/ReportViewer"));
-const DataExportTools = lazy(() => import("@/features/analytics/components/DataExportTools"));
+const HRMainDashboard = lazy(() =>
+  import("@/features/analytics/components/HRMainDashboard")
+);
+const PerformanceAnalytics = lazy(() =>
+  import("@/features/analytics/components/PerformanceAnalytics")
+);
+const TimeAttendanceAnalytics = lazy(() =>
+  import("@/features/analytics/components/TimeAttendanceAnalytics")
+);
+const EmployeeEngagementDashboard = lazy(() =>
+  import("@/features/analytics/components/EmployeeEngagementDashboard")
+);
+const DocumentAnalytics = lazy(() =>
+  import("@/features/analytics/components/DocumentAnalytics")
+);
+const CustomReportBuilder = lazy(() =>
+  import("@/features/analytics/components/CustomReportBuilder")
+);
+const ReportViewer = lazy(() =>
+  import("@/features/analytics/components/ReportViewer")
+);
+const DataExportTools = lazy(() =>
+  import("@/features/analytics/components/DataExportTools")
+);
 
 // File Manager
 const FilesGrid = lazy(() => import("@/features/FileManager/FilesGrid"));
-const MediaViewer = lazy(() => import("@/features/FileManager/mediaViewer/MediaViewer"));
+const MediaViewer = lazy(() =>
+  import("@/features/FileManager/mediaViewer/MediaViewer")
+);
 
 // Communication imports
-const MessagingSystem = lazy(() => import("@/features/communication").then(m => ({ default: m.MessagingSystem })));
-const AnnouncementCenter = lazy(() => import("@/features/communication").then(m => ({ default: m.AnnouncementCenter })));
-const FeedbackCollection = lazy(() => import("@/features/communication").then(m => ({ default: m.FeedbackCollection })));
-const CommunicationDashboard = lazy(() => import("@/features/communication").then(m => ({ default: m.CommunicationDashboard })));
-const NotificationSystem = lazy(() => import("@/features/communication").then(m => ({ default: m.NotificationSystem })));
-const CommunicationReports = lazy(() => import("@/features/communication").then(m => ({ default: m.CommunicationReports })));
+const MessagingSystem = lazy(() =>
+  import("@/features/communication").then((m) => ({
+    default: m.MessagingSystem,
+  }))
+);
+const AnnouncementCenter = lazy(() =>
+  import("@/features/communication").then((m) => ({
+    default: m.AnnouncementCenter,
+  }))
+);
+const FeedbackCollection = lazy(() =>
+  import("@/features/communication").then((m) => ({
+    default: m.FeedbackCollection,
+  }))
+);
+const CommunicationDashboard = lazy(() =>
+  import("@/features/communication").then((m) => ({
+    default: m.CommunicationDashboard,
+  }))
+);
+const NotificationSystem = lazy(() =>
+  import("@/features/communication").then((m) => ({
+    default: m.NotificationSystem,
+  }))
+);
+const CommunicationReports = lazy(() =>
+  import("@/features/communication").then((m) => ({
+    default: m.CommunicationReports,
+  }))
+);
+
+// Kanban
+const KanbanBoards = lazy(() =>
+  import("@/features/kanban").then((m) => ({ default: m.KanbanBoards }))
+);
+const KanbanBoardView = lazy(() =>
+  import("@/features/kanban").then((m) => ({ default: m.KanbanBoardView }))
+);
 
 const AppRoutes = () => {
   return (
@@ -385,7 +476,7 @@ const AppRoutes = () => {
               }
             />
 
-                  <Route
+            <Route
               path={appRoutes.extras.mediaViewer}
               element={
                 <ProtectedRoute
@@ -648,6 +739,34 @@ const AppRoutes = () => {
                 >
                   <Suspense fallback={<MyLoadingIndicator />}>
                     <DocumentManagementPage />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* ========================================================================= */}
+            {/* Kanban Routes */}
+            <Route
+              path={appRoutes.kanban.boards}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <KanbanBoards />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path={appRoutes.kanban.boardView}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <KanbanBoardView />
                   </Suspense>
                 </ProtectedRoute>
               }

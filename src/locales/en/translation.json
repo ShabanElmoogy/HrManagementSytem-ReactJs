@@ -85,6 +85,8 @@
     "companyDocuments": "Company Documents",
     "documentTemplates": "Templates",
     "documentArchives": "Archives",
+    "kanban": "Kanban",
+    "kanbanBoards": "Boards",
     "extras": "Extras",
     "filemanager": "File Manager"
   },
@@ -792,13 +794,13 @@
     "previous": "Previous",
     "close": "Close"
   },
-    "imports" : {
-    "dragDropText" : "Drag and drop your file here or click to browse",
-    "supportedFormats" : "Supported formats ( xls - xlsx )",
-    "uploadData" : "Upload Data",
-    "clearData" : "Clear Data Table",
-    "selectedFile" : "Selected File  ",
-    "noDataAvailable" : "No data available",
-    "startExcelUpload" : "Start by uploading an Excel file (.xlsx)"
+  "imports": {
+    "dragDropText": "Drag and drop your file here or click to browse",
+    "supportedFormats": "Supported formats ( xls - xlsx )",
+    "uploadData": "Upload Data",
+    "clearData": "Clear Data Table",
+    "selectedFile": "Selected File  ",
+    "noDataAvailable": "No data available",
+    "startExcelUpload": "Start by uploading an Excel file (.xlsx)"
   }
 }

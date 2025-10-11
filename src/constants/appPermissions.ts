@@ -6,7 +6,12 @@ export type PermissionModule =
    | 'Addresses' | 'AddressTypes' | 'ApiKeys' | 'Categories' | 'Countries'
    | 'Districts' | 'ChangeLogs' | 'Localizations' | 'ReportsCategories'
    | 'Roles' | 'States' | 'SubCategories' | 'Users' | 'Analytics'
-   | 'Communication' | 'Documents';
+   | 'Communication' | 'Documents'
+   // Kanban modules
+   | 'KanbanBoards' | 'KanbanColumns' | 'KanbanCards'
+   | 'KanbanCardAssignees' | 'KanbanCardAttachments'
+   | 'BoardTaskAttachments' | 'KanbanCardComments' | 'BoardTaskComments'
+   | 'KanbanLabels' | 'KanbanBoardMembers' | 'BoardTasks';
 
 // Permission string type
 export type PermissionString = `${PermissionModule}:${PermissionAction}` | 'ChangeLogs:View';
@@ -105,6 +110,72 @@ export const Permissions = {
   CreateDocuments: "Documents:Create",
   EditDocuments: "Documents:Edit",
   DeleteDocuments: "Documents:Delete",
+
+  // Kanban Boards
+  ViewKanbanBoards: "KanbanBoards:View",
+  CreateKanbanBoards: "KanbanBoards:Create",
+  EditKanbanBoards: "KanbanBoards:Edit",
+  DeleteKanbanBoards: "KanbanBoards:Delete",
+
+  // Kanban Columns
+  ViewKanbanColumns: "KanbanColumns:View",
+  CreateKanbanColumns: "KanbanColumns:Create",
+  EditKanbanColumns: "KanbanColumns:Edit",
+  DeleteKanbanColumns: "KanbanColumns:Delete",
+
+  // Kanban Cards
+  ViewKanbanCards: "KanbanCards:View",
+  CreateKanbanCards: "KanbanCards:Create",
+  EditKanbanCards: "KanbanCards:Edit",
+  DeleteKanbanCards: "KanbanCards:Delete",
+
+  // Kanban Card Assignees
+  ViewKanbanCardAssignees: "KanbanCardAssignees:View",
+  CreateKanbanCardAssignees: "KanbanCardAssignees:Create",
+  EditKanbanCardAssignees: "KanbanCardAssignees:Edit",
+  DeleteKanbanCardAssignees: "KanbanCardAssignees:Delete",
+
+  // Kanban Card Attachments
+  ViewKanbanCardAttachments: "KanbanCardAttachments:View",
+  CreateKanbanCardAttachments: "KanbanCardAttachments:Create",
+  EditKanbanCardAttachments: "KanbanCardAttachments:Edit",
+  DeleteKanbanCardAttachments: "KanbanCardAttachments:Delete",
+
+  // Board Task Attachments
+  ViewBoardTaskAttachments: "BoardTaskAttachments:View",
+  CreateBoardTaskAttachments: "BoardTaskAttachments:Create",
+  EditBoardTaskAttachments: "BoardTaskAttachments:Edit",
+  DeleteBoardTaskAttachments: "BoardTaskAttachments:Delete",
+
+  // Kanban Card Comments
+  ViewKanbanCardComments: "KanbanCardComments:View",
+  CreateKanbanCardComments: "KanbanCardComments:Create",
+  EditKanbanCardComments: "KanbanCardComments:Edit",
+  DeleteKanbanCardComments: "KanbanCardComments:Delete",
+
+  // Board Task Comments
+  ViewBoardTaskComments: "BoardTaskComments:View",
+  CreateBoardTaskComments: "BoardTaskComments:Create",
+  EditBoardTaskComments: "BoardTaskComments:Edit",
+  DeleteBoardTaskComments: "BoardTaskComments:Delete",
+
+  // Kanban Labels
+  ViewKanbanLabels: "KanbanLabels:View",
+  CreateKanbanLabels: "KanbanLabels:Create",
+  EditKanbanLabels: "KanbanLabels:Edit",
+  DeleteKanbanLabels: "KanbanLabels:Delete",
+
+  // Kanban Board Members
+  ViewKanbanBoardMembers: "KanbanBoardMembers:View",
+  CreateKanbanBoardMembers: "KanbanBoardMembers:Create",
+  EditKanbanBoardMembers: "KanbanBoardMembers:Edit",
+  DeleteKanbanBoardMembers: "KanbanBoardMembers:Delete",
+
+  // Board Tasks
+  ViewBoardTasks: "BoardTasks:View",
+  CreateBoardTasks: "BoardTasks:Create",
+  EditBoardTasks: "BoardTasks:Edit",
+  DeleteBoardTasks: "BoardTasks:Delete",
 
   // Methods for backward compatibility
   getAllPermissions: () => getAllPermissions(),

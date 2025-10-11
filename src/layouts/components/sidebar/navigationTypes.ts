@@ -1,6 +1,6 @@
 // navigationTypes.ts
-import React from "react";
 import { PermissionString } from "@/constants/appPermissions";
+import React from "react";
 
 // Enums for better type safety
 export enum NavigationSectionId {
@@ -13,6 +13,7 @@ export enum NavigationSectionId {
   ANALYTICS = "analytics",
   COMMUNICATION = "communication",
   DOCUMENTS = "documents",
+  KANBAN = "kanban",
   EXTRAS = "extras",
 }
 
@@ -63,7 +64,6 @@ export enum NavigationTitles {
   EXTRAS = "menu.extras",
   FILEMANAGER = "menu.filemanager",
 
-
   // Direct titles
   CHART_EXAMPLES = "menu.chartExamples",
   CHART_LIBRARY = "menu.chartLibrary",
@@ -103,6 +103,9 @@ export enum NavigationTitles {
   COMPANY_DOCUMENTS = "menu.companyDocuments",
   DOCUMENT_TEMPLATES = "menu.documentTemplates",
   DOCUMENT_ARCHIVES = "menu.documentArchives",
+
+  KANBAN = "menu.kanban",
+  KANBAN_BOARDS = "menu.kanbanBoards",
 }
 
 // Interface definitions

@@ -80,6 +80,8 @@
     "companyDocuments": "مستندات الشركة",
     "documentTemplates": "القوالب",
     "documentArchives": "الأرشيف",
+    "kanban": "كانبان",
+    "kanbanBoards": "اللوحات",
     "extras": "الاضافات",
     "filemanager": "مدير الملفات"
   },
