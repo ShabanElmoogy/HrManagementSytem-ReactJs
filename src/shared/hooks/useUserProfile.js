@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import UserProfileService from "../services/userProfileService";
+import AuthService from "../services/authService";
 
 // Query keys
 export const USER_PROFILE_KEYS = {
@@ -14,7 +15,7 @@ export const USER_PROFILE_KEYS = {
  */
 export const useUserProfile = (options = {}) => {
   return useQuery({
-    queryKey: USER_PROFILE_KEYS.profile(),
+    queryKey: [...USER_PROFILE_KEYS.profile(), (AuthService.getCurrentUser()?.id || "anonymous")],
     queryFn: UserProfileService.getCompleteUserProfile,
     enabled: UserProfileService.isAuthenticated(),
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -28,7 +29,7 @@ export const useUserProfile = (options = {}) => {
  */
 export const useUserInfo = (options = {}) => {
   return useQuery({
-    queryKey: USER_PROFILE_KEYS.info(),
+    queryKey: [...USER_PROFILE_KEYS.info(), (AuthService.getCurrentUser()?.id || "anonymous")],
     queryFn: UserProfileService.getUserInfo,
     enabled: UserProfileService.isAuthenticated(),
     staleTime: 5 * 60 * 1000,
@@ -42,7 +43,7 @@ export const useUserInfo = (options = {}) => {
  */
 export const useUserPhoto = (options = {}) => {
   return useQuery({
-    queryKey: USER_PROFILE_KEYS.photo(),
+    queryKey: [...USER_PROFILE_KEYS.photo(), (AuthService.getCurrentUser()?.id || "anonymous")],
     queryFn: UserProfileService.getUserPhoto,
     enabled: UserProfileService.isAuthenticated(),
     staleTime: 10 * 60 * 1000,

@@ -43,7 +43,10 @@ class SignalRService {
 }
 
 // Create a single instance of the service
-const hubUrl = "https://localhost:7037/hubs/company";
+const lsBaseApi = (localStorage.getItem("baseApiUrl") && localStorage.getItem("baseApiUrl").replace(/\/$/, '')) || null;
+const envApiBase = (import.meta.env.VITE_API_URL && import.meta.env.VITE_API_URL.replace(/\/$/, '')) || null;
+const envHubUrl = (import.meta.env.VITE_SIGNALR_HUB_URL && import.meta.env.VITE_SIGNALR_HUB_URL.trim()) || null;
+const hubUrl = (lsBaseApi && `${lsBaseApi}/hubs/company`) || envHubUrl || (envApiBase && `${envApiBase}/hubs/company`) || "https://localhost:7037/hubs/company";
 const signalRService = new SignalRService(hubUrl);
 
 export default signalRService;

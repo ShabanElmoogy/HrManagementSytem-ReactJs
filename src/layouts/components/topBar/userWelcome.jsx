@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 // UserWelcome.jsx
-import { useState, useEffect } from "react";
-import { Box, Typography, Avatar, Fade, Paper } from "@mui/material";
+import { Avatar, Box, Fade, Paper, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import AuthService from "../../../shared/services/authService";
 

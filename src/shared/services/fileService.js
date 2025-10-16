@@ -28,16 +28,15 @@ class FileService {
     };
   }
 
-    getBaseURL() {
-    // Development URL
-    if (import.meta.env.MODE === "development") {
-      return "https://localhost:7037";
+  getBaseURL() {
+    const envUrl =
+      import.meta.env.VITE_API_URL && import.meta.env.VITE_API_URL.trim();
+    const lsUrl = localStorage.getItem("baseApiUrl");
+    if (lsUrl) {
+      return lsUrl;
+    } else {
+      return envUrl;
     }
-
-    // Production URL
-    return (
-      localStorage.getItem("baseApiUrl") || "https://myarchieve-last.runasp.net"
-    ); // Replace with your actual production URL
   }
 
   // async uploadFile(formData, uploadUrl, onProgress) {

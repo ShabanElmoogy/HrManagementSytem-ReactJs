@@ -3,6 +3,7 @@ const version = "/api/v1";
 interface AuthRoutes {
   home: string;
   login: string;
+  refreshToken: string;
   register: string;
   changePassword: string;
   forgetPassword: string;
@@ -60,6 +61,8 @@ interface GoogleRoutes {
   auth: string;
 }
 
+interface AppointmentsRoutes extends Omit<CrudRoutes, 'getById'> {}
+
 // Kanban route interfaces (with additional list-by-parent operations where needed)
 interface KanbanBoardMembersRoutes extends CrudRoutes {
   getByBoard: (boardId: string | number) => string;
@@ -98,6 +101,7 @@ interface ApiRoutes {
   export: ExportRoutes;
   advancedTools: AdvancedToolsRoutes;
   google: GoogleRoutes;
+  appointments: AppointmentsRoutes;
 
   // Kanban
   kanbanBoards: CrudRoutes;
@@ -120,6 +124,7 @@ const apiRoutes: ApiRoutes = {
   auth: {
     home: "/",
     login: `${version}/auth/login`,
+    refreshToken: `${version}/auth/refreshToken`,
     register: `${version}/auth/register`,
     changePassword: "accountInfo/changePassword",
     forgetPassword: `${version}/forgetPassword`,
@@ -190,6 +195,13 @@ const apiRoutes: ApiRoutes = {
     getLocalizationApi: `${version}/localization/getLocalization`,
     updateLocalizationApi: `${version}/localization/updateLocalizationKey`,
     trackChanges: `${version}/entityChangeLogs/getAllChangesLogs`,
+  },
+
+  appointments: {
+    getAll: `${version}/Appointments/GetAll`,
+    add: `${version}/Appointments/Add`,
+    update: `${version}/Appointments/Update`,
+    delete: (id: string | number) => `${version}/Appointments/Delete?id=${id}`,
   },
 
   // Kanban endpoints
@@ -292,4 +304,4 @@ const apiRoutes: ApiRoutes = {
 };
 
 export default apiRoutes;
-export type { ApiRoutes, AuthRoutes, CrudRoutes, DistrictsRoutes, RolesRoutes, UsersRoutes, KanbanBoardMembersRoutes, KanbanCardAssigneesRoutes, KanbanCardLabelsRoutes, KanbanCardAttachmentsRoutes, BoardTaskCommentsRoutes, BoardTaskAttachmentsRoutes };
+export type { ApiRoutes, AuthRoutes, CrudRoutes, DistrictsRoutes, RolesRoutes, UsersRoutes, AppointmentsRoutes, KanbanBoardMembersRoutes, KanbanCardAssigneesRoutes, KanbanCardLabelsRoutes, KanbanCardAttachmentsRoutes, BoardTaskCommentsRoutes, BoardTaskAttachmentsRoutes };

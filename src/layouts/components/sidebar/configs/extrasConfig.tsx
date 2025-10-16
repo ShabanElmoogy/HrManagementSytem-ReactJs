@@ -12,7 +12,9 @@ import {
   createNavSection,
 } from "../navigationUtils";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
+import EventNoteIcon from "@mui/icons-material/EventNote";
 import TuneIcon from "@mui/icons-material/Tune";
+import Permissions from "@/constants/appPermissions";
 
 export const getExtrasConfig = () => {
   const sectionIcon = createColoredIcon(
@@ -29,6 +31,13 @@ export const getExtrasConfig = () => {
       appRoutes.extras.filesManager,
       [UserRoles.ADMIN],
       undefined
+    ),
+    createNavItem(
+      NavigationTitles.APPOINTMENTS,
+      secondaryIcon(<EventNoteIcon />),
+      appRoutes.extras.appointments,
+      undefined,
+      [Permissions.ViewUsers]
     ),
   ];
 

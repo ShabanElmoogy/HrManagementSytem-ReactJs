@@ -1,7 +1,9 @@
 import { apiRoutes } from "@/routes";
-import { useNotifications } from "@/shared/hooks";
+import { useNotifications, USER_PROFILE_KEYS } from "@/shared/hooks";
 import { apiService, HandleApiError } from "@/shared/services";
+import AuthService from "@/shared/services/authService";
 import { useEffect, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 
 const useProfileImage = () => {
@@ -12,6 +14,7 @@ const useProfileImage = () => {
   const [imageUrl, setImageUrl] = useState(null);
   const fileInputRef = useRef(null);
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
   // Fetch user photo from API
   const fetchUserPhoto = async () => {
@@ -123,10 +126,20 @@ const useProfileImage = () => {
           );
           setSelectedFile(null);
 
-          // Add delay before fetching to ensure server has processed the update
-          setTimeout(async () => {
-            await fetchUserPhoto();
-          }, 1500);
+          // Optimistically update React Query caches so UI (e.g., sidebar) updates immediately
+          const userId = AuthService.getCurrentUser()?.id || "anonymous";
+          // Update the photo-only cache
+          queryClient.setQueryData(
+            [...USER_PROFILE_KEYS.photo(), userId],
+            { profilePicture: base64String }
+          );
+          // Update the full profile cache (uses data URL format in profile)
+          queryClient.setQueryData(
+            [...USER_PROFILE_KEYS.profile(), userId],
+            (prev) => prev ? { ...prev, profilePicture: base64String ? `data:image/*;base64,${base64String}` : null } : prev
+          );
+          // Invalidate to refetch and ensure consistency across the app
+          queryClient.invalidateQueries({ queryKey: USER_PROFILE_KEYS.all });
         } else {
           showError(
             isClearingImage

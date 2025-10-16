@@ -109,6 +109,9 @@ const MediaViewer = lazy(() =>
   import("@/features/FileManager/mediaViewer/MediaViewer")
 );
 
+// Appointments (FullCalendar)
+const AppointmentsPage = lazy(() => import("@/features/appointments").then(m => ({ default: m.AppointmentsPage })));
+
 // Communication imports
 const MessagingSystem = lazy(() =>
   import("@/features/communication").then((m) => ({
@@ -484,6 +487,20 @@ const AppRoutes = () => {
                 >
                   <Suspense fallback={<MyLoadingIndicator />}>
                     <MediaViewer />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Appointments */}
+            <Route
+              path={appRoutes.extras.appointments}
+              element={
+                <ProtectedRoute
+                  requiredPermissions={[appPermissions.ViewUsers]}
+                >
+                  <Suspense fallback={<MyLoadingIndicator />}>
+                    <AppointmentsPage />
                   </Suspense>
                 </ProtectedRoute>
               }

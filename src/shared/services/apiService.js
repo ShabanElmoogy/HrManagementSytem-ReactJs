@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+import apiRoutes from "@/routes/apiRoutes";
 import axios from "axios";
 import i18n from "i18next";
 
@@ -23,8 +24,8 @@ class ApiService {
         const token = sessionStorage.getItem("token");
         if (
           token &&
-          !config.url.includes("/Auth/Login") &&
-          !config.url.includes("/Auth/RefreshToken")
+          !config.url?.includes(apiRoutes.auth.login) &&
+          !config.url?.includes(apiRoutes.auth.refreshToken)
         ) {
           config.headers["Authorization"] = `Bearer ${token}`;
         }
@@ -41,15 +42,16 @@ class ApiService {
   }
 
   getBaseURL() {
-    // Development URL
-    if (import.meta.env.MODE === "development") {
-      return "https://localhost:7037";
-    }
+    const envUrl =
+      import.meta.env.VITE_API_URL && import.meta.env.VITE_API_URL.trim();
 
-    // Production URL
-    return (
-      localStorage.getItem("baseApiUrl") || "https://myarchieve-last.runasp.net"
-    ); // Replace with your actual production URL
+    const lsUrl = localStorage.getItem("baseApiUrl");
+
+    if (lsUrl) {
+      return lsUrl;
+    } else {
+      return envUrl;
+    }
   }
 
   async handleResponseError(error) {
@@ -101,7 +103,7 @@ class ApiService {
     }
 
     try {
-      const response = await this.api.post("/v1/api/Auth/RefreshToken", {
+      const response = await this.api.post(apiRoutes.auth.refreshToken, {
         token,
         refreshToken,
       });
@@ -128,7 +130,7 @@ class ApiService {
       console.log("Error in API request:", error);
       if (
         error.response?.status === 401 &&
-        !endpoint.includes("/Auth/RefreshToken")
+        !endpoint.includes(apiRoutes.auth.refreshToken)
       ) {
         this.logout();
         this.navigateToLogin();

@@ -7,7 +7,7 @@ const HangfireDashboard = () => {
         id="reportFrame"
         width="100%"
         height="100%"
-        src={`${localStorage.getItem("baseApiUrl") || "https://localhost:7037"
+        src={`${(import.meta.env.VITE_API_URL && import.meta.env.VITE_API_URL.replace(/\/$/, '')) || (localStorage.getItem("baseApiUrl") || "https://localhost:7037")
           }/hangfire`}
         style={{ border: "none" }}
         title="Hangfire Dashboard"

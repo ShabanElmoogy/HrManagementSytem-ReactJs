@@ -98,7 +98,7 @@ const ScrollableContent = styled(Box)(({ theme }) => ({
 }));
 
 const ToggleButton = styled(Button, {
-  shouldForwardProp: (prop) => prop !== 'expanded',
+  shouldForwardProp: (prop) => prop !== "expanded",
 })(({ theme, open, expanded }) => ({
   display: open ? "flex" : "none",
   width: "100%",
@@ -306,24 +306,24 @@ function SideBar({ open, handleDrawerClose }) {
           }
         >
           {areAllSectionsExpanded
-            ? t("CollapseAllSections")
-            : t("ExpandAllSections")}
+            ? t("menu.collapseAllSections")
+            : t("menu.expandAllSections")}
         </ToggleButton>
 
         {/* User Profile - Hide when sections are expanded */}
         <Collapse in={!isAnySectionExpanded} timeout="auto">
-          <UserProfile open={open} onLogout={handleLogout} />
+          <Box sx={{ pb: 1 }}>
+            <UserProfile open={open} onLogout={handleLogout} />
+          </Box>
         </Collapse>
 
-        <Divider />
-
         {/* Search Input */}
-        <SearchContainer open={open}>
+        <SearchContainer open={open} sx={{ mt: 3 }}>
           <SearchIconWrapper>
             <SearchIcon fontSize="small" />
           </SearchIconWrapper>
           <StyledInputBase
-            placeholder={t("search")}
+            placeholder={t("search.searchInSidebar")}
             inputProps={{ "aria-label": "search" }}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}

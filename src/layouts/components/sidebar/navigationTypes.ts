@@ -63,6 +63,7 @@ export enum NavigationTitles {
   REPORTS = "menu.reports",
   EXTRAS = "menu.extras",
   FILEMANAGER = "menu.filemanager",
+  APPOINTMENTS = "menu.appointments",
 
   // Direct titles
   CHART_EXAMPLES = "menu.chartExamples",

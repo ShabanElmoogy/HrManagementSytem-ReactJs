@@ -105,8 +105,13 @@ class ReportApiService {
 }
 
 // Create specialized report service
-const reportApiService = new ReportApiService(
-  localStorage.getItem("reportApiUrl") || "https://localhost:44341/"
-);
+const reportEnvUrl =
+  import.meta.env.VITE_REPORT_API_URL &&
+  import.meta.env.VITE_REPORT_API_URL.trim();
+
+const reportLsUrl = localStorage.getItem("reportApiUrl");
+const reportBaseUrl = reportLsUrl || reportEnvUrl;
+
+const reportApiService = new ReportApiService(reportBaseUrl);
 
 export default reportApiService;

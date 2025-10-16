@@ -88,7 +88,11 @@
     "kanban": "Kanban",
     "kanbanBoards": "Boards",
     "extras": "Extras",
-    "filemanager": "File Manager"
+    "filemanager": "File Manager",
+    "appointments": "Appointments",
+    "collapseAllSections": "Collapse All Sections",
+    "expandAllSections" : "Expand All Sections"
+
   },
   "actions": {
     "buttons": "Actions",
@@ -287,7 +291,8 @@
     "lessThanOrEqual": "Less than or equal",
     "searchType": "Search Type",
     "searchText": "Search Text",
-    "searchField": "Search Field"
+    "searchField": "Search Field",
+    "searchInSidebar": "Search In Sidebar"
   },
   "pagination": {
     "rowsPerPage": "Rows per page",

@@ -83,7 +83,10 @@
     "kanban": "كانبان",
     "kanbanBoards": "اللوحات",
     "extras": "الاضافات",
-    "filemanager": "مدير الملفات"
+    "filemanager": "مدير الملفات",
+    "appointments": "المواعيد",
+    "collapseAllSections" : "غلق كل الأقسام",
+    "expandAllSections" : "فتح كل الأقسام"
   },
   "actions": {
     "buttons": "العمليات",
@@ -277,7 +280,8 @@
     "lessThanOrEqual": "اقل من او يساوى",
     "searchType": "نوع البحث",
     "searchText": "نص البحث",
-    "searchField": "حقل البحث"
+    "searchField": "حقل البحث",
+    "searchInSidebar" : "البحث فى القوائم"
   },
   "pagination": {
     "rowsPerPage": " عدد الصفوف في الصفحة",
