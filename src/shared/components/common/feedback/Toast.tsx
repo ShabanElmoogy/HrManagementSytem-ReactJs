@@ -1,5 +1,6 @@
 import React from 'react';
 import toast, { Toaster, ToastOptions } from 'react-hot-toast';
+import { useTheme, alpha } from '@mui/material/styles';
 
 // Toast configuration
 const defaultToastOptions: ToastOptions = {
@@ -16,71 +17,48 @@ const defaultToastOptions: ToastOptions = {
   },
 };
 
+// Helpers to detect mode for non-React calls
+const getMode = (): 'dark' | 'light' => {
+  try {
+    const stored = typeof localStorage !== 'undefined' ? localStorage.getItem('currentMode') : null;
+    if (stored === 'dark' || stored === 'light') return stored;
+  } catch {}
+  if (typeof window !== 'undefined' && window.matchMedia) {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  return 'light';
+};
+
+const getWarningStyle = (mode: 'dark' | 'light') => ({
+  background: mode === 'dark' ? '#78350f' : '#f59e0b', // amber variants
+  color: '#fff',
+  border: `1px solid ${mode === 'dark' ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)'}`,
+});
+
+const getInfoStyle = (mode: 'dark' | 'light') => ({
+  background: mode === 'dark' ? '#1e3a8a' : '#2563eb', // blue variants
+  color: '#fff',
+  border: `1px solid ${mode === 'dark' ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)'}`,
+});
+
 // Success toast options
 const successOptions: ToastOptions = {
   ...defaultToastOptions,
-  style: {
-    ...defaultToastOptions.style,
-    background: '#10b981',
-    color: '#fff',
-  },
-  iconTheme: {
-    primary: '#fff',
-    secondary: '#10b981',
-  },
 };
 
 // Error toast options
 const errorOptions: ToastOptions = {
   ...defaultToastOptions,
-  style: {
-    ...defaultToastOptions.style,
-    background: '#ef4444',
-    color: '#fff',
-  },
-  iconTheme: {
-    primary: '#fff',
-    secondary: '#ef4444',
-  },
 };
 
 // Warning toast options
-const warningOptions: ToastOptions = {
-  ...defaultToastOptions,
-  style: {
-    ...defaultToastOptions.style,
-    background: '#f59e0b',
-    color: '#fff',
-  },
-  iconTheme: {
-    primary: '#fff',
-    secondary: '#f59e0b',
-  },
-};
 
 // Info toast options
-const infoOptions: ToastOptions = {
-  ...defaultToastOptions,
-  style: {
-    ...defaultToastOptions.style,
-    background: '#3b82f6',
-    color: '#fff',
-  },
-  iconTheme: {
-    primary: '#fff',
-    secondary: '#3b82f6',
-  },
-};
 
 // Loading toast options
 const loadingOptions: ToastOptions = {
   ...defaultToastOptions,
   duration: Infinity, // Loading toasts don't auto-dismiss
-  style: {
-    ...defaultToastOptions.style,
-    background: '#6b7280',
-    color: '#fff',
-  },
 };
 
 // Toast utility functions
@@ -91,19 +69,33 @@ export const showToast = {
   error: (message: string, options?: ToastOptions) => 
     toast.error(message, { ...errorOptions, ...options }),
   
-  warning: (message: string, options?: ToastOptions) => 
-    toast(message, { 
-      ...warningOptions, 
+  warning: (message: string, options?: ToastOptions) => {
+    const mode = getMode();
+    return toast(message, {
+      ...defaultToastOptions,
       ...options,
       icon: '⚠️',
-    }),
+      style: {
+        ...defaultToastOptions.style,
+        ...getWarningStyle(mode),
+        ...(options?.style || {}),
+      },
+    });
+  },
   
-  info: (message: string, options?: ToastOptions) => 
-    toast(message, { 
-      ...infoOptions, 
+  info: (message: string, options?: ToastOptions) => {
+    const mode = getMode();
+    return toast(message, {
+      ...defaultToastOptions,
       ...options,
       icon: 'ℹ️',
-    }),
+      style: {
+        ...defaultToastOptions.style,
+        ...getInfoStyle(mode),
+        ...(options?.style || {}),
+      },
+    });
+  },
   
   loading: (message: string, options?: ToastOptions) => 
     toast.loading(message, { ...loadingOptions, ...options }),
@@ -147,6 +139,54 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
   containerStyle,
   toastOptions,
 }) => {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
+  const baseBorder = alpha(theme.palette.divider, isDark ? 0.3 : 0.2);
+
+  const themedToastOptions: ToastOptions = {
+    ...defaultToastOptions,
+    style: {
+      borderRadius: '10px',
+      background: theme.palette.background.paper,
+      color: theme.palette.text.primary,
+      fontSize: '14px',
+      fontWeight: '500',
+      padding: '12px 16px',
+      maxWidth: '420px',
+      border: `1px solid ${baseBorder}`,
+      boxShadow: isDark ? '0 8px 22px rgba(0,0,0,0.6)' : '0 8px 22px rgba(0,0,0,0.08)',
+    },
+    success: {
+      style: {
+        background: theme.palette.success.main,
+        color: theme.palette.getContrastText(theme.palette.success.main),
+        border: `1px solid ${alpha(theme.palette.success.main, 0.3)}`,
+      },
+    },
+    error: {
+      style: {
+        background: theme.palette.error.main,
+        color: theme.palette.getContrastText(theme.palette.error.main),
+        border: `1px solid ${alpha(theme.palette.error.main, 0.3)}`,
+      },
+    },
+    loading: {
+      duration: Infinity,
+      style: {
+        background: isDark ? '#374151' : '#e5e7eb',
+        color: isDark ? '#fff' : '#111827',
+        border: `1px solid ${baseBorder}`,
+      },
+    },
+    blank: {
+      style: {
+        background: theme.palette.background.paper,
+        color: theme.palette.text.primary,
+        border: `1px solid ${baseBorder}`,
+      },
+    },
+  } as ToastOptions;
+
   return (
     <>
       {children}
@@ -157,7 +197,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
         containerClassName={containerClassName}
         containerStyle={containerStyle}
         toastOptions={{
-          ...defaultToastOptions,
+          ...themedToastOptions,
           ...toastOptions,
         }}
       />

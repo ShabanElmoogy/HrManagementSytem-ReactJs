@@ -70,7 +70,11 @@ const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
 
   const handleSubmit = () => {
     if (!validate()) return;
-    onSubmit({ text: title.trim(), start: start!.toISOString(), end: end!.toISOString() });
+    onSubmit({
+      text: title.trim(),
+      start: start!.format("YYYY-MM-DDTHH:mm"),
+      end: end!.format("YYYY-MM-DDTHH:mm"),
+    });
   };
 
   return (
@@ -95,6 +99,8 @@ const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
               value={start}
               onChange={(v) => setStart(v)}
               minDateTime={todayStart}
+              ampm={false}
+              format="DD/MM/YYYY HH:mm"
               slotProps={{ textField: { fullWidth: true } }}
             />
             <DateTimePicker
@@ -102,6 +108,8 @@ const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
               value={end}
               onChange={(v) => setEnd(v)}
               minDateTime={todayStart}
+              ampm={false}
+              format="DD/MM/YYYY HH:mm"
               slotProps={{ textField: { fullWidth: true } }}
             />
           </Stack>
@@ -134,15 +142,33 @@ const AppointmentCalendar: React.FC = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [defaultStart, setDefaultStart] = useState<string>(new Date().toISOString());
   const [defaultEnd, setDefaultEnd] = useState<string>(new Date(Date.now() + 60 * 60 * 1000).toISOString());
+  const [currentView, setCurrentView] = useState<string>("dayGridMonth");
 
   const events = useMemo(() => {
+    if (currentView === "dayGridMonth") {
+      return appointments.map((a) => {
+        // Derive date-only in UTC to avoid local timezone day shifts in month view
+        const sUTC = new Date(a.start).toISOString().slice(0, 10); // YYYY-MM-DD
+        const eUTC = new Date(a.end || a.start).toISOString().slice(0, 10);
+        const sDay = dayjs(sUTC);
+        const eDay = dayjs(eUTC);
+        const endExclusive = (eDay.isSame(sDay) || eDay.isBefore(sDay) ? sDay.add(1, "day") : eDay.add(1, "day")).format("YYYY-MM-DD");
+        return {
+          id: String(a.id),
+          title: a.text,
+          start: sUTC,
+          end: endExclusive,
+          allDay: true,
+        };
+      });
+    }
     return appointments.map((a) => ({
       id: String(a.id),
       title: a.text,
       start: a.start,
       end: a.end,
     }));
-  }, [appointments]);
+  }, [appointments, currentView]);
 
   const onSelect = async (selectInfo: DateSelectArg) => {
     const calendarApi = selectInfo.view.calendar;
@@ -163,26 +189,56 @@ const AppointmentCalendar: React.FC = () => {
   };
 
   const onCreate = (data: { text: string; start: string; end: string }) => {
+    // Normalize create payload depending on view to avoid timezone day shifts
+    if (currentView === "dayGridMonth") {
+      const startDay = dayjs(data.start).format("YYYY-MM-DD");
+      const endDay = dayjs(data.end).format("YYYY-MM-DD");
+      // Save at UTC noon to avoid timezone-induced off-by-one day shifts
+      createMutation.mutate(
+        { start: `${startDay}T12:00:00Z`, end: `${endDay}T12:00:00Z`, text: data.text },
+        { onSuccess: () => setDialogOpen(false) }
+      );
+      return;
+    }
+
+    // Timed views: keep precise local date-time without timezone suffix
     createMutation.mutate(
-      { start: data.start, end: data.end, text: data.text },
+      { start: dayjs(data.start).format("YYYY-MM-DDTHH:mm:ss"), end: dayjs(data.end).format("YYYY-MM-DDTHH:mm:ss"), text: data.text },
       { onSuccess: () => setDialogOpen(false) }
     );
   };
 
   const onEventChange = (changeInfo: EventChangeArg) => {
     const e = changeInfo.event;
+    const id = Number(e.id);
+
+    // In month view/all-day, use date-only semantics and save at UTC noon to avoid day shifts
+    if (e.allDay || currentView === "dayGridMonth") {
+      const startStr = e.startStr; // YYYY-MM-DD
+      const endStr = e.endStr || e.startStr; // YYYY-MM-DD (exclusive end)
+
+      const invalidAllDay = dayjs(startStr).isBefore(todayStart) || dayjs(endStr).isBefore(todayStart);
+      if (invalidAllDay) {
+        changeInfo.revert();
+        return;
+      }
+
+      const startIsoUtcNoon = `${startStr}T12:00:00Z`;
+      const endIsoUtcNoon = `${endStr}T12:00:00Z`;
+      updateMutation.mutate({ id, start: startIsoUtcNoon, end: endIsoUtcNoon, text: e.title });
+      return;
+    }
+
+    // Timed events in timeGrid views
     const startDate = e.start ? dayjs(e.start) : dayjs();
     const endDate = e.end ? dayjs(e.end) : startDate;
     const isInvalid = startDate.startOf("day").isBefore(todayStart) || endDate.startOf("day").isBefore(todayStart);
     if (isInvalid) {
-      showToast.warning("You cannot move appointments to previous days");
       changeInfo.revert();
       return;
     }
-    const id = Number(e.id);
-    const start = startDate.toISOString();
-    const end = endDate.toISOString();
-    updateMutation.mutate({ id, start, end, text: e.title });
+
+    updateMutation.mutate({ id, start: startDate.toISOString(), end: endDate.toISOString(), text: e.title });
   };
 
   const onEventClick = (clickInfo: EventClickArg) => {
@@ -339,10 +395,15 @@ const AppointmentCalendar: React.FC = () => {
             selectable
             selectMirror
             editable
+            eventStartEditable={true}
+            eventDurationEditable={true}
+            eventResizableFromStart={true}
+            eventDisplay="block"
             events={events}
             select={onSelect}
             eventClick={onEventClick}
             eventChange={onEventChange}
+            datesSet={(arg) => setCurrentView(arg.view.type)}
             height="auto"
           />
 
