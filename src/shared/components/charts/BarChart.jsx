@@ -32,6 +32,7 @@ const BarChart = ({
   const theme = useTheme();
   const chartTheme = getChartTheme(theme);
   const colorPalette = Array.isArray(colors) ? colors : getColorPalette(colors, theme.palette.mode);
+  const hoverCursor = chartTheme.tooltip.cursor;
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null;
@@ -131,7 +132,7 @@ const BarChart = ({
           </>
         )}
         
-        {showTooltip && <Tooltip content={<CustomTooltip />} />}
+        {showTooltip && <Tooltip content={<CustomTooltip />} cursor={hoverCursor} />}
         {showLegend && <Legend wrapperStyle={chartTheme.legend.wrapperStyle} />}
         
         {renderBars()}

@@ -20,13 +20,9 @@ const QuickInsights = () => {
   const theme = useTheme();
 
   return (
-    <Grid
-      container
-      spacing={2}
-      sx={{ width: { xs: "100%", md: "auto" }, alignItems: "stretch" }}
-    >
+    <Grid container spacing={2}>
       {/* Hires (last 7d) */}
-      <Grid size={{ xs: 12, md: 3.4 }} sx={{ display: "flex" }}>
+      <Grid size={{ xs: 12, md: 3.4 }}>
         <Paper
           sx={{
             p: 1.25,
@@ -57,7 +53,7 @@ const QuickInsights = () => {
       </Grid>
 
       {/* Time to Hire */}
-      <Grid size={{ xs: 12, md: 2.6 }} sx={{ display: "flex" }}>
+      <Grid size={{ xs: 12, md: 2.6 }}>
         <Paper
           sx={{
             p: 1.25,
@@ -86,7 +82,7 @@ const QuickInsights = () => {
       </Grid>
 
       {/* Employee Satisfaction */}
-      <Grid size={{ xs: 12, md: 3 }} sx={{ display: "flex" }}>
+      <Grid size={{ xs: 12, md: 3 }}>
         <Paper
           sx={{
             p: 1.25,
@@ -116,7 +112,7 @@ const QuickInsights = () => {
       </Grid>
 
       {/* Overtime Hours */}
-      <Grid size={{ xs: 12, md: 3 }} sx={{ display: "flex" }}>
+      <Grid size={{ xs: 12, md: 3 }}>
         <Paper
           sx={{
             p: 1.25,

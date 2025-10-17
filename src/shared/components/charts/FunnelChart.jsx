@@ -53,9 +53,59 @@ const FunnelChart = ({
     );
   };
 
-  const renderCustomLabel = (entry) => {
+  const getContrastColor = (hex) => {
+    if (!hex) return theme.palette.text.primary;
+    const c = hex.replace('#', '');
+    const r = parseInt(c.substring(0, 2), 16);
+    const g = parseInt(c.substring(2, 4), 16);
+    const b = parseInt(c.substring(4, 6), 16);
+    // Perceived luminance
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return luminance > 0.6 ? '#111' : '#fff';
+  };
+
+  const renderCustomLabel = (props) => {
     if (!showLabels) return null;
-    return `${formatLabel(entry[nameKey])}: ${formatValue(entry[dataKey])}`;
+    const { x, y, payload, index } = props;
+    const name = formatLabel(payload?.[nameKey] ?? '');
+    const val = payload?.[dataKey] ?? 0;
+    const valueStr = formatValue(val);
+    const conv = Number(payload?.conversionRate ?? 0);
+
+    // Choose segment color from palette if available for contrast calc
+    const segColor = Array.isArray(colors) ? colors[index % colors.length] : undefined;
+    const textColor = getContrastColor(segColor);
+    const outlineColor = theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.7)';
+
+    // For small slices, render compact single line with percentage
+    const isSmall = conv < 12; // threshold
+    const fontSize = isSmall ? 10 : 12;
+
+    return (
+      <g>
+        <text
+          x={x}
+          y={y}
+          textAnchor="middle"
+          dominantBaseline="central"
+          fill={textColor}
+          stroke={outlineColor}
+          strokeWidth={1.4}
+          paintOrder="stroke"
+          fontSize={fontSize}
+          fontFamily={theme.typography.fontFamily}
+        >
+          {isSmall ? (
+            `${name} (${conv}%)`
+          ) : (
+            <tspan>
+              <tspan x={x} dy={-4}>{name}</tspan>
+              <tspan x={x} dy={12}>{valueStr}</tspan>
+            </tspan>
+          )}
+        </text>
+      </g>
+    );
   };
 
   const handleSegmentClick = (data, index) => {

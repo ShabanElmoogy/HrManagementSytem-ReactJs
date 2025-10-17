@@ -1,5 +1,12 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+import {
+  ComposableMap,
+  Geographies,
+  Geography,
+  Marker,
+  ZoomableGroup,
+} from 'react-simple-maps';
 import {
   Box,
   Typography,
@@ -7,55 +14,54 @@ import {
   useTheme,
   alpha,
   Tooltip,
-  Chip,
-  Avatar,
-  IconButton
+  IconButton,
 } from '@mui/material';
 import {
   Public,
-  LocationOn,
   People,
   Business,
   ZoomIn,
   ZoomOut,
-  CenterFocusStrong
+  CenterFocusStrong,
 } from '@mui/icons-material';
 
-// World map data - simplified SVG paths for major countries
-const worldMapData = [
-  // North America
-  { id: 'US', name: 'United States', path: 'M100,200 L150,180 L180,200 L170,250 L120,270 L100,250 Z', continent: 'North America' },
-  { id: 'CA', name: 'Canada', path: 'M100,150 L180,130 L200,180 L150,200 L100,180 Z', continent: 'North America' },
-  { id: 'MX', name: 'Mexico', path: 'M120,280 L180,260 L190,320 L130,340 L120,320 Z', continent: 'North America' },
+// Source topology (no token required)
+const GEO_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
 
-  // South America
-  { id: 'BR', name: 'Brazil', path: 'M220,350 L280,330 L290,420 L230,440 L220,400 Z', continent: 'South America' },
-  { id: 'AR', name: 'Argentina', path: 'M200,450 L260,430 L270,480 L210,500 L200,480 Z', continent: 'South America' },
+// Minimal A3->A2 code mapping for countries used by this app
+const A3_TO_A2: Record<string, string> = {
+  USA: 'US', CAN: 'CA', MEX: 'MX',
+  BRA: 'BR', ARG: 'AR',
+  GBR: 'GB', DEU: 'DE', FRA: 'FR', ITA: 'IT', ESP: 'ES',
+  CHN: 'CN', JPN: 'JP', IND: 'IN', KOR: 'KR',
+  ZAF: 'ZA', EGY: 'EG', NGA: 'NG',
+  AUS: 'AU'
+};
 
-  // Europe
-  { id: 'GB', name: 'United Kingdom', path: 'M380,180 L420,170 L430,200 L390,210 L380,190 Z', continent: 'Europe' },
-  { id: 'DE', name: 'Germany', path: 'M420,190 L470,180 L480,210 L430,220 L420,200 Z', continent: 'Europe' },
-  { id: 'FR', name: 'France', path: 'M400,210 L440,200 L450,230 L410,240 L400,220 Z', continent: 'Europe' },
-  { id: 'IT', name: 'Italy', path: 'M430,230 L470,220 L480,250 L440,260 L430,240 Z', continent: 'Europe' },
-  { id: 'ES', name: 'Spain', path: 'M380,240 L420,230 L430,260 L390,270 L380,250 Z', continent: 'Europe' },
-
-  // Asia
-  { id: 'CN', name: 'China', path: 'M550,200 L650,180 L670,280 L570,300 L550,250 Z', continent: 'Asia' },
-  { id: 'JP', name: 'Japan', path: 'M680,220 L720,210 L730,240 L690,250 L680,230 Z', continent: 'Asia' },
-  { id: 'IN', name: 'India', path: 'M520,280 L580,270 L590,330 L530,340 L520,310 Z', continent: 'Asia' },
-  { id: 'KR', name: 'South Korea', path: 'M650,230 L680,220 L690,250 L660,260 L650,240 Z', continent: 'Asia' },
-
-  // Africa
-  { id: 'ZA', name: 'South Africa', path: 'M450,420 L510,410 L520,460 L460,470 L450,440 Z', continent: 'Africa' },
-  { id: 'EG', name: 'Egypt', path: 'M470,300 L520,290 L530,320 L480,330 L470,310 Z', continent: 'Africa' },
-  { id: 'NG', name: 'Nigeria', path: 'M420,340 L470,330 L480,370 L430,380 L420,350 Z', continent: 'Africa' },
-
-  // Oceania
-  { id: 'AU', name: 'Australia', path: 'M600,380 L700,370 L710,430 L610,440 L600,400 Z', continent: 'Oceania' }
-];
+// Approximate country centroids for office markers
+const COUNTRY_COORDS: Record<string, [number, number]> = {
+  US: [-98.5, 39.8],
+  CA: [-106.3, 56.1],
+  MX: [-102.6, 23.6],
+  BR: [-51.9, -10.8],
+  AR: [-64.3, -34.6],
+  GB: [-3.4, 55.4],
+  DE: [10.4, 51.1],
+  FR: [2.2, 46.2],
+  IT: [12.6, 42.8],
+  ES: [-3.7, 40.3],
+  CN: [104.1, 35.8],
+  JP: [138.3, 36.2],
+  IN: [78.9, 22.1],
+  KR: [127.8, 36.3],
+  ZA: [24.7, -29.0],
+  EG: [30.8, 26.8],
+  NG: [8.7, 9.1],
+  AU: [134.5, -25.7],
+};
 
 interface CountryData {
-  id: string;
+  id: string; // ISO A2 (e.g., 'US')
   name: string;
   employees: number;
   offices: number;
@@ -76,283 +82,203 @@ const WorldMap: React.FC<WorldMapProps> = ({
   data,
   onCountryClick,
   height = 500,
-  showStats = true
+  showStats = true,
 }) => {
   const theme = useTheme();
-  const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
-  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [center, setCenter] = useState<[number, number]>([0, 15]);
+  const [hoverId, setHoverId] = useState<string | null>(null);
 
-  // Create a map of country data for quick lookup
-  const countryDataMap = useMemo(() => {
-    return data.reduce((acc, country) => {
-      acc[country.id] = country;
-      return acc;
-    }, {} as Record<string, CountryData>);
+  const dataMap = useMemo(() => new Map<string, CountryData>(data.map(d => [d.id, d])), [data]);
+
+  // Stats
+  const stats = useMemo(() => ({
+    totalEmployees: data.reduce((s, d) => s + d.employees, 0),
+    totalOffices: data.reduce((s, d) => s + d.offices, 0),
+    countriesWithPresence: data.length,
+  }), [data]);
+
+  // Color scale based on employees (theme-aware, smooth, log-normalized)
+  const [minEmployees, maxEmployees] = useMemo(() => {
+    const vals = data.map(d => d.employees);
+    const min = Math.min(...vals, 0);
+    const max = Math.max(1, ...vals);
+    return [min, max] as [number, number];
   }, [data]);
 
-  // Calculate statistics
-  const stats = useMemo(() => {
-    const totalEmployees = data.reduce((sum, country) => sum + country.employees, 0);
-    const totalOffices = data.reduce((sum, country) => sum + country.offices, 0);
-    const totalRevenue = data.reduce((sum, country) => sum + country.revenue, 0);
-    const countriesWithPresence = data.length;
-
-    return { totalEmployees, totalOffices, totalRevenue, countriesWithPresence };
-  }, [data]);
-
-  const getCountryColor = (countryId: string) => {
-    const countryData = countryDataMap[countryId];
-    if (!countryData) return theme.palette.grey[300];
-
-    const intensity = Math.min(countryData.employees / 100, 1); // Max at 100 employees
-    return alpha(theme.palette.primary.main, 0.3 + intensity * 0.7);
+  const hexToRgb = (hex: string) => {
+    const c = hex.replace('#', '');
+    const r = parseInt(c.substring(0, 2), 16);
+    const g = parseInt(c.substring(2, 4), 16);
+    const b = parseInt(c.substring(4, 6), 16);
+    return { r, g, b };
+  };
+  const rgbToHex = (r: number, g: number, b: number) =>
+    `#${[r, g, b]
+      .map(x => Math.max(0, Math.min(255, Math.round(x))).toString(16).padStart(2, '0'))
+      .join('')}`;
+  const mixColors = (hex1: string, hex2: string, t: number) => {
+    const a = hexToRgb(hex1);
+    const b = hexToRgb(hex2);
+    return rgbToHex(a.r + (b.r - a.r) * t, a.g + (b.g - a.g) * t, a.b + (b.b - a.b) * t);
   };
 
-  const handleCountryClick = (countryId: string) => {
-    const countryData = countryDataMap[countryId];
-    if (countryData && onCountryClick) {
-      onCountryClick(countryData);
-    }
+  const startHex = theme.palette.mode === 'dark' ? theme.palette.info.light : theme.palette.info.light;
+  const endHex = theme.palette.mode === 'dark' ? theme.palette.primary.light : theme.palette.primary.dark;
+
+  const normalize = (v: number) => {
+    const ln = (x: number) => Math.log(1 + x);
+    const denom = Math.max(ln(maxEmployees) - ln(Math.max(0, minEmployees)), 1e-6);
+    return Math.min(Math.max((ln(v) - ln(Math.max(0, minEmployees))) / denom, 0), 1);
   };
 
-  const handleZoomIn = () => setZoom(prev => Math.min(prev * 1.2, 3));
-  const handleZoomOut = () => setZoom(prev => Math.max(prev / 1.2, 0.5));
-  const handleReset = () => {
-    setZoom(1);
-    setPan({ x: 0, y: 0 });
+  const colorForEmployees = (employees: number) => {
+    const t = normalize(employees);
+    return mixColors(startHex, endHex, t);
   };
+
+  const countryFill = (a2: string) => {
+    const c = dataMap.get(a2);
+    if (!c) return theme.palette.mode === 'dark' ? theme.palette.grey[700] : theme.palette.grey[300];
+    return colorForEmployees(c.employees);
+  };
+
+  const handleZoomIn = () => setZoom(z => Math.min(z * 1.25, 4));
+  const handleZoomOut = () => setZoom(z => Math.max(z / 1.25, 0.6));
+  const handleReset = () => { setZoom(1); setCenter([0, 15]); };
 
   return (
-    <Paper sx={{ p: 3, height: 'auto' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h5" sx={{ fontWeight: 700, display: 'flex', alignItems: 'center' }}>
-          <Public sx={{ mr: 1 }} />
-          Global Presence
+    <Paper sx={{ p: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h5" sx={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Public /> Global Presence
         </Typography>
-
         <Box sx={{ display: 'flex', gap: 1 }}>
-          <IconButton onClick={handleZoomIn} size="small">
-            <ZoomIn />
-          </IconButton>
-          <IconButton onClick={handleZoomOut} size="small">
-            <ZoomOut />
-          </IconButton>
-          <IconButton onClick={handleReset} size="small">
-            <CenterFocusStrong />
-          </IconButton>
+          <IconButton onClick={handleZoomIn} size="small"><ZoomIn /></IconButton>
+          <IconButton onClick={handleZoomOut} size="small"><ZoomOut /></IconButton>
+          <IconButton onClick={handleReset} size="small"><CenterFocusStrong /></IconButton>
         </Box>
       </Box>
 
-      {/* Statistics Cards */}
       {showStats && (
-        <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
-          <Box sx={{
-            display: 'flex',
-            alignItems: 'center',
-            p: 2,
-            borderRadius: 2,
-            backgroundColor: alpha(theme.palette.primary.main, 0.1),
-            border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-            minWidth: 150
-          }}>
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', p: 1.5, borderRadius: 2, minWidth: 180, backgroundColor: alpha(theme.palette.primary.main, 0.08), border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}` }}>
             <People sx={{ mr: 1, color: theme.palette.primary.main }} />
             <Box>
-              <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                {stats.totalEmployees.toLocaleString()}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                Total Employees
-              </Typography>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{stats.totalEmployees.toLocaleString()}</Typography>
+              <Typography variant="caption" color="text.secondary">Total Employees</Typography>
             </Box>
           </Box>
-
-          <Box sx={{
-            display: 'flex',
-            alignItems: 'center',
-            p: 2,
-            borderRadius: 2,
-            backgroundColor: alpha(theme.palette.success.main, 0.1),
-            border: `1px solid ${alpha(theme.palette.success.main, 0.2)}`,
-            minWidth: 150
-          }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', p: 1.5, borderRadius: 2, minWidth: 180, backgroundColor: alpha(theme.palette.success.main, 0.08), border: `1px solid ${alpha(theme.palette.success.main, 0.2)}` }}>
             <Business sx={{ mr: 1, color: theme.palette.success.main }} />
             <Box>
-              <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                {stats.totalOffices}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                Office Locations
-              </Typography>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{stats.totalOffices}</Typography>
+              <Typography variant="caption" color="text.secondary">Office Locations</Typography>
             </Box>
           </Box>
-
-          <Box sx={{
-            display: 'flex',
-            alignItems: 'center',
-            p: 2,
-            borderRadius: 2,
-            backgroundColor: alpha(theme.palette.info.main, 0.1),
-            border: `1px solid ${alpha(theme.palette.info.main, 0.2)}`,
-            minWidth: 150
-          }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', p: 1.5, borderRadius: 2, minWidth: 180, backgroundColor: alpha(theme.palette.info.main, 0.08), border: `1px solid ${alpha(theme.palette.info.main, 0.2)}` }}>
             <Public sx={{ mr: 1, color: theme.palette.info.main }} />
             <Box>
-              <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                {stats.countriesWithPresence}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                Countries
-              </Typography>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{stats.countriesWithPresence}</Typography>
+              <Typography variant="caption" color="text.secondary">Countries</Typography>
             </Box>
           </Box>
         </Box>
       )}
 
-      {/* World Map */}
       <Box sx={{
-        position: 'relative',
         height,
-        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : theme.palette.grey[50],
         borderRadius: 2,
         overflow: 'hidden',
-        border: `1px solid ${theme.palette.divider}`
+        border: `1px solid ${theme.palette.divider}`,
+        background: theme.palette.mode === 'dark'
+          ? `radial-gradient(800px 300px at 50% 0%, ${alpha(theme.palette.primary.main, 0.08)} 0%, transparent 60%), ${theme.palette.background.default}`
+          : theme.palette.grey[50],
       }}>
-        <svg
-          width="100%"
-          height="100%"
-          viewBox="0 0 800 500"
-          style={{
-            transform: `scale(${zoom}) translate(${pan.x}px, ${pan.y}px)`,
-            transformOrigin: 'center',
-            transition: 'transform 0.3s ease'
-          }}
-        >
-          {/* Ocean background */}
-          <rect width="800" height="500" fill={theme.palette.mode === 'dark' ? theme.palette.grey[800] : theme.palette.grey[100]} />
+        <ComposableMap projectionConfig={{ scale: 145 }} style={{ width: '100%', height: '100%' }}>
+          <ZoomableGroup center={center} zoom={zoom} onMoveEnd={(pos) => { setCenter(pos.coordinates as [number, number]); setZoom(pos.zoom); }}>
+            <Geographies geography={GEO_URL}>
+              {({ geographies }) => geographies.map((geo) => {
+                const a3 = geo.properties.ISO_A3 as string;
+                const a2 = A3_TO_A2[a3] || '';
+                const hasData = dataMap.has(a2);
 
-          {/* Country paths */}
-          {worldMapData.map((country) => {
-            const countryData = countryDataMap[country.id];
-            const isHovered = hoveredCountry === country.id;
-            const hasData = !!countryData;
+                const fill = hasData ? countryFill(a2) : (theme.palette.mode === 'dark' ? theme.palette.grey[700] : theme.palette.grey[300]);
 
-            return (
-              <Tooltip
-                key={country.id}
-                title={
-                  countryData ? (
-                    <Box sx={{ p: 1 }}>
-                      <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                        {countryData.flag} {country.name}
-                      </Typography>
-                      <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
-                        <Chip
-                          icon={<People />}
-                          label={`${countryData.employees} employees`}
-                          size="small"
-                          variant="outlined"
-                        />
-                        <Chip
-                          icon={<Business />}
-                          label={`${countryData.offices} offices`}
-                          size="small"
-                          variant="outlined"
-                        />
+                const node = (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    onMouseEnter={() => setHoverId(a2)}
+                    onMouseLeave={() => setHoverId(null)}
+                    onClick={() => { const cd = dataMap.get(a2); if (cd && onCountryClick) onCountryClick(cd); }}
+                    style={{
+                      default: { fill, outline: 'none', stroke: theme.palette.divider, strokeWidth: 0.7 },
+                      hover: { fill, outline: 'none', stroke: theme.palette.primary.main, strokeWidth: 1.2, filter: 'brightness(1.05)' },
+                      pressed: { fill, outline: 'none', stroke: theme.palette.primary.main, strokeWidth: 1.2 },
+                    }}
+                  />
+                );
+
+                const cd = dataMap.get(a2);
+                return (
+                  <Tooltip
+                    key={geo.rsmKey}
+                    title={cd ? (
+                      <Box sx={{ p: 0.5 }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{cd.flag} {cd.name}</Typography>
+                        <Typography variant="caption" color="text.secondary">Employees: {cd.employees.toLocaleString()}</Typography>
+                        <br />
+                        <Typography variant="caption" color="text.secondary">Offices: {cd.offices}</Typography>
                       </Box>
-                      <Typography variant="caption" sx={{ mt: 1, display: 'block' }}>
-                        Revenue: {countryData.currency} {countryData.revenue.toLocaleString()}
-                      </Typography>
-                    </Box>
-                  ) : (
-                    <Typography>{country.name}</Typography>
-                  )
-                }
-                arrow
-                placement="top"
-              >
-                <path
-                  d={country.path}
-                  fill={hasData ? getCountryColor(country.id) : (theme.palette.mode === 'dark' ? theme.palette.grey[700] : theme.palette.grey[300])}
-                  stroke={theme.palette.divider}
-                  strokeWidth={isHovered ? 2 : 1}
-                  style={{
-                    cursor: hasData ? 'pointer' : 'default',
-                    transition: 'all 0.2s ease',
-                    filter: isHovered ? 'brightness(1.1)' : 'none'
-                  }}
-                  onMouseEnter={() => setHoveredCountry(country.id)}
-                  onMouseLeave={() => setHoveredCountry(null)}
-                  onClick={() => handleCountryClick(country.id)}
-                />
-              </Tooltip>
-            );
-          })}
+                    ) : (
+                      <Typography variant="caption">{geo.properties.NAME}</Typography>
+                    )}
+                    arrow
+                    placement="top"
+                    disableInteractive
+                  >
+                    {node as any}
+                  </Tooltip>
+                );
+              })}
+            </Geographies>
 
-          {/* Office markers */}
-          {data.map((country) => {
-            if (country.offices > 0) {
-              // Find the country's position (simplified - in real app would use actual coordinates)
-              const countryShape = worldMapData.find(c => c.id === country.id);
-              if (countryShape) {
-                // Extract approximate center from path (simplified)
-                const bounds = countryShape.path.match(/(\d+),(\d+)/g);
-                if (bounds && bounds.length > 0) {
-                  const coords = bounds[0].split(',').map(Number);
-                  return (
-                    <circle
-                      key={`office-${country.id}`}
-                      cx={coords[0]}
-                      cy={coords[1]}
-                      r={Math.min(country.offices * 2 + 4, 12)}
-                      fill={theme.palette.success.main}
-                      stroke={theme.palette.common.white}
-                      strokeWidth={2}
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => handleCountryClick(country.id)}
-                    />
-                  );
-                }
-              }
-            }
-            return null;
-          })}
-        </svg>
+            {/* Office markers */}
+            {data.filter(d => (COUNTRY_COORDS[d.id] && d.offices > 0)).map((d) => {
+              const [lon, lat] = COUNTRY_COORDS[d.id];
+              return (
+                <Marker key={`m-${d.id}`} coordinates={[lon, lat]}>
+                  <circle r={Math.min(d.offices * 1.5 + 3, 8)} fill={theme.palette.success.main} stroke={theme.palette.common.white} strokeWidth={1.5} />
+                </Marker>
+              );
+            })}
+          </ZoomableGroup>
+        </ComposableMap>
 
         {/* Legend */}
         <Box sx={{
           position: 'absolute',
           bottom: 16,
           left: 16,
-          backgroundColor: alpha(theme.palette.background.paper, 0.9),
+          p: 1.5,
           borderRadius: 1,
-          p: 2,
-          backdropFilter: 'blur(10px)',
-          border: `1px solid ${alpha(theme.palette.divider, 0.5)}`
+          backgroundColor: alpha(theme.palette.background.paper, 0.9),
+          border: `1px solid ${alpha(theme.palette.divider, 0.6)}`,
+          backdropFilter: 'blur(8px)'
         }}>
-          <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
-            Legend
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Box sx={{
-                width: 12,
-                height: 12,
-                borderRadius: '50%',
-                backgroundColor: theme.palette.success.main,
-                border: `2px solid ${theme.palette.common.white}`
-              }} />
-              <Typography variant="caption">Office Location</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Box sx={{
-                width: 12,
-                height: 12,
-                backgroundColor: alpha(theme.palette.primary.main, 0.5),
-                border: `1px solid ${theme.palette.divider}`
-              }} />
-              <Typography variant="caption">Employee Presence</Typography>
-            </Box>
+          <Typography variant="caption" sx={{ fontWeight: 700, mb: 0.5, display: 'block' }}>Legend</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+            <Box sx={{ width: 140, height: 10, borderRadius: 1, background: `linear-gradient(90deg, ${startHex} 0%, ${endHex} 100%)` }} />
+            <Typography variant="caption">Employee Presence</Typography>
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 0.3 }}>
+            <Typography variant="caption" color="text.secondary">{minEmployees}</Typography>
+            <Typography variant="caption" color="text.secondary">{maxEmployees}</Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+            <Box sx={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: theme.palette.success.main, border: `2px solid ${theme.palette.common.white}` }} />
+            <Typography variant="caption">Office Location</Typography>
           </Box>
         </Box>
       </Box>

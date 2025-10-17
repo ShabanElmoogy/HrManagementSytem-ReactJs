@@ -132,6 +132,7 @@ export interface AppRoutes {
   servers: string;
   chat: string;
   kpis: string;
+  trends: string;
   chartExamples: string;
   countryReport : string;
 }
@@ -254,6 +255,7 @@ export const appRoutes: AppRoutes = {
 
   chat: "chat",
   kpis: "kpis",
+  trends: "trends",
   chartExamples: "chart-examples",
   countryReport : "country-report"
 } as const;

@@ -12,6 +12,7 @@ const ProtectedRoute = lazy(() =>
 );
 const Home = lazy(() => import("../features/home/home"));
 const AllKpisPage = lazy(() => import("../features/home/AllKpisPage"));
+const AllTrendsPage = lazy(() => import("../features/home/AllTrendsPage"));
 const EmailConfirmed = lazy(() => import("../features/auth/emailConfirmed"));
 const ForgetPassword = lazy(() => import("../features/auth/forgetPassword"));
 const ProfilePage = lazy(() => import("../features/auth/profile/profilePage"));
@@ -243,6 +244,15 @@ const AppRoutes = () => {
               element={
                 <Suspense fallback={<MyLoadingIndicator />}>
                   <AllKpisPage />
+                </Suspense>
+              }
+            />
+
+            <Route
+              path={appRoutes.trends}
+              element={
+                <Suspense fallback={<MyLoadingIndicator />}>
+                  <AllTrendsPage />
                 </Suspense>
               }
             />

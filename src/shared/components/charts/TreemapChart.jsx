@@ -45,7 +45,8 @@ const TreemapChart = ({
     );
   };
 
-  const CustomizedContent = ({ root, depth, x, y, width, height, index, payload, colors, rank, name }) => {
+  const CustomizedContent = ({ root, depth, x, y, width, height, index, payload, colors, nameKey, dataKey }) => {
+    const nodeName = (payload && (payload[nameKey] ?? payload.name)) || '';
     return (
       <g>
         <rect
@@ -54,7 +55,7 @@ const TreemapChart = ({
           width={width}
           height={height}
           style={{
-            fill: depth < 2 ? colors[Math.floor((index / root.children.length) * 6)] : 'none',
+            fill: depth < 2 ? colors[index % colors.length] : 'none',
             stroke: theme.palette.background.paper,
             strokeWidth: strokeWidth,
             strokeOpacity: 1,
@@ -70,7 +71,7 @@ const TreemapChart = ({
             fontSize={Math.min(width / 8, height / 8, 14)}
             fontFamily={theme.typography.fontFamily}
           >
-            {name}
+            {nodeName}
           </text>
         ) : null}
         {depth === 1 ? (
@@ -97,7 +98,7 @@ const TreemapChart = ({
         aspectRatio={4 / 3}
         stroke={theme.palette.background.paper}
         fill={colors[0]}
-        content={<CustomizedContent colors={colors} />}
+        content={<CustomizedContent colors={colors} nameKey={nameKey} dataKey={dataKey} />}
       >
         {showTooltip && <Tooltip content={<CustomTooltip />} />}
       </Treemap>
