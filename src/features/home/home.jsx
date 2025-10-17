@@ -1,24 +1,24 @@
-import { GroupAdd, Schedule, TrendingUp } from "@mui/icons-material";
-import { alpha, Box, Paper, Stack, Typography, useTheme } from "@mui/material";
+import { TrendingUp } from "@mui/icons-material";
+import { alpha, Box, Stack, Typography, useTheme, Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 // Shared components and charts
 import { MyHeader } from "@/shared/components";
-import { SparklineChart } from "@/shared/components/charts";
-import { sparklineHiring, timeToHireDays } from "./data/dashboardData";
+import Section from "./components/Section";
 import QuickInsights from "./QuickInsights";
-import AttendanceTrendsRow from "./rows/AttendanceTrendsRow";
-import Section from "./Section";
-import GlobalPresenceRow from "./rows/GlobalPresenceRow";
-import HealthPipelineRow from "./rows/HealthPipelineRow";
-import KpiRow from "./rows/KpiRow";
-import TrendsRow from "./rows/TrendsRow";
-
+import KpiRow from "./rows/01KpiRow";
+import { useNavigate } from "react-router-dom";
+import { appRoutes } from "@/routes";
+import AttendanceTrendsRow from "./rows/05AttendanceTrendsRow";
+import GlobalPresenceRow from "./rows/03GlobalPresenceRow";
+import HealthPipelineRow from "./rows/04HealthPipelineRow";
+import TrendsRow from "./rows/02TrendsRow";
 
 const Home = () => {
   const { t } = useTranslation();
   const theme = useTheme();
+  const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -77,7 +77,13 @@ const Home = () => {
 
       {/* KPI CARDS SECTION */}
       <Section>
-        <KpiRow />
+        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
+          <Typography variant="h6">Key KPIs</Typography>
+          <Button size="small" variant="outlined" onClick={() => navigate(appRoutes.kpis)}>
+            View all KPIs
+          </Button>
+        </Stack>
+        <KpiRow showAll={false} />
       </Section>
 
       <Box sx={{ height: 16 }} />

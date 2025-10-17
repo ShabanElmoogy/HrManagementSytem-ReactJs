@@ -11,6 +11,7 @@ const ChartContainer = ({
   height = 400,
   elevation = 1,
   gradient = false,
+  fullHeight = false,
   icon: Icon = TrendingUp,
   actions = null,
   ...props
@@ -64,6 +65,7 @@ const ChartContainer = ({
         '&:hover': {
           boxShadow: theme.shadows[4]
         },
+        ...(fullHeight ? { height: '100%', display: 'flex', flexDirection: 'column', minHeight: height } : {}),
         ...props.sx
       }}
     >
@@ -108,7 +110,7 @@ const ChartContainer = ({
         </Box>
       )}
 
-      <Box sx={{ height, width: '100%' }}>
+      <Box sx={{ width: '100%', ...(fullHeight ? { flex: 1, minHeight: 0 } : { height }) }}>
         {children}
       </Box>
     </Paper>

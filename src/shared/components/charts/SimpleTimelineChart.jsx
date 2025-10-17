@@ -1,23 +1,22 @@
 /* eslint-disable react/prop-types */
-import { 
-  Box, 
-  Typography, 
-  useTheme, 
-  Paper,
-  Chip,
-  Avatar,
-  Stack,
-  Divider
-} from '@mui/material';
-import { 
-  CheckCircle, 
-  RadioButtonUnchecked, 
-  Warning, 
+import {
+  CheckCircle,
   Error as ErrorIcon,
-  Info
-} from '@mui/icons-material';
-import { formatNumber } from './chartUtils';
-import ChartContainer from './ChartContainer';
+  Info,
+  RadioButtonUnchecked,
+  Warning,
+} from "@mui/icons-material";
+import {
+  Avatar,
+  Box,
+  Chip,
+  Paper,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import ChartContainer from "./ChartContainer";
+import { formatNumber } from "./chartUtils";
 
 const SimpleTimelineChart = ({
   data = [],
@@ -29,11 +28,11 @@ const SimpleTimelineChart = ({
   gradient = false,
   showDates = true,
   showConnectors = true,
-  dateKey = 'date',
-  titleKey = 'title',
-  descriptionKey = 'description',
-  statusKey = 'status',
-  valueKey = 'value',
+  dateKey = "date",
+  titleKey = "title",
+  descriptionKey = "description",
+  statusKey = "status",
+  valueKey = "value",
   formatValue = (value) => formatNumber(value),
   formatDate = (date) => new Date(date).toLocaleDateString(),
   onItemClick = null,
@@ -43,15 +42,15 @@ const SimpleTimelineChart = ({
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'completed':
-      case 'success':
+      case "completed":
+      case "success":
         return <CheckCircle />;
-      case 'warning':
+      case "warning":
         return <Warning />;
-      case 'error':
-      case 'failed':
+      case "error":
+      case "failed":
         return <ErrorIcon />;
-      case 'info':
+      case "info":
         return <Info />;
       default:
         return <RadioButtonUnchecked />;
@@ -60,15 +59,15 @@ const SimpleTimelineChart = ({
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'completed':
-      case 'success':
+      case "completed":
+      case "success":
         return theme.palette.success.main;
-      case 'warning':
+      case "warning":
         return theme.palette.warning.main;
-      case 'error':
-      case 'failed':
+      case "error":
+      case "failed":
         return theme.palette.error.main;
-      case 'info':
+      case "info":
         return theme.palette.info.main;
       default:
         return theme.palette.grey[400];
@@ -82,23 +81,23 @@ const SimpleTimelineChart = ({
   };
 
   const chartContent = (
-    <Box 
-      sx={{ 
+    <Box
+      sx={{
         p: 2,
-        maxHeight: height - 120, // Account for container padding and title
-        overflowY: 'auto',
-        overflowX: 'hidden',
-        '&::-webkit-scrollbar': {
-          width: '6px',
+        maxHeight: height - 30, // Account for container padding and title
+        overflowY: "auto",
+        overflowX: "hidden",
+        "&::-webkit-scrollbar": {
+          width: "6px",
         },
-        '&::-webkit-scrollbar-track': {
+        "&::-webkit-scrollbar-track": {
           backgroundColor: theme.palette.grey[100],
-          borderRadius: '3px',
+          borderRadius: "3px",
         },
-        '&::-webkit-scrollbar-thumb': {
+        "&::-webkit-scrollbar-thumb": {
           backgroundColor: theme.palette.grey[400],
-          borderRadius: '3px',
-          '&:hover': {
+          borderRadius: "3px",
+          "&:hover": {
             backgroundColor: theme.palette.grey[600],
           },
         },
@@ -106,14 +105,14 @@ const SimpleTimelineChart = ({
     >
       <Stack spacing={2}>
         {data.map((item, index) => {
-          const status = item[statusKey] || 'default';
+          const status = item[statusKey] || "default";
           const statusColor = getStatusColor(status);
           const isLast = index === data.length - 1;
 
           return (
-            <Box key={index} sx={{ position: 'relative' }}>
+            <Box key={index} sx={{ position: "relative" }}>
               {/* Timeline Item */}
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+              <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
                 {/* Status Avatar */}
                 <Avatar
                   sx={{
@@ -122,12 +121,14 @@ const SimpleTimelineChart = ({
                     width: 40,
                     height: 40,
                     flexShrink: 0,
-                    cursor: onItemClick ? 'pointer' : 'default',
-                    transition: 'all 0.2s ease-in-out',
-                    '&:hover': onItemClick ? {
-                      transform: 'scale(1.1)',
-                      boxShadow: `0 0 0 4px ${statusColor}20`
-                    } : {}
+                    cursor: onItemClick ? "pointer" : "default",
+                    transition: "all 0.2s ease-in-out",
+                    "&:hover": onItemClick
+                      ? {
+                          transform: "scale(1.1)",
+                          boxShadow: `0 0 0 4px ${statusColor}20`,
+                        }
+                      : {},
                   }}
                   onClick={() => handleItemClick(item, index)}
                 >
@@ -135,18 +136,18 @@ const SimpleTimelineChart = ({
                 </Avatar>
 
                 {/* Content */}
-                <Box sx={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+                <Box sx={{ flex: 1, minWidth: 0, overflow: "hidden" }}>
                   {/* Date */}
                   {showDates && item[dateKey] && (
-                    <Typography 
-                      variant="caption" 
+                    <Typography
+                      variant="caption"
                       color="text.secondary"
-                      sx={{ 
-                        display: 'block', 
+                      sx={{
+                        display: "block",
                         mb: 0.5,
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis'
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                       }}
                     >
                       {formatDate(item[dateKey])}
@@ -158,30 +159,32 @@ const SimpleTimelineChart = ({
                     elevation={1}
                     sx={{
                       p: 1.5,
-                      cursor: onItemClick ? 'pointer' : 'default',
-                      transition: 'all 0.2s ease-in-out',
+                      cursor: onItemClick ? "pointer" : "default",
+                      transition: "all 0.2s ease-in-out",
                       border: `1px solid ${theme.palette.divider}`,
                       borderLeft: `4px solid ${statusColor}`,
-                      overflow: 'hidden',
-                      '&:hover': onItemClick ? {
-                        elevation: 3,
-                        borderColor: statusColor,
-                        transform: 'translateY(-1px)'
-                      } : {}
+                      overflow: "hidden",
+                      "&:hover": onItemClick
+                        ? {
+                            elevation: 3,
+                            borderColor: statusColor,
+                            transform: "translateY(-1px)",
+                          }
+                        : {},
                     }}
                     onClick={() => handleItemClick(item, index)}
                   >
                     {/* Title */}
-                    <Typography 
-                      variant="subtitle1" 
+                    <Typography
+                      variant="subtitle1"
                       component="h3"
-                      sx={{ 
+                      sx={{
                         color: statusColor,
-                        fontWeight: 'bold',
+                        fontWeight: "bold",
                         mb: 1,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
                       }}
                     >
                       {item[titleKey]}
@@ -189,17 +192,17 @@ const SimpleTimelineChart = ({
 
                     {/* Description */}
                     {item[descriptionKey] && (
-                      <Typography 
-                        variant="body2" 
+                      <Typography
+                        variant="body2"
                         color="text.secondary"
-                        sx={{ 
+                        sx={{
                           mb: 1.5,
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          display: '-webkit-box',
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          display: "-webkit-box",
                           WebkitLineClamp: 2,
-                          WebkitBoxOrient: 'vertical',
-                          lineHeight: 1.4
+                          WebkitBoxOrient: "vertical",
+                          lineHeight: 1.4,
                         }}
                       >
                         {item[descriptionKey]}
@@ -219,25 +222,27 @@ const SimpleTimelineChart = ({
                     )}
 
                     {/* Metadata */}
-                    <Box sx={{ 
-                      display: 'flex', 
-                      gap: 0.5, 
-                      flexWrap: 'wrap',
-                      '& .MuiChip-root': {
-                        fontSize: '0.7rem',
-                        height: '20px'
-                      }
-                    }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: 0.5,
+                        flexWrap: "wrap",
+                        "& .MuiChip-root": {
+                          fontSize: "0.7rem",
+                          height: "20px",
+                        },
+                      }}
+                    >
                       <Chip
                         label={status.charAt(0).toUpperCase() + status.slice(1)}
                         size="small"
                         sx={{
                           backgroundColor: `${statusColor}20`,
                           color: statusColor,
-                          fontWeight: 'bold'
+                          fontWeight: "bold",
                         }}
                       />
-                      
+
                       {item.category && (
                         <Chip
                           label={item.category}
@@ -251,8 +256,13 @@ const SimpleTimelineChart = ({
                           label={`${item.priority}`}
                           size="small"
                           variant="outlined"
-                          color={item.priority === 'high' ? 'error' : 
-                                 item.priority === 'medium' ? 'warning' : 'default'}
+                          color={
+                            item.priority === "high"
+                              ? "error"
+                              : item.priority === "medium"
+                              ? "warning"
+                              : "default"
+                          }
                         />
                       )}
                     </Box>
@@ -264,13 +274,13 @@ const SimpleTimelineChart = ({
               {showConnectors && !isLast && (
                 <Box
                   sx={{
-                    position: 'absolute',
+                    position: "absolute",
                     left: 19, // Center of smaller avatar
                     top: 40,
                     bottom: -16,
                     width: 2,
                     backgroundColor: theme.palette.divider,
-                    zIndex: 0
+                    zIndex: 0,
                   }}
                 />
               )}

@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import React, { useMemo } from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
 import { ResponsiveContainer, LineChart, Line, Area, AreaChart, BarChart, Bar } from 'recharts';
 import { formatNumber } from './chartUtils';
@@ -24,6 +25,8 @@ const SparklineChart = ({
   const trend = currentValue - previousValue;
   const isPositive = trend >= 0;
 
+  const gradientId = useMemo(() => `sparkline-gradient-${Math.random().toString(36).slice(2)}`, []);
+
   const renderChart = () => {
     const commonProps = {
       width: '100%',
@@ -37,7 +40,7 @@ const SparklineChart = ({
         return (
           <AreaChart {...commonProps}>
             <defs>
-              <linearGradient id={`gradient-${Math.random()}`} x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor={chartColor} stopOpacity={0.8}/>
                 <stop offset="95%" stopColor={chartColor} stopOpacity={0.1}/>
               </linearGradient>
@@ -47,7 +50,7 @@ const SparklineChart = ({
               dataKey={valueKey}
               stroke={chartColor}
               strokeWidth={strokeWidth}
-              fill={`url(#gradient-${Math.random()})`}
+              fill={`url(#${gradientId})`}
               dot={false}
               activeDot={false}
             />

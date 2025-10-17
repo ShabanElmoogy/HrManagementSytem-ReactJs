@@ -14,13 +14,17 @@ import {
   sparklineOvertime,
   sparklineSatisfaction,
   timeToHireDays,
-} from "./QuickInsights/data";
+} from "./data";
 
 const QuickInsights = () => {
   const theme = useTheme();
 
   return (
-    <Grid container spacing={2} sx={{ width: { xs: "100%", md: "auto" }, alignItems: "stretch" }}>
+    <Grid
+      container
+      spacing={2}
+      sx={{ width: { xs: "100%", md: "auto" }, alignItems: "stretch" }}
+    >
       {/* Hires (last 7d) */}
       <Grid size={{ xs: 12, md: 3.4 }} sx={{ display: "flex" }}>
         <Paper
