@@ -5,6 +5,7 @@ import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import AuthService from "../../../shared/services/authService";
+import { useUserPhoto } from "../../../shared/hooks";
 
 const UserWelcome = ({ isMobile = false }) => {
   const theme = useTheme();
@@ -13,6 +14,12 @@ const UserWelcome = ({ isMobile = false }) => {
   const [lastName, setLastName] = useState("");
   const [userRole, setUserRole] = useState("");
   const [showWelcome, setShowWelcome] = useState(false);
+
+  // Fetch user photo
+  const { data: photoData } = useUserPhoto();
+  const avatarSrc = photoData?.profilePicture
+    ? `data:image/*;base64,${photoData.profilePicture}`
+    : undefined;
 
   useEffect(() => {
     // Get firstName and lastName from sessionStorage
@@ -130,10 +137,11 @@ const UserWelcome = ({ isMobile = false }) => {
     return (
       <Fade in={showWelcome} timeout={800}>
         <Avatar
+          src={avatarSrc}
           sx={{
             width: 32,
             height: 32,
-            bgcolor: getUserColor(),
+            bgcolor: avatarSrc ? "transparent" : getUserColor(),
             color: "white",
             fontWeight: "bold",
             fontSize: "0.75rem",
@@ -201,8 +209,9 @@ const UserWelcome = ({ isMobile = false }) => {
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Avatar
+            src={avatarSrc}
             sx={{
-              bgcolor: getUserColor(),
+              bgcolor: avatarSrc ? "transparent" : getUserColor(),
               color: "white",
               fontWeight: "bold",
               fontSize: "0.9rem",

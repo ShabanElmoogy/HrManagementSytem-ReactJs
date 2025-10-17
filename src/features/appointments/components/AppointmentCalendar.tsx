@@ -1,50 +1,64 @@
-import React, { useMemo, useState } from "react";
-import FullCalendar from "@fullcalendar/react";
+import { DateSelectArg, EventChangeArg, EventClickArg } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
-import { DateSelectArg, EventClickArg, EventChangeArg } from "@fullcalendar/core";
-import { useCreateAppointment, useDeleteAppointment, useAppointments, useUpdateAppointment } from "../hooks/useAppointmentQueries";
+import listPlugin from "@fullcalendar/list";
+import FullCalendar from "@fullcalendar/react";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import React, { useMemo, useState } from "react";
+import { useAppointments, useCreateAppointment, useDeleteAppointment, useUpdateAppointment } from "../hooks/useAppointmentQueries";
 
 // MUI
+import { showToast } from "@/shared/components/common/feedback/Toast";
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  TextField,
-  Stack,
-  Typography,
   Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Stack,
+  TextField,
+  Typography,
+  InputAdornment,
 } from "@mui/material";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import TextFieldsIcon from "@mui/icons-material/TextFields";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import SaveIcon from "@mui/icons-material/Save";
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { alpha } from "@mui/material/styles";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs, { Dayjs } from "dayjs";
-import { showToast } from "@/shared/components/common/feedback/Toast";
-import { alpha } from "@mui/material/styles";
 
 const todayStart = dayjs().startOf("day");
 
 // Note: CSS imports are removed due to package exports. Add styles via CDN in index.html if needed.
 
-// Attractive dialog for adding a new appointment
+// Attractive dialog for adding/editing an appointment
 type AddAppointmentDialogProps = {
   open: boolean;
   loading?: boolean;
+  mode?: "add" | "edit";
+  defaultTitle?: string;
   defaultStart: string;
   defaultEnd: string;
   onClose: () => void;
   onSubmit: (data: { text: string; start: string; end: string }) => void;
+  onDelete?: () => void;
 };
 
 const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
   open,
   loading,
+  mode = "add",
+  defaultTitle,
   defaultStart,
   defaultEnd,
   onClose,
   onSubmit,
+  onDelete,
 }) => {
   const [title, setTitle] = useState<string>("");
   const [start, setStart] = useState<Dayjs | null>(dayjs(defaultStart));
@@ -52,11 +66,11 @@ const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
   const [errors, setErrors] = useState<{ title?: string; time?: string }>({});
 
   React.useEffect(() => {
-    setTitle("");
+    setTitle(defaultTitle || "");
     setStart(dayjs(defaultStart));
     setEnd(dayjs(defaultEnd));
     setErrors({});
-  }, [defaultStart, defaultEnd, open]);
+  }, [defaultTitle, defaultStart, defaultEnd, open]);
 
   const validate = () => {
     const errs: { title?: string; time?: string } = {};
@@ -79,7 +93,10 @@ const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>New Appointment</DialogTitle>
+      <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+        <EventAvailableIcon color="primary" />
+        <Typography variant="h6" component="div">{mode === "edit" ? "Edit Appointment" : "New Appointment"}</Typography>
+      </DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 1 }}>
           <TextField
@@ -87,10 +104,18 @@ const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
             label="Title"
             placeholder="What is this about?"
             fullWidth
+            size="small"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             error={!!errors.title}
             helperText={errors.title || " "}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <TextFieldsIcon fontSize="small" />
+                </InputAdornment>
+              ),
+            }}
           />
 
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
@@ -101,7 +126,19 @@ const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
               minDateTime={todayStart}
               ampm={false}
               format="DD/MM/YYYY HH:mm"
-              slotProps={{ textField: { fullWidth: true } }}
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                  size: "small",
+                  InputProps: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <CalendarMonthIcon fontSize="small" />
+                      </InputAdornment>
+                    ),
+                  },
+                },
+              }}
             />
             <DateTimePicker
               label="End"
@@ -110,7 +147,19 @@ const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
               minDateTime={todayStart}
               ampm={false}
               format="DD/MM/YYYY HH:mm"
-              slotProps={{ textField: { fullWidth: true } }}
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                  size: "small",
+                  InputProps: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <AccessTimeIcon fontSize="small" />
+                      </InputAdornment>
+                    ),
+                  },
+                },
+              }}
             />
           </Stack>
 
@@ -122,11 +171,17 @@ const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="inherit" disabled={loading}>
+        {mode === "edit" && onDelete && (
+          <Button color="error" onClick={onDelete} startIcon={<DeleteForeverIcon />} disabled={loading}>
+            Delete
+          </Button>
+        )}
+        <Box sx={{ flex: 1 }} />
+        <Button onClick={onClose} color="inherit" disabled={loading} startIcon={<CloseIcon />}>
           Cancel
         </Button>
-        <Button variant="contained" onClick={handleSubmit} disabled={loading}>
-          {loading ? "Saving..." : "Add Appointment"}
+        <Button variant="contained" onClick={handleSubmit} disabled={loading} startIcon={<SaveIcon />}>
+          {loading ? "Saving..." : mode === "edit" ? "Save Changes" : "Add Appointment"}
         </Button>
       </DialogActions>
     </Dialog>
@@ -142,6 +197,8 @@ const AppointmentCalendar: React.FC = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [defaultStart, setDefaultStart] = useState<string>(new Date().toISOString());
   const [defaultEnd, setDefaultEnd] = useState<string>(new Date(Date.now() + 60 * 60 * 1000).toISOString());
+  const [defaultTitle, setDefaultTitle] = useState<string>("");
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [currentView, setCurrentView] = useState<string>("dayGridMonth");
 
   const events = useMemo(() => {
@@ -152,7 +209,10 @@ const AppointmentCalendar: React.FC = () => {
         const eUTC = new Date(a.end || a.start).toISOString().slice(0, 10);
         const sDay = dayjs(sUTC);
         const eDay = dayjs(eUTC);
-        const endExclusive = (eDay.isSame(sDay) || eDay.isBefore(sDay) ? sDay.add(1, "day") : eDay.add(1, "day")).format("YYYY-MM-DD");
+        // Backend stores end as exclusive. Use as-is; ensure minimum 1 day span
+        const endExclusive = eDay.isAfter(sDay)
+          ? eDay.format("YYYY-MM-DD")
+          : sDay.add(1, "day").format("YYYY-MM-DD");
         return {
           id: String(a.id),
           title: a.text,
@@ -182,9 +242,14 @@ const AppointmentCalendar: React.FC = () => {
     }
 
     const end = selectInfo.endStr || new Date(selectInfo.start.getTime() + 60 * 60 * 1000).toISOString();
+    const endForDialog = currentView === "dayGridMonth"
+      ? dayjs(end).subtract(1, "day").format("YYYY-MM-DD")
+      : end;
 
+    setEditingId(null);
+    setDefaultTitle("");
     setDefaultStart(start);
-    setDefaultEnd(end);
+    setDefaultEnd(endForDialog);
     setDialogOpen(true);
   };
 
@@ -192,11 +257,15 @@ const AppointmentCalendar: React.FC = () => {
     // Normalize create payload depending on view to avoid timezone day shifts
     if (currentView === "dayGridMonth") {
       const startDay = dayjs(data.start).format("YYYY-MM-DD");
-      const endDay = dayjs(data.end).format("YYYY-MM-DD");
+      // Dialog shows inclusive end; convert to exclusive by adding 1 day
+      const endDayExclusive = dayjs(data.end).add(1, "day").format("YYYY-MM-DD");
       // Save at UTC noon to avoid timezone-induced off-by-one day shifts
       createMutation.mutate(
-        { start: `${startDay}T12:00:00Z`, end: `${endDay}T12:00:00Z`, text: data.text },
-        { onSuccess: () => setDialogOpen(false) }
+        { start: `${startDay}T12:00:00Z`, end: `${endDayExclusive}T12:00:00Z`, text: data.text },
+        {
+          onSuccess: () => setDialogOpen(false),
+          onError: (e: any) => showToast.error(e?.message || "Failed to create appointment"),
+        }
       );
       return;
     }
@@ -204,8 +273,59 @@ const AppointmentCalendar: React.FC = () => {
     // Timed views: keep precise local date-time without timezone suffix
     createMutation.mutate(
       { start: dayjs(data.start).format("YYYY-MM-DDTHH:mm:ss"), end: dayjs(data.end).format("YYYY-MM-DDTHH:mm:ss"), text: data.text },
-      { onSuccess: () => setDialogOpen(false) }
+      {
+        onSuccess: () => setDialogOpen(false),
+        onError: (e: any) => showToast.error(e?.message || "Failed to create appointment"),
+      }
     );
+  };
+
+  const onEdit = (data: { text: string; start: string; end: string }) => {
+    if (editingId == null) return;
+
+    if (currentView === "dayGridMonth") {
+      const startDay = dayjs(data.start).format("YYYY-MM-DD");
+      // Dialog shows inclusive end; convert to exclusive by adding 1 day
+      const endDayExclusive = dayjs(data.end).add(1, "day").format("YYYY-MM-DD");
+      updateMutation.mutate(
+        { id: editingId, start: `${startDay}T12:00:00Z`, end: `${endDayExclusive}T12:00:00Z`, text: data.text },
+        {
+          onSuccess: () => {
+            setDialogOpen(false);
+            setEditingId(null);
+          },
+          onError: (e: any) => showToast.error(e?.message || "Failed to update appointment"),
+        }
+      );
+      return;
+    }
+
+    updateMutation.mutate(
+      {
+        id: editingId,
+        start: dayjs(data.start).format("YYYY-MM-DDTHH:mm:ss"),
+        end: dayjs(data.end).format("YYYY-MM-DDTHH:mm:ss"),
+        text: data.text,
+      },
+      {
+        onSuccess: () => {
+          setDialogOpen(false);
+          setEditingId(null);
+        },
+        onError: (e: any) => showToast.error(e?.message || "Failed to update appointment"),
+      }
+    );
+  };
+
+  const onDeleteEvent = () => {
+    if (editingId == null) return;
+    deleteMutation.mutate(editingId, {
+      onSuccess: () => {
+        setDialogOpen(false);
+        setEditingId(null);
+      },
+      onError: (e: any) => showToast.error(e?.message || "Failed to delete appointment"),
+    });
   };
 
   const onEventChange = (changeInfo: EventChangeArg) => {
@@ -216,8 +336,10 @@ const AppointmentCalendar: React.FC = () => {
     if (e.allDay || currentView === "dayGridMonth") {
       const startStr = e.startStr; // YYYY-MM-DD
       const endStr = e.endStr || e.startStr; // YYYY-MM-DD (exclusive end)
+      // Backend expects exclusive end; validate using last included day (end - 1 day)
+      const endMinusOne = dayjs(endStr).subtract(1, "day");
 
-      const invalidAllDay = dayjs(startStr).isBefore(todayStart) || dayjs(endStr).isBefore(todayStart);
+      const invalidAllDay = dayjs(startStr).isBefore(todayStart) || endMinusOne.isBefore(todayStart);
       if (invalidAllDay) {
         changeInfo.revert();
         return;
@@ -243,21 +365,22 @@ const AppointmentCalendar: React.FC = () => {
 
   const onEventClick = (clickInfo: EventClickArg) => {
     const id = Number(clickInfo.event.id);
-    const currentTitle = clickInfo.event.title;
-    const action = window.prompt("Edit title or type DELETE to remove", currentTitle);
+    const isAllDay = clickInfo.event.allDay || currentView === "dayGridMonth";
+    const start = isAllDay
+      ? clickInfo.event.startStr
+      : clickInfo.event.start?.toISOString() || new Date().toISOString();
+    const end = isAllDay
+      ? (clickInfo.event.endStr || clickInfo.event.startStr)
+      : clickInfo.event.end?.toISOString() || start;
+    const endForDialog = isAllDay
+      ? dayjs(end).subtract(1, "day").format("YYYY-MM-DD")
+      : end;
 
-    if (action === null) return;
-
-    if (action?.toUpperCase() === "DELETE") {
-      if (window.confirm("Are you sure you want to delete this event?")) {
-        deleteMutation.mutate(id);
-      }
-      return;
-    }
-
-    const start = clickInfo.event.start ? clickInfo.event.start.toISOString() : new Date().toISOString();
-    const end = clickInfo.event.end ? clickInfo.event.end.toISOString() : start;
-    updateMutation.mutate({ id, start, end, text: action || currentTitle });
+    setEditingId(id);
+    setDefaultTitle(clickInfo.event.title);
+    setDefaultStart(start);
+    setDefaultEnd(endForDialog);
+    setDialogOpen(true);
   };
 
   return (
@@ -269,7 +392,6 @@ const AppointmentCalendar: React.FC = () => {
             ? alpha(theme.palette.background.paper, 0.9)
             : theme.palette.background.paper,
         borderRadius: 2,
-        border: `1px solid ${alpha(theme.palette.divider, 0.6)}`,
         boxShadow:
           theme.palette.mode === "dark"
             ? "0 0 0 1px rgba(255,255,255,0.03), 0 8px 24px rgba(0,0,0,0.4)"
@@ -409,11 +531,17 @@ const AppointmentCalendar: React.FC = () => {
 
           <AddAppointmentDialog
             open={dialogOpen}
-            loading={createMutation.isPending}
+            loading={createMutation.isPending || updateMutation.isPending || deleteMutation.isPending}
+            mode={editingId ? "edit" : "add"}
+            defaultTitle={defaultTitle}
             defaultStart={defaultStart}
             defaultEnd={defaultEnd}
-            onClose={() => setDialogOpen(false)}
-            onSubmit={onCreate}
+            onClose={() => {
+              setDialogOpen(false);
+              setEditingId(null);
+            }}
+            onSubmit={(data) => (editingId ? onEdit(data) : onCreate(data))}
+            onDelete={editingId ? onDeleteEvent : undefined}
           />
         </>
       )}
