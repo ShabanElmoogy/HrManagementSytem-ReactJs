@@ -1,13 +1,13 @@
 // Attendance & Micro-Trends Row data
 
 // Helper: label formatter for Heatmap axes (days 1..7, hours 0..23)
-export const formatHeatmapLabel = (label) => {
+export const formatHeatmapLabel = (label: number | string): string => {
   const days = [null, "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   if (typeof label === "number") {
     if (label >= 1 && label <= 7) return days[label];
     if (label >= 0 && label <= 23) return `${label}:00`;
   }
-  return label;
+  return String(label);
 };
 
 // Generate weekday (Mon-Fri) vs hour (08..18) attendance intensity

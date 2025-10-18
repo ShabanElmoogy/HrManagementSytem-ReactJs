@@ -133,8 +133,11 @@ export interface AppRoutes {
   chat: string;
   kpis: string;
   trends: string;
+  globalPresence: string;
+  healthPipeline: string;
   chartExamples: string;
   countryReport : string;
+  attendanceTrends: string;
 }
 
 // Route constants with full type safety
@@ -256,8 +259,11 @@ export const appRoutes: AppRoutes = {
   chat: "chat",
   kpis: "kpis",
   trends: "trends",
+  globalPresence: "global-presence",
+  healthPipeline: "health-pipeline",
   chartExamples: "chart-examples",
-  countryReport : "country-report"
+  countryReport : "country-report",
+  attendanceTrends: "attendance-trends",
 } as const;
 
 // Utility types for better type checking

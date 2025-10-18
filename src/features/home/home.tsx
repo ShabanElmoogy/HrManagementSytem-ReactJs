@@ -83,20 +83,19 @@ const Home = () => {
       </Box>
 
       {/* KPI CARDS SECTION */}
-      <Section>
+      <Section title="Key KPIs" subtitle="At-a-glance performance metrics">
         <Stack
           direction="row"
           alignItems="center"
-          justifyContent="space-between"
+          justifyContent="flex-end"
           sx={{ mb: 1 }}
         >
-          <Typography variant="h6">Key KPIs</Typography>
           <Button
             size="small"
             variant="outlined"
             onClick={() => navigate(appRoutes.kpis)}
           >
-            View all KPIs
+             VIEW ALL
           </Button>
         </Stack>
         <KpiRow showAll={false} />
@@ -121,7 +120,7 @@ const Home = () => {
             variant="outlined"
             onClick={() => navigate(appRoutes.trends)}
           >
-            View all Trends
+            VIEW ALL
           </Button>
         </Stack>
         <TrendsRow />
@@ -144,6 +143,21 @@ const Home = () => {
         title="People Health & Hiring Pipeline"
         subtitle="Engagement, compliance and funnel conversion"
       >
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ mb: 1 }}
+        >
+          <Typography variant="h6">Health & Pipeline Overview</Typography>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={() => navigate(appRoutes.healthPipeline)}
+          >
+            VIEW ALL
+          </Button>
+        </Stack>
         <HealthPipelineRow />
       </Section>
 
@@ -154,6 +168,21 @@ const Home = () => {
         title="Attendance Heatmap & Micro-Trends"
         subtitle="In-office presence and short-term signals"
       >
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ mb: 1 }}
+        >
+          <Typography variant="h6">Attendance Overview</Typography>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={() => navigate(appRoutes.attendanceTrends)}
+          >
+            VIEW ALL
+          </Button>
+        </Stack>
         <AttendanceTrendsRow />
       </Section>
 

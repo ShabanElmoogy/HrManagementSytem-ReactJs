@@ -13,7 +13,7 @@ import {
   TrendingDown,
   WorkOutline,
 } from "@mui/icons-material";
-import { Grid, useTheme } from "@mui/material";
+import { Grid } from "@mui/material";
 import {
   extraKpis,
   kpisCore,
@@ -21,8 +21,9 @@ import {
   payrollTrend6m,
 } from "./data";
 
-const KpiRow = ({ showAll = false }) => {
-  const theme = useTheme();
+type KpiRowProps = { showAll?: boolean };
+
+const KpiRow = ({ showAll = false }: KpiRowProps) => {
 
   const kpis = kpisCore.map((kpi) => ({
     ...kpi,
@@ -59,7 +60,7 @@ const KpiRow = ({ showAll = false }) => {
       ))}
 
       {(showAll ? extraKpis : []).map((kpi, idx) => {
-        const iconMap = {
+        const iconMap: Record<string, typeof PublicIcon> = {
           "Avg Time to Hire": Schedule,
           "Employee Satisfaction": SentimentSatisfiedAlt,
           "Attrition Rate": TrendingDown,

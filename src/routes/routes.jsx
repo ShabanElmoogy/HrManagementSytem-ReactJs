@@ -13,6 +13,9 @@ const ProtectedRoute = lazy(() =>
 const Home = lazy(() => import("../features/home/home"));
 const AllKpisPage = lazy(() => import("../features/home/AllKpisPage"));
 const AllTrendsPage = lazy(() => import("../features/home/AllTrendsPage"));
+const AllHealthPipelinePage = lazy(() => import("../features/home/AllHealthPipelinePage"));
+const AllGlobalPresencePage = lazy(() => import("../features/home/AllGlobalPresencePage"));
+const AllAttendanceTrendsPage = lazy(() => import("../features/home/AllAttendanceTrendsPage"));
 const EmailConfirmed = lazy(() => import("../features/auth/emailConfirmed"));
 const ForgetPassword = lazy(() => import("../features/auth/forgetPassword"));
 const ProfilePage = lazy(() => import("../features/auth/profile/profilePage"));
@@ -253,6 +256,33 @@ const AppRoutes = () => {
               element={
                 <Suspense fallback={<MyLoadingIndicator />}>
                   <AllTrendsPage />
+                </Suspense>
+              }
+            />
+
+            <Route
+              path={appRoutes.healthPipeline}
+              element={
+                <Suspense fallback={<MyLoadingIndicator />}>
+                  <AllHealthPipelinePage />
+                </Suspense>
+              }
+            />
+
+            <Route
+              path={appRoutes.globalPresence}
+              element={
+                <Suspense fallback={<MyLoadingIndicator />}>
+                  <AllGlobalPresencePage />
+                </Suspense>
+              }
+            />
+
+            <Route
+              path={appRoutes.attendanceTrends}
+              element={
+                <Suspense fallback={<MyLoadingIndicator />}>
+                  <AllAttendanceTrendsPage />
                 </Suspense>
               }
             />

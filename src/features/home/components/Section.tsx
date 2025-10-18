@@ -1,7 +1,14 @@
-import React from "react";
 import { alpha, Box, Typography, useTheme } from "@mui/material";
+import type { ReactNode } from "react";
 
-const Section = ({ children, title, subtitle }) => {
+type SectionProps = {
+  title?: ReactNode;
+  subtitle?: ReactNode;
+  children?: ReactNode;
+  actions?: ReactNode;
+};
+
+const Section = ({ children, title, subtitle, actions }: SectionProps) => {
   const theme = useTheme();
   return (
     <Box
@@ -21,6 +28,11 @@ const Section = ({ children, title, subtitle }) => {
         overflow: "hidden",
       }}
     >
+      {actions && (
+        <Box sx={{ position: "absolute", top: 8, right: 8, display: "flex", gap: 1 }}>
+          {actions}
+        </Box>
+      )}
       {(title || subtitle) && (
         <Box sx={{ mb: 1.5 }}>
           {title && (

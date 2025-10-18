@@ -142,10 +142,10 @@ const FunnelChart = ({
         textAnchor={anchor}
         dominantBaseline="central"
         fill={
-        theme.palette.mode === "dark"
-          ? theme.palette.info.dark     // 💙 أزرق فاتح في الوضع الداكن
-          : theme.palette.text.primary      // 💙 أزرق عادي في الوضع الفاتح
-      }
+          theme.palette.mode === "dark"
+            ? theme.palette.info.dark // 💙 أزرق فاتح في الوضع الداكن
+            : theme.palette.text.primary // 💙 أزرق عادي في الوضع الفاتح
+        }
         fontSize={theme.typography.pxToRem(12)}
         fontWeight={theme.typography.fontWeightBold}
         fontFamily={theme.typography.fontFamily}
@@ -163,12 +163,13 @@ const FunnelChart = ({
 
   const chartContent = (
     <ResponsiveContainer width="100%" height="100%">
-      <RechartsFunnelChart margin={chartMargin}>
+      <RechartsFunnelChart>
         <Funnel
           dataKey={dataKey}
           data={dataWithConversion}
           isAnimationActive
           onClick={handleSegmentClick}
+          sx={{ border: "3px solid red" }}
         >
           {dataWithConversion.map((entry, index) => (
             <Cell

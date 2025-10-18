@@ -16,7 +16,9 @@ import {
   monthlyTrend,
 } from "./data";
 
-const TrendsRow = ({ showAll = false }) => {
+type TrendsRowProps = { showAll?: boolean };
+
+const TrendsRow = ({ showAll = false }: TrendsRowProps) => {
   const theme = useTheme();
   const monthlySeries = [
     {
@@ -65,50 +67,55 @@ const TrendsRow = ({ showAll = false }) => {
           title="Workforce by Department"
           subtitle="Distribution across key functions"
           height={320}
+          colors={funnelColors}
           showLegend
           centerLabel="Employees"
           gradient
         />
       </Grid>
 
-      {/* Row 2: Additional trends */}
-      <Grid size={{ xs: 12, md: 7 }}>
-        <AreaChart
-          data={monthlyNetAdds}
-          xKey="month"
-          yKey="net"
-          title="Monthly Net Adds"
-          subtitle="Hires minus attrition"
-          height={280}
-          showGrid
-          smooth
-          gradient
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 5 }}>
-        <BarChart
-          data={monthlyTrend}
-          xKey="month"
-          title="Hires vs Attrition"
-          subtitle="Monthly comparison"
-          height={280}
-          showGrid
-          showLegend
-          multiSeries={[
-            { key: "hires", name: "Hires", color: theme.palette.success.main },
-            {
-              key: "attrition",
-              name: "Attrition",
-              color: theme.palette.error.main,
-            },
-          ]}
-          stacked={false}
-          gradient
-        />
-      </Grid>
-
       {showAll && (
         <>
+          {/* Row 2: Additional trends */}
+          <Grid size={{ xs: 12, md: 7 }}>
+            <AreaChart
+              data={monthlyNetAdds}
+              xKey="month"
+              yKey="net"
+              title="Monthly Net Adds"
+              subtitle="Hires minus attrition"
+              height={280}
+              showGrid
+              smooth
+              gradient
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 5 }}>
+            <BarChart
+              data={monthlyTrend}
+              xKey="month"
+              title="Hires vs Attrition"
+              subtitle="Monthly comparison"
+              height={280}
+              showGrid
+              showLegend
+              multiSeries={[
+                {
+                  key: "hires",
+                  name: "Hires",
+                  color: theme.palette.success.main,
+                },
+                {
+                  key: "attrition",
+                  name: "Attrition",
+                  color: theme.palette.error.main,
+                },
+              ]}
+              stacked={false}
+              gradient
+            />
+          </Grid>
+
           <Grid size={{ xs: 12, md: 7 }}>
             <ComposedChart
               data={monthlyTrend}

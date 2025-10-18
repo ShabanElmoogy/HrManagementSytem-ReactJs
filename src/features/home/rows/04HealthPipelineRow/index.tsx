@@ -1,6 +1,9 @@
-import React from "react";
 import { Grid, useTheme } from "@mui/material";
-import { GaugeChart, FunnelChart, getColorPalette } from "@/shared/components/charts";
+import {
+  GaugeChart,
+  FunnelChart,
+  getColorPalette,
+} from "@/shared/components/charts";
 import { recruitmentFunnel, engagementScore, complianceScore } from "./data";
 
 const HealthPipelineRow = () => {
@@ -19,7 +22,11 @@ const HealthPipelineRow = () => {
           ]}
           thresholds={[60, 80]}
           thickness={24}
-          trackColor={theme.palette.mode === 'dark' ? theme.palette.grey[800] : theme.palette.grey[200]}
+          trackColor={
+            theme.palette.mode === "dark"
+              ? theme.palette.grey[800]
+              : theme.palette.grey[200]
+          }
           arcGradient
           centerY="62%"
           title="Employee Engagement"
@@ -28,9 +35,10 @@ const HealthPipelineRow = () => {
           showValue
           showPercentage
           gradient
-          formatValue={(v) => Math.round(v)}
+          formatValue={(v) => String(Math.round(v))}
         />
       </Grid>
+
       <Grid size={{ xs: 12, md: 4 }}>
         <GaugeChart
           value={complianceScore}
@@ -42,7 +50,11 @@ const HealthPipelineRow = () => {
           ]}
           thresholds={[85, 95]}
           thickness={26}
-          trackColor={theme.palette.mode === 'dark' ? theme.palette.grey[800] : theme.palette.grey[200]}
+          trackColor={
+            theme.palette.mode === "dark"
+              ? theme.palette.grey[800]
+              : theme.palette.grey[200]
+          }
           arcGradient
           centerY="62%"
           title="Policy Compliance"
@@ -51,9 +63,10 @@ const HealthPipelineRow = () => {
           showValue
           showPercentage
           gradient
-          formatValue={(v) => Math.round(v)}
+          formatValue={(v) => String(Math.round(v))}
         />
       </Grid>
+
       <Grid size={{ xs: 12, md: 4 }}>
         <FunnelChart
           data={recruitmentFunnel}

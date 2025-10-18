@@ -76,7 +76,7 @@ const GaugeChart = ({
   );
 
   const chartContent = (
-    <Box sx={{ position: 'relative' }}>
+    <Box sx={{ position: 'relative', height: '100%' }}>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           {arcGradient && (
