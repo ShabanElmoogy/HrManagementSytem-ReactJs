@@ -75,9 +75,6 @@ const ApiEndpoints = lazy(() =>
 const HangfireDashboard = lazy(() =>
   import("@/features/advancedTools/hangfireDashboard")
 );
-const ChartExamplesPage = lazy(() =>
-  import("@/features/chartExamples/chartExamplesPage")
-);
 const CountryReport = lazy(() =>
   import("@/features/basicData/countries/reports/CountryReport")
 );
@@ -416,16 +413,6 @@ const AppRoutes = () => {
                     <DocumentManagementPage />
                   </Suspense>
                 </ProtectedRoute>
-              }
-            />
-
-            {/* Chart Examples */}
-            <Route
-              path={appRoutes.chartExamples}
-              element={
-                <Suspense fallback={<MyLoadingIndicator />}>
-                  <ChartExamplesPage />
-                </Suspense>
               }
             />
 

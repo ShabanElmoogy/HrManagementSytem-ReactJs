@@ -7,8 +7,14 @@ import {
   Typography,
   useTheme,
   SvgIconProps,
+  Chip,
+  Stack,
+  Divider,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
-import { Search, FilterList, Clear, Refresh } from "@mui/icons-material";
+import { alpha } from '@mui/material/styles';
+import { Search, FilterList, Clear, Refresh, RestartAlt } from "@mui/icons-material";
 
 interface NoResultsStateProps {
   /** The search term or filter criteria that produced no results */
@@ -38,6 +44,22 @@ interface NoResultsStateProps {
     icon?: React.ComponentType<SvgIconProps>;
     variant?: "contained" | "outlined" | "text";
   };
+  /** Show a search input under the message */
+  showSearch?: boolean;
+  /** Placeholder for the search input */
+  searchPlaceholder?: string;
+  /** Handler for search input changes */
+  onSearchChange?: (value: string) => void;
+  /** Active filters to render as chips */
+  filters?: { label: string; onRemove?: () => void }[];
+  /** Optional list of suggestions/tips to help users refine results */
+  tips?: string[];
+  /** Compact layout spacing */
+  compact?: boolean;
+  /** Reset all handler */
+  onResetAll?: () => void;
+  /** Reset all button text override */
+  resetAllText?: string;
 }
 
 const NoResultsState: React.FC<NoResultsStateProps> = ({
@@ -52,6 +74,14 @@ const NoResultsState: React.FC<NoResultsStateProps> = ({
   sx = {},
   iconSize = "large",
   customAction,
+  showSearch = false,
+  searchPlaceholder,
+  onSearchChange,
+  filters,
+  tips,
+  compact = false,
+  onResetAll,
+  resetAllText,
 }) => {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -70,7 +100,9 @@ const NoResultsState: React.FC<NoResultsStateProps> = ({
   };
 
   const getDefaultMessage = () => {
-      return t("feedback.noResults.messageWithTerm", { term: searchTerm });
+      if (message) return message;
+      if (searchTerm) return t("feedback.noResults.messageWithTerm", { term: searchTerm });
+      return t("feedback.noResults.message") || "No results found";
   };
 
   const content = (
@@ -81,38 +113,83 @@ const NoResultsState: React.FC<NoResultsStateProps> = ({
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
-        py: 6,
+        py: compact ? 4 : 6,
         px: 3,
-        minHeight: 200,
+        minHeight: compact ? 160 : 200,
         ...sx,
       }}
     >
-      <IconComponent
+      <Box
         sx={{
-          fontSize: getIconSize(),
-          color: "text.secondary",
+          width: 72,
+          height: 72,
+          borderRadius: "50%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           mb: 2,
-          opacity: 0.7,
+          bgcolor:
+            theme.palette.mode === "dark"
+              ? alpha(theme.palette.primary.main, 0.12)
+              : alpha(theme.palette.primary.main, 0.08),
+          border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
         }}
-      />
+      >
+        <IconComponent
+          sx={{
+            fontSize: getIconSize(),
+            color: theme.palette.primary.main,
+            opacity: 0.9,
+          }}
+        />
+      </Box>
 
       <Typography
         variant="h6"
-        color="text.secondary"
+        color="text.primary"
         gutterBottom
-        sx={{ fontWeight: 500 }}
+        sx={{ fontWeight: 600 }}
       >
         {getDefaultMessage()}
       </Typography>
 
-      <Box
-        sx={{
-          display: "flex",
-          gap: 2,
-          flexWrap: "wrap",
-          justifyContent: "center",
-        }}
-      >
+      {subtitle && (
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ mb: 2, maxWidth: 560, opacity: 0.9 }}
+        >
+          {subtitle}
+        </Typography>
+      )}
+
+      {showSearch && onSearchChange && (
+        <Box sx={{ mt: 1.5, width: "100%", maxWidth: 420 }}>
+          <TextField
+            fullWidth
+            size="small"
+            placeholder={searchPlaceholder || t("common.search") || "Search..."}
+            onChange={(e) => onSearchChange(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search fontSize="small" />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+      )}
+
+      {filters && filters.length > 0 && (
+        <Stack direction="row" spacing={1} sx={{ mt: 2, flexWrap: "wrap", justifyContent: "center", maxWidth: 560 }}>
+          {filters.map((f, idx) => (
+            <Chip key={idx} label={f.label} onDelete={f.onRemove} variant="outlined" size="small" />
+          ))}
+        </Stack>
+      )}
+
+      <Stack direction="row" spacing={2} sx={{ mt: 3, flexWrap: "wrap", justifyContent: "center" }}>
         {searchTerm && onClearSearch && (
           <Button
             variant="outlined"
@@ -146,6 +223,17 @@ const NoResultsState: React.FC<NoResultsStateProps> = ({
           </Button>
         )}
 
+        {onResetAll && (
+          <Button
+            variant="text"
+            onClick={onResetAll}
+            startIcon={<RestartAlt />}
+            sx={{ minWidth: 100 }}
+          >
+            {resetAllText || t("feedback.noResults.resetAll") || "Reset all"}
+          </Button>
+        )}
+
         {customAction && (
           <Button
             variant={customAction.variant || "contained"}
@@ -156,16 +244,43 @@ const NoResultsState: React.FC<NoResultsStateProps> = ({
             {customAction.text}
           </Button>
         )}
-      </Box>
+      </Stack>
+
+      {tips && tips.length > 0 && (
+        <>
+          <Divider sx={{ my: 3, width: "100%", maxWidth: 560 }} />
+          <Box sx={{ maxWidth: 560 }}>
+            <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 1 }}>
+              {t("feedback.noResults.trySuggestions") || "Try the following:"}
+            </Typography>
+            <Stack component="ul" spacing={0.5} sx={{ m: 0, pl: 2, textAlign: "left" }}>
+              {tips.map((tip, idx) => (
+                <Typography component="li" key={idx} variant="body2" color="text.secondary">
+                  {tip}
+                </Typography>
+              ))}
+            </Stack>
+          </Box>
+        </>
+      )}
     </Box>
   );
 
   if (withPaper) {
     return (
       <Paper
+        variant="outlined"
+        elevation={0}
         sx={{
-          background: `linear-gradient(135deg, ${theme.palette.grey[50]} 0%, ${theme.palette.grey[100]} 100%)`,
-          border: `1px solid ${theme.palette.divider}`,
+          bgcolor: theme.palette.mode === 'dark'
+            ? alpha(theme.palette.background.paper, 0.9)
+            : theme.palette.grey[50],
+          backgroundImage: theme.palette.mode === 'dark'
+            ? `linear-gradient(135deg, ${alpha(theme.palette.common.white, 0.06)} 0%, ${alpha(theme.palette.common.white, 0.02)} 100%)`
+            : `linear-gradient(135deg, ${theme.palette.grey[50]} 0%, ${theme.palette.grey[100]} 100%)`,
+          borderColor: theme.palette.mode === 'dark'
+            ? alpha(theme.palette.divider, 0.3)
+            : theme.palette.divider,
           borderRadius: 2,
         }}
       >

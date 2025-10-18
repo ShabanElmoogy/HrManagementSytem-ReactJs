@@ -5,8 +5,11 @@ import {
   Paper,
   Typography,
   useTheme,
-  SvgIconProps
+  SvgIconProps,
+  Stack,
+  Divider
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import {
   Inbox,
   Add,
@@ -40,6 +43,10 @@ interface EmptyStateProps {
   showRefresh?: boolean;
   /** Refresh button handler */
   onRefresh?: () => void;
+  /** Optional list of suggestions/tips to help users get started */
+  tips?: string[];
+  /** Compact layout spacing */
+  compact?: boolean;
 }
 
 const EmptyState: React.FC<EmptyStateProps> = ({
@@ -55,7 +62,9 @@ const EmptyState: React.FC<EmptyStateProps> = ({
   sx = {},
   iconSize = 'large',
   showRefresh = false,
-  onRefresh
+  onRefresh,
+  tips,
+  compact = false
 }) => {
   const theme = useTheme();
 
@@ -76,26 +85,42 @@ const EmptyState: React.FC<EmptyStateProps> = ({
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
-        py: 6,
+        py: compact ? 4 : 6,
         px: 3,
-        minHeight: 200,
+        minHeight: compact ? 160 : 200,
         ...sx
       }}
     >
-      <IconComponent
+      <Box
         sx={{
-          fontSize: getIconSize(),
-          color: 'text.secondary',
+          width: 72,
+          height: 72,
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           mb: 2,
-          opacity: 0.7
+          bgcolor:
+            theme.palette.mode === 'dark'
+              ? alpha(theme.palette.primary.main, 0.12)
+              : alpha(theme.palette.primary.main, 0.08),
+          border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
         }}
-      />
+      >
+        <IconComponent
+          sx={{
+            fontSize: getIconSize(),
+            color: theme.palette.primary.main,
+            opacity: 0.9
+          }}
+        />
+      </Box>
       
       <Typography
         variant="h6"
-        color="text.secondary"
+        color="text.primary"
         gutterBottom
-        sx={{ fontWeight: 500 }}
+        sx={{ fontWeight: 600 }}
       >
         {title}
       </Typography>
@@ -104,13 +129,13 @@ const EmptyState: React.FC<EmptyStateProps> = ({
         <Typography
           variant="body2"
           color="text.secondary"
-          sx={{ mb: 3, maxWidth: 400, opacity: 0.8 }}
+          sx={{ mb: 2, maxWidth: 560, opacity: 0.9 }}
         >
           {subtitle}
         </Typography>
       )}
       
-      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
+      <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', justifyContent: 'center' }}>
         {action ? (
           action
         ) : (
@@ -146,16 +171,43 @@ const EmptyState: React.FC<EmptyStateProps> = ({
             Refresh
           </Button>
         )}
-      </Box>
+      </Stack>
+
+      {tips && tips.length > 0 && (
+        <>
+          <Divider sx={{ my: 3, width: '100%', maxWidth: 560 }} />
+          <Box sx={{ maxWidth: 560 }}>
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+              Suggestions
+            </Typography>
+            <Stack component="ul" spacing={0.5} sx={{ m: 0, pl: 2, textAlign: 'left' }}>
+              {tips.map((tip, idx) => (
+                <Typography component="li" key={idx} variant="body2" color="text.secondary">
+                  {tip}
+                </Typography>
+              ))}
+            </Stack>
+          </Box>
+        </>
+      )}
     </Box>
   );
 
   if (withPaper) {
     return (
       <Paper
+        variant="outlined"
+        elevation={0}
         sx={{
-          background: `linear-gradient(135deg, ${theme.palette.grey[50]} 0%, ${theme.palette.grey[100]} 100%)`,
-          border: `1px solid ${theme.palette.divider}`,
+          bgcolor: theme.palette.mode === 'dark'
+            ? alpha(theme.palette.background.paper, 0.9)
+            : theme.palette.grey[50],
+          backgroundImage: theme.palette.mode === 'dark'
+            ? `linear-gradient(135deg, ${alpha(theme.palette.common.white, 0.06)} 0%, ${alpha(theme.palette.common.white, 0.02)} 100%)`
+            : `linear-gradient(135deg, ${theme.palette.grey[50]} 0%, ${theme.palette.grey[100]} 100%)`,
+          borderColor: theme.palette.mode === 'dark'
+            ? alpha(theme.palette.divider, 0.3)
+            : theme.palette.divider,
           borderRadius: 2
         }}
       >

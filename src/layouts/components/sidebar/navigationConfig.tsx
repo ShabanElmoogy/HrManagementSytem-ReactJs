@@ -2,7 +2,6 @@
 import { getAdvancedToolsConfig } from "./configs/advancedToolsConfig";
 import { getAnalyticsConfig } from "./configs/analyticsConfig";
 import { getBasicDataConfig } from "./configs/basicDataConfig";
-import { getChartExamplesConfig } from "./configs/chartExamplesConfig";
 import { getChatConfig } from "./configs/chatConfig";
 import { getCommunicationConfig } from "./configs/communicationConfig";
 import { getDocumentsConfig } from "./configs/documentsConfig";
@@ -22,12 +21,11 @@ export const getNavigationConfig = (): NavigationConfig => {
     getBasicDataConfig(),
     getExtrasConfig(),
     getUsersAndRolesConfig(),
-    getAnalyticsConfig(),
-    getCommunicationConfig(),
-    getDocumentsConfig(),
-    getKanbanConfig(),
-    getChatConfig(),
-    getChartExamplesConfig(),
+    // getAnalyticsConfig(),
+    // getCommunicationConfig(),
+    // getDocumentsConfig(),
+    // getKanbanConfig(),
+    // getChatConfig(),
     getAdvancedToolsConfig(),
   ];
 

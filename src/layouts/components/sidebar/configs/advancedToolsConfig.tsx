@@ -17,7 +17,6 @@ export const getAdvancedToolsConfig = () => {
     createNavItem(NavigationTitles.HEALTH_CHECK, createColoredIcon(<HealthAndSafetyIcon />, NavigationColors.DARK_PURPLE), appRoutes.advancedTools.healthCheck, [UserRoles.ADMIN]),
     createNavItem(NavigationTitles.API_ENDPOINTS, createColoredIcon(<ApiIcon />, NavigationColors.DARK_GRAY), appRoutes.advancedTools.apiEndpoints),
     createNavItem(NavigationTitles.HANGFIRE_DASHBOARD, createColoredIcon(<TranslateIcon />, NavigationColors.PINK), appRoutes.advancedTools.hangfireDashboard),
-    createNavItem(NavigationTitles.NOTIFICATION_TEST, createColoredIcon(<NotificationsIcon />, NavigationColors.ORANGE), appRoutes.advancedTools.notificationTest),
   ];
 
   return createNavSection(NavigationSectionId.ADVANCED_TOOLS, NavigationTitles.ADVANCED_TOOLS_TITLE, sectionIcon, advancedToolsItems);

@@ -13,6 +13,7 @@ interface AuthRoutes {
   updateUserPhoto: string;
   getUserInfo: string;
   updateUserInfo: string;
+  confirmEmail : string
 }
 
 interface CrudRoutes {
@@ -134,6 +135,7 @@ const apiRoutes: ApiRoutes = {
     updateUserPhoto: "accountInfo/updateUserPicture",
     getUserInfo: "accountInfo/getInfo",
     updateUserInfo: "accountInfo/updateInfo",
+    confirmEmail: `${version}/auth/confirmEmail`,
   },
 
   //Basic Data

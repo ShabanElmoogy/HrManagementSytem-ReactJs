@@ -60,20 +60,20 @@ export const getBasicDataConfig = () => {
     secondaryIcon(<LocationCityIcon />),
     undefined,
     undefined,
-    undefined,
+    [Permissions.ViewCountries],
     geographicItems
   );
 
-  const employeesItem = createNavItem(
-    NavigationTitles.EMPLOYEES,
-    secondaryIcon(<PeopleIcon />),
-    appRoutes.basicData.employees
-  );
+  // const employeesItem = createNavItem(
+  //   NavigationTitles.EMPLOYEES,
+  //   secondaryIcon(<PeopleIcon />),
+  //   appRoutes.basicData.employees
+  // );
 
   return createNavSection(
     NavigationSectionId.Basic_DATA,
     NavigationTitles.BASIC_DATA,
     sectionIcon,
-    [geographicDataItem, employeesItem]
+    [geographicDataItem]
   );
 };

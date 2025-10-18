@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, Alert } from "@mui/material";
+import ConstructionIcon from "@mui/icons-material/Construction";
 
 const MyHeader = ({ title, subTitle, isDashboard = false }) => {
   const theme = useTheme();
@@ -15,6 +16,22 @@ const MyHeader = ({ title, subTitle, isDashboard = false }) => {
         {title}
       </Typography>
       <Typography variant="body1">{subTitle}</Typography>
+      {isDashboard && (
+        <Box mt={1}>
+          <Alert
+            icon={<ConstructionIcon fontSize="inherit" />}
+            severity="warning"
+            variant="outlined"
+            sx={{
+              alignItems: "center",
+              py: 0.5,
+              "& .MuiAlert-message": { p: 0 },
+            }}
+          >
+            This dashboard is under construction using dummy data. Updates will roll out step by step.
+          </Alert>
+        </Box>
+      )}
     </Box>
   );
 };
