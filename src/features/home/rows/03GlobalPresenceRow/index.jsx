@@ -14,7 +14,7 @@ const GlobalPresenceRow = () => {
           data={hrTimeline}
           title="Recent HR Activity"
           subtitle="Latest milestones and changes"
-          height={535}
+          height={507}
           gradient
         />
       </Grid>

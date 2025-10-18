@@ -1,9 +1,21 @@
 /* eslint-disable react/prop-types */
-import { ResponsiveContainer, FunnelChart as RechartsFunnelChart, Funnel, LabelList, Tooltip, Cell } from 'recharts';
-import { useTheme } from '@mui/material';
-import { getChartTheme } from './chartThemes';
-import { COLOR_PALETTES, formatNumber, formatPercentage } from './chartUtils';
-import ChartContainer from './ChartContainer';
+import {
+  ResponsiveContainer,
+  FunnelChart as RechartsFunnelChart,
+  Funnel,
+  LabelList,
+  Tooltip,
+  Cell,
+} from "recharts";
+import { useTheme, Typography } from "@mui/material";
+import { getChartTheme } from "./chartThemes";
+import {
+  COLOR_PALETTES,
+  formatNumber,
+  formatPercentage,
+  getColorPalette,
+} from "./chartUtils";
+import ChartContainer from "./ChartContainer";
 
 const FunnelChart = ({
   data = [],
@@ -16,23 +28,40 @@ const FunnelChart = ({
   loading = false,
   error = null,
   gradient = false,
-  dataKey = 'value',
-  nameKey = 'name',
+  dataKey = "value",
+  nameKey = "name",
   formatValue = (value) => formatNumber(value),
   formatLabel = (label) => label,
   onSegmentClick = null,
-  labelPosition = 'center', // 'center', 'insideStart', 'insideEnd'
+  labelPosition = "center", // 'center', 'insideStart', 'insideEnd'
   ...props
 }) => {
   const theme = useTheme();
   const chartTheme = getChartTheme(theme);
 
+  const chartMargin = { top: 20, right: 30, left: 20, bottom: 5 };
+
+  const firstValue = data && data.length ? Number(data[0][dataKey]) : 0;
+  const colorPalette = Array.isArray(colors)
+    ? colors
+    : colors?.light || colors?.dark
+    ? theme.palette.mode === "dark"
+      ? colors.dark
+      : colors.light
+    : [];
+  const resolvedPalette =
+    colorPalette && colorPalette.length
+      ? colorPalette
+      : getColorPalette("primary", theme.palette.mode);
+
   // Calculate conversion rates
   const dataWithConversion = data.map((item, index) => {
-    const conversionRate = index === 0 ? 100 : ((item[dataKey] / data[0][dataKey]) * 100);
+    const base = firstValue;
+    const conversionRate =
+      base > 0 ? (index === 0 ? 100 : (Number(item[dataKey]) / base) * 100) : 0;
     return {
       ...item,
-      conversionRate: conversionRate.toFixed(1)
+      conversionRate,
     };
   });
 
@@ -42,12 +71,22 @@ const FunnelChart = ({
     const data = payload[0].payload;
     return (
       <div style={chartTheme.tooltip.contentStyle}>
-        <p style={{ margin: 0, fontWeight: 'bold' }}>{formatLabel(data[nameKey])}</p>
-        <p style={{ margin: '4px 0', color: payload[0].color }}>
+        <p style={{ margin: 0, fontWeight: "bold" }}>
+          {formatLabel(data[nameKey])}
+        </p>
+        <p style={{ margin: "4px 0", color: payload[0].color }}>
           Value: {formatValue(data[dataKey])}
         </p>
-        <p style={{ margin: '4px 0', color: payload[0].color }}>
-          Conversion: {data.conversionRate}%
+        <p style={{ margin: "4px 0", color: payload[0].color }}>
+          Conversion:{" "}
+          {formatPercentage(
+            Number(
+              data.conversionRate ??
+                (firstValue > 0
+                  ? (Number(data[dataKey]) / firstValue) * 100
+                  : 0)
+            )
+          )}
         </p>
       </div>
     );
@@ -55,56 +94,64 @@ const FunnelChart = ({
 
   const getContrastColor = (hex) => {
     if (!hex) return theme.palette.text.primary;
-    const c = hex.replace('#', '');
+    const c = hex.replace("#", "");
     const r = parseInt(c.substring(0, 2), 16);
     const g = parseInt(c.substring(2, 4), 16);
     const b = parseInt(c.substring(4, 6), 16);
     // Perceived luminance
     const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    return luminance > 0.6 ? '#111' : '#fff';
+    return luminance > 0.6 ? "#111" : "#fff";
+  };
+  const getLuminance = (hex) => {
+    if (!hex) return null;
+    const c = hex.replace("#", "");
+    const r = parseInt(c.substring(0, 2), 16);
+    const g = parseInt(c.substring(2, 4), 16);
+    const b = parseInt(c.substring(4, 6), 16);
+    return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
   };
 
-  const renderCustomLabel = (props) => {
+  const renderCustomLabel = ({ x, y, index, payload }) => {
     if (!showLabels) return null;
-    const { x, y, payload, index } = props;
-    const name = formatLabel(payload?.[nameKey] ?? '');
-    const val = payload?.[dataKey] ?? 0;
-    const valueStr = formatValue(val);
-    const conv = Number(payload?.conversionRate ?? 0);
-
-    // Choose segment color from palette if available for contrast calc
-    const segColor = Array.isArray(colors) ? colors[index % colors.length] : undefined;
-    const textColor = getContrastColor(segColor);
-    const outlineColor = theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.7)';
-
-    // For small slices, render compact single line with percentage
-    const isSmall = conv < 12; // threshold
-    const fontSize = isSmall ? 10 : 12;
-
+    const base = firstValue;
+    const item =
+      Array.isArray(dataWithConversion) && index != null
+        ? dataWithConversion[index]
+        : payload || {};
+    const name = formatLabel(item?.[nameKey] ?? "");
+    const val = Number(item?.[dataKey] ?? 0);
+    const conv = base > 0 ? (index === 0 ? 100 : (val / base) * 100) : 0;
+    const anchor =
+      labelPosition === "right"
+        ? "start"
+        : labelPosition === "left"
+        ? "end"
+        : "middle";
+    const offset =
+      labelPosition === "right" ? 30 : labelPosition === "left" ? 15 : 0;
+    const textX =
+      labelPosition === "right"
+        ? Number(x) + offset
+        : labelPosition === "left"
+        ? Number(x) - offset
+        : x;
     return (
-      <g>
-        <text
-          x={x}
-          y={y}
-          textAnchor="middle"
-          dominantBaseline="central"
-          fill={textColor}
-          stroke={outlineColor}
-          strokeWidth={1.4}
-          paintOrder="stroke"
-          fontSize={fontSize}
-          fontFamily={theme.typography.fontFamily}
-        >
-          {isSmall ? (
-            `${name} (${conv}%)`
-          ) : (
-            <tspan>
-              <tspan x={x} dy={-4}>{name}</tspan>
-              <tspan x={x} dy={12}>{valueStr}</tspan>
-            </tspan>
-          )}
-        </text>
-      </g>
+      <text
+        x={textX}
+        y={Number(y) + 15}
+        textAnchor={anchor}
+        dominantBaseline="central"
+        fill={
+        theme.palette.mode === "dark"
+          ? theme.palette.info.dark     // 💙 أزرق فاتح في الوضع الداكن
+          : theme.palette.text.primary      // 💙 أزرق عادي في الوضع الفاتح
+      }
+        fontSize={theme.typography.pxToRem(12)}
+        fontWeight={theme.typography.fontWeightBold}
+        fontFamily={theme.typography.fontFamily}
+      >
+        {`${name} (${formatPercentage(conv)})`}
+      </text>
     );
   };
 
@@ -116,7 +163,7 @@ const FunnelChart = ({
 
   const chartContent = (
     <ResponsiveContainer width="100%" height="100%">
-      <RechartsFunnelChart margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+      <RechartsFunnelChart margin={chartMargin}>
         <Funnel
           dataKey={dataKey}
           data={dataWithConversion}
@@ -124,15 +171,15 @@ const FunnelChart = ({
           onClick={handleSegmentClick}
         >
           {dataWithConversion.map((entry, index) => (
-            <Cell 
-              key={`cell-${index}`} 
-              fill={colors[index % colors.length]}
+            <Cell
+              key={`cell-${index}`}
+              fill={resolvedPalette[index % resolvedPalette.length]}
               stroke={theme.palette.background.paper}
               strokeWidth={2}
             />
           ))}
           {showLabels && (
-            <LabelList 
+            <LabelList
               position={labelPosition}
               fill={theme.palette.text.primary}
               stroke="none"
