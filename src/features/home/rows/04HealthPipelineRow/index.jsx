@@ -7,7 +7,7 @@ const HealthPipelineRow = () => {
   const theme = useTheme();
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={4}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <GaugeChart
           value={engagementScore}
           maxValue={100}
@@ -17,18 +17,22 @@ const HealthPipelineRow = () => {
           gradient
         />
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <GaugeChart
           value={complianceScore}
           maxValue={100}
-          colors={[theme.palette.error.main, theme.palette.warning.main, theme.palette.success.main]}
+          colors={[
+            theme.palette.error.main,
+            theme.palette.warning.main,
+            theme.palette.success.main,
+          ]}
           title="Policy Compliance"
           subtitle="Mandatory trainings & policy checks"
           height={300}
           gradient
         />
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <FunnelChart
           data={recruitmentFunnel}
           title="Recruitment Pipeline"

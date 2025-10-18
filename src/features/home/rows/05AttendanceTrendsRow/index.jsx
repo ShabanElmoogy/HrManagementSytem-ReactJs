@@ -8,7 +8,7 @@ const AttendanceTrendsRow = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={7}>
+      <Grid size={{ xs: 12, md: 7 }}>
         <HeatmapChart
           data={attendanceHeatmapData}
           title="Attendance Heatmap"
@@ -23,7 +23,7 @@ const AttendanceTrendsRow = () => {
           gradient
         />
       </Grid>
-      <Grid item xs={12} md={5}>
+      <Grid size={{ xs: 12, md: 5 }}>
         <BarChart
           data={microTrends}
           xKey="name"
