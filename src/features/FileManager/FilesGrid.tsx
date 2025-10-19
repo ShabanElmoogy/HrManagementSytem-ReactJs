@@ -4,7 +4,7 @@ import { Dialog } from "@mui/material";
 import { useSnackbar } from "@/shared/hooks";
 import ContentsWrapper from "@/layouts/components/myContentsWrapper";
 import Header from "@/shared/components/common/header/myHeader";
-import FilesDataGrid from "./components/gridView/FilesDataGrid";
+import FilesDataGrid from "@/features/FileManager/components/gridView/FilesDataGrid";
 import FileUpload from "./components/fileUpload/FileUpload";
 import FileDeleteDialog from "./components/dialog/FileDeleteDialog";
 import useFileGridLogic from "./hooks/useFileGridLogic";
