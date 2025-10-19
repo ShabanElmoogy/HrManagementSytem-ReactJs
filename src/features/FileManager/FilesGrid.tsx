@@ -1,12 +1,12 @@
-import FileDeleteDialog from "@/features/FileManager/components/dialog/FileDeleteDialog";
-import FileUpload from "@/features/FileManager/components/fileUpload/FileUpload";
-import FilesDataGrid from "@/features/FileManager/components/gridView/FilesDataGrid";
+import { useMemo, useCallback } from "react";
+import { useTranslation } from "react-i18next";
+import { Dialog } from "@mui/material";
+import { useSnackbar } from "@/shared/hooks";
 import ContentsWrapper from "@/layouts/components/myContentsWrapper";
 import Header from "@/shared/components/common/header/myHeader";
-import { useSnackbar } from "@/shared/hooks";
-import { Dialog } from "@mui/material";
-import { useCallback, useMemo } from "react";
-import { useTranslation } from "react-i18next";
+import FilesDataGrid from "./components/gridView/FilesDataGrid";
+import FileUpload from "./components/fileUpload/FileUpload";
+import FileDeleteDialog from "./components/dialog/FileDeleteDialog";
 import useFileGridLogic from "./hooks/useFileGridLogic";
 
 /**
