@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["dom", "dom.iterable", "es2022"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "es2022"
+    ],
     "allowJs": true,
     "checkJs": false,
     "skipLibCheck": true,
@@ -16,7 +20,6 @@
     "jsx": "react-jsx",
     "baseUrl": "src",
     "ignoreDeprecations": "6.0",
-
     // TypeScript strict settings - gradually enable for better error detection
     "strict": false,
     "noImplicitAny": true,
@@ -30,25 +33,38 @@
     "noUncheckedIndexedAccess": false,
     "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": false,
-    
     // Additional helpful options for better error detection
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "exactOptionalPropertyTypes": false,
     "useUnknownInCatchVariables": true,
-    
     // Path mapping
     "paths": {
-      "@/*": ["*"],
-      "@/components/*": ["components/*"],
-      "@/utils/*": ["utils/*"],
-      "@/hooks/*": ["hooks/*"],
-      "@/services/*": ["services/*"],
-      "@/types/*": ["types/*"],
-      "@/store/*": ["store/*"],
-      "@/assets/*": ["assets/*"]
+      "@/*": [
+        "*"
+      ],
+      "@/components/*": [
+        "components/*"
+      ],
+      "@/utils/*": [
+        "utils/*"
+      ],
+      "@/hooks/*": [
+        "hooks/*"
+      ],
+      "@/services/*": [
+        "services/*"
+      ],
+      "@/types/*": [
+        "types/*"
+      ],
+      "@/store/*": [
+        "store/*"
+      ],
+      "@/assets/*": [
+        "assets/*"
+      ]
     },
-    
     // Additional useful options
     "declaration": false,
     "declarationMap": false,
@@ -66,7 +82,8 @@
     "src/**/*.jsx",
     "src/**/*.d.ts",
     "vite.config.js",
-    "vite.config.ts"
+    "vite.config.ts",
+    "src/features/auth/users/UsersPage.فsx"
   ],
   "exclude": [
     "node_modules",

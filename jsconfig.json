@@ -40,7 +40,8 @@
   },
   "include": [
     "src/**/*.js",
-    "src/**/*.jsx"
+    "src/**/*.jsx",
+    "src/features/auth/users/UsersPage.فsx"
   ],
   "exclude": [
     "node_modules",

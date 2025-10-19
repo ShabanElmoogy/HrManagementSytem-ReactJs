@@ -2,11 +2,11 @@
 import { MyContentsWrapper } from "@/layouts/components";
 import { MyHeader } from "@/shared/components";
 import { useTranslation } from "react-i18next";
-import UsersDataGrid from "./components/usersDataGrid";
 import UserDeleteDialog from "./components/userDeleteDialog";
 import UserForm from "./components/userForm";
-import useUserGridLogic from "./hooks/useUserGridLogic";
 import UsersDashboardHeader from "./components/usersDashboardHeader";
+import UsersDataGrid from "./components/usersDataGrid";
+import useUserGridLogic from "./hooks/useUserGridLogic";
 
 const UsersPage = () => {
   const { t } = useTranslation();
@@ -35,11 +35,11 @@ const UsersPage = () => {
       <MyContentsWrapper>
         <MyHeader title={t("users.title")} subTitle={t("users.subTitle")} />
 
-         {/* Add the dashboard header */}
-        <UsersDashboardHeader 
-          users={users} 
-          loading={loading} 
-          t={t} 
+        {/* Add the dashboard header */}
+        <UsersDashboardHeader
+          users={users}
+          loading={loading}
+          t={t}
         />
 
         <UsersDataGrid

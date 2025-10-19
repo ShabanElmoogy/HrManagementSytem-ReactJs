@@ -41,7 +41,7 @@ const useUserGridLogic = () => {
     if (showDisabled) {
       return users;
     } else {
-      return users.filter((u) => !u.isDisabled);
+      return users.filter((u: any) => !u.isDisabled);
     }
   }, [users, showDisabled]);
 
@@ -62,7 +62,7 @@ const useUserGridLogic = () => {
   }, []);
 
   // Dialog management
-  const openDialog = useCallback((type, user = null) => {
+  const openDialog = useCallback((type: "add" | "edit" | "view" | "delete", user: any = null) => {
     setDialogType(type);
     setSelectedUser(user);
   }, []);
@@ -87,9 +87,9 @@ const useUserGridLogic = () => {
     if (type === "add") {
       targetIndex = stableUsers.length - 1;
     } else if (type === "edit") {
-      targetIndex = stableUsers.findIndex((row) => row.id === id);
+      targetIndex = stableUsers.findIndex((row: any) => row.id === id);
     } else if (type === "delete") {
-      const deletedIndex = stableUsers.findIndex((row) => row.id === id);
+      const deletedIndex = stableUsers.findIndex((row: any) => row.id === id);
       targetIndex = Math.max(0, deletedIndex - 1);
     }
 
@@ -106,7 +106,7 @@ const useUserGridLogic = () => {
 
   // Form submission handler
   const handleFormSubmit = useCallback(
-    async (formdata) => {
+    async (formdata: any) => {
       let gridAction = null;
       if (dialogType === "edit" && selectedUser?.id) {
         const result = await handleApiCall(
@@ -142,7 +142,7 @@ const useUserGridLogic = () => {
 
   // Handle enable/disable user - using toggleUser function
   const handleToggleUser = useCallback(
-    async (user) => {
+    async (user: any) => {
       const action = user.isDisabled ? "enabled" : "disabled";
       await handleApiCall(async () => {
         const result = await toggleUser(user.id);
@@ -154,7 +154,7 @@ const useUserGridLogic = () => {
 
   // Handle unlock user - using your existing unLockUser function
   const handleUnlockUser = useCallback(
-    async (user) => {
+    async (user: any) => {
       await handleApiCall(async () => {
         const result = await unLockUser(user.id);
         // No need to fetch all users - store already updated in unLockUser
@@ -165,7 +165,7 @@ const useUserGridLogic = () => {
   );
 
   //Handle Revoke Token
-  const handleRevokeToken = useCallback(async (user) => {
+  const handleRevokeToken = useCallback(async (user: any) => {
     await handleApiCall(async () => {
       const result = await revokeToken(user.id);
       return result;
@@ -175,9 +175,9 @@ const useUserGridLogic = () => {
   // Get user counts for display
   const userCounts = useMemo(() => {
     const total = users.length;
-    const active = users.filter((u) => !u.isDisabled).length;
-    const disabled = users.filter((u) => u.isDisabled).length;
-    const locked = users.filter((u) => u.isLocked).length;
+    const active = users.filter((u: any) => !u.isDisabled).length;
+    const disabled = users.filter((u: any) => u.isDisabled).length;
+    const locked = users.filter((u: any) => u.isLocked).length;
 
     return { total, active, disabled, locked };
   }, [users]);
@@ -207,8 +207,8 @@ const useUserGridLogic = () => {
     handleRevokeToken,
 
     // Actions for grid
-    onEdit: (user) => openDialog("edit", user),
-    onView: (user) => openDialog("view", user),
+    onEdit: (user: any) => openDialog("edit", user),
+    onView: (user: any) => openDialog("view", user),
     onAdd: () => openDialog("add"),
     onToggle: handleToggleUser, // Enable/Disable toggle
     onUnlock: handleUnlockUser,
