@@ -45,6 +45,7 @@ interface UsersRoutes {
   toggle: (id: string | number) => string;
   unlock: (id: string | number) => string;
   revoke: (userId: string | number) => string;
+  delete: (id: string | number) => string;
 }
 
 interface ExportRoutes {
@@ -188,6 +189,7 @@ const apiRoutes: ApiRoutes = {
     unlock: (id: string | number) => `${version}/users/unlock/${id}`,
     revoke: (userId: string | number) =>
       `${version}/auth/revokeRefreshTokenByUserId?userId=${userId}`, // ApiRoutes.Users.ToggleUsers/{id}
+    delete: (id: string | number) => `${version}/users/delete/${id}`,
   },
   export: {
     excel: `${version}/export/exportExcel`,

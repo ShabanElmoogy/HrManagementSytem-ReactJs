@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
 // Helper function to extract value from API response
-const extractValue = (response) => {
+const extractValue = (response: any) => {
   // If response has a value property and it's successful, return the value
   if (response?.value && response?.isSuccess) {
     return response.value;
@@ -18,11 +18,11 @@ const extractValue = (response) => {
 };
 
 // Helper function to extract array of values from API response
-const extractValues = (response) => {
+const extractValues = (response: any) => {
   const extracted = extractValue(response);
   // If it's an array of wrapped objects, extract values
   if (Array.isArray(extracted) && extracted[0]?.value) {
-    return extracted.map((item) => extractValue(item));
+    return extracted.map((item: any) => extractValue(item));
   }
   return extracted;
 };
@@ -30,7 +30,7 @@ const extractValues = (response) => {
 const useUserStore = create(
   devtools(
     persist(
-      (set, get) => ({
+      (set: any) => ({
         users: [],
 
         fetchUsers: async () => {
@@ -40,53 +40,38 @@ const useUserStore = create(
           return allUsers;
         },
 
-        getUserById: async (id) => {
-          const user = get().users.find((u) => u.id === id);
-          if (user) return user;
-
-          const response = await apiService.get(apiRoutes.users.getById(id));
-          const newUser = extractValue(response);
-
-          if (newUser && newUser.id) {
-            set((state) => ({
-              users: [...state.users, newUser],
-            }));
-          }
-          return newUser;
-        },
-
-        addUser: async (userData) => {
+        addUser: async (userData: any) => {
           const response = await apiService.post(apiRoutes.users.add, userData);
           const newUser = extractValue(response);
 
-          set((state) => ({
+          set((state: any) => ({
             users: [...state.users, newUser],
           }));
           return newUser;
         },
 
-        updateUser: async (userData) => {
+        updateUser: async (userData: any) => {
           const response = await apiService.put(
             apiRoutes.users.update(userData.id),
             userData
           );
           const updatedUser = extractValue(response);
 
-          set((state) => ({
+          set((state: any) => ({
             users: state.users.map(
-              (user) => (user.id === userData.id ? updatedUser : user) // Complete replacement
+              (user: any) => (user.id === userData.id ? updatedUser : user) // Complete replacement
             ),
           }));
           console.log("Updated user:", updatedUser);
           return updatedUser;
         },
 
-        toggleUser: async (id) => {
+        toggleUser: async (id: any) => {
           await apiService.put(apiRoutes.users.toggle(id));
 
           // Update the user's isDisabled status by toggling it
-          set((state) => ({
-            users: state.users.map((u) => {
+          set((state: any) => ({
+            users: state.users.map((u: any) => {
               if (u.id === id) {
                 const newStatus = !u.isDisabled;
                 return { ...u, isDisabled: newStatus };
@@ -97,12 +82,12 @@ const useUserStore = create(
         },
         // Fixed unLockUser method in useUserStore.js
 
-        unLockUser: async (id) => {
+        unLockUser: async (id: any) => {
           await apiService.put(apiRoutes.users.unlock(id));
 
           // Update the user's lock status (not disabled status)
-          set((state) => ({
-            users: state.users.map((user) =>
+          set((state: any) => ({
+            users: state.users.map((user: any) =>
               user.id === id
                 ? {
                     ...user,
@@ -112,8 +97,16 @@ const useUserStore = create(
             ),
           }));
         },
-        revokeToken: async (refreshToken) => {
+        revokeToken: async (refreshToken: any) => {
           await apiService.put(apiRoutes.users.revoke(refreshToken));
+        },
+
+        deleteUser: async (id: any) => {
+          await apiService.delete(apiRoutes.users.delete(id));
+
+          set((state: any) => ({
+            users: state.users.filter((user: any) => user.id !== id),
+          }));
         },
 
         resetUserData: () =>

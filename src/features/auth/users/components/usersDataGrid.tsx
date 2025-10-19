@@ -2,14 +2,13 @@
 // components/UsersDataGrid.jsx - Updated with separate status renderers and revoke button
 import {
   Edit,
-  Visibility,
-  PersonOff,
-  Person,
   LockOpen,
-  Lock,
+  Person,
+  PersonOff,
   RemoveCircle,
+  Visibility
 } from "@mui/icons-material";
-import { Tooltip, Chip, Avatar } from "@mui/material";
+import { Avatar, Chip, Tooltip } from "@mui/material";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import { useCallback, useMemo } from "react";
 
@@ -18,6 +17,31 @@ import {
   renderDisabledStatus,
   renderLockedStatus,
 } from "@/shared/components";
+
+interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  userName: string;
+  email: string;
+  roles: string[];
+  isDisabled: boolean;
+  isLocked: boolean;
+  profilePicture?: string;
+}
+
+interface UsersDataGridProps {
+  users: User[];
+  loading: boolean;
+  apiRef: any;
+  onEdit: (user: User) => void;
+  onView: (user: User) => void;
+  onAdd: () => void;
+  onToggle: (user: User) => void;
+  onUnlock: (user: User) => void;
+  onRevoke: (user: User) => void;
+  t: any;
+}
 
 const UsersDataGrid = ({
   users,
@@ -30,10 +54,10 @@ const UsersDataGrid = ({
   onUnlock,
   onRevoke, // Revoke function
   t,
-}) => {
+}: UsersDataGridProps) => {
   // Custom renderers
   const renderUserName = useCallback(
-    (params) => (
+    (params: any) => (
       <div
         style={{
           display: "flex",
@@ -51,7 +75,7 @@ const UsersDataGrid = ({
   );
 
   const renderRoles = useCallback(
-    (params) => (
+    (params: any) => (
       <div
         style={{
           display: "flex",
@@ -61,7 +85,7 @@ const UsersDataGrid = ({
           flexWrap: "wrap",
         }}
       >
-        {params.value?.map((role, index) => (
+        {params.value?.map((role: string, index: number) => (
           <Chip
             key={index}
             label={role}
@@ -77,7 +101,7 @@ const UsersDataGrid = ({
 
   // Memoized action buttons
   const getActions = useCallback(
-    (params) => {
+    (params: any) => {
       const { isDisabled, isLocked } = params.row;
 
       const actions = [

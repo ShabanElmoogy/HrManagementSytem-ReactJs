@@ -22,15 +22,14 @@ const useUserGridLogic = () => {
   const [dialogType, setDialogType] = useState(null);
 
   // Store access - ONLY using what you have
-  const {
-    fetchUsers,
-    users,
-    addUser,
-    updateUser,
-    toggleUser, // For enable/disable
-    unLockUser,
-    revokeToken, // For unlock only
-  } = useUserStore();
+  const fetchUsers = useUserStore((state: any) => state.fetchUsers);
+  const users = useUserStore((state: any) => state.users);
+  const addUser = useUserStore((state: any) => state.addUser);
+  const updateUser = useUserStore((state: any) => state.updateUser);
+  const toggleUser = useUserStore((state: any) => state.toggleUser);
+  const unLockUser = useUserStore((state: any) => state.unLockUser);
+  const revokeToken = useUserStore((state: any) => state.revokeToken);
+  const deleteUser = useUserStore((state: any) => state.deleteUser);
 
   // Refs for grid navigation
   const gridActionRef = useRef(null);
@@ -172,6 +171,23 @@ const useUserGridLogic = () => {
     }, t("users.revoked"));
   }, []);
 
+  // Handle delete user
+  const handleDelete = useCallback(
+    async () => {
+      if (!selectedUser?.id) return;
+
+      await handleApiCall(async () => {
+        const result = await deleteUser(selectedUser.id);
+        gridActionRef.current = { type: "delete", id: selectedUser.id };
+        return result;
+      }, t("users.deleted"));
+
+      closeDialog();
+      handleGridNavigation();
+    },
+    [selectedUser, deleteUser, handleApiCall, t, closeDialog, handleGridNavigation]
+  );
+
   // Get user counts for display
   const userCounts = useMemo(() => {
     const total = users.length;
@@ -205,6 +221,7 @@ const useUserGridLogic = () => {
     handleUnlockUser, // Unlock only
     toggleShowDisabled,
     handleRevokeToken,
+    handleDelete,
 
     // Actions for grid
     onEdit: (user: any) => openDialog("edit", user),

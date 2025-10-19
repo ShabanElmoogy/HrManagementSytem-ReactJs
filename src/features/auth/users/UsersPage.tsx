@@ -70,7 +70,6 @@ const UsersPage = () => {
           onClose={closeDialog}
           onConfirm={handleDelete}
           selectedUser={selectedUser}
-          t={t}
         />
       </MyContentsWrapper>
       {SnackbarComponent}

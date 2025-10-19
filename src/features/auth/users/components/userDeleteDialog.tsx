@@ -1,12 +1,18 @@
 import { MyDeleteConfirmation } from "@/shared/components";
 
+interface UserDeleteDialogProps {
+  open: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  selectedUser: { firstName: string; lastName: string; email: string } | null;
+}
+
 const UserDeleteDialog = ({
   open,
   onClose,
   onConfirm,
   selectedUser,
-  t,
-}) => {
+}: UserDeleteDialogProps) => {
   // Create the display name for the user being deleted
   const deletedField = selectedUser
     ? `${selectedUser.firstName} ${selectedUser.lastName} (${selectedUser.email})`
