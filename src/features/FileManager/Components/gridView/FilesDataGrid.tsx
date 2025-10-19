@@ -1,5 +1,5 @@
-import { useMemo, useCallback } from "react";
 import MyDataGrid from "@/shared/components/common/datagrid/myDataGrid";
+import { useCallback, useMemo } from "react";
 import makeFileActions from "./components/makeFileActions";
 import makeFileColumns from "./components/makeFileColumns";
 import { FilesDataGridProps } from "./types/gridView.type";
@@ -14,7 +14,7 @@ const FilesDataGrid = ({
   onAdd,
   t,
 }: FilesDataGridProps) => {
-  
+
 
   const getActions = useCallback(
     makeFileActions({ t, onDownload, onView, onDelete }),

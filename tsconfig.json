@@ -19,7 +19,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": "src",
-    "ignoreDeprecations": "6.0",
+    "ignoreDeprecations": "5.0",
     // TypeScript strict settings - gradually enable for better error detection
     "strict": false,
     "noImplicitAny": true,
@@ -83,7 +83,7 @@
     "src/**/*.d.ts",
     "vite.config.js",
     "vite.config.ts",
-    "src/features/auth/users/UsersPage.فsx"
+
   ],
   "exclude": [
     "node_modules",

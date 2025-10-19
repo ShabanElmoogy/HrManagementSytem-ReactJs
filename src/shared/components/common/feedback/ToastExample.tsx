@@ -6,7 +6,7 @@ import { showToast, useToast } from './Toast';
  * This is for reference and can be removed in production
  */
 const ToastExample: React.FC = () => {
-  const toast = useToast();
+  // const toast = useToast(); // Unused variable
 
   // Example API call simulation
   const simulateApiCall = (shouldSucceed: boolean = true): Promise<{ message: string }> => {

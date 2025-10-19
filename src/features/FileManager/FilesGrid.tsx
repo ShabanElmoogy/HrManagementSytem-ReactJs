@@ -4,7 +4,7 @@ import { Dialog } from "@mui/material";
 import { useSnackbar } from "@/shared/hooks";
 import ContentsWrapper from "@/layouts/components/myContentsWrapper";
 import Header from "@/shared/components/common/header/myHeader";
-import FilesDataGrid from "./components/gridView/FilesDataGrid";
+import { FilesDataGrid } from "./components/gridView";
 import FileUpload from "./components/fileUpload/FileUpload";
 import FileDeleteDialog from "./components/dialog/FileDeleteDialog";
 import useFileGridLogic from "./hooks/useFileGridLogic";
@@ -23,7 +23,7 @@ import useFileGridLogic from "./hooks/useFileGridLogic";
  */
 const FilesGrid = () => {
   // Hooks
-  const { showSnackbar, SnackbarComponent } = useSnackbar();
+  const { SnackbarComponent } = useSnackbar();
   const { t } = useTranslation();
 
   // Custom logic hook
@@ -33,7 +33,6 @@ const FilesGrid = () => {
     loading,
     files,
     apiRef,
-    openDialog,
     closeDialog,
     handleDelete,
     handleRefresh,

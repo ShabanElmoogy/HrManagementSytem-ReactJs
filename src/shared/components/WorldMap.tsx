@@ -101,7 +101,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
   const theme = useTheme();
   const [zoom, setZoom] = useState(1);
   const [center, setCenter] = useState<[number, number]>([0, 15]);
-  const [hoverId, setHoverId] = useState<string | null>(null);
+  // const [hoverId, setHoverId] = useState<string | null>(null); // Unused variable
 
   const dataMap = useMemo(
     () => new Map<string, CountryData>(data.map((d) => [d.id, d])),
