@@ -1,13 +1,13 @@
-import { MyForm, MyTextField, MySelectForm } from "@/shared/components";
+import { MyForm, MySelectForm, MyTextField } from "@/shared/components";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Casino } from "@mui/icons-material";
-import { Box, TextField, Button } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import { useEffect } from "react";
-import { useForm, Resolver, SubmitHandler } from "react-hook-form";
-import { getStateValidationSchema } from "../utils/validation";
+import { Resolver, SubmitHandler, useForm } from "react-hook-form";
 import { useCountries } from "../../countries/hooks/useCountryQueries";
-import { states } from "../utils/fakeData";
 import { State } from "../types/State";
+import { states } from "../utils/fakeData";
+import { getStateValidationSchema } from "../utils/validation";
 
 interface StateFormData {
   nameAr: string;
@@ -79,7 +79,7 @@ const StateForm = ({
       } else if ((isEditMode || isViewMode) && selectedState) {
         // Extract countryId from either direct property or nested country object
         const countryId = selectedState.countryId || selectedState.country?.id || 0;
-               
+
         // Reset form with selected state data
         reset({
           nameAr: selectedState.nameAr || "",
@@ -154,7 +154,7 @@ const StateForm = ({
 
       return () => clearTimeout(timer);
     }
-    
+
     // Return undefined for the else case
     return undefined;
   }, [open, isEditMode, isViewMode, selectedState, countries.length, watchedCountryId, setValue]);
@@ -190,7 +190,7 @@ const StateForm = ({
 
   return (
     <MyForm
-      maxHeight="65vh"
+      maxHeight="80vh"
       open={open}
       onClose={onClose}
       title={
@@ -295,10 +295,10 @@ const StateForm = ({
         isViewMode={isViewMode}
         disabled={loading}
         showClearButton={!isViewMode}
-        actualFieldName="countryId" 
-        colorMember={undefined} 
-        loadingText={undefined} 
-        noOptionsText={undefined}/>
+        actualFieldName="countryId"
+        colorMember={undefined}
+        loadingText={undefined}
+        noOptionsText={undefined} />
 
       {/* Generate Mock Data Button - Show in add and edit modes for testing */}
       {(isAddMode || isEditMode) && (

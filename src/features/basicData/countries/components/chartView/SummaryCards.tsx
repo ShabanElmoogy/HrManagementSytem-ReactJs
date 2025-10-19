@@ -1,5 +1,5 @@
 import { MetricCard } from '@/shared/components/charts';
-import { Assessment, DonutLarge, LocationOn, Public, TrendingUp } from '@mui/icons-material';
+import { Assessment, LocationOn, Public, TrendingUp } from '@mui/icons-material';
 import { Grid } from '@mui/material';
 import React from 'react';
 
