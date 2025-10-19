@@ -60,7 +60,7 @@ const DocumentManagementPage = lazy(() =>
     default: m.DocumentManagementPage,
   }))
 );
-const UsersPage = lazy(() => import("@/features/auth/users/usersPage"));
+const UsersPage = lazy(() => import("@/features/auth/users/UsersPage"));
 const RolesPage = lazy(() => import("@/features/auth/roles/rolesPage"));
 const TrackChangesGrid = lazy(() =>
   import("@/features/advancedTools/trackChangesGrid")
