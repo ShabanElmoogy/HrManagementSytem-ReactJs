@@ -11,7 +11,7 @@ import { ToastProvider } from "../../shared/components/common/feedback/Toast";
 import apiService from "../../shared/services/apiService";
 import useTokenRevocation from "../../shared/store/useTokenRevocation";
 import { useThemeSettings } from "../../theme/useThemeSettings";
-import SideBar from "../components/sidebar/SideBar";
+import SideBar from "../components/sidebar/sideBar";
 import SidebarContext from "../components/sidebar/sidebarContext"; // Import context
 import TopBar from "../components/topBar/topBar";
 // NotificationProvider removed - using simplified notification system
@@ -66,7 +66,7 @@ const MainLayout = () => {
             </Box>
           </Box>
         </SidebarContext.Provider>
-        <ToastProvider position="top-right" />
+        <ToastProvider position="top-right" children={""} />
       </CacheProvider>
     </ThemeProvider>
   );
