@@ -6,7 +6,7 @@ import type { Country } from "../types/Country";
 import CountriesCardView from "./countriesCardView";
 import CountriesChartView from "./countriesChartView";
 import CountriesDataGrid from "./gridView/countriesDataGrid";
-import CountryReport from "../Reports/CountryReport";
+import CountryReport from "../reports/CountryReport";
 import ImportCountries from "./importData/ImportCountries";
 
 interface CountriesMultiViewProps {

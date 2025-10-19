@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { MySelect, TextFieldWithClear } from "@/shared/components/common/formControls";
 import ReportViewer from "@/shared/components/reports/ReportViewer";
-import { TextFieldWithClear, MySelectMultiple, MySelect } from "@/shared/components/common/formControls";
 import { reportApiService } from "@/shared/services";
 import { useTheme } from "@mui/material";
 
@@ -22,15 +22,15 @@ const CountryReport = () => {
 
   const reportParams = selectedReport
     ? {
-        ...defaultReportParams,
-        ReportPath: selectedReport.ReportPath,
-        ReportFileName: selectedReport.Id,
-      }
+      ...defaultReportParams,
+      ReportPath: selectedReport.ReportPath,
+      ReportFileName: selectedReport.Id,
+    }
     : {
-        ...defaultReportParams,
-        ReportPath: "Reports/Countries",
-        ReportFileName: "Countries",
-      };
+      ...defaultReportParams,
+      ReportPath: "Reports/Countries",
+      ReportFileName: "Countries",
+    };
 
   useEffect(() => {
     fetchCountriesReports();
@@ -46,12 +46,12 @@ const CountryReport = () => {
       const data = await response.json();
 
       // Move "Countries" to the top using sort
-      const sorted = data.sort((a, b) =>
+      const sorted = data.sort((a: any, b: any) =>
         a.Id === "Countries" ? -1 : b.Id === "Countries" ? 1 : 0
       );
 
       setReportsInfo(sorted);
-      setSelectedReport((prev) => prev ?? sorted[0]);
+      setSelectedReport((prev: any) => prev ?? sorted[0]);
 
       console.log("Reports Info:", sorted);
     } catch (error) {
@@ -59,20 +59,20 @@ const CountryReport = () => {
     }
   };
 
-  const handleReportChange = (e) => {
-    const selected = reportsInfo.find((r) => r.Id === (e?.target?.value ?? e));
+  const handleReportChange = (e: any) => {
+    const selected = reportsInfo.find((r: any) => r.Id === (e?.target?.value ?? e));
     setSelectedReport(selected ?? null);
-    console.log("reportName",selected)
+    console.log("reportName", selected)
   };
 
   return (
     <ReportViewer reportParams={reportParams}>
-      {(updateSearchParams, currentParams) => (
+      {(updateSearchParams: any, currentParams: any) => (
         <>
           <TextFieldWithClear
             searchText={currentParams.CountryAr || ""}
             label={t("countries.arabicName")}
-            handleSearch={(e) =>
+            handleSearch={(e: any) =>
               updateSearchParams({ CountryAr: e.target.value })
             }
             handleClearSearch={() => updateSearchParams({ CountryAr: null })}
@@ -81,7 +81,7 @@ const CountryReport = () => {
           <TextFieldWithClear
             searchText={currentParams.CountryEn || ""}
             label={t("countries.englishName")}
-            handleSearch={(e) =>
+            handleSearch={(e: any) =>
               updateSearchParams({ CountryEn: e.target.value })
             }
             handleClearSearch={() => updateSearchParams({ CountryEn: null })}
@@ -91,6 +91,7 @@ const CountryReport = () => {
             dataSource={reportsInfo}
             selectedItem={selectedReport?.Id || null}
             handleSelectionChange={handleReportChange}
+            loading={false}
             label={t("reports.reportForms")}
             displayValue="Id"
             displayMember={lang === "ar" ? "Title" : "Subject"}

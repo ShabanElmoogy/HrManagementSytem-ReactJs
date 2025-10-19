@@ -33,6 +33,12 @@ const EmailConfirmed = () => {
 
     confirmEmail();
   }, [searchParams, navigate]);
+
+  return (
+    <div>
+      <p>Confirming your email...</p>
+    </div>
+  );
 };
 
 export default EmailConfirmed;

@@ -394,7 +394,7 @@ const AppRoutes = () => {
               path={appRoutes.basicData.employeeCreate}
               element={
                 <ProtectedRoute
-                  requiredPermissions={[appPermissions.ManageUsers]}
+                  requiredPermissions={[appPermissions.CreateUsers]}
                 >
                   <Suspense fallback={<MyLoadingIndicator />}>
                     <EmployeeForm mode="create" />
@@ -660,7 +660,7 @@ const AppRoutes = () => {
                   requiredPermissions={[appPermissions.ViewUsers]}
                 >
                   <Suspense fallback={<MyLoadingIndicator />}>
-                    <MessagingSystem />
+                    <MessagingSystem userId="current-user" />
                   </Suspense>
                 </ProtectedRoute>
               }
@@ -673,7 +673,7 @@ const AppRoutes = () => {
                   requiredPermissions={[appPermissions.ViewUsers]}
                 >
                   <Suspense fallback={<MyLoadingIndicator />}>
-                    <AnnouncementCenter />
+                    <AnnouncementCenter userId="current-user" />
                   </Suspense>
                 </ProtectedRoute>
               }
@@ -686,7 +686,7 @@ const AppRoutes = () => {
                   requiredPermissions={[appPermissions.ViewUsers]}
                 >
                   <Suspense fallback={<MyLoadingIndicator />}>
-                    <FeedbackCollection />
+                    <FeedbackCollection userId="current-user" />
                   </Suspense>
                 </ProtectedRoute>
               }
@@ -699,7 +699,7 @@ const AppRoutes = () => {
                   requiredPermissions={[appPermissions.ViewUsers]}
                 >
                   <Suspense fallback={<MyLoadingIndicator />}>
-                    <CommunicationDashboard />
+                    <CommunicationDashboard userId="current-user" />
                   </Suspense>
                 </ProtectedRoute>
               }
@@ -712,7 +712,7 @@ const AppRoutes = () => {
                   requiredPermissions={[appPermissions.ViewUsers]}
                 >
                   <Suspense fallback={<MyLoadingIndicator />}>
-                    <NotificationSystem />
+                    <NotificationSystem userId="current-user" />
                   </Suspense>
                 </ProtectedRoute>
               }
@@ -725,7 +725,7 @@ const AppRoutes = () => {
                   requiredPermissions={[appPermissions.ViewUsers]}
                 >
                   <Suspense fallback={<MyLoadingIndicator />}>
-                    <CommunicationReports />
+                    <CommunicationReports userId="current-user" />
                   </Suspense>
                 </ProtectedRoute>
               }
