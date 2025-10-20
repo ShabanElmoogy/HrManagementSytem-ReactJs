@@ -2,9 +2,9 @@ import ContentsWrapper from "@/layouts/components/myContentsWrapper";
 import Header from "@/shared/components/common/header/myHeader";
 import { useSnackbar } from "@/shared/hooks";
 import { Dialog } from "@mui/material";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import FileDeleteDialog  from "./components/dialog/FileDeleteDialog";
+import FileDeleteDialog from "@/features/fileManager/components/dialog/FileDeleteDialog";
 import FilesDataGrid from "./components/FilesDataGrid";
 import FileUpload from "./components/fileUpload/FileUpload";
 import useFileGridLogic from "./hooks/useFileGridLogic";
@@ -31,8 +31,6 @@ const FilesGrid = () => {
     handleUploadSuccess,
   } = useFileGridLogic();
 
-  // Memoized values
-  const stableFiles = useMemo(() => files, [files]);
 
   // Form submission handler for upload success
   const handleFormSubmit = useCallback(
@@ -51,7 +49,7 @@ const FilesGrid = () => {
         <Header title={t("files.title")} subTitle={t("files.subTitle")} />
 
         <FilesDataGrid
-          files={stableFiles}
+          files={files}
           loading={loading}
           apiRef={apiRef}
           onDownload={handleDownload}
