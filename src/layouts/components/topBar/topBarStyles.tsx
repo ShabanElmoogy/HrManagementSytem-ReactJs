@@ -7,7 +7,7 @@ const drawerWidth = 240;
 // AppBar styled component
 export const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
+})<{ open?: boolean }>(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
   boxSizing: "border-box",
   className: "mui-fixed",
@@ -31,7 +31,7 @@ export const AppBar = styled(MuiAppBar, {
 }));
 
 // Toolbar styled component
-export const StyledToolbar = styled(Toolbar)(({ theme, open }) => ({
+export const StyledToolbar = styled(Toolbar)<{ open?: boolean }>(({ theme, open }) => ({
   width: "100%",
   maxWidth: open ? `calc(100vw - ${drawerWidth}px - 1px)` : "calc(100vw - 1px)",
   boxSizing: "border-box",
@@ -50,7 +50,7 @@ export const StyledListItem = styled(ListItem)(({ theme }) => ({
 }));
 
 // NotificationItem styled component
-export const NotificationItem = styled(ListItem)(({ theme, isNew }) => ({
+export const NotificationItem = styled(ListItem)<{ isNew?: boolean }>(({ theme, isNew }) => ({
   cursor: "pointer",
   backgroundColor: isNew ? theme.palette.action.selected : "transparent",
   borderRadius: theme.shape.borderRadius,

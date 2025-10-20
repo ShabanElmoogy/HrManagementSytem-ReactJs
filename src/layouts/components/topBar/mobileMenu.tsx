@@ -31,6 +31,17 @@ const MobileMenu = ({
   navigateToProfile,
   handleLogout,
   isAuthenticated,
+}: {
+  anchorEl: HTMLElement | null;
+  open: boolean;
+  onClose: () => void;
+  handleThemeToggle: () => void;
+  theme: any;
+  direction: string;
+  toggleLanguage: () => void;
+  navigateToProfile: () => void;
+  handleLogout: () => void;
+  isAuthenticated: boolean;
 }) => {
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const { t } = useTranslation();

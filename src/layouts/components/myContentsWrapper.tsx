@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSidebar } from "./sidebar/sidebarContext";
 
-const MyContentsWrapper = ({ children }) => {
+const MyContentsWrapper = ({ children }: { children: React.ReactNode }) => {
   const { open } = useSidebar();
   const [isFirstRender, setIsFirstRender] = useState(true);
 

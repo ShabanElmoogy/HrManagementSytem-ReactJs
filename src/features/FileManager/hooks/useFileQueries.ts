@@ -39,7 +39,7 @@ function useFileMutation<TData = unknown, TVariables = unknown>(
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: fileKeys.all });
       if (options && typeof options.onSuccess === "function") {
-        options.onSuccess(data, variables, context);
+        options.onSuccess(data, variables, context, undefined);
       }
     },
   });

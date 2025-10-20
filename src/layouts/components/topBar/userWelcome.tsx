@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import AuthService from "../../../shared/services/authService";
 import { useUserPhoto } from "../../../shared/hooks";
 
-const UserWelcome = ({ isMobile = false }) => {
+const UserWelcome = ({ isMobile = false }: { isMobile?: boolean }) => {
   const theme = useTheme();
   const { t } = useTranslation();
   const [firstName, setFirstName] = useState("");
@@ -37,19 +37,12 @@ const UserWelcome = ({ isMobile = false }) => {
           const decodedToken = AuthService.getUserClaims();
 
           // Get user role
+          const roleClaimKey =
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+          const roleClaim = (decodedToken as any)[roleClaimKey];
           const role =
-            decodedToken.role ||
-            (Array.isArray(
-              decodedToken[
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-              ]
-            )
-              ? decodedToken[
-                  "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-                ][0]
-              : decodedToken[
-                  "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-                ]) ||
+            decodedToken.userRole ||
+            (Array.isArray(roleClaim) ? roleClaim[0] : roleClaim) ||
             "";
 
           setUserRole(capitalizeFirstLetter(role));
@@ -63,7 +56,7 @@ const UserWelcome = ({ isMobile = false }) => {
     setTimeout(() => setShowWelcome(true), 300);
   }, []);
 
-  const capitalizeFirstLetter = (string) => {
+  const capitalizeFirstLetter = (string: string) => {
     if (!string) return "";
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
@@ -107,7 +100,7 @@ const UserWelcome = ({ isMobile = false }) => {
   };
 
   // Helper function to create rgba colors with alpha
-  const alpha = (color, alphaValue) => {
+  const alpha = (color: string, alphaValue: number) => {
     if (!color) return `rgba(0, 0, 0, ${alphaValue})`;
 
     // Handle hex color
@@ -238,7 +231,7 @@ const UserWelcome = ({ isMobile = false }) => {
                 mb: 0.3,
               }}
             >
-              {t("welcome")}
+              {t("dashboard.welcome")}
             </Typography>
 
             <Typography

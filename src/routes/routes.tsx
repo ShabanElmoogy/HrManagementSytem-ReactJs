@@ -8,6 +8,7 @@ import { DashboardRoutes } from "./dashboardRoutes";
 import { BasicDataRoutes } from "./basicDataRoutes";
 import { AnalyticsRoutes } from "./analyticsRoutes";
 import { CommunicationRoutes } from "./communicationRoutes";
+import { ExtrasRoutes } from "./extrasRoutes";
 
 const ProtectedRoute = lazy(() =>
   import("../shared/components/auth/protectedRoute")
@@ -32,8 +33,8 @@ const AppRoutes = () => {
             {/* Analytics Routes */}
             {AnalyticsRoutes()}
             
-            {/* Extras Routes
-            {ExtrasRoutes()} */}
+             {/* Extras Routes */}
+            {ExtrasRoutes()} 
             
             {/* Communication Routes */}
             {CommunicationRoutes()}

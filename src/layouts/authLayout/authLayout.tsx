@@ -26,6 +26,8 @@ const AuthLayout = () => {
           <CssBaseline />
           <Container maxWidth="md">
             <TopBar
+              open={false}
+              handleDrawerOpen={() => {}}
               isAuthenticated={false}
               setMode={setMode}
               direction={direction}

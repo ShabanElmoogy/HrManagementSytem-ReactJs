@@ -31,14 +31,21 @@ const TopBar = ({
   toggleDirection,
   direction,
   isAuthenticated,
+}: {
+  open: boolean;
+  handleDrawerOpen: () => void;
+  setMode: (mode: any) => void;
+  toggleDirection: (direction: string) => void;
+  direction: string;
+  isAuthenticated: boolean;
 }) => {
   const theme = useTheme();
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<HTMLElement | null>(null);
   const { t } = useTranslation();
 
   const navigate = useNavigate();
 
-  const handleMobileMenuOpen = (event) => {
+  const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
@@ -46,7 +53,7 @@ const TopBar = ({
     setMobileMoreAnchorEl(null);
   };
 
-  const handleLanguageChange = (value) => {
+  const handleLanguageChange = (value: string) => {
     document.documentElement.setAttribute("dir", value);
     i18n.changeLanguage(value === "ltr" ? "en" : "ar");
     cookies.set("i18next", value === "ltr" ? "en" : "ar");
@@ -65,7 +72,7 @@ const TopBar = ({
     document.body.classList.add(newMode);
 
     // Update theme state
-    setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+    setMode((prevMode: string) => (prevMode === "light" ? "dark" : "light"));
 
     // Close mobile menu if open
     handleMobileMenuClose();
@@ -79,12 +86,14 @@ const TopBar = ({
 
   const navigateToProfile = () => {
     navigate("/profilePage");
-    handleSettingsMenuClose();
+    handleMobileMenuClose();
   };
 
   return (
     <>
+      {/* @ts-ignore */}
       <AppBar position="fixed" open={open}>
+        {/* @ts-ignore */}
         <StyledToolbar open={open}>
           {/* Left Section */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -111,7 +120,7 @@ const TopBar = ({
               <Typography
                 variant="body1"
                 sx={{ fontWeight: "bold" }}
-                color={theme.palette.main}
+                color={theme.palette.primary.main}
               >
                 {t("general.mainTitle")}
               </Typography>
@@ -190,8 +199,7 @@ const TopBar = ({
             open={Boolean(mobileMoreAnchorEl)}
             onClose={handleMobileMenuClose}
             theme={theme}
-            setMode={setMode}
-            handleThemeToggle={handleThemeToggle} // Pass the handleThemeToggle function
+            handleThemeToggle={handleThemeToggle}
             direction={direction}
             toggleLanguage={() =>
               handleLanguageChange(direction === "ltr" ? "rtl" : "ltr")
