@@ -106,9 +106,9 @@ const DataExportTools = lazy(() =>
 );
 
 // File Manager
-const FilesGrid = lazy(() => import("@/features/FileManager/FilesGrid"));
+const FilesGrid = lazy(() => import("@/features/fileManager/FilesGrid"));
 const MediaViewer = lazy(() =>
-  import("@/features/FileManager/mediaViewer/MediaViewer")
+  import("@/features/fileManager/mediaViewer/MediaViewer")
 );
 
 // Appointments (FullCalendar)

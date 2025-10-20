@@ -8,9 +8,8 @@ import { FileDeleteDialog } from "./components/dialog";
 import FilesDataGrid from "./components/FilesDataGrid";
 import FileUpload from "./components/fileUpload/FileUpload";
 import useFileGridLogic from "./hooks/useFileGridLogic";
-
 const FilesGrid = () => {
-  // Hooks
+
   const { SnackbarComponent } = useSnackbar();
   const { t } = useTranslation();
 
