@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Grid, Card, CardContent, Typography, Box, Alert, Skeleton } from '@mui/material';
-import MetricCard from '@/shared/components/charts/MetricCard';
 import BarChart from '@/shared/components/charts/BarChart';
 import LineChart from '@/shared/components/charts/LineChart';
+import MetricCard from '@/shared/components/charts/MetricCard';
 import PieChart from '@/shared/components/charts/PieChart';
 import StatCard from '@/shared/components/charts/StatCard';
 import useApiHandler from '@/shared/hooks/useApiHandler';
+import { Alert, Box, Card, CardContent, Grid, Skeleton, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { analyticsService } from '../services/analyticsService';
-import { DashboardMetric, ChartConfig, AnalyticsFilters } from '../types';
+import { AnalyticsFilters, ChartConfig, DashboardMetric } from '../types';
 
 const HRMainDashboard: React.FC = () => {
   const [kpis, setKpis] = useState<DashboardMetric[]>([]);
   const [charts, setCharts] = useState<ChartConfig[]>([]);
-  const [filters, setFilters] = useState<AnalyticsFilters>({});
+  const [filters] = useState<AnalyticsFilters>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,7 +39,7 @@ const HRMainDashboard: React.FC = () => {
       if (dashboardResponse?.success && dashboardResponse.data) {
         // Transform dashboard sections into charts
         const dashboardCharts: ChartConfig[] = [];
-        dashboardResponse.data.sections.forEach(section => {
+        dashboardResponse.data.sections.forEach((section: any) => {
           if (section.charts) {
             dashboardCharts.push(...section.charts);
           }
@@ -52,10 +52,6 @@ const HRMainDashboard: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleFilterChange = (newFilters: AnalyticsFilters) => {
-    setFilters(newFilters);
   };
 
   if (loading) {

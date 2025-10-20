@@ -122,7 +122,7 @@ const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
             <DateTimePicker
               label="Start"
               value={start}
-              onChange={(v) => setStart(v)}
+              onChange={(v) => setStart(v ? dayjs(v) : null)}
               minDateTime={todayStart}
               ampm={false}
               format="DD/MM/YYYY HH:mm"
@@ -143,7 +143,7 @@ const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
             <DateTimePicker
               label="End"
               value={end}
-              onChange={(v) => setEnd(v)}
+              onChange={(v) => setEnd(v ? dayjs(v) : null)}
               minDateTime={todayStart}
               ampm={false}
               format="DD/MM/YYYY HH:mm"

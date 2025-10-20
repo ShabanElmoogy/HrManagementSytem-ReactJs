@@ -10,7 +10,7 @@ import { DocumentAnalytics as DocumentAnalyticsType, AnalyticsFilters } from '..
 
 const DocumentAnalytics: React.FC = () => {
   const [documentData, setDocumentData] = useState<DocumentAnalyticsType | null>(null);
-  const [filters, setFilters] = useState<AnalyticsFilters>({});
+  const [filters] = useState<AnalyticsFilters>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

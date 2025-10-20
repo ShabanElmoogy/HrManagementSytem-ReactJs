@@ -1,15 +1,13 @@
-import { useState, useEffect, useMemo } from "react";
-import { useGridApiRef } from "@mui/x-data-grid";
-import { HandleApiError } from "@/shared/services";
-import { MyDataGrid } from "@/shared/components";
-import { MyHeader } from "@/shared/components";
-import { useTranslation } from "react-i18next";
-import { MyContentsWrapper } from "@/layouts/components";
-import { useSnackbar } from "@/shared/hooks";
-import { apiService } from "@/shared/services";
 import { dateFormat } from "@/constants/strings";
+import { MyContentsWrapper } from "@/layouts/components";
+import { MyDataGrid, MyHeader } from "@/shared/components";
+import { useSnackbar } from "@/shared/hooks";
+import { apiService, HandleApiError } from "@/shared/services";
+import { useGridApiRef } from "@mui/x-data-grid";
 import dayjs from "dayjs";
-import { apiRoutes } from "@/routes";
+import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 
 const TrackChangesGrid = () => {
   const [loading, setLoading] = useState(true);
@@ -30,11 +28,11 @@ const TrackChangesGrid = () => {
       );
       const allChanges = response.data || response;
       setChanges(
-        allChanges.map((row) => ({ ...row, id: crypto.randomUUID() }))
+        allChanges.map((row: any) => ({ ...row, id: crypto.randomUUID() }))
       );
     } catch (error) {
-      HandleApiError(error, (updatedState) => {
-        showSnackbar("error", updatedState.messages, error.title);
+      HandleApiError(error, (updatedState: any) => {
+        showSnackbar("error", updatedState.messages, (error as any).title);
       });
     } finally {
       setLoading(false);
@@ -45,57 +43,57 @@ const TrackChangesGrid = () => {
     () => [
       {
         field: "changeLogId",
-        headerName: t("trackhanges.changeLogId"),
+        headerName: t("trackChanges.changeLogId"),
         flex: 0.5,
         align: "center",
         headerAlign: "center",
       },
       {
         field: "entityName",
-        headerName: t("trackhanges.entityName"),
+        headerName: t("trackChanges.entityName"),
         flex: 1,
         align: "center",
         headerAlign: "center",
       },
       {
         field: "key",
-        headerName: t("trackhanges.key"),
+        headerName: t("trackChanges.key"),
         flex: 1.5,
         align: "center",
         headerAlign: "center",
       },
       {
         field: "oldValue",
-        headerName: t("trackhanges.oldValue"),
+        headerName: t("trackChanges.oldValue"),
         flex: 1,
         align: "center",
         headerAlign: "center",
       },
       {
         field: "newValue",
-        headerName: t("trackhanges.newValue"),
+        headerName: t("trackChanges.newValue"),
         flex: 1,
         align: "center",
         headerAlign: "center",
       },
       {
         field: "changedBy",
-        headerName: t("trackhanges.changedBy"),
+        headerName: t("trackChanges.changedBy"),
         flex: 1,
         align: "center",
         headerAlign: "center",
       },
       {
         field: "changedAt",
-        headerName: t("trackhanges.changedAt"),
+        headerName: t("trackChanges.changedAt"),
         flex: 1,
         align: "center",
         headerAlign: "center",
-        valueFormatter: (params) => dayjs(params).format(dateFormat),
+        valueFormatter: (params: any) => dayjs(params).format(dateFormat),
       },
       {
         field: "changedByPc",
-        headerName: t("trackhanges.changedByPc"),
+        headerName: t("trackChanges.changedByPc"),
         flex: 1,
         align: "center",
         headerAlign: "center",
@@ -107,7 +105,7 @@ const TrackChangesGrid = () => {
   return (
     <>
       <MyContentsWrapper>
-        <MyHeader title={t("trackhanges.title")} subTitle={t("trackhanges.subTitle")} />
+        <MyHeader title={t("trackChanges.title")} subTitle={t("trackChanges.subTitle")} />
         {/* @ts-ignore */}
         <MyDataGrid
           rows={changes}

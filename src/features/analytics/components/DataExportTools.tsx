@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import {
   Download, Schedule, History, Settings, ExpandMore,
-  PlayArrow, Stop, Delete, Edit
+  PlayArrow
 } from '@mui/icons-material';
 import useApiHandler from '@/shared/hooks/useApiHandler';
 import { analyticsService } from '../services/analyticsService';
@@ -17,7 +17,6 @@ import { ExportJob, ExportTemplate, AnalyticsFilters } from '../types';
 const DataExportTools: React.FC = () => {
   const [templates, setTemplates] = useState<ExportTemplate[]>([]);
   const [jobs, setJobs] = useState<ExportJob[]>([]);
-  const [selectedTemplate, setSelectedTemplate] = useState<ExportTemplate | null>(null);
   const [newTemplate, setNewTemplate] = useState<Partial<ExportTemplate>>({
     name: '',
     description: '',
@@ -26,7 +25,7 @@ const DataExportTools: React.FC = () => {
     includeHeaders: true,
     delimiter: ','
   });
-  const [filters, setFilters] = useState<AnalyticsFilters>({});
+  const [filters] = useState<AnalyticsFilters>({});
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -356,7 +355,7 @@ const DataExportTools: React.FC = () => {
 
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMore />}>
-                  <Typography>Data Anonymization</Typography>
+                  <Typography>Data Masking</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <FormControlLabel

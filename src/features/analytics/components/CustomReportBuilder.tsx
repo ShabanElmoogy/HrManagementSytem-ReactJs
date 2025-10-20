@@ -3,9 +3,9 @@ import {
   Box, Typography, Card, CardContent, Button, TextField, Select, MenuItem,
   FormControl, InputLabel, Grid, Chip, IconButton, Dialog, DialogTitle,
   DialogContent, DialogActions, Alert, List, ListItem, ListItemText,
-  ListItemSecondaryAction, Divider
+  ListItemSecondaryAction
 } from '@mui/material';
-import { Add, Delete, PlayArrow, Save, FilterList } from '@mui/icons-material';
+import { Delete, PlayArrow, Save, FilterList } from '@mui/icons-material';
 import useApiHandler from '@/shared/hooks/useApiHandler';
 import { analyticsService } from '../services/analyticsService';
 import { CustomReport, ReportField, ReportFilter, AnalyticsFilters } from '../types';
@@ -145,7 +145,7 @@ const CustomReportBuilder: React.FC = () => {
       const filters: AnalyticsFilters = {};
       currentReport.filters?.forEach(filter => {
         if (filter.value) {
-          filters[filter.field.id] = filter.value;
+          (filters as any)[filter.field.id] = filter.value;
         }
       });
 

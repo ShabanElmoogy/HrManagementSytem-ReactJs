@@ -17,6 +17,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": "src",
+    "ignoreDeprecations": "6.0",
     "strict": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
@@ -41,7 +42,8 @@
   "include": [
     "src/**/*.js",
     "src/**/*.jsx",
-    "src/features/auth/users/UsersPage.فsx"
+    "src/features/auth/users/UsersPage.فsx",
+    "src/features/auth/register/const/colors.فs"
   ],
   "exclude": [
     "node_modules",

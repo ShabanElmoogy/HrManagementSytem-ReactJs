@@ -33,7 +33,7 @@ function TabPanel(props: TabPanelProps) {
 
 const TimeAttendanceAnalytics: React.FC = () => {
   const [attendanceData, setAttendanceData] = useState<AttendanceAnalytics | null>(null);
-  const [filters, setFilters] = useState<AnalyticsFilters>({});
+  const [filters] = useState<AnalyticsFilters>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [tabValue, setTabValue] = useState(0);
@@ -62,7 +62,7 @@ const TimeAttendanceAnalytics: React.FC = () => {
     }
   };
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 

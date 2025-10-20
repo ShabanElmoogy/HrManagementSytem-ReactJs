@@ -52,8 +52,8 @@ const LocalizationGrid = () => {
       headerName: t("actions.buttons"),
       width: 100,
       cellClassName: "actions",
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+      getActions: ({ id }: { id: any }) => {
+        const isInEditMode = (rowModesModel as any)[id]?.mode === GridRowModes.Edit;
 
         if (isInEditMode) {
           return [
@@ -105,8 +105,8 @@ const LocalizationGrid = () => {
       }));
       setRows(formattedData); // Set the rows in the state
     } catch (error) {
-      HandleApiError(error, (updatedState) => {
-        showSnackbar("error", updatedState.messages, error.title);
+      HandleApiError(error, (updatedState: any) => {
+        showSnackbar("error", updatedState.messages, (error as any).title);
       });
     } finally {
       setIsLoading(false);
@@ -119,28 +119,28 @@ const LocalizationGrid = () => {
   }, [loadLocalizationData]);
 
   // Row editing handlers
-  const handleEditClick = (id) => () => {
+  const handleEditClick = (id: any) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
-  const handleSaveClick = (id) => () => {
+  const handleSaveClick = (id: any) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
-  const handleCancelClick = (id) => () => {
+  const handleCancelClick = (id: any) => () => {
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
   };
 
-  const handleRowEditStop = (params, event) => {
+  const handleRowEditStop = (params: any, event: any) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
     }
   };
 
-  const processRowUpdate = async (newRow) => {
+  const processRowUpdate = async (newRow: any) => {
     try {
       // Validate data
       if (!newRow.key || !newRow.value) {
@@ -168,14 +168,14 @@ const LocalizationGrid = () => {
       setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
       return updatedRow;
     } catch (error) {
-      HandleApiError(error, (updatedState) => {
-        showSnackbar("error", updatedState.messages, error.title);
+      HandleApiError(error, (updatedState: any) => {
+        showSnackbar("error", updatedState.messages, (error as any).title);
       });
       return rows.find((row) => row.id === newRow.id);
     }
   };
 
-  const handleProcessRowUpdateError = (error) => {
+  const handleProcessRowUpdateError = (error: any) => {
     showSnackbar("error", [error.message], t("messages.error"));
   };
 
@@ -213,9 +213,6 @@ const LocalizationGrid = () => {
           onRowEditStop={handleRowEditStop}
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={handleProcessRowUpdateError}
-          slotProps={{
-            toolbar: { setRows, setRowModesModel },
-          }}
         />
       </MyContentsWrapper>
       {SnackbarComponent}

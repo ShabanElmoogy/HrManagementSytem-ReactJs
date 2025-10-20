@@ -10,7 +10,7 @@ import { EngagementAnalytics, AnalyticsFilters } from '../types';
 
 const EmployeeEngagementDashboard: React.FC = () => {
   const [engagementData, setEngagementData] = useState<EngagementAnalytics | null>(null);
-  const [filters, setFilters] = useState<AnalyticsFilters>({});
+  const [filters] = useState<AnalyticsFilters>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

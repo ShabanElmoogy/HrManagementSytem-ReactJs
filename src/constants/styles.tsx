@@ -130,7 +130,7 @@ export const headerStyles = {
   },
 };
 
-export const ColoredIcon = ({ children, color, secondaryColor = null }) => {
+export const ColoredIcon = ({ children, color, secondaryColor = null }: { children: any; color: string; secondaryColor?: string | null }) => {
   return (
     <SvgIcon
       sx={{

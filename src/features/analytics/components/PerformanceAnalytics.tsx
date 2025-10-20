@@ -33,7 +33,7 @@ function TabPanel(props: TabPanelProps) {
 const PerformanceAnalytics: React.FC = () => {
   const [performanceData, setPerformanceData] = useState<PerformanceAnalyticsType | null>(null);
   const [departmentData, setDepartmentData] = useState<DepartmentAnalytics[]>([]);
-  const [filters, setFilters] = useState<AnalyticsFilters>({});
+  const [filters] = useState<AnalyticsFilters>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [tabValue, setTabValue] = useState(0);
@@ -69,7 +69,7 @@ const PerformanceAnalytics: React.FC = () => {
     }
   };
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 

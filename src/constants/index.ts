@@ -1,6 +1,11 @@
 export { default as appPermissions } from "./appPermissions";
 // Also export the simplified TypeScript version
-export { default as Permissions, hasPermission, hasAnyPermission, hasAllPermissions } from "./appPermissions";
+export {
+  hasAllPermissions,
+  hasAnyPermission,
+  hasPermission,
+  default as Permissions,
+} from "./appPermissions";
 export {
   arabicOnly,
   email,

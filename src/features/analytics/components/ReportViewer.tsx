@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import {
   Box, Typography, Card, CardContent, Button, Grid, Chip, Dialog,
   DialogTitle, DialogContent, DialogActions, TextField, MenuItem,
-  List, ListItem, ListItemText, ListItemSecondaryAction, IconButton,
-  Alert, Skeleton, Tabs, Tab
+  IconButton, Alert, Skeleton, Tabs, Tab
 } from '@mui/material';
 import {
-  Download, Share, Schedule, Visibility, Delete, Edit,
+  Download, Share, Schedule, Visibility, Delete,
   FilterList, Search
 } from '@mui/icons-material';
 import useApiHandler from '@/shared/hooks/useApiHandler';
@@ -43,7 +42,7 @@ const ReportViewer: React.FC = () => {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
   const [tabValue, setTabValue] = useState(0);
-  const [filters, setFilters] = useState<AnalyticsFilters>({});
+  const [filters] = useState<AnalyticsFilters>({});
   const [searchTerm, setSearchTerm] = useState('');
 
   const { handleApiCall } = useApiHandler();
@@ -178,9 +177,9 @@ const ReportViewer: React.FC = () => {
                         {report.title}
                       </Typography>
                       <Chip
-                        label={report.status}
+                        label={(report as any).status || 'draft'}
                         size="small"
-                        color={getStatusColor(report.status)}
+                        color={getStatusColor((report as any).status || 'draft')}
                         variant="outlined"
                       />
                     </Box>
