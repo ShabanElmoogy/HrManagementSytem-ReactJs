@@ -4,6 +4,7 @@ import { useSnackbar } from "@/shared/hooks";
 import { Dialog } from "@mui/material";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import FileDeleteDialog  from "./components/dialog/FileDeleteDialog";
 import FilesDataGrid from "./components/FilesDataGrid";
 import FileUpload from "./components/fileUpload/FileUpload";
 import useFileGridLogic from "./hooks/useFileGridLogic";
@@ -74,14 +75,14 @@ const FilesGrid = () => {
           />
         </Dialog>
 
-        {/* <FileDeleteDialog
+        <FileDeleteDialog
           open={dialogType === "delete"}
           onClose={closeDialog}
           onConfirm={handleDelete}
           selectedFile={selectedFile}
           loading={loading}
           t={t}
-        /> */}
+        />
       </ContentsWrapper>
       {SnackbarComponent}
     </>

@@ -25,7 +25,7 @@ const ApiEndpoints = lazy(() =>
 const HangfireDashboard = lazy(() =>
   import("@/features/advancedTools/hangfireDashboard")
 );
-const FilesGrid = lazy(() => import("../features/fileManager/FilesGrid"));
+import FilesGrid from "@/features/fileManager/FilesGrid";
 const MediaViewer = lazy(() => import("../features/fileManager/mediaViewer/MediaViewer"));
 const AppointmentsPage = lazy(() => import("@/features/appointments/pages/AppointmentsPage"));
 
