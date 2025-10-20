@@ -14,7 +14,7 @@ const FilesGrid = () => {
   const { SnackbarComponent } = useSnackbar();
   const { t } = useTranslation();
 
-  // Custom logic hook
+  // Custom logic hooks
   const {
     dialogType,
     selectedFile,
