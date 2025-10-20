@@ -10,7 +10,7 @@ interface FileDeleteDialogProps {
   t: (key: string) => string;
 }
 
-export const FileDeleteDialog = ({
+const FileDeleteDialog = ({
   open,
   onClose,
   onConfirm,
@@ -31,4 +31,7 @@ export const FileDeleteDialog = ({
       loading={loading}
     />
   );
+};
+
+export default FileDeleteDialog;
 };
