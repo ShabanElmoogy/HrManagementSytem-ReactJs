@@ -297,7 +297,7 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
 
   // Download file handler
   const handleDownload = useCallback(
-    async (file: FileItem) => {
+    async () => {
       // Download logic not implemented in FileService. Implement as needed.
       showToast.info(t("files.downloadNotImplemented") || "Download not implemented");
     },
