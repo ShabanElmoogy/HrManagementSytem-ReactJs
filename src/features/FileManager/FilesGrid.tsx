@@ -4,7 +4,7 @@ import { useSnackbar } from "@/shared/hooks";
 import { Dialog } from "@mui/material";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import FileDeleteDialog from "./components/dialog/FileDeleteDialog";
+import { FileDeleteDialog } from "./components/dialog";
 import FileUpload from "./components/fileUpload/FileUpload";
 import FilesDataGrid from "./components/gridView/FilesDataGrid";
 import useFileGridLogic from "./hooks/useFileGridLogic";
