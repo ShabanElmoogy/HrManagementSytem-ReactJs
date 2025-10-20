@@ -1,10 +1,10 @@
-import { FileDeleteDialog } from '@/features/FileManager/components/dialog/FileDeleteDialog';
 import ContentsWrapper from "@/layouts/components/myContentsWrapper";
 import Header from "@/shared/components/common/header/myHeader";
 import { useSnackbar } from "@/shared/hooks";
 import { Dialog } from "@mui/material";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { FileDeleteDialog } from "./components/dialog";
 import FilesDataGrid from "./components/FilesDataGrid";
 import FileUpload from "./components/fileUpload/FileUpload";
 import useFileGridLogic from "./hooks/useFileGridLogic";

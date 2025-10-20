@@ -34,4 +34,3 @@ const FileDeleteDialog = ({
 };
 
 export default FileDeleteDialog;
-};
