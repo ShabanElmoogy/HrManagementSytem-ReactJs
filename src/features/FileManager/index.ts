@@ -5,7 +5,7 @@ export { default as MediaViewer } from "./mediaViewer/MediaViewer";
 
 // Sub-components
 export { default as FileDeleteDialog } from "./components/dialog/FileDeleteDialog";
-export { default as FilesDataGrid } from "./components/gridView/FilesDataGrid";
+export { default as FilesDataGrid } from "./components/FilesDataGrid";
 
 // Hooks
 export { default as useFileGridLogic } from "./hooks/useFileGridLogic";

@@ -1,8 +1,8 @@
 import MyDataGrid from "@/shared/components/common/datagrid/myDataGrid";
 import { useCallback, useMemo } from "react";
-import makeFileActions from "./components/makeFileActions";
-import makeFileColumns from "./components/makeFileColumns";
-import { FilesDataGridProps } from "./types/gridView.type";
+import makeFileActions from "./gridView/components/makeFileActions";
+import makeFileColumns from "./gridView/components/makeFileColumns";
+import { FilesDataGridProps } from "./gridView/types/gridView.type";
 
 const FilesDataGrid = ({
   files,
