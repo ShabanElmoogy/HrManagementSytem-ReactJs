@@ -60,7 +60,7 @@ export default defineConfig(({ mode }) => {
     
     resolve: {
       alias: {
-        "@": resolve(process.cwd(), "./src"),
+        "@": resolve(__dirname, "src"),
       },
     },
     
