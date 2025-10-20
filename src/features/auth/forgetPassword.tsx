@@ -47,7 +47,7 @@ const ForgetPassword = () => {
     inputRef.current?.focus();
   }, []);
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: any) => {
     setIsSubmitting(true);
     try {
       await apiService.post(apiRoutes.auth.forgetPassword, data, {
@@ -60,8 +60,8 @@ const ForgetPassword = () => {
         t("messages.success")
       );
     } catch (error) {
-      HandleApiError(error, (updatedState) => {
-        showSnackbar("error", updatedState.messages, error.title);
+      HandleApiError(error, (updatedState: any) => {
+        showSnackbar("error", updatedState.messages, (error as any).title);
       });
     } finally {
       setIsSubmitting(false);
@@ -256,7 +256,7 @@ const ForgetPassword = () => {
                     ),
                   }}
                   error={!!errors.email}
-                  helperText={errors.email?.message}
+                  helperText={errors.email?.message as string}
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       borderRadius: 2,

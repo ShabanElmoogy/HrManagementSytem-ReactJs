@@ -1,10 +1,7 @@
-import {
-  englishOnly,
-  email,
-} from "@/constants";
+import { email, englishOnly } from "@/constants";
 import * as yup from "yup";
 
-export const getUserValidationSchema = (t, isAddMode = false) => {
+export const getUserValidationSchema = (t: any, isAddMode: boolean = false) => {
   return yup.object({
     // Required: First Name
     firstName: yup
@@ -42,35 +39,36 @@ export const getUserValidationSchema = (t, isAddMode = false) => {
       .matches(email, t("validation.invalidEmail")),
 
     // Password: Conditional validation based on mode
-    password: yup
-      .string()
-      .when([], {
-        is: () => isAddMode,
-        then: (schema) => schema
+    password: yup.string().when([], {
+      is: () => isAddMode,
+      then: (schema) =>
+        schema
           .required(t("validation.required"))
           .min(8, t("validation.minLength", { count: 8 }))
           .max(128, t("validation.maxLength", { count: 128 }))
           .matches(
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-            t("users.passwordRequirements") || 
-            "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+            t("users.passwordRequirements") ||
+              "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
           ),
-        otherwise: (schema) => schema
+      otherwise: (schema) =>
+        schema
           .notRequired()
           .nullable()
           .when("password", {
-            is: (value) => value && value.length > 0,
-            then: (schema) => schema
-              .min(8, t("validation.minLength", { count: 8 }))
-              .max(128, t("validation.maxLength", { count: 128 }))
-              .matches(
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-                t("users.passwordRequirements") || 
-                "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
-              ),
-            otherwise: (schema) => schema.notRequired()
-          })
-      }),
+            is: (value: any) => value && value.length > 0,
+            then: (schema) =>
+              schema
+                .min(8, t("validation.minLength", { count: 8 }))
+                .max(128, t("validation.maxLength", { count: 128 }))
+                .matches(
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+                  t("users.passwordRequirements") ||
+                    "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+                ),
+            otherwise: (schema) => schema.notRequired(),
+          }),
+    }),
 
     // Confirm Password: Required if password is provided
     confirmPassword: yup
@@ -78,11 +76,15 @@ export const getUserValidationSchema = (t, isAddMode = false) => {
       .notRequired()
       .nullable()
       .when("password", {
-        is: (password) => password && password.length > 0,
-        then: (schema) => schema
-          .required(t("validation.required"))
-          .oneOf([yup.ref("password")], t("validation.passwordsMustMatch") || "Passwords must match"),
-        otherwise: (schema) => schema.notRequired()
+        is: (password: any) => password && password.length > 0,
+        then: (schema) =>
+          schema
+            .required(t("validation.required"))
+            .oneOf(
+              [yup.ref("password")],
+              t("validation.passwordsMustMatch") || "Passwords must match"
+            ),
+        otherwise: (schema) => schema.notRequired(),
       }),
 
     // Optional: Roles
@@ -93,9 +95,7 @@ export const getUserValidationSchema = (t, isAddMode = false) => {
       .max(10, t("users.maxRoles", { count: 10 })),
 
     // Required: Account Status
-    isDisabled: yup
-      .boolean()
-      .required(t("validation.required")),
+    isDisabled: yup.boolean().required(t("validation.required")),
   });
 };
 

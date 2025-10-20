@@ -15,9 +15,19 @@ import {
   Security,
 } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { getUserValidationSchema } from "../utils/validation";
 import useRoleStore from "../../roles/store/useRoleStore";
+
+interface UserFormProps {
+  open: boolean;
+  dialogType: string;
+  selectedUser: any;
+  onClose: () => void;
+  onSubmit: (data: any) => void;
+  loading: boolean;
+  t: (key: string) => string;
+}
 
 const UserForm = ({
   open,
@@ -27,7 +37,7 @@ const UserForm = ({
   onSubmit,
   loading,
   t,
-}) => {
+}: UserFormProps) => {
   const firstNameRef = useRef(null);
   const lastNameRef = useRef(null);
   const userNameRef = useRef(null);
@@ -35,13 +45,12 @@ const UserForm = ({
   const passwordRef = useRef(null);
   const confirmPasswordRef = useRef(null);
 
-  const [profilePicture, setProfilePicture] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+
   const [showPasswordSection, setShowPasswordSection] = useState(false);
 
   // Use the role store
-  const { roles, fetchRoles, loading: rolesLoading } = useRoleStore();
+  const { roles, fetchRoles, loading: rolesLoading } = useRoleStore() as any;
 
   const isViewMode = dialogType === "view";
   const isEditMode = dialogType === "edit";
@@ -94,8 +103,6 @@ const UserForm = ({
       }
     } else {
       setShowPasswordSection(false);
-      setShowPassword(false);
-      setShowConfirmPassword(false);
     }
   }, [open, isAddMode, isEditMode, clearErrors]);
 
@@ -107,7 +114,7 @@ const UserForm = ({
   }, [showPasswordSection, isEditMode, clearErrors]);
 
   // Get random but consistent color for each role
-  const getRandomRoleColor = (roleName) => {
+  const getRandomRoleColor = (roleName: any) => {
     const colors = ["primary", "warning", "error", "secondary", "success"];
 
     let hash = 0;
@@ -125,7 +132,7 @@ const UserForm = ({
 
   // Convert roles to autocomplete options
   const roleOptions =
-    roles?.map((role) => ({
+    roles?.map((role: any) => ({
       label: role.name,
       value: role.name,
       color: getRandomRoleColor(role.name),
@@ -133,7 +140,7 @@ const UserForm = ({
     })) || [];
 
   // Password strength checker
-  const getPasswordStrength = (password) => {
+  const getPasswordStrength = (password: any) => {
     if (!password) return { score: 0, label: "", color: "default" };
 
     let score = 0;
@@ -159,7 +166,7 @@ const UserForm = ({
       },
     };
 
-    return { score, ...strengths[score], checks };
+    return { score, ...(strengths as any)[score], checks };
   };
 
   const passwordStrength = getPasswordStrength(watchedPassword);
@@ -183,7 +190,7 @@ const UserForm = ({
       };
 
       reset(userData);
-      setProfilePicture(userData.profilePicture);
+
       
       // Clear password errors after reset in edit mode
       if (isEditMode) {
@@ -212,19 +219,19 @@ const UserForm = ({
   const getErrorMessages = () => {
     const errorMessages = {};
     Object.keys(errors).forEach((key) => {
-      if (errors[key]?.message) {
+      if ((errors as any)[key]?.message) {
         // ✅ FIXED: Don't show password errors if password section is hidden in edit mode
         if (isEditMode && !showPasswordSection && (key === "password" || key === "confirmPassword")) {
           return; // Skip password errors when section is hidden
         }
-        errorMessages[key] = errors[key].message;
+        (errorMessages as any)[key] = (errors as any)[key].message;
       }
     });
     return errorMessages;
   };
 
   // Handle form submission with password logic
-  const handleFormSubmit = (data) => {
+  const handleFormSubmit = (data: any) => {
     // ✅ FIXED: Clean up password data properly
     const submitData = { ...data };
     

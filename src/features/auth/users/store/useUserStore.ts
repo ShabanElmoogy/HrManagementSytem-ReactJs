@@ -31,7 +31,7 @@ const useUserStore = create(
   devtools(
     persist(
       (set: any) => ({
-        users: [],
+        users: [] as any[],
 
         fetchUsers: async () => {
           const response = await apiService.get(apiRoutes.users.getAll);

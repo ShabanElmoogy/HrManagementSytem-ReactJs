@@ -1,26 +1,14 @@
-import { useMemo, useCallback } from "react";
-import { useTranslation } from "react-i18next";
-import { Dialog } from "@mui/material";
-import { useSnackbar } from "@/shared/hooks";
 import ContentsWrapper from "@/layouts/components/myContentsWrapper";
 import Header from "@/shared/components/common/header/myHeader";
-import FilesDataGrid from "./components/gridView/FilesDataGrid";
-import FileUpload from "./components/fileUpload/FileUpload";
+import { useSnackbar } from "@/shared/hooks";
+import { Dialog } from "@mui/material";
+import { useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import FileDeleteDialog from "./components/dialog/FileDeleteDialog";
+import FileUpload from "./components/fileUpload/FileUpload";
+import FilesDataGrid from "./components/gridView/FilesDataGrid";
 import useFileGridLogic from "./hooks/useFileGridLogic";
 
-/**
- * FilesGrid Component
- *
- * Main component for managing files with grid display.
- * Supports upload, download, view, and delete operations.
- *
- * @component
- * @example
- * ```tsx
- * <FilesGrid />
- * ```
- */
 const FilesGrid = () => {
   // Hooks
   const { SnackbarComponent } = useSnackbar();

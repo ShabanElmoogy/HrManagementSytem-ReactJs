@@ -2,7 +2,6 @@ import {
   Person,
   PersonOff,
   Lock,
-  Security,
   SupervisorAccount,
   Speed,
 } from "@mui/icons-material";
@@ -17,7 +16,13 @@ import {
 } from "@mui/material";
 import { useMemo } from "react";
 
-const UsersDashboardHeader = ({ users, loading, t }) => {
+interface UsersDashboardHeaderProps {
+  users: any[];
+  loading: boolean;
+  t: (key: string) => string;
+}
+
+const UsersDashboardHeader = ({ users, loading, t }: UsersDashboardHeaderProps) => {
   const theme = useTheme();
 
   // Calculate statistics
@@ -33,11 +38,11 @@ const UsersDashboardHeader = ({ users, loading, t }) => {
       };
     }
 
-    const activeUsers = users.filter((u) => !u.isDisabled).length;
-    const disabledUsers = users.filter((u) => u.isDisabled).length;
-    const lockedUsers = users.filter((u) => u.isLocked).length;
-    const adminUsers = users.filter((u) => 
-      u.roles && u.roles.some(role => 
+    const activeUsers = users.filter((u: any) => !u.isDisabled).length;
+    const disabledUsers = users.filter((u: any) => u.isDisabled).length;
+    const lockedUsers = users.filter((u: any) => u.isLocked).length;
+    const adminUsers = users.filter((u: any) => 
+      u.roles && u.roles.some((role: any) => 
         typeof role === 'string' 
           ? role.toLowerCase().includes('admin')
           : role.name && role.name.toLowerCase().includes('admin')
@@ -45,7 +50,7 @@ const UsersDashboardHeader = ({ users, loading, t }) => {
     ).length;
 
     const completedProfiles = users.filter(
-      (u) =>
+      (u: any) =>
         u.firstName &&
         u.lastName &&
         u.userName &&
@@ -70,29 +75,25 @@ const UsersDashboardHeader = ({ users, loading, t }) => {
     return Math.round((stats.completedProfiles / stats.totalUsers) * 100);
   }, [stats.completedProfiles, stats.totalUsers]);
 
-  // Get active percentage
-  const activeRate = useMemo(() => {
-    if (stats.totalUsers === 0) return 0;
-    return Math.round((stats.activeUsers / stats.totalUsers) * 100);
-  }, [stats.activeUsers, stats.totalUsers]);
+
 
   // Animated stat card
-  const AnimatedStatCard = ({ icon, title, value, color = "primary" }) => (
+  const AnimatedStatCard = ({ icon, title, value, color = "primary" }: any) => (
     <Card
       sx={{
         height: 120,
         position: "relative",
         overflow: "hidden",
         background: `linear-gradient(135deg, ${alpha(
-          theme.palette[color].light,
+          (theme.palette as any)[color].light,
           0.1
-        )} 0%, ${alpha(theme.palette[color].main, 0.05)} 100%)`,
-        border: `1px solid ${alpha(theme.palette[color].main, 0.1)}`,
+        )} 0%, ${alpha((theme.palette as any)[color].main, 0.05)} 100%)`,
+        border: `1px solid ${alpha((theme.palette as any)[color].main, 0.1)}`,
         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         "&:hover": {
           transform: "translateY(-4px) scale(1.02)",
-          boxShadow: `0 12px 40px ${alpha(theme.palette[color].main, 0.15)}`,
-          border: `1px solid ${alpha(theme.palette[color].main, 0.3)}`,
+          boxShadow: `0 12px 40px ${alpha((theme.palette as any)[color].main, 0.15)}`,
+          border: `1px solid ${alpha((theme.palette as any)[color].main, 0.3)}`,
         },
         "&::before": {
           content: '""',
@@ -101,7 +102,7 @@ const UsersDashboardHeader = ({ users, loading, t }) => {
           left: 0,
           right: 0,
           height: 4,
-          background: `linear-gradient(90deg, ${theme.palette[color].main}, ${theme.palette[color].light})`,
+          background: `linear-gradient(90deg, ${(theme.palette as any)[color].main}, ${(theme.palette as any)[color].light})`,
         },
       }}
     >
@@ -118,8 +119,8 @@ const UsersDashboardHeader = ({ users, loading, t }) => {
           sx={{
             width: 48,
             height: 48,
-            background: `linear-gradient(135deg, ${theme.palette[color].main}, ${theme.palette[color].dark})`,
-            boxShadow: `0 8px 24px ${alpha(theme.palette[color].main, 0.3)}`,
+            background: `linear-gradient(135deg, ${(theme.palette as any)[color].main}, ${(theme.palette as any)[color].dark})`,
+            boxShadow: `0 8px 24px ${alpha((theme.palette as any)[color].main, 0.3)}`,
           }}
         >
           {icon}
@@ -131,9 +132,9 @@ const UsersDashboardHeader = ({ users, loading, t }) => {
             component="div"
             fontWeight="bold"
             sx={{
-              color: theme.palette[color].main,
+              color: (theme.palette as any)[color].main,
               mb: 0.5,
-              background: `linear-gradient(135deg, ${theme.palette[color].main}, ${theme.palette[color].dark})`,
+              background: `linear-gradient(135deg, ${(theme.palette as any)[color].main}, ${(theme.palette as any)[color].dark})`,
               backgroundClip: "text",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
@@ -144,7 +145,7 @@ const UsersDashboardHeader = ({ users, loading, t }) => {
                 sx={{
                   width: 40,
                   height: 24,
-                  backgroundColor: alpha(theme.palette[color].main, 0.1),
+                  backgroundColor: alpha((theme.palette as any)[color].main, 0.1),
                   borderRadius: 1,
                   animation: "pulse 1.5s ease-in-out infinite",
                 }}
@@ -220,7 +221,7 @@ const UsersDashboardHeader = ({ users, loading, t }) => {
           gap: 2,
         }}
       >
-        {statsConfig.map((stat, index) => (
+        {statsConfig.map((stat: any, index: number) => (
           <AnimatedStatCard key={index} {...stat} />
         ))}
       </Box>
