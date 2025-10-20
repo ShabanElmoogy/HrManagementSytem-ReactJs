@@ -11,6 +11,12 @@ const SettingsMenu = ({
   onClose,
   navigateToProfile,
   handleLogout,
+}: {
+  anchorEl: HTMLElement | null;
+  open: boolean;
+  onClose: () => void;
+  navigateToProfile: () => void;
+  handleLogout: () => void;
 }) => {
   const theme = useTheme();
   const { t } = useTranslation();

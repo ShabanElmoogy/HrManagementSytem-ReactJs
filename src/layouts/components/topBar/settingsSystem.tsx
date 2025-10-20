@@ -4,13 +4,13 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import { useNavigate } from "react-router-dom";
 
 // Import sub-components
-import SettingsMenu from "./SettingsMenu";
+import SettingsMenu from "./settingsMenu";
 
 const SettingsSystem = () => {
-  const [settingsAnchorEl, setSettingsAnchorEl] = useState(null);
+  const [settingsAnchorEl, setSettingsAnchorEl] = useState<HTMLElement | null>(null);
   const navigate = useNavigate();
 
-  const handleSettingsMenu = (event) => {
+  const handleSettingsMenu = (event: React.MouseEvent<HTMLElement>) => {
     setSettingsAnchorEl(event.currentTarget);
   };
 

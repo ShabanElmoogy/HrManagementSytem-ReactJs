@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-const LanguageSelector = ({ direction, handleLanguageChange }) => {
+const LanguageSelector = ({ direction, handleLanguageChange }: { direction: string; handleLanguageChange: (value: string) => void }) => {
   const theme = useTheme();
   const { t } = useTranslation();
 
