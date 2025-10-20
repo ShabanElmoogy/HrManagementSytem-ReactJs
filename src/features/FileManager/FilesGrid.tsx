@@ -8,6 +8,7 @@ import FileDeleteDialog  from "./components/dialog/FileDeleteDialog";
 import FilesDataGrid from "./components/FilesDataGrid";
 import FileUpload from "./components/fileUpload/FileUpload";
 import useFileGridLogic from "./hooks/useFileGridLogic";
+
 const FilesGrid = () => {
 
   const { SnackbarComponent } = useSnackbar();
