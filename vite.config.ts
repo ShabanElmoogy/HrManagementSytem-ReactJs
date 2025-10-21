@@ -89,7 +89,7 @@ export default defineConfig(({ mode }) => {
               };
             } catch (error) {
               console.warn("SSL certificates not found, running without HTTPS");
-              return false;
+              return undefined;
             }
           })(),
           host: "localhost",

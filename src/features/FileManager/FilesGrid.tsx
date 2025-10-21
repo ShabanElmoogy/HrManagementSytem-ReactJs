@@ -6,7 +6,7 @@ import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import FileDeleteDialog from "@/features/fileManager/components/dialog/FileDeleteDialog";
 import FilesDataGrid from "./components/FilesDataGrid";
-import FileUpload from "./components/fileUpload/FileUpload";
+import FileUpload from "./components/fileUpload/FileUploadPage";
 import useFileGridLogic from "./hooks/useFileGridLogic";
 
 const FilesGrid = () => {
