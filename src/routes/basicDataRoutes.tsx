@@ -34,7 +34,7 @@ const DocumentManagementPage = lazy(() =>
   import("../features/employee/components/documents/DocumentManagementPage")
 );
 const CountryReport = lazy(() =>
-  import("@/features/basicData/countries/reports/CountryReport.tsx")
+  import("@/features/basicData/countries/reports/CountryReport")
 );
 
 export const BasicDataRoutes = () => (

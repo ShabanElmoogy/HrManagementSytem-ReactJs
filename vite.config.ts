@@ -2,11 +2,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
 import fs from "fs";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(({ mode }) => {
   const isDev = mode === "development";
@@ -17,20 +13,20 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: "autoUpdate",
         workbox: {
-          maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // Increase to 4 MB
+          maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // Increase to 3 MB
           globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg}"],
           navigateFallback: "index.html",
         },
         includeAssets: [
           "favicon.ico",
-          "apple-touch-icon-180x180.png",
-          "maskable-icon-512x512.png",
+          "apple-touch-icon.png",
+          "masked-icon.svg",
         ],
         manifest: {
-          name: "Your App Name",
-          short_name: "AppName",
-          description: "Description of your application",
-          theme_color: "#ffffff",
+          name: "Kanban Board",
+          short_name: "Kanban",
+          description: "A modern Kanban board PWA for ticket management.",
+          theme_color: "#1976d2",
           background_color: "#ffffff",
           display: "standalone",
           scope: "./", // Changed to relative path
@@ -60,13 +56,6 @@ export default defineConfig(({ mode }) => {
         },
       }),
     ],
-    
-    resolve: {
-      alias: {
-        "@": resolve(__dirname, "src"),
-      },
-    },
-    
     build: {
       chunkSizeWarningLimit: 3000,
       rollupOptions: {
@@ -78,22 +67,21 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    
     server: isDev
       ? {
-          https: (() => {
-            try {
-              return {
-                key: fs.readFileSync("./.cert/key.pem"),
-                cert: fs.readFileSync("./.cert/cert.pem"),
-              };
-            } catch (error) {
-              console.warn("SSL certificates not found, running without HTTPS");
-              return undefined;
-            }
-          })(),
+          https: {
+            key: fs.readFileSync("./.cert/key.pem"),
+            cert: fs.readFileSync("./.cert/cert.pem"),
+          },
           host: "localhost",
           port: 5173,
+          proxy: {
+            '/api': {
+              target: process.env.VITE_BACKEND_URL || 'http://localhost:3001',
+              changeOrigin: true,
+              secure: false,
+            },
+          },
         }
       : undefined,
   };
