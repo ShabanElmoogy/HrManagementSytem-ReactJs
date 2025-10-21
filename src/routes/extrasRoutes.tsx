@@ -25,8 +25,8 @@ const ApiEndpoints = lazy(() =>
 const HangfireDashboard = lazy(() =>
   import("@/features/advancedTools/hangfireDashboard")
 );
-const FilesGrid = lazy(() => import("@/features/fileManager/FilesGrid"));
-const MediaViewer = lazy(() => import("@/features/fileManager/mediaViewer/MediaViewer"));
+// const FilesGrid = lazy(() => import("@/features/fileManager/FilesGrid"));
+// const MediaViewer = lazy(() => import("@/features/fileManager/mediaViewer/MediaViewer"));
 const AppointmentsPage = lazy(() => import("@/features/appointments/pages/AppointmentsPage"));
 
 export const ExtrasRoutes = () => (
@@ -117,7 +117,7 @@ export const ExtrasRoutes = () => (
       }
     />
 
-    {/* File Manager */}
+    {/* File Manager
     <Route
       path={appRoutes.extras.filesManager}
       element={
@@ -141,7 +141,7 @@ export const ExtrasRoutes = () => (
           </Suspense>
         </ProtectedRoute>
       }
-    />
+    /> */}
 
     {/* Appointments */}
     <Route
