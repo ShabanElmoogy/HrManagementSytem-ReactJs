@@ -34,8 +34,12 @@ class FileService {
     const lsUrl = localStorage.getItem("baseApiUrl");
     if (lsUrl) {
       return lsUrl;
-    } else {
+    } else if (envUrl) {
       return envUrl;
+    } else {
+      // Fallback for production deployment
+      console.warn("No API URL configured. Please set VITE_API_URL environment variable.");
+      return window.location.origin;
     }
   }
 

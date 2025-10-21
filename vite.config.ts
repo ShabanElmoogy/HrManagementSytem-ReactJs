@@ -23,8 +23,8 @@ export default defineConfig(({ mode }) => {
         },
         includeAssets: [
           "favicon.ico",
-          "apple-touch-icon.png",
-          "masked-icon.svg",
+          "apple-touch-icon-180x180.png",
+          "maskable-icon-512x512.png",
         ],
         manifest: {
           name: "Your App Name",
@@ -81,10 +81,17 @@ export default defineConfig(({ mode }) => {
     
     server: isDev
       ? {
-          https: {
-            key: fs.readFileSync("./.cert/key.pem"),
-            cert: fs.readFileSync("./.cert/cert.pem"),
-          },
+          https: (() => {
+            try {
+              return {
+                key: fs.readFileSync("./.cert/key.pem"),
+                cert: fs.readFileSync("./.cert/cert.pem"),
+              };
+            } catch (error) {
+              console.warn("SSL certificates not found, running without HTTPS");
+              return false;
+            }
+          })(),
           host: "localhost",
           port: 5173,
         }
