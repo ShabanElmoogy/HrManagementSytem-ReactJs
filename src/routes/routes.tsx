@@ -1,4 +1,4 @@
-import { MyLoadingIndicator } from "@/shared/components";
+import { MyLoadingIndicator } from "@/shared/components/common/loaders/myLoadingIndicator";
 import { Suspense, lazy } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import MainLayout from "../layouts/mainLayout/mainLayout";

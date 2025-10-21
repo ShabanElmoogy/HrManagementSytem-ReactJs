@@ -2,7 +2,11 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
 import fs from "fs";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(({ mode }) => {
   const isDev = mode === "development";
@@ -13,37 +17,37 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: "autoUpdate",
         workbox: {
-          maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // Increase to 3 MB
+          maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // Increase to 4 MB
           globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg}"],
           navigateFallback: "index.html",
         },
         includeAssets: [
           "favicon.ico",
-          "apple-touch-icon.png",
-          "masked-icon.svg",
+          "apple-touch-icon-180x180.png",
+          "maskable-icon-512x512.png",
         ],
         manifest: {
-          name: "Kanban Board",
-          short_name: "Kanban",
-          description: "A modern Kanban board PWA for ticket management.",
+          name: "HR Management System",
+          short_name: "HRMS",
+          description: "A comprehensive HR management system",
           theme_color: "#1976d2",
           background_color: "#ffffff",
           display: "standalone",
-          scope: "./", // Changed to relative path
-          start_url: "./", // Changed to relative path
+          scope: "./",
+          start_url: "./",
           icons: [
             {
-              src: "pwa-64x64.png", // Removed leading slash
+              src: "pwa-64x64.png",
               sizes: "64x64",
               type: "image/png",
             },
             {
-              src: "pwa-192x192.png", // Added recommended 192x192 size
+              src: "pwa-192x192.png",
               sizes: "192x192",
               type: "image/png",
             },
             {
-              src: "pwa-512x512.png", // Removed leading slash
+              src: "pwa-512x512.png",
               sizes: "512x512",
               type: "image/png",
               purpose: "any maskable",
@@ -56,23 +60,37 @@ export default defineConfig(({ mode }) => {
         },
       }),
     ],
+    
+    resolve: {
+      alias: {
+        "@": resolve(__dirname, "src"),
+      },
+    },
+    
     build: {
       chunkSizeWarningLimit: 3000,
       rollupOptions: {
         output: {
           manualChunks: {
             "vendor-react": ["react", "react-dom"],
-            // Add additional chunks as needed based on your dependencies
           },
         },
       },
     },
+    
     server: isDev
       ? {
-          https: {
-            key: fs.readFileSync("./.cert/key.pem"),
-            cert: fs.readFileSync("./.cert/cert.pem"),
-          },
+          https: (() => {
+            try {
+              return {
+                key: fs.readFileSync("./.cert/key.pem"),
+                cert: fs.readFileSync("./.cert/cert.pem"),
+              };
+            } catch (error) {
+              console.warn("SSL certificates not found, running without HTTPS");
+              return undefined;
+            }
+          })(),
           host: "localhost",
           port: 5173,
           proxy: {
