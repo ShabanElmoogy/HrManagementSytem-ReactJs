@@ -1,10 +1,10 @@
 // FileUpload.tsx - Container, split into smaller components
 import { StyledCard } from "@/shared/components/fileUpload/styledComponents";
-import useFileUpload from "./hooks/useFileUpload";
-import UploadHeader from "./components/UploadHeader";
-import UploadDropArea from "./components/UploadDropArea";
-import UploadList from "./components/UploadList";
-import UploadActions from "./components/UploadActions";
+import useFileUpload from "./hooks/useFileUpload.js";
+import UploadHeader from "./components/UploadHeader.js";
+import UploadDropArea from "./components/UploadDropArea.js";
+import UploadList from "./components/UploadList.js";
+import UploadActions from "./components/UploadActions.js";
 
 interface FileUploadProps {
   onSuccess?: (fileName: string) => void;

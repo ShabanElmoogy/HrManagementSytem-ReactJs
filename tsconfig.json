@@ -19,7 +19,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": "src",
-    "ignoreDeprecations": "6.0",
+    "ignoreDeprecations": "5.0",
     // TypeScript strict settings - gradually enable for better error detection
     "strict": false,
     "noImplicitAny": true,
@@ -81,9 +81,8 @@
     "src/**/*.js",
     "src/**/*.jsx",
     "src/**/*.d.ts",
-    "vite.config.js",
-    "vite.config.ts",
-    "src/features/auth/register/const/colors.فs",
+    "vite.config.ts"
+
   ],
   "exclude": [
     "node_modules",
