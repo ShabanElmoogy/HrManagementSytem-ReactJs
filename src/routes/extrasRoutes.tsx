@@ -7,27 +7,27 @@ import { Route } from "react-router-dom";
 const ProtectedRoute = lazy(() =>
   import("../shared/components/auth/protectedRoute")
 );
-const UsersPage = lazy(() => import("@/features/auth/users/UsersPage"));
-const RolesPage = lazy(() => import("@/features/auth/roles/rolesPage"));
+const UsersPage = lazy(() => import("@/features/auth/users/UsersPage.tsx"));
+const RolesPage = lazy(() => import("@/features/auth/roles/rolesPage.tsx"));
 const RolePermissionsPage = lazy(() =>
   import("../features/auth/roles/components/rolePermissionsPage")
 );
 const TrackChangesGrid = lazy(() =>
-  import("@/features/advancedTools/trackChangesGrid")
+  import("@/features/advancedTools/trackChangesGrid.tsx")
 );
 const LocalizationGrid = lazy(() =>
-  import("@/features/advancedTools/localizationGrid")
+  import("@/features/advancedTools/localizationGrid.tsx")
 );
-const HealthCheck = lazy(() => import("@/features/advancedTools/healthCheck"));
+const HealthCheck = lazy(() => import("@/features/advancedTools/healthCheck.tsx"));
 const ApiEndpoints = lazy(() =>
-  import("@/features/advancedTools/apiEndpoints")
+  import("@/features/advancedTools/apiEndpoints.tsx")
 );
 const HangfireDashboard = lazy(() =>
-  import("@/features/advancedTools/hangfireDashboard")
+  import("@/features/advancedTools/hangfireDashboard.tsx")
 );
-const FilesGrid = lazy(() => import("@/features/fileManager/FilesGrid"));
-const MediaViewer = lazy(() => import("@/features/fileManager/mediaViewer/MediaViewer"));
-const AppointmentsPage = lazy(() => import("@/features/appointments/pages/AppointmentsPage"));
+const FilesGrid = lazy(() => import("@/features/fileManager/FilesGrid.tsx"));
+const MediaViewer = lazy(() => import("@/features/fileManager/mediaViewer/MediaViewer.tsx"));
+const AppointmentsPage = lazy(() => import("@/features/appointments/pages/AppointmentsPage.tsx"));
 
 export const ExtrasRoutes = () => (
   <>

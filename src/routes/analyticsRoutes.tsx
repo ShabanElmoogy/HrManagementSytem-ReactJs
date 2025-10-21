@@ -8,28 +8,28 @@ const ProtectedRoute = lazy(() =>
   import("../shared/components/auth/protectedRoute")
 );
 const HRMainDashboard = lazy(() =>
-  import("@/features/analytics/components/HRMainDashboard")
+  import("@/features/analytics/components/HRMainDashboard.tsx")
 );
 const PerformanceAnalytics = lazy(() =>
-  import("@/features/analytics/components/PerformanceAnalytics")
+  import("@/features/analytics/components/PerformanceAnalytics.tsx")
 );
 const TimeAttendanceAnalytics = lazy(() =>
-  import("@/features/analytics/components/TimeAttendanceAnalytics")
+  import("@/features/analytics/components/TimeAttendanceAnalytics.tsx")
 );
 const EmployeeEngagementDashboard = lazy(() =>
-  import("@/features/analytics/components/EmployeeEngagementDashboard")
+  import("@/features/analytics/components/EmployeeEngagementDashboard.tsx")
 );
 const DocumentAnalytics = lazy(() =>
-  import("@/features/analytics/components/DocumentAnalytics")
+  import("@/features/analytics/components/DocumentAnalytics.tsx")
 );
 const CustomReportBuilder = lazy(() =>
-  import("@/features/analytics/components/CustomReportBuilder")
+  import("@/features/analytics/components/CustomReportBuilder.tsx")
 );
 const ReportViewer = lazy(() =>
-  import("@/features/analytics/components/ReportViewer")
+  import("@/features/analytics/components/ReportViewer.tsx")
 );
 const DataExportTools = lazy(() =>
-  import("@/features/analytics/components/DataExportTools")
+  import("@/features/analytics/components/DataExportTools.tsx")
 );
 
 export const AnalyticsRoutes = () => (
