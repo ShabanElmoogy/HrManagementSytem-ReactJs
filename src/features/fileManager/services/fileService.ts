@@ -46,7 +46,7 @@ export class FileService {
   static async downloadFile( storedFileName: string, fileName: string): Promise<{ success: boolean; errorResponse?: any }> {
     try {
       const response = await apiService.get(
-        `${BASE}/${storedFileName}`,
+        `${BASE}/Download/${storedFileName}`,
         {
           responseType: "blob",
         }
