@@ -7,6 +7,7 @@ import { MediaContentProps } from "../types/mediaViewer.type";
 import AudioPlayer from "./AudioPlayer";
 import VideoPlayer from "./VideoPlayer";
 import ImageViewer from "./ImageViewer";
+import ExcelViewer from "./ExcelViewer";
 
 const MediaContent: React.FC<MediaContentProps> = ({
   mediaType,
@@ -59,6 +60,9 @@ const MediaContent: React.FC<MediaContentProps> = ({
 
     case "audio":
       return <AudioPlayer mediaUrl={mediaUrl} onError={onError} />;
+
+    case "excel":
+      return <ExcelViewer mediaUrl={mediaUrl} onError={onError} />;
 
     default:
       return null;

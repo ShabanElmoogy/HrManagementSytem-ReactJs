@@ -15,6 +15,13 @@ import {
   FileDownload as DownloadIcon,
   RotateRight as RotateRightIcon,
   Refresh as ResetIcon,
+  Flip as FlipHIcon,
+  SwapVert as FlipVIcon,
+  Brightness6 as BrightnessIcon,
+  Contrast as ContrastIcon,
+  Info as InfoIcon,
+  FitScreen as FitScreenIcon,
+  CenterFocusStrong as CenterIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { styled } from "@mui/material/styles";
@@ -127,6 +134,11 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError }) => {
   const [imageInfo, setImageInfo] = useState({ width: 0, height: 0, size: 0 });
   const [showControls, setShowControls] = useState(true);
   const [showZoomInfo, setShowZoomInfo] = useState(false);
+  const [showImageInfo, setShowImageInfo] = useState(false);
+  const [flipH, setFlipH] = useState(false);
+  const [flipV, setFlipV] = useState(false);
+  const [brightness, setBrightness] = useState(100);
+  const [contrast, setContrast] = useState(100);
   const controlsTimeoutRef = useRef<NodeJS.Timeout>();
   const zoomInfoTimeoutRef = useRef<NodeJS.Timeout>();
 
@@ -177,10 +189,43 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError }) => {
   const handleReset = () => {
     setZoom(100);
     setRotation(0);
+    setFlipH(false);
+    setFlipV(false);
+    setBrightness(100);
+    setContrast(100);
     if (containerRef.current) {
       containerRef.current.scrollLeft = 0;
       containerRef.current.scrollTop = 0;
     }
+  };
+
+  const handleFlipH = () => {
+    setFlipH(prev => !prev);
+  };
+
+  const handleFlipV = () => {
+    setFlipV(prev => !prev);
+  };
+
+  const handleFitToScreen = () => {
+    setZoom(100);
+    setRotation(0);
+    if (containerRef.current) {
+      containerRef.current.scrollLeft = 0;
+      containerRef.current.scrollTop = 0;
+    }
+  };
+
+  const handleToggleInfo = () => {
+    setShowImageInfo(prev => !prev);
+  };
+
+  const adjustBrightness = (delta: number) => {
+    setBrightness(prev => Math.max(50, Math.min(150, prev + delta)));
+  };
+
+  const adjustContrast = (delta: number) => {
+    setContrast(prev => Math.max(50, Math.min(150, prev + delta)));
   };
 
   const handleFullscreen = () => {
@@ -272,21 +317,50 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError }) => {
         maxHeight: isFullscreen ? "100vh" : "80vh",
       }}
     >
-      {/* Image Info - Show only when zooming */}
+      {/* Zoom Info - Show when zooming */}
       {showZoomInfo && (
-        <InfoBox elevation={0} sx={{ opacity: showZoomInfo ? 1 : 0, transition: "opacity 0.3s ease" }}>
-          <Grid container spacing={1}>
-            <Grid item xs={12}>
-              <Typography variant="caption" sx={{ color: "#fff", fontWeight: 600 }}>
-                {imageInfo.width} × {imageInfo.height}px
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.7)" }}>
-                Zoom: {zoom}%
-              </Typography>
-            </Grid>
-          </Grid>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "rgba(0,0,0,0.8)",
+            color: "#fff",
+            padding: 2,
+            borderRadius: 2,
+            zIndex: 15,
+            opacity: showZoomInfo ? 1 : 0,
+            transition: "opacity 0.3s ease",
+          }}
+        >
+          <Typography variant="h6" sx={{ fontWeight: 600, textAlign: "center" }}>
+            {zoom}%
+          </Typography>
+        </Box>
+      )}
+
+      {/* Image Info Panel */}
+      {showImageInfo && (
+        <InfoBox elevation={0}>
+          <Typography variant="subtitle2" sx={{ color: "#fff", fontWeight: 600, mb: 1 }}>
+            Image Info
+          </Typography>
+          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.9)", display: "block" }}>
+            Size: {imageInfo.width} × {imageInfo.height}px
+          </Typography>
+          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.9)", display: "block" }}>
+            Zoom: {zoom}%
+          </Typography>
+          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.9)", display: "block" }}>
+            Rotation: {rotation}°
+          </Typography>
+          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.9)", display: "block" }}>
+            Brightness: {brightness}%
+          </Typography>
+          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.9)", display: "block" }}>
+            Contrast: {contrast}%
+          </Typography>
         </InfoBox>
       )}
 
@@ -297,7 +371,8 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError }) => {
           src={mediaUrl}
           alt="Viewer"
           style={{
-            transform: `scale(${zoom / 100}) rotate(${rotation}deg)`,
+            transform: `scale(${zoom / 100}) rotate(${rotation}deg) scaleX(${flipH ? -1 : 1}) scaleY(${flipV ? -1 : 1})`,
+            filter: `brightness(${brightness}%) contrast(${contrast}%)`,
           }}
           onError={() => onError(t("media.failedToLoadImage"))}
         />
@@ -305,6 +380,22 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError }) => {
 
       {/* Top Controls */}
       <TopControls elevation={0}>
+        <Tooltip title="Image Info">
+          <IconButton
+            size="small"
+            onClick={handleToggleInfo}
+            sx={{
+              color: showImageInfo ? "#1976d2" : "#fff",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.15)",
+              },
+            }}
+          >
+            <InfoIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+
         <Tooltip title={t("media.download")}>
           <IconButton
             size="small"
@@ -402,8 +493,42 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError }) => {
         {/* Divider */}
         <Box sx={{ width: 1, height: 20, backgroundColor: "rgba(255,255,255,0.2)" }} />
 
+        {/* Flip Horizontal */}
+        <Tooltip title="Flip Horizontal">
+          <IconButton
+            size="small"
+            onClick={handleFlipH}
+            sx={{
+              color: flipH ? "#1976d2" : "#fff",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.15)",
+              },
+            }}
+          >
+            <FlipHIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+
+        {/* Flip Vertical */}
+        <Tooltip title="Flip Vertical">
+          <IconButton
+            size="small"
+            onClick={handleFlipV}
+            sx={{
+              color: flipV ? "#1976d2" : "#fff",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.15)",
+              },
+            }}
+          >
+            <FlipVIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+
         {/* Rotate */}
-        <Tooltip title={`${t("media.rotate")} (90°)`}>
+        <Tooltip title={`Rotate 90°`}>
           <IconButton
             size="small"
             onClick={handleRotate}
@@ -419,8 +544,99 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError }) => {
           </IconButton>
         </Tooltip>
 
+        {/* Divider */}
+        <Box sx={{ width: 1, height: 20, backgroundColor: "rgba(255,255,255,0.2)" }} />
+
+        {/* Brightness Down */}
+        <Tooltip title="Brightness -">
+          <IconButton
+            size="small"
+            onClick={() => adjustBrightness(-10)}
+            sx={{
+              color: "#fff",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.15)",
+              },
+            }}
+          >
+            <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>B-</Typography>
+          </IconButton>
+        </Tooltip>
+
+        {/* Brightness Up */}
+        <Tooltip title="Brightness +">
+          <IconButton
+            size="small"
+            onClick={() => adjustBrightness(10)}
+            sx={{
+              color: "#fff",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.15)",
+              },
+            }}
+          >
+            <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>B+</Typography>
+          </IconButton>
+        </Tooltip>
+
+        {/* Contrast Down */}
+        <Tooltip title="Contrast -">
+          <IconButton
+            size="small"
+            onClick={() => adjustContrast(-10)}
+            sx={{
+              color: "#fff",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.15)",
+              },
+            }}
+          >
+            <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>C-</Typography>
+          </IconButton>
+        </Tooltip>
+
+        {/* Contrast Up */}
+        <Tooltip title="Contrast +">
+          <IconButton
+            size="small"
+            onClick={() => adjustContrast(10)}
+            sx={{
+              color: "#fff",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.15)",
+              },
+            }}
+          >
+            <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>C+</Typography>
+          </IconButton>
+        </Tooltip>
+
+        {/* Divider */}
+        <Box sx={{ width: 1, height: 20, backgroundColor: "rgba(255,255,255,0.2)" }} />
+
+        {/* Fit to Screen */}
+        <Tooltip title="Fit to Screen">
+          <IconButton
+            size="small"
+            onClick={handleFitToScreen}
+            sx={{
+              color: "#fff",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.15)",
+              },
+            }}
+          >
+            <FitScreenIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+
         {/* Reset */}
-        <Tooltip title={t("media.reset")}>
+        <Tooltip title="Reset All">
           <IconButton
             size="small"
             onClick={handleReset}
