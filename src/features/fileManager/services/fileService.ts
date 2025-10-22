@@ -54,7 +54,7 @@ export class FileService {
     });
     
     // Create blob URL and trigger download
-    const blob = new Blob([response.data]);
+    const blob = response.data instanceof Blob ? response.data : new Blob([response.data]);
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;

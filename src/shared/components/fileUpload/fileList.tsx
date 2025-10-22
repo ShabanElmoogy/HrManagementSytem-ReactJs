@@ -23,7 +23,7 @@ const FileList = ({ files, isUploading, onRemoveFile }: FileListProps) => {
 
   return (
     <Fade in={true}>
-      <Box sx={{ mt: 3 }}>
+      <Box sx={{ m: 2 }}>
         <Typography variant="subtitle1" gutterBottom>
           {t("files.selectedFiles")} ({files.length})
         </Typography>
