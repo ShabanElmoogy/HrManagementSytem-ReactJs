@@ -45,14 +45,24 @@ export class FileService {
     */
   static async downloadFile( storedFileName: string, fileName: string): Promise<{ success: boolean; errorResponse?: any }> {
     try {
-      const response = await apiService.get(
-        `${BASE}/Download/${storedFileName}`,
-        {
-          responseType: "blob",
+      const response = await fetch(`${BASE}/download/${storedFileName}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/octet-stream'
         }
-      );
+      });
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const blob = await response.blob();
+      
+      if (blob.size === 0) {
+        throw new Error("Downloaded file is empty");
+      }
+
+      const url = window.URL.createObjectURL(blob);
 
       const a = document.createElement("a");
       a.href = url;
