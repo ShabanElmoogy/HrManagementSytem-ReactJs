@@ -2,7 +2,7 @@
 import { Alert, Typography, Fade } from "@mui/material";
 import MediaContent from "./components/MediaContent";
 import { Container, MediaContainer } from "./components/Containers";
-import { BackOverlayButton, ViewerControls, BusyOverlay } from "./components/Overlays";
+import { BackOverlayButton, BusyOverlay } from "./components/Overlays";
 import useMediaViewer from "./hooks/useMediaViewer";
 
 const MediaViewer = () => {
@@ -10,12 +10,9 @@ const MediaViewer = () => {
     isLoading,
     error,
     mediaUrl,
-    isFullscreen,
     mediaType,
     getFileExtension,
     handleBack,
-    handleFullscreen,
-    handleDownload,
     setError,
   } = useMediaViewer();
 
@@ -47,12 +44,6 @@ const MediaViewer = () => {
       {!error && !isLoading && mediaUrl && (
         <Fade in={true}>
           <MediaContainer>
-            <ViewerControls
-              onDownload={handleDownload}
-              onToggleFullscreen={handleFullscreen}
-              showFullscreen={mediaType !== "audio"}
-              isFullscreen={isFullscreen}
-            />
             {renderMedia()}
           </MediaContainer>
         </Fade>
