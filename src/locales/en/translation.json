@@ -810,7 +810,11 @@
     "fullscreen": "Fullscreen",
     "next": "Next",
     "previous": "Previous",
-    "close": "Close"
+    "close": "Close",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
+    "rotate": "Rotate",
+    "reset": "Reset"
   },
   "imports": {
     "dragDropText": "Drag and drop your file here or click to browse",

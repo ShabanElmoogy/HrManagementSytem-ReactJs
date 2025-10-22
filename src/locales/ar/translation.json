@@ -762,12 +762,16 @@
     "repeatAll": "تكرار الكل",
     "repeatOne": "تكرار واحد",
     "backToFiles": "العودة للملفات",
-    "download": "تحميل",
+    "download": "تحم��ل",
     "exitFullscreen": "خروج من الشاشة الكاملة",
     "fullscreen": "شاشة كاملة",
     "next": "التالى",
     "previous": "السابق",
-    "close": "اغلاق"
+    "close": "اغلاق",
+    "zoomIn": "تكبير",
+    "zoomOut": "تصغير",
+    "rotate": "تدوير",
+    "reset": "إعادة تعيين"
   },
   "imports": {
     "dragDropText": "اسحب وافلت الملفات هنا او انقر للاختيار",

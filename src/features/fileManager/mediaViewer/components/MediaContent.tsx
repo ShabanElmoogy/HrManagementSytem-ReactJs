@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { MediaContentProps } from "../types/mediaViewer.type";
 import AudioPlayer from "./AudioPlayer";
 import VideoPlayer from "./VideoPlayer";
+import ImageViewer from "./ImageViewer";
 
 const MediaContent: React.FC<MediaContentProps> = ({
   mediaType,
@@ -51,25 +52,7 @@ const MediaContent: React.FC<MediaContentProps> = ({
       );
 
     case "image":
-      return (
-        <img
-          id="media-content"
-          src={mediaUrl}
-          alt={t("media.image")}
-          onLoad={() => {
-            console.log("Image loaded successfully");
-            onError("");
-          }}
-          onError={(e) => {
-            console.error("Image error:", e);
-            console.error("Image src:", mediaUrl);
-            setTimeout(() => {
-              onError(t("media.failedToLoadImage"));
-            }, 100);
-          }}
-          style={{ opacity: isLoading ? 0.5 : 1, transition: "opacity 0.3s ease" }}
-        />
-      );
+      return <ImageViewer mediaUrl={mediaUrl} onError={onError} />;
 
     case "video":
       return <VideoPlayer mediaUrl={mediaUrl} onError={onError} />;
