@@ -314,8 +314,11 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
   // Download file handler
   const handleDownload = useCallback(
     async (file: FileItem) => {
-      if (!file?.storedFileName) return;
-      downloadFileMutation.mutate(file.storedFileName);
+      if (!file?.storedFileName || !file?.fileName) return;
+      downloadFileMutation.mutate({
+        storedFileName: file.storedFileName,
+        fileName: file.fileName
+      });
     },
     [downloadFileMutation]
   );

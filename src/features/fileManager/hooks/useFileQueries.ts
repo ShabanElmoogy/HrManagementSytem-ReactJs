@@ -48,11 +48,18 @@ function useFileMutation<TData = unknown, TVariables = unknown>(
 export const useUploadFiles = (options?: UseMutationOptions<UploadResult, Error, File[]>) =>
   useFileMutation(FileService.uploadMany, options);
 
-export const useDownloadFile = (options?: UseMutationOptions<void, Error, string>) =>
+
+export const useDownloadFile = (options?: UseMutationOptions<void, Error, {storedFileName: string, fileName: string}>) =>
   useMutation({
-    mutationFn: FileService.download,
+    mutationFn: async ({storedFileName, fileName}) => {
+      const result = await FileService.downloadFile(storedFileName, fileName);
+      if (!result.success) {
+        throw new Error(result.errorResponse?.errors?.general?.[0] || "Download failed");
+      }
+    },
     ...options,
   });
+
 
 export const useDeleteFile = (options?: UseMutationOptions<string, Error, string>) =>
   useFileMutation<string, string>(FileService.delete, options);

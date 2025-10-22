@@ -43,26 +43,38 @@ export class FileService {
   /**
     * Download file by stored filename
     */
-  static async download(storedFileName: string, originalFileName?: string): Promise<void> {
-    // Validate filename
-    if (!storedFileName || typeof storedFileName !== "string") {
-      throw new Error("Invalid stored filename");
-    }
+  static async downloadFile( storedFileName: string, fileName: string): Promise<{ success: boolean; errorResponse?: any }> {
+    try {
+      const response = await apiService.get(
+        `${BASE}/${storedFileName}`,
+        {
+          responseType: "blob",
+        }
+      );
 
-    const response = await apiService.get(`${BASE}/Download/${storedFileName}`, {
-      responseType: 'blob'
-    });
-    
-    // Create blob URL and trigger download
-    const blob = response.data instanceof Blob ? response.data : new Blob([response.data]);
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = originalFileName || storedFileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      return { success: true };
+    } catch (error) {
+      console.error("Download error:", error);
+      return {
+        success: false,
+        errorResponse: {
+          errors: {
+            general: [error instanceof Error ? error.message : "Download failed"],
+          },
+        },
+      };
+    }
   }
 
   /**
