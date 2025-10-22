@@ -54,7 +54,7 @@ class FileService {
   async downloadFile(storedFileName: string, fileName: string): Promise<{ success: boolean; errorResponse?: any }> {
     try {
       const response = await this.client.get(
-        `${BASE}/${storedFileName}`,
+        `${BASE}/download/${storedFileName}`,
         {
           responseType: "blob",
         }
