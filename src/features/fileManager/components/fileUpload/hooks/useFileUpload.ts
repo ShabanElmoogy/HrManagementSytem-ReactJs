@@ -16,11 +16,8 @@ export default function useFileUpload({ onSuccess, onClose, multiple = true }: U
   const validateFileSize = (file: File): boolean => {
     if (file.size > FILE_CONFIG.MAX_FILE_SIZE) {
       const sizeMB = (FILE_CONFIG.MAX_FILE_SIZE / (1024 * 1024)).toFixed(0);
-      showSnackbar(
-        "error",
-        [`File "${file.name}" exceeds maximum size of ${sizeMB}MB`],
-        "Validation Error"
-      );
+      const errorMessage = `File "${file.name}" exceeds maximum size of ${sizeMB}MB`;
+      setGlobalError(errorMessage);
       return false;
     }
     return true;
@@ -28,11 +25,8 @@ export default function useFileUpload({ onSuccess, onClose, multiple = true }: U
 
   const validateFileType = (file: File): boolean => {
     if (!FILE_CONFIG.ALLOWED_TYPES.includes(file.type as any)) {
-      showSnackbar(
-        "error",
-        [`File type "${file.type}" is not allowed for "${file.name}"`],
-        "Validation Error"
-      );
+      const errorMessage = `File type "${file.type}" is not allowed for "${file.name}"`;
+      setGlobalError(errorMessage);
       return false;
     }
     return true;

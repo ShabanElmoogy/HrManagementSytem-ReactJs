@@ -1,4 +1,5 @@
 // FileUpload.tsx - Container, split into smaller components
+import { Box } from "@mui/material";
 import { StyledCard } from "@/shared/components/fileUpload/styledComponents";
 import useFileUpload from "./hooks/useFileUpload";
 import UploadHeader from "./components/UploadHeader";
@@ -31,17 +32,19 @@ const FileUpload = ({ onSuccess, onClose, multiple = true }: FileUploadProps) =>
     <StyledCard>
       <UploadHeader globalError={globalError} />
 
-      <UploadDropArea
-        dragActive={dragActive}
-        isUploading={isUploading}
-        multiple={multiple}
-        accept={accept}
-        onDragEnter={handleDrag}
-        onDragLeave={handleDrag}
-        onDragOver={handleDrag}
-        onDrop={handleDrop}
-        onFileInput={handleFileInput}
-      />
+      <Box sx={{ m: 2 }}>
+        <UploadDropArea
+          dragActive={dragActive}
+          isUploading={isUploading}
+          multiple={multiple}
+          accept={accept}
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+          onFileInput={handleFileInput}
+        />
+      </Box>
 
       <UploadList files={files} isUploading={isUploading} onRemoveFile={removeFile} />
 

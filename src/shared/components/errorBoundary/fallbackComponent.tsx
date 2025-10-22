@@ -1,6 +1,11 @@
 /* eslint-disable react/prop-types */
 
-export function FallbackComponent({ error, resetErrorBoundary }) {
+interface FallbackComponentProps {
+  error: Error;
+  resetErrorBoundary: () => void;
+}
+
+export default function FallbackComponent({ error, resetErrorBoundary }: FallbackComponentProps) {
   return (
     <div role="alert" className="p-4 border border-red-500 text-red-500">
       <p>⚠️ Something went wrong:</p>

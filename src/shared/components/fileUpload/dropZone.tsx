@@ -78,6 +78,10 @@ const DropZone = ({
           accept={accept}
         />
       </Button>
+      
+      <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: "block" }}>
+        Max file size: 10MB
+      </Typography>
     </StyledDropZone>
   );
 };

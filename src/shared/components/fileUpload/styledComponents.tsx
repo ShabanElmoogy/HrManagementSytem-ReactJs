@@ -38,3 +38,11 @@ export const StyledDropZone = styled(Box)(({ theme }) => ({
     backgroundColor: theme.palette.action.hover,
   },
 }));
+
+const StyledComponents = {
+  VisuallyHiddenInput,
+  StyledCard,
+  StyledDropZone,
+};
+
+export default StyledComponents;

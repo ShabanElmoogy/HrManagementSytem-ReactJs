@@ -48,6 +48,12 @@ function useFileMutation<TData = unknown, TVariables = unknown>(
 export const useUploadFiles = (options?: UseMutationOptions<UploadResult, Error, File[]>) =>
   useFileMutation(FileService.uploadMany, options);
 
+export const useDownloadFile = (options?: UseMutationOptions<void, Error, string>) =>
+  useMutation({
+    mutationFn: FileService.download,
+    ...options,
+  });
+
 export const useDeleteFile = (options?: UseMutationOptions<string, Error, string>) =>
   useFileMutation<string, string>(FileService.delete, options);
 

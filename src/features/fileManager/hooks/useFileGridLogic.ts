@@ -10,6 +10,7 @@ import {
   useFiles,
   useDeleteFile,
   useUploadFiles,
+  useDownloadFile,
 } from "./useFileQueries";
 
 type DialogType = "upload" | "delete" | null;
@@ -80,6 +81,20 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
     },
   });
 
+  const downloadFileMutation = useDownloadFile({
+    onSuccess: () => {
+      showToast.success(
+        t("files.downloadStarted") || "Download started"
+      );
+    },
+    onError: (error: any) => {
+      const errorMessage = extractErrorMessage(error);
+      showToast.error(
+        t("files.downloadError") || errorMessage || "Download failed"
+      );
+    },
+  });
+
   // State management
   const [dialogType, setDialogType] = useState<DialogType>(null);
   const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
@@ -133,7 +148,8 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
   const isAnyLoading: boolean =
     loading ||
     uploadFilesMutation.isPending ||
-    deleteFileMutation.isPending;
+    deleteFileMutation.isPending ||
+    downloadFileMutation.isPending;
 
   // Dialog management
   const openDialog = useCallback((type: DialogType, file: FileItem | null = null) => {
@@ -297,11 +313,11 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
 
   // Download file handler
   const handleDownload = useCallback(
-    async () => {
-      // Download logic not implemented in FileService. Implement as needed.
-      showToast.info(t("files.downloadNotImplemented") || "Download not implemented");
+    async (file: FileItem) => {
+      if (!file?.storedFileName) return;
+      downloadFileMutation.mutate(file.storedFileName);
     },
-    [t]
+    [downloadFileMutation]
   );
 
   // View file handler - navigates to media viewer

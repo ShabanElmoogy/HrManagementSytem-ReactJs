@@ -1,5 +1,5 @@
 export const FILE_CONFIG = {
-  MAX_FILE_SIZE: 50 * 1024 * 1024, // 50MB
+  MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
   ALLOWED_TYPES: [
     // Images
     "image/jpeg",
