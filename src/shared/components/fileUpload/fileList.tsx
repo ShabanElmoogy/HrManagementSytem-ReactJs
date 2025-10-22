@@ -30,7 +30,7 @@ const FileList = ({ files, isUploading, onRemoveFile }: FileListProps) => {
         <List>
           {files.map((fileItem, index) => (
             <FileListItem
-              key={index}
+              key={`${fileItem.file.name}-${fileItem.file.size}-${fileItem.file.lastModified}`}
               fileItem={fileItem}
               index={index}
               isUploading={isUploading}

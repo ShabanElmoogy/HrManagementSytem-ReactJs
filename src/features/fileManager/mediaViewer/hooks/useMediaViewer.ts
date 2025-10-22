@@ -1,7 +1,7 @@
 // cspell:words nodownload
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fileService } from "@/shared/services/fileService";
+import fileService from "../../services/fileService";
 
 export type MediaType = "iframe" | "image" | "video" | "audio" | "unsupported";
 
@@ -91,9 +91,8 @@ export default function useMediaViewer(): UseMediaViewerReturn {
 
         if (!isMounted) return;
 
-        // Use blob URL to support secured endpoints and avoid CORS/auth issues
-        const streamEndpoint = `api/v1/Files/Stream`;
-        const res = await fileService.downloadStream(streamEndpoint, id);
+        const res = await fileService.downloadStream(id);
+        console.log("res",res)
 
         if (!isMounted) return;
 
@@ -164,7 +163,6 @@ export default function useMediaViewer(): UseMediaViewerReturn {
     if (!storedFileName) return;
     try {
       const response = await fileService.downloadFile(
-        `api/v1/Files/Download`,
         storedFileName,
         fileName || storedFileName
       );

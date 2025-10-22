@@ -46,7 +46,7 @@ const FileListItem = ({ fileItem, index, isUploading, onRemove }: FileListItemPr
       <ListItemText
         primary={fileItem.file.name}
         secondary={
-          <Box>
+          <Box component="span">
             <Typography variant="caption" display="block">
               {formatFileSize(fileItem.file.size)}
             </Typography>
@@ -80,6 +80,7 @@ const FileListItem = ({ fileItem, index, isUploading, onRemove }: FileListItemPr
             )}
           </Box>
         }
+        secondaryTypographyProps={{ component: 'span' }}
       />
         <Tooltip title={t("files.removeFiles")}>
           <IconButton
