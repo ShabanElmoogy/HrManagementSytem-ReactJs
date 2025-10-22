@@ -1,8 +1,14 @@
+import axios from "axios";
 import { apiService } from "@/shared/services";
 import { extractValue, extractValues } from "@/shared/utils/ApiHelper";
 import type { FileItem, UploadResult } from "../types/File";
 
 const BASE = "api/v1/Files";
+
+// Clean axios instance for file downloads without middleware
+const downloadClient = axios.create({
+  baseURL: process.env.VITE_API_URL || '',
+});
 
 /**
  * File upload configuration
@@ -45,24 +51,14 @@ export class FileService {
     */
   static async downloadFile( storedFileName: string, fileName: string): Promise<{ success: boolean; errorResponse?: any }> {
     try {
-      const response = await fetch(`${BASE}/download/${storedFileName}`, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/octet-stream'
+      const response = await downloadClient.get(
+        `${BASE}/download/${storedFileName}`,
+        {
+          responseType: "blob",
         }
-      });
+      );
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const blob = await response.blob();
-      
-      if (blob.size === 0) {
-        throw new Error("Downloaded file is empty");
-      }
-
-      const url = window.URL.createObjectURL(blob);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
 
       const a = document.createElement("a");
       a.href = url;
