@@ -19,7 +19,10 @@ const CloseButtonContainer = styled("div")(({ theme }) => ({
   padding: theme.spacing(0.5, 0),
 }));
 
-function DrawerHeader({ handleDrawerClose, open, anySectionExpanded = false }) {
+function DrawerHeader({ handleDrawerClose, anySectionExpanded = false }: {
+  handleDrawerClose: () => void;
+  anySectionExpanded?: boolean;
+}) {
   const theme = useTheme();
 
   return (

@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import React from "react";
 import {
   ListItem,
   ListItemAvatar,
@@ -17,6 +18,22 @@ import MarkEmailUnreadIcon from "@mui/icons-material/MarkEmailUnread";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useTheme } from "@mui/material";
 
+interface NotificationItemProps {
+  notification: {
+    id: string;
+    message: string;
+    timestamp: string;
+    isRead: boolean;
+    type: string;
+    company?: any;
+  };
+  markAsRead: (id: string) => void;
+  viewCompanyDetails: (company: any) => void;
+  toggleReadStatus: (id: string, isRead: boolean) => void;
+  clearNotification: (id: string) => void;
+  getTimeAgo: (timestamp: string) => string;
+}
+
 const NotificationItem = ({
   notification,
   markAsRead,
@@ -24,18 +41,17 @@ const NotificationItem = ({
   toggleReadStatus,
   clearNotification,
   getTimeAgo,
-}) => {
+}: NotificationItemProps) => {
   const theme = useTheme();
-  const isRtl = theme.direction === "rtl";
-
+ 
   // Handle toggle read status with stopPropagation
-  const handleToggleReadStatus = (event, notificationId, isRead) => {
+  const handleToggleReadStatus = (event: React.MouseEvent, notificationId: string, isRead: boolean) => {
     event.stopPropagation();
     toggleReadStatus(notificationId, isRead);
   };
 
   // Handle clearing a notification with stopPropagation
-  const handleClearNotification = (event, notificationId) => {
+  const handleClearNotification = (event: React.MouseEvent, notificationId: string) => {
     event.stopPropagation();
     clearNotification(notificationId);
   };

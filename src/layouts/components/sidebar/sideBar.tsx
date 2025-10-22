@@ -20,7 +20,6 @@ import {
 } from "@mui/material";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import DrawerHeader from "./drawerHeader";
 import { getNavigationConfig } from "./navigationConfig";
 import NavigationSection from "./navigationSection";
@@ -30,7 +29,7 @@ const drawerWidth = 240;
 const miniDrawerWidth = 64;
 
 // Search container
-const SearchContainer = styled("div")(({ theme, open }) => ({
+const SearchContainer = styled("div")<{ open: boolean }>(({ theme, open }) => ({
   display: open ? "flex" : "none",
   width: "calc(100% - 16px)",
   alignItems: "center",
@@ -73,7 +72,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 // Main drawer content container with scrolling
-const DrawerContent = styled(Box)(({ theme }) => ({
+const DrawerContent = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
   height: "100%",
@@ -98,8 +97,8 @@ const ScrollableContent = styled(Box)(({ theme }) => ({
 }));
 
 const ToggleButton = styled(Button, {
-  shouldForwardProp: (prop) => prop !== "expanded",
-})(({ theme, open, expanded }) => ({
+  shouldForwardProp: (prop) => prop !== "expanded" && prop !== "open",
+})<{ open: boolean; expanded: boolean }>(({ theme, open }) => ({
   display: open ? "flex" : "none",
   width: "100%",
   justifyContent: "flex-start",
@@ -125,31 +124,23 @@ const ToggleButton = styled(Button, {
   },
 }));
 
-function SideBar({ open, handleDrawerClose }) {
+function SideBar({ open, handleDrawerClose }: { open: boolean; handleDrawerClose: () => void }) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
 
   // Track expanded sections with an object
-  const [expandedSections, setExpandedSections] = useState({});
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
 
   // Get navigation configuration
   const navigationSections = getNavigationConfig();
 
-  // Handle logout
-  const handleLogout = () => {
-    sessionStorage.clear();
-    navigate("/login", { replace: true });
-    if (isSmallScreen) {
-      handleDrawerClose();
-    }
-  };
+
 
   // Find which section contains a specific path (recursive for nested items)
-  const findSectionByPath = (path) => {
-    const findInItems = (items) => {
+  const findSectionByPath = (path: string) => {
+    const findInItems = (items: any[]) => {
       for (const item of items) {
         if (item.path === path) {
           return true;
@@ -192,7 +183,7 @@ function SideBar({ open, handleDrawerClose }) {
   );
 
   // Handle toggle of a single section
-  const handleSectionToggle = (sectionId, forceState = null) => {
+  const handleSectionToggle = (sectionId: string, forceState: boolean | null = null) => {
     setExpandedSections((prev) => ({
       ...prev,
       [sectionId]: forceState !== null ? forceState : !prev[sectionId],
@@ -206,7 +197,7 @@ function SideBar({ open, handleDrawerClose }) {
       setExpandedSections({});
     } else {
       // If not all are expanded, expand all visible sections
-      const newState = {};
+      const newState: Record<string, boolean> = {};
       visibleSections.forEach((section) => {
         newState[section.id] = true;
       });
@@ -215,13 +206,13 @@ function SideBar({ open, handleDrawerClose }) {
   };
 
   // Clear search when navigating
-  const handleNavigate = (path) => {
+  const handleNavigate = (path: string) => {
     // Find which section contains this path
     const sectionId = findSectionByPath(path);
 
     // Set only that section to be expanded
     if (sectionId) {
-      const newExpandedState = {};
+      const newExpandedState: Record<string, boolean> = {};
       newExpandedState[sectionId] = true;
       setExpandedSections(newExpandedState);
     }
@@ -241,13 +232,13 @@ function SideBar({ open, handleDrawerClose }) {
   };
 
   // Check if section or its items match search
-  function isSectionVisible(section) {
+  function isSectionVisible(section: any) {
     const sectionMatches =
       searchTerm &&
       t(section.title).toLowerCase().includes(searchTerm.toLowerCase());
 
     const itemsMatch = section.items.some(
-      (item) =>
+      (item: any) =>
         searchTerm &&
         t(item.title).toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -292,7 +283,6 @@ function SideBar({ open, handleDrawerClose }) {
         {/* Drawer Header - Always Show*/}
         <DrawerHeader
           handleDrawerClose={handleDrawerClose}
-          open={open}
           anySectionExpanded={false} // Force to always be visible
         />
 
@@ -313,7 +303,7 @@ function SideBar({ open, handleDrawerClose }) {
         {/* User Profile - Hide when sections are expanded */}
         <Collapse in={!isAnySectionExpanded} timeout="auto">
           <Box sx={{ pb: 1 }}>
-            <UserProfile open={open} onLogout={handleLogout} />
+            <UserProfile open={open} />
           </Box>
         </Collapse>
 
@@ -370,7 +360,6 @@ function SideBar({ open, handleDrawerClose }) {
                 section={section}
                 open={open}
                 searchTerm={searchTerm}
-                handleDrawerClose={handleDrawerClose}
                 t={t}
                 isExpanded={!!expandedSections[section.id]}
                 onToggle={handleSectionToggle}

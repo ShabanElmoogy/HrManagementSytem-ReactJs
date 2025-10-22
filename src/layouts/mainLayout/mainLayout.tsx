@@ -30,6 +30,9 @@ const MainLayout = () => {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
 
+  const handleSetOpen = () => setOpen(true);
+  const handleSetClosed = () => setOpen(false);
+
   useEffect(() => {
     apiService.setNavigateFunction(navigate);
   }, [navigate]);
@@ -45,20 +48,20 @@ const MainLayout = () => {
   return (
     <ThemeProvider theme={theme}>
       <CacheProvider value={cacheProvider}>
-        <SidebarContext.Provider value={{ open, setOpen }}>
+        <SidebarContext.Provider value={{ open, setOpen: handleSetOpen }}>
           <Box sx={{ display: "flex", width: "100%", overflow: "hidden" }}>
             <CssBaseline />
 
             <TopBar
               open={open}
-              handleDrawerOpen={() => setOpen(true)}
+              handleDrawerOpen={handleSetOpen}
               setMode={setMode}
               direction={direction}
               toggleDirection={toggleDirection}
               isAuthenticated={true}
             />
 
-            <SideBar open={open} handleDrawerClose={() => setOpen(false)} />
+            <SideBar open={open} handleDrawerClose={handleSetClosed} />
 
             <Box component="main" sx={{ flexGrow: 1, m: 3 }}>
               <DrawerHeader />

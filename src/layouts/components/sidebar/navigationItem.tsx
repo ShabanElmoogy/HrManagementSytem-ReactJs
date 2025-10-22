@@ -23,6 +23,17 @@ function NavigationItem({
   roles = [],
   permissions = [],
   items = [],
+}: {
+  open: boolean;
+  title: string;
+  titleComponent?: React.ReactNode;
+  icon: React.ReactNode;
+  path: string;
+  searchTerm: string;
+  onNavigate: (path: string) => void;
+  roles?: string[];
+  permissions?: string[];
+  items?: any[];
 }) {
   const theme = useTheme();
   const navigate = useNavigate();

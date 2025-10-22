@@ -91,7 +91,12 @@
     "filemanager": "File Manager",
     "appointments": "Appointments",
     "collapseAllSections": "Collapse All Sections",
-    "expandAllSections": "Expand All Sections"
+    "expandAllSections": "Expand All Sections",
+    "all": "All",
+    "unread": "Unread",
+    "markAllAsRead": "Mark All As Read",
+    "markAllAsUnread": "Mark All As Unread",
+    "clearAll": "Clear All"
   },
   "actions": {
     "buttons": "Actions",

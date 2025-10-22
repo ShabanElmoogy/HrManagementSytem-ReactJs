@@ -86,7 +86,12 @@
     "filemanager": "مدير الملفات",
     "appointments": "المواعيد",
     "collapseAllSections": "غلق كل الأقسام",
-    "expandAllSections": "فتح كل الأقسام"
+    "expandAllSections": "فتح كل الأقسام",
+    "all" : "الكل",
+    "unread" : "غير مقروء",
+    "markAllAsRead" : "تحديد كل كمل المقروء",
+    "markAllAsUnread" : "تحديد كل كمل غير مقروء",
+    "clearAll" : "مسح الكل"
   },
   "actions": {
     "buttons": "العمليات",

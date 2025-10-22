@@ -6,6 +6,31 @@ import NotificationsList from "./notificationsList";
 import NotificationsFooter from "./notificationsFooter";
 import { getTimeAgo } from "../../../../shared/utils/dateUtils";
 
+interface Notification {
+  id: string;
+  message: string;
+  timestamp: string;
+  isRead: boolean;
+  type: string;
+  company?: any;
+}
+
+interface NotificationsMenuProps {
+  anchorEl: HTMLElement | null;
+  open: boolean;
+  onClose: () => void;
+  notifications: Notification[];
+  unreadCount: number;
+  markAllAsRead: () => void;
+  markAsRead: (id: string) => void;
+  viewCompanyDetails: (company: any) => void;
+  clearAllNotifications: () => void;
+  isMobile: boolean;
+  toggleReadStatus: (id: string, isRead: boolean) => void;
+  clearNotification: (id: string) => void;
+  markAllAsUnread: () => void;
+}
+
 const NotificationsMenu = ({
   anchorEl,
   open,
@@ -20,7 +45,7 @@ const NotificationsMenu = ({
   toggleReadStatus,
   clearNotification,
   markAllAsUnread,
-}) => {
+}: NotificationsMenuProps) => {
   const [tabValue, setTabValue] = React.useState(0);
   const [calculatedUnreadCount, setCalculatedUnreadCount] =
     useState(unreadCount);
@@ -34,7 +59,7 @@ const NotificationsMenu = ({
     setCalculatedUnreadCount(actualUnreadCount);
   }, [notifications]);
 
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 

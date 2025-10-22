@@ -1,4 +1,3 @@
-import React from "react";
 import { Box, Button, Divider } from "@mui/material";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import MarkEmailUnreadIcon from "@mui/icons-material/MarkEmailUnread";
@@ -6,13 +5,21 @@ import ClearAllIcon from "@mui/icons-material/ClearAll";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@mui/material";
 
+interface NotificationsFooterProps {
+  markAllAsRead: () => void;
+  markAllAsUnread: () => void;
+  clearAllNotifications: () => void;
+  notificationsCount: number;
+  unreadCount: number;
+}
+
 const NotificationsFooter = ({
   markAllAsRead,
   markAllAsUnread,
   clearAllNotifications,
   notificationsCount,
   unreadCount,
-}) => {
+}: NotificationsFooterProps) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const readNotificationsCount = notificationsCount - unreadCount;
@@ -36,7 +43,7 @@ const NotificationsFooter = ({
           size="small"
           sx={{ textTransform: "none" }}
         >
-          {t("markAllAsRead") || "Mark all as read"}
+          {t("menu.markAllAsRead") || "Mark all as read"}
         </Button>
         <Button
           startIcon={<MarkEmailUnreadIcon />}
@@ -46,7 +53,7 @@ const NotificationsFooter = ({
           size="small"
           sx={{ textTransform: "none" }}
         >
-          {t("markAllAsUnread") || "Mark all as unread"}
+          {t("menu.markAllAsUnread") || "Mark all as unread"}
         </Button>
         <Button
           startIcon={<ClearAllIcon />}
@@ -56,7 +63,7 @@ const NotificationsFooter = ({
           size="small"
           sx={{ textTransform: "none" }}
         >
-          {t("clearAll") || "Clear all"}
+          {t("menu.clearAll") || "Clear all"}
         </Button>
       </Box>
     </Box>

@@ -5,6 +5,25 @@ import EmptyNotifications from "./emptyNotifications";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@mui/material";
 
+interface Notification {
+  id: string;
+  message: string;
+  timestamp: string;
+  isRead: boolean;
+  type: string;
+  company?: any;
+}
+
+interface NotificationsListProps {
+  filteredNotifications: Notification[];
+  markAsRead: (id: string) => void;
+  viewCompanyDetails: (company: any) => void;
+  toggleReadStatus: (id: string, isRead: boolean) => void;
+  clearNotification: (id: string) => void;
+  getTimeAgo: (timestamp: string) => string;
+  onClose: () => void;
+}
+
 const NotificationsList = ({
   filteredNotifications,
   markAsRead,
@@ -13,7 +32,7 @@ const NotificationsList = ({
   clearNotification,
   getTimeAgo,
   onClose,
-}) => {
+}: NotificationsListProps) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const isRtl = theme.direction === "rtl";

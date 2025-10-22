@@ -16,7 +16,7 @@ import NavigationItem from "./navigationItem";
 import { alpha, useTheme } from "@mui/material/styles";
 
 // Component to highlight matched text
-const HighlightedText = ({ text, searchTerm }) => {
+const HighlightedText = ({ text, searchTerm }: { text: string; searchTerm: string }) => {
   const theme = useTheme();
 
   if (!searchTerm || !text) {
@@ -60,6 +60,14 @@ function NavigationSection({
   isExpanded,
   onToggle,
   onNavigate,
+}: {
+  section: any;
+  open: boolean;
+  t: (key: string) => string;
+  searchTerm?: string;
+  isExpanded: boolean;
+  onToggle: (sectionId: string, forceState?: boolean) => void;
+  onNavigate: (path: string) => void;
 }) {
   const theme = useTheme();
 
@@ -69,7 +77,7 @@ function NavigationSection({
     t(section.title).toLowerCase().includes(searchTerm.toLowerCase());
 
   // Check if any items match the search (recursive)
-  const findMatchingItems = (items) => {
+  const findMatchingItems = (items: any[]): any[] => {
     const matches = [];
     for (const item of items) {
       if (
@@ -179,7 +187,7 @@ function NavigationSection({
       {/* Section Items - Show ALL items if section header matches search */}
       <Collapse in={isExpanded && open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          {itemsToShow.map((item) => (
+          {itemsToShow.map((item: any) => (
             <NavigationItem
               key={item.path || item.title}
               open={open}

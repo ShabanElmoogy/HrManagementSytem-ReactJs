@@ -1,8 +1,17 @@
 /* eslint-disable react/prop-types */
+import React from "react";
 import { Box, Typography, IconButton, Tabs, Tab, Badge } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@mui/material";
+
+interface NotificationsHeaderProps {
+  tabValue: number;
+  handleTabChange: (event: React.SyntheticEvent, newValue: number) => void;
+  unreadCount: number;
+  onClose: () => void;
+  isMobileView: boolean;
+}
 
 const NotificationsHeader = ({
   tabValue,
@@ -10,7 +19,7 @@ const NotificationsHeader = ({
   unreadCount,
   onClose,
   isMobileView,
-}) => {
+}: NotificationsHeaderProps) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const isRtl = theme.direction === "rtl";
@@ -29,7 +38,7 @@ const NotificationsHeader = ({
         }}
       >
         <Typography variant="h6" fontWeight="bold">
-          {t("notifications") || "Notifications"}
+          {t("menu.notifications") || "Notifications"}
         </Typography>
         <IconButton size="small" onClick={onClose} aria-label="more options">
           <MoreHorizIcon />
@@ -42,11 +51,11 @@ const NotificationsHeader = ({
         variant="fullWidth"
         sx={{ borderBottom: 1, borderColor: "divider" }}
       >
-        <Tab label={t("all") || "All"} id="all-tab" />
+        <Tab label={t("menu.all") || "All"} id="all-tab" />
         <Tab
           label={
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              {t("unread") || "Unread"}
+              {t("menu.unread") || "Unread"}
               {unreadCount > 0 && (
                 <Badge
                   badgeContent={unreadCount}
