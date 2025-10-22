@@ -5,11 +5,6 @@ import type { FileItem, UploadResult } from "../types/File";
 
 const BASE = "api/v1/Files";
 
-// Clean axios instance for file downloads without middleware
-const downloadClient = axios.create({
-  baseURL: process.env.VITE_API_URL || '',
-});
-
 /**
  * File upload configuration
  */
@@ -23,7 +18,14 @@ const FILE_CONFIG = {
  *
  * Handles all file-related API operations with validation and error handling
  */
-export class FileService {
+class FileService {
+  private client;
+
+  constructor() {
+    this.client = axios.create({
+      baseURL: process.env.VITE_API_URL || '',
+    });
+  }
   /**
     * Fetch all files
     */
@@ -49,10 +51,10 @@ export class FileService {
   /**
     * Download file by stored filename
     */
-  static async downloadFile( storedFileName: string, fileName: string): Promise<{ success: boolean; errorResponse?: any }> {
+  async downloadFile(storedFileName: string, fileName: string): Promise<{ success: boolean; errorResponse?: any }> {
     try {
-      const response = await downloadClient.get(
-        `${BASE}/download/${storedFileName}`,
+      const response = await this.client.get(
+        `${BASE}/${storedFileName}`,
         {
           responseType: "blob",
         }
@@ -146,4 +148,6 @@ export class FileService {
   }
 }
 
-export default FileService;
+const fileService = new FileService();
+export default fileService;
+export { FileService };

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient, UseMutationOptions, UseQueryOptions } from "@tanstack/react-query";
-import FileService from "../services/fileService";
+import fileService, { FileService } from "../services/fileService";
 import type { FileItem, UploadResult } from "../types/File";
 
 // Query Keys
@@ -52,7 +52,7 @@ export const useUploadFiles = (options?: UseMutationOptions<UploadResult, Error,
 export const useDownloadFile = (options?: UseMutationOptions<void, Error, {storedFileName: string, fileName: string}>) =>
   useMutation({
     mutationFn: async ({storedFileName, fileName}) => {
-      const result = await FileService.downloadFile(storedFileName, fileName);
+      const result = await fileService.downloadFile(storedFileName, fileName);
       if (!result.success) {
         throw new Error(result.errorResponse?.errors?.general?.[0] || "Download failed");
       }
