@@ -3,11 +3,12 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import fileService from "../../services/fileService";
 
-export type MediaType = "iframe" | "image" | "video" | "audio" | "excel" | "unsupported";
+export type MediaType = "iframe" | "image" | "video" | "audio" | "excel" | "word" | "txt" | "unsupported";
 
 const allowedIframeExtensions = ["pdf"] as const;
 const excelExtensions = ["xlsx", "xls", "csv"] as const;
 const wordExtensions = ["docx", "doc"] as const;
+const txtExtensions = ["txt"] as const;
 const imageExtensions = [
   "jpg",
   "jpeg",
@@ -69,6 +70,9 @@ export default function useMediaViewer(): UseMediaViewerReturn {
     }
     if (wordExtensions.includes(ext as typeof wordExtensions[number])) {
       return "word";
+    }
+    if (txtExtensions.includes(ext as typeof txtExtensions[number])) {
+      return "txt";
     }
 
     return "unsupported";

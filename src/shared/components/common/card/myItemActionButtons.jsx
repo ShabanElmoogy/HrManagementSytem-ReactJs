@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Box, Tooltip, IconButton } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+import { Edit, Delete, Visibility } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 
 const MyItemActionButtons = ({
@@ -11,6 +11,7 @@ const MyItemActionButtons = ({
   justifyContent = "center",
   actionButtonSize = "normal",
   direction = "horizontal", // New prop with default "horizontal"
+  onView, // New prop for view action
 }) => {
   const { t } = useTranslation();
 
@@ -23,6 +24,20 @@ const MyItemActionButtons = ({
         flexDirection: direction === "vertical" ? "column" : "row", // Apply flexDirection based on direction prop
       }}
     >
+      {onView && item?.type === 'txt' && (
+        <Tooltip title={t("view")} arrow>
+          <IconButton
+            size={actionButtonSize}
+            color="info"
+            onClick={(e) => {
+              e.stopPropagation();
+              onView(item);
+            }}
+          >
+            <Visibility fontSize={actionButtonSize} />
+          </IconButton>
+        </Tooltip>
+      )}
       <Tooltip title={t("edit")} arrow>
         <IconButton
           size={actionButtonSize}

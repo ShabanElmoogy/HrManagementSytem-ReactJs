@@ -124,9 +124,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ mediaUrl, onError, onBack }) 
         show={showControls}
         onDownload={handleDownload}
         onPip={handlePictureInPicture}
-        onOpenTimeMarks={() => setShowTimeMarks(true)}
         sidebarActive={showSidebar}
         onToggleSidebar={() => setShowSidebar(!showSidebar)}
+        onBack={onBack}
       />
 
       {/* Bottom Controls */}

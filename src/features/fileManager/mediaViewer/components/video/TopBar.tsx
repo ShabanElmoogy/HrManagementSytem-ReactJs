@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { FileDownload as DownloadIcon, PictureInPicture as PipIcon, Bookmark as BookmarkIcon, MenuOpen as SidebarIcon } from '@mui/icons-material';
+import { FileDownload as DownloadIcon, PictureInPicture as PipIcon, MenuOpen as SidebarIcon, ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 
 const TopControlsOverlay = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -22,15 +22,24 @@ interface TopBarProps {
   show: boolean;
   onDownload: () => void;
   onPip: () => void;
-  onOpenTimeMarks: () => void;
   sidebarActive: boolean;
   onToggleSidebar: () => void;
+  onBack?: () => void;
 }
 
-export const TopBar: React.FC<TopBarProps> = ({ title, show, onDownload, onPip, onOpenTimeMarks, sidebarActive, onToggleSidebar }) => {
+export const TopBar: React.FC<TopBarProps> = ({ title, show, onDownload, onPip, sidebarActive, onToggleSidebar, onBack }) => {
   return (
     <TopControlsOverlay className="controls-overlay" sx={{ opacity: show ? 1 : 0 }}>
-      <Typography sx={{ color: '#fff', fontWeight: 600, fontSize: '1rem' }}>{title}</Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        {onBack && (
+          <Tooltip title="Back">
+            <IconButton onClick={onBack} sx={{ color: '#fff', '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' } }}>
+              <ArrowBackIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+        <Typography sx={{ color: '#fff', fontWeight: 600, fontSize: '1rem' }}>{title}</Typography>
+      </Box>
       <Box sx={{ display: 'flex', gap: 1 }}>
         <Tooltip title="Download">
           <IconButton onClick={onDownload} sx={{ color: '#fff', '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' } }}>
@@ -40,11 +49,6 @@ export const TopBar: React.FC<TopBarProps> = ({ title, show, onDownload, onPip, 
         <Tooltip title="Picture in Picture">
           <IconButton onClick={onPip} sx={{ color: '#fff', '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' } }}>
             <PipIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Time Marks">
-          <IconButton onClick={onOpenTimeMarks} sx={{ color: '#fff', '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' } }}>
-            <BookmarkIcon />
           </IconButton>
         </Tooltip>
         <Tooltip title="Notes & Bookmarks">

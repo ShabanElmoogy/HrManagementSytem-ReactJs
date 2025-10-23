@@ -8,6 +8,7 @@ import ImageViewer from "./ImageViewer";
 import ExcelViewer from "./ExcelViewer";
 import PdfViewer from "./PdfViewer";
 import WordViewer from "./WordViewer";
+import TxtViewer from "./TxtViewer";
 import MediaErrorView from "./MediaErrorView";
 
 const MediaContent: React.FC<MediaContentProps> = ({
@@ -54,6 +55,9 @@ const MediaContent: React.FC<MediaContentProps> = ({
 
     case "word":
       return <WordViewer mediaUrl={mediaUrl} onError={onError} onBack={onBack} />;
+
+    case "txt":
+      return <TxtViewer fileUrl={mediaUrl} fileName={fileName} onError={onError} onBack={onBack} />;
 
     default:
       return null;

@@ -25,6 +25,7 @@ export const VIEWABLE_EXTENSIONS = [
   "csv",
   "docx",
   "doc",
+  "txt",
 ] as const;
 
 // Map extension to icon and colors
