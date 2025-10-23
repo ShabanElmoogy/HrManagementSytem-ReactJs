@@ -17,6 +17,7 @@ import {
   Forward10 as Forward10Icon,
   ArrowBack as ArrowBackIcon,
   PictureInPicture as PictureInPictureIcon,
+  Repeat as RepeatIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 
@@ -24,6 +25,7 @@ interface AudioPlayerProps {
   mediaUrl: string;
   onError: (message: string) => void;
   onBack?: () => void;
+  isMinimal?: boolean;
 }
 
 const formatTime = (seconds: number): string => {
@@ -33,7 +35,7 @@ const formatTime = (seconds: number): string => {
   return `${mins}:${secs.toString().padStart(2, "0")}`;
 };
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack }) => {
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack, isMinimal = false }) => {
   const { t } = useTranslation();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -42,6 +44,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack }) 
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const [isPictureInPicture, setIsPictureInPicture] = useState(false);
+  const [isRepeat, setIsRepeat] = useState(false);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -49,7 +52,14 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack }) 
 
     const handleLoadedMetadata = () => setDuration(audio.duration);
     const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
-    const handleEnded = () => setIsPlaying(false);
+    const handleEnded = () => {
+      if (isRepeat) {
+        audio.currentTime = 0;
+        audio.play();
+      } else {
+        setIsPlaying(false);
+      }
+    };
     const handleError = () => onError(t("media.failedToLoadAudio"));
 
     audio.addEventListener("loadedmetadata", handleLoadedMetadata);
@@ -63,7 +73,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack }) 
       audio.removeEventListener("ended", handleEnded);
       audio.removeEventListener("error", handleError);
     };
-  }, [onError, t]);
+  }, [onError, t, isRepeat]);
 
   const handlePlayPause = () => {
     if (audioRef.current) {
@@ -113,13 +123,49 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack }) 
     }
   };
 
-  const handlePictureInPicture = () => {
-    setIsPictureInPicture(!isPictureInPicture);
-  };
-
   const handleBack = () => {
     onBack?.();
   };
+
+  if (isMinimal) {
+    return (
+      <Card sx={{ 
+        position: "fixed", 
+        bottom: 20, 
+        right: 20, 
+        width: 350, 
+        height: 60, 
+        zIndex: 99999,
+        display: "flex",
+        alignItems: "center",
+        p: 1,
+        gap: 1,
+        boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+        backgroundColor: "background.paper"
+      }}>
+        <IconButton onClick={handlePlayPause} size="small">
+          {isPlaying ? <PauseIcon /> : <PlayIcon />}
+        </IconButton>
+        <Box sx={{ flex: 1 }}>
+          <Slider
+            value={currentTime}
+            onChange={handleProgressChange}
+            max={duration || 100}
+            size="small"
+          />
+        </Box>
+        <Typography variant="caption" sx={{ minWidth: 40 }}>
+          {formatTime(currentTime)}
+        </Typography>
+        <IconButton onClick={handleMuteToggle} size="small">
+          {isMuted ? <VolumeOffIcon /> : <VolumeUpIcon />}
+        </IconButton>
+        <audio ref={audioRef} src={mediaUrl}>
+          {t("media.audioNotSupported")}
+        </audio>
+      </Card>
+    );
+  }
 
   if (isPictureInPicture) {
     return (
@@ -129,10 +175,12 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack }) 
         right: 20, 
         width: 300, 
         height: 80, 
-        zIndex: 1000,
+        zIndex: 99999,
         display: "flex",
         alignItems: "center",
-        p: 1
+        p: 1,
+        boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+        backgroundColor: "background.paper"
       }}>
         <IconButton onClick={handlePlayPause} size="small">
           {isPlaying ? <PauseIcon /> : <PlayIcon />}
@@ -166,9 +214,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack }) 
       <Box sx={{ display: "flex", justifyContent: "space-between", p: 1, borderBottom: 1, borderColor: "divider" }}>
         <IconButton onClick={handleBack} size="small">
           <ArrowBackIcon />
-        </IconButton>
-        <IconButton onClick={handlePictureInPicture} size="small">
-          <PictureInPictureIcon />
         </IconButton>
       </Box>
 
@@ -219,7 +264,14 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack }) 
 
         {/* All Controls in One Row */}
         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2 }}>
-          {/* Playback Controls */}
+          {/* Left - Repeat Button */}
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <IconButton onClick={() => setIsRepeat(!isRepeat)} size="medium" color={isRepeat ? "primary" : "default"}>
+              <RepeatIcon />
+            </IconButton>
+          </Box>
+
+          {/* Center - Playback Controls */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <IconButton onClick={() => handleSkip(-10)} size="medium">
               <Replay10Icon />
@@ -238,7 +290,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack }) 
             </IconButton>
           </Box>
           
-          {/* Volume Control */}
+          {/* Right - Volume Control */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <IconButton onClick={handleMuteToggle} size="small">
               {isMuted ? <VolumeOffIcon /> : <VolumeUpIcon />}

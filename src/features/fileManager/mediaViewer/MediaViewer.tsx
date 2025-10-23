@@ -1,5 +1,5 @@
 // cspell:words nodownload
-import { Alert, Typography, Fade } from "@mui/material";
+import { Alert, Typography, Fade, Box } from "@mui/material";
 import MediaContent from "./components/MediaContent";
 import { Container, MediaContainer } from "./components/Containers";
 import { BusyOverlay } from "./components/Overlays";
@@ -34,17 +34,19 @@ const MediaViewer = () => {
   );
 
   return (
-    <Container>
-      <BusyOverlay show={isLoading} />
+    <Box sx={{ display: 'flex', height: 'calc(100vh - 120px)', width: '100%'}}>
+      <Container sx={{ flex: 1 }}>
+        <BusyOverlay show={isLoading} />
 
-      {!isLoading && (
-        <Fade in={true}>
-          <MediaContainer>
-            {renderMedia()}
-          </MediaContainer>
-        </Fade>
-      )}
-    </Container>
+        {!isLoading && (
+          <Fade in={true}>
+            <MediaContainer>
+              {renderMedia()}
+            </MediaContainer>
+          </Fade>
+        )}
+      </Container>
+    </Box>
   );
 };
 

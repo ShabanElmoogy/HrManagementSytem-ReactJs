@@ -1,7 +1,5 @@
 // cspell:words nodownload
 import React from "react";
-import { Card, CardContent, Typography, Box } from "@mui/material";
-import { Error as ErrorIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { MediaContentProps } from "../types/mediaViewer.type";
 import AudioPlayer from "./AudioPlayer";
@@ -46,10 +44,10 @@ const MediaContent: React.FC<MediaContentProps> = ({
       return <ImageViewer mediaUrl={mediaUrl} onError={onError} onBack={onBack} />;
 
     case "video":
-      return <VideoPlayer mediaUrl={mediaUrl} onError={onError} />;
+      return <VideoPlayer mediaUrl={mediaUrl} onError={onError} onBack={onBack} />;
 
     case "audio":
-      return <AudioPlayer mediaUrl={mediaUrl} onError={onError} />;
+      return <AudioPlayer mediaUrl={mediaUrl} onError={onError} onBack={onBack} />;
 
     case "excel":
       return <ExcelViewer mediaUrl={mediaUrl} onError={onError} />;

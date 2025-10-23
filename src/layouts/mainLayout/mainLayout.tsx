@@ -14,6 +14,8 @@ import { useThemeSettings } from "../../theme/useThemeSettings";
 import SideBar from "../components/sidebar/sideBar";
 import SidebarContext from "../components/sidebar/sidebarContext"; // Import context
 import TopBar from "../components/topBar/topBar";
+import { MediaPlayerProvider } from "../../features/fileManager/contexts/MediaPlayerContext";
+import PersistentMediaPlayer from "../../features/fileManager/components/PersistentMediaPlayer";
 // NotificationProvider removed - using simplified notification system
 
 const DrawerHeader = styled("div")(({ theme }) => ({
@@ -48,28 +50,33 @@ const MainLayout = () => {
   return (
     <ThemeProvider theme={theme}>
       <CacheProvider value={cacheProvider}>
-        <SidebarContext.Provider value={{ open, setOpen: handleSetOpen }}>
-          <Box sx={{ display: "flex", width: "100%", overflow: "hidden" }}>
-            <CssBaseline />
+        <MediaPlayerProvider>
+          <SidebarContext.Provider value={{ open, setOpen: handleSetOpen }}>
+            <Box sx={{ display: "flex", width: "100%", overflow: "hidden" }}>
+              <CssBaseline />
 
-            <TopBar
-              open={open}
-              handleDrawerOpen={handleSetOpen}
-              setMode={setMode}
-              direction={direction}
-              toggleDirection={toggleDirection}
-              isAuthenticated={true}
-            />
+              <TopBar
+                open={open}
+                handleDrawerOpen={handleSetOpen}
+                setMode={setMode}
+                direction={direction}
+                toggleDirection={toggleDirection}
+                isAuthenticated={true}
+              />
 
-            <SideBar open={open} handleDrawerClose={handleSetClosed} />
+              <SideBar open={open} handleDrawerClose={handleSetClosed} />
 
-            <Box component="main" sx={{ flexGrow: 1, m: 3 }}>
-              <DrawerHeader />
-              <Outlet />
+              <Box component="main" sx={{ flexGrow: 1, m: 3 }}>
+                <DrawerHeader />
+                <Outlet />
+              </Box>
             </Box>
-          </Box>
-        </SidebarContext.Provider>
-        <ToastProvider position="top-right" children={""} />
+            
+            {/* Global persistent audio player */}
+            <PersistentMediaPlayer />
+          </SidebarContext.Provider>
+          <ToastProvider position="top-right" children={""} />
+        </MediaPlayerProvider>
       </CacheProvider>
     </ThemeProvider>
   );

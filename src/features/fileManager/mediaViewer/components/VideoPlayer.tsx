@@ -23,13 +23,18 @@ import {
   Speed as SpeedIcon,
   SkipNext as SkipNextIcon,
   SkipPrevious as SkipPreviousIcon,
+  Bookmark as BookmarkIcon,
+  MenuOpen as SidebarIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { styled } from "@mui/material/styles";
+import TimeMarks from './TimeMarks';
+import VideoSidebar from './VideoSidebar';
 
 interface VideoPlayerProps {
   mediaUrl: string;
   onError: (message: string) => void;
+  onBack?: () => void;
 }
 
 const VideoContainer = styled(Box)(({ theme }) => ({
@@ -104,7 +109,7 @@ const formatTime = (seconds: number): string => {
   return `${mins}:${secs.toString().padStart(2, "0")}`;
 };
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ mediaUrl, onError }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ mediaUrl, onError, onBack }) => {
   const { t } = useTranslation();
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -118,7 +123,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ mediaUrl, onError }) => {
   const [showControls, setShowControls] = useState(true);
   const [playbackRate, setPlaybackRate] = useState(1);
   const [repeatMode, setRepeatMode] = useState<"off" | "all" | "one">("off");
-  const controlsTimeoutRef = useRef<NodeJS.Timeout>();
+  const [showTimeMarks, setShowTimeMarks] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
+  const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -284,6 +291,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ mediaUrl, onError }) => {
       onMouseLeave={() => isPlaying && setShowControls(false)}
       sx={{
         maxHeight: isFullscreen ? "100vh" : "80vh",
+        marginRight: showSidebar ? "350px" : 0,
+        transition: "margin-right 0.3s ease",
       }}
     >
       <VideoElement
@@ -369,6 +378,28 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ mediaUrl, onError }) => {
               }}
             >
               <PipIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Time Marks">
+            <IconButton
+              onClick={() => setShowTimeMarks(true)}
+              sx={{
+                color: "#fff",
+                "&:hover": { backgroundColor: "rgba(255,255,255,0.1)" },
+              }}
+            >
+              <BookmarkIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Notes & Bookmarks">
+            <IconButton
+              onClick={() => setShowSidebar(!showSidebar)}
+              sx={{
+                color: showSidebar ? "#1976d2" : "#fff",
+                "&:hover": { backgroundColor: "rgba(255,255,255,0.1)" },
+              }}
+            >
+              <SidebarIcon />
             </IconButton>
           </Tooltip>
         </Box>
@@ -592,6 +623,28 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ mediaUrl, onError }) => {
           </Box>
         </Box>
       </ControlsOverlay>
+      
+      <TimeMarks
+        currentTime={currentTime}
+        onSeek={(time) => {
+          if (videoRef.current) {
+            videoRef.current.currentTime = time;
+          }
+        }}
+        isOpen={showTimeMarks}
+        onClose={() => setShowTimeMarks(false)}
+      />
+      
+      <VideoSidebar
+        open={showSidebar}
+        onClose={() => setShowSidebar(false)}
+        currentTime={currentTime}
+        onSeek={(time) => {
+          if (videoRef.current) {
+            videoRef.current.currentTime = time;
+          }
+        }}
+      />
     </VideoContainer>
   );
 };

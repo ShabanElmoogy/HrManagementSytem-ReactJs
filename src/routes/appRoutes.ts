@@ -11,6 +11,7 @@ export interface ExtrasRoutes {
   filesManager: string;
   mediaViewer: string;
   appointments: string;
+  bookmarkTest: string;
 }
 
 export interface AdvancedToolsRoutes {
@@ -166,6 +167,7 @@ export const appRoutes: AppRoutes = {
     filesManager: "extras-filesmanager",
     mediaViewer: "extras-show-media/:id/:fileExtension/:storedFileName/:fileName",
     appointments: "extras-appointments",
+    bookmarkTest: "extras-bookmark-test",
   },
 
   advancedTools: {
