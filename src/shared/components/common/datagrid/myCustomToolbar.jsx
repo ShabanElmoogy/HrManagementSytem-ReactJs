@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { MyOverlayLoader } from "@/shared/components";
 import { usePdfExport, useServerExport, useSnackbar } from "@/shared/hooks";
-import { Add, SaveAlt as ExportIcon } from "@mui/icons-material";
+import { Add, SaveAlt as ExportIcon, ViewList, ViewModule } from "@mui/icons-material";
 import {
   Button,
   Divider,
@@ -27,7 +27,9 @@ export const MyCustomToolbar = ({
   addNewRow,
   fileName = "Export",
   reportPdfHeader,
-  excludeColumnsFromExport = [],  
+  excludeColumnsFromExport = [],
+  viewMode = "list",
+  onViewModeChange,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -108,6 +110,27 @@ export const MyCustomToolbar = ({
         <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
+
+        {/* View Mode Toggle */}
+        {onViewModeChange && (
+          <>
+            <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+            <IconButton
+              onClick={() => onViewModeChange("list")}
+              color={viewMode === "list" ? "primary" : "default"}
+              size="small"
+            >
+              <ViewList />
+            </IconButton>
+            <IconButton
+              onClick={() => onViewModeChange("grid")}
+              color={viewMode === "grid" ? "primary" : "default"}
+              size="small"
+            >
+              <ViewModule />
+            </IconButton>
+          </>
+        )}
 
         {/* Custom Export Dropdown */}
         <IconButton

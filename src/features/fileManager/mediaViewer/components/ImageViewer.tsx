@@ -6,6 +6,7 @@ import {
   Typography,
   Paper,
   Grid,
+  Toolbar,
 } from "@mui/material";
 import {
   ZoomIn as ZoomInIcon,
@@ -17,113 +18,22 @@ import {
   Refresh as ResetIcon,
   Flip as FlipHIcon,
   SwapVert as FlipVIcon,
-  Brightness6 as BrightnessIcon,
-  Contrast as ContrastIcon,
-  Info as InfoIcon,
-  FitScreen as FitScreenIcon,
-  CenterFocusStrong as CenterIcon,
+  ArrowBack,
 } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import { styled } from "@mui/material/styles";
+import { useSidebar } from "@/layouts/components/sidebar/sidebarContext";
 
 interface ImageViewerProps {
   mediaUrl: string;
   onError: (message: string) => void;
+  onBack?: () => void;
 }
 
-const ImageContainer = styled(Box)(({ theme }) => ({
-  width: "100%",
-  maxWidth: "100%",
-  position: "relative",
-  backgroundColor: "#f5f5f5",
-  borderRadius: theme.spacing(1.5),
-  overflow: "hidden",
-  boxShadow: theme.shadows[8],
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  minHeight: "400px",
-  maxHeight: "80vh",
-  "&:hover .controls-overlay": {
-    opacity: 1,
-  },
-}));
 
-const ImageWrapper = styled(Box)({
-  position: "relative",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  width: "100%",
-  height: "100%",
-  overflow: "auto",
-  cursor: "grab",
-  "&:active": {
-    cursor: "grabbing",
-  },
-});
 
-const StyledImage = styled("img")({
-  maxWidth: "100%",
-  maxHeight: "100%",
-  objectFit: "contain",
-  userSelect: "none",
-  transition: "transform 0.3s ease",
-});
-
-const ControlsOverlay = styled(Paper)(({ theme }) => ({
-  position: "absolute",
-  bottom: theme.spacing(2),
-  left: "50%",
-  transform: "translateX(-50%)",
-  display: "flex",
-  alignItems: "center",
-  gap: theme.spacing(0.5),
-  padding: theme.spacing(1),
-  backgroundColor: "rgba(0, 0, 0, 0.7)",
-  backdropFilter: "blur(10px)",
-  borderRadius: theme.spacing(1.5),
-  opacity: 0,
-  transition: "opacity 0.3s ease",
-  zIndex: 10,
-}));
-
-const TopControls = styled(Paper)(({ theme }) => ({
-  position: "absolute",
-  top: theme.spacing(2),
-  right: theme.spacing(2),
-  display: "flex",
-  alignItems: "center",
-  gap: theme.spacing(0.5),
-  padding: theme.spacing(1),
-  backgroundColor: "rgba(0, 0, 0, 0.7)",
-  backdropFilter: "blur(10px)",
-  borderRadius: theme.spacing(1.5),
-  zIndex: 10,
-}));
-
-const InfoBox = styled(Paper)(({ theme }) => ({
-  position: "absolute",
-  top: theme.spacing(2),
-  left: theme.spacing(2),
-  padding: theme.spacing(1.5),
-  backgroundColor: "rgba(0, 0, 0, 0.7)",
-  backdropFilter: "blur(10px)",
-  borderRadius: theme.spacing(1.5),
-  color: "#fff",
-  zIndex: 10,
-}));
-
-const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return "0 Bytes";
-  const k = 1024;
-  const sizes = ["Bytes", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
-};
-
-const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError }) => {
+const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError, onBack }) => {
   const { t } = useTranslation();
+  const { open: sidebarOpen } = useSidebar();
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [zoom, setZoom] = useState(100);
@@ -251,6 +161,11 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError }) => {
     link.click();
   };
 
+  const handleBack = () => {
+    if (onBack) onBack();
+    else window.history.back();
+  };
+
   const handleMouseDown = (e: React.MouseEvent) => {
     if (zoom <= 100) return;
     setIsDragging(true);
@@ -306,353 +221,206 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError }) => {
   }, []);
 
   return (
-    <ImageContainer
-      ref={containerRef}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseLeave}
-      onWheel={handleWheel}
+    <Paper
+      elevation={3}
       sx={{
-        maxHeight: isFullscreen ? "100vh" : "80vh",
+        width: sidebarOpen ? "calc(100vw - 180px)" : "calc(100vw - 90px)",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        bgcolor: "background.default",
       }}
     >
-      {/* Zoom Info - Show when zooming */}
-      {showZoomInfo && (
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            backgroundColor: "rgba(0,0,0,0.8)",
-            color: "#fff",
-            padding: 2,
-            borderRadius: 2,
-            zIndex: 15,
-            opacity: showZoomInfo ? 1 : 0,
-            transition: "opacity 0.3s ease",
-          }}
-        >
-          <Typography variant="h6" sx={{ fontWeight: 600, textAlign: "center" }}>
-            {zoom}%
-          </Typography>
-        </Box>
-      )}
+      {/* Toolbar */}
+      <Toolbar
+        variant="dense"
+        sx={{
+          bgcolor: "background.paper",
+          borderBottom: "1px solid",
+          borderColor: "divider",
+          minHeight: 48,
+          mt: 5,
+          px: 2,
+        }}
+      >
+        <Grid container sx={{ width: "100%", alignItems: "center" }}>
+          <Grid size={{ xs: 4 }} sx={{ display: "flex", justifyContent: "flex-start" }}>
+            <Tooltip title="Back">
+              <IconButton size="small" onClick={handleBack}>
+                <ArrowBack />
+              </IconButton>
+            </Tooltip>
+          </Grid>
 
-      {/* Image Info Panel */}
-      {showImageInfo && (
-        <InfoBox elevation={0}>
-          <Typography variant="subtitle2" sx={{ color: "#fff", fontWeight: 600, mb: 1 }}>
-            Image Info
-          </Typography>
-          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.9)", display: "block" }}>
-            Size: {imageInfo.width} × {imageInfo.height}px
-          </Typography>
-          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.9)", display: "block" }}>
-            Zoom: {zoom}%
-          </Typography>
-          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.9)", display: "block" }}>
-            Rotation: {rotation}°
-          </Typography>
-          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.9)", display: "block" }}>
-            Brightness: {brightness}%
-          </Typography>
-          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.9)", display: "block" }}>
-            Contrast: {contrast}%
-          </Typography>
-        </InfoBox>
-      )}
+          <Grid size={{ xs: 4 }} sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 0.5 }}>
+            <Box sx={{ 
+              display: "flex", 
+              alignItems: "center", 
+              gap: 0.5, 
+              bgcolor: "action.hover", 
+              borderRadius: 2, 
+              px: 1, 
+              py: 0.5 
+            }}>
+              <Tooltip title="Zoom Out">
+                <IconButton size="small" onClick={handleZoomOut} disabled={zoom <= MIN_ZOOM}>
+                  <ZoomOutIcon />
+                </IconButton>
+              </Tooltip>
+              
+              <Typography variant="body2" sx={{ minWidth: 50, textAlign: "center", fontWeight: 600 }}>
+                {zoom}%
+              </Typography>
+              
+              <Tooltip title="Zoom In">
+                <IconButton size="small" onClick={handleZoomIn} disabled={zoom >= MAX_ZOOM}>
+                  <ZoomInIcon />
+                </IconButton>
+              </Tooltip>
+            </Box>
+            
+            <Tooltip title="Rotate 90°">
+              <IconButton size="small" onClick={handleRotate} sx={{ bgcolor: "action.hover" }}>
+                <RotateRightIcon />
+              </IconButton>
+            </Tooltip>
+            
+            <Tooltip title="Reset All">
+              <IconButton size="small" onClick={handleReset} sx={{ bgcolor: "action.hover" }}>
+                <ResetIcon />
+              </IconButton>
+            </Tooltip>
+          </Grid>
 
-      {/* Image Wrapper */}
-      <ImageWrapper>
-        <StyledImage
+          <Grid size={{ xs: 4 }} sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 0.5 }}>
+            <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
+              <Tooltip title="Flip Horizontal">
+                <IconButton 
+                  size="small" 
+                  onClick={handleFlipH} 
+                  sx={{ 
+                    bgcolor: flipH ? "primary.main" : "action.hover",
+                    color: flipH ? "primary.contrastText" : "inherit",
+                    "&:hover": { bgcolor: flipH ? "primary.dark" : "action.selected" }
+                  }}
+                >
+                  <FlipHIcon />
+                </IconButton>
+              </Tooltip>
+              
+              <Tooltip title="Flip Vertical">
+                <IconButton 
+                  size="small" 
+                  onClick={handleFlipV} 
+                  sx={{ 
+                    bgcolor: flipV ? "primary.main" : "action.hover",
+                    color: flipV ? "primary.contrastText" : "inherit",
+                    "&:hover": { bgcolor: flipV ? "primary.dark" : "action.selected" }
+                  }}
+                >
+                  <FlipVIcon />
+                </IconButton>
+              </Tooltip>
+            </Box>
+            
+            <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
+              <Tooltip title="Brightness -">
+                <IconButton 
+                  size="small" 
+                  onClick={() => adjustBrightness(-10)}
+                  sx={{ bgcolor: "action.hover", minWidth: 32 }}
+                >
+                  <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>B-</Typography>
+                </IconButton>
+              </Tooltip>
+              
+              <Tooltip title="Brightness +">
+                <IconButton 
+                  size="small" 
+                  onClick={() => adjustBrightness(10)}
+                  sx={{ bgcolor: "action.hover", minWidth: 32 }}
+                >
+                  <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>B+</Typography>
+                </IconButton>
+              </Tooltip>
+              
+              <Tooltip title="Contrast -">
+                <IconButton 
+                  size="small" 
+                  onClick={() => adjustContrast(-10)}
+                  sx={{ bgcolor: "action.hover", minWidth: 32 }}
+                >
+                  <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>C-</Typography>
+                </IconButton>
+              </Tooltip>
+              
+              <Tooltip title="Contrast +">
+                <IconButton 
+                  size="small" 
+                  onClick={() => adjustContrast(10)}
+                  sx={{ bgcolor: "action.hover", minWidth: 32 }}
+                >
+                  <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>C+</Typography>
+                </IconButton>
+              </Tooltip>
+            </Box>
+            
+            <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
+              <Tooltip title="Download">
+                <IconButton size="small" onClick={handleDownload} sx={{ bgcolor: "action.hover" }}>
+                  <DownloadIcon />
+                </IconButton>
+              </Tooltip>
+              
+              <Tooltip title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}>
+                <IconButton size="small" onClick={handleFullscreen} sx={{ bgcolor: "action.hover" }}>
+                  {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+                </IconButton>
+              </Tooltip>
+            </Box>
+          </Grid>
+        </Grid>
+      </Toolbar>
+
+      {/* Image Content */}
+      <Box
+        ref={containerRef}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
+        onWheel={handleWheel}
+        sx={{
+          flex: 1,
+          overflow: "auto",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          bgcolor: "background.default",
+          position: "relative",
+          cursor: zoom > 100 ? "grab" : "default",
+          "&:active": {
+            cursor: zoom > 100 ? "grabbing" : "default",
+          },
+        }}
+      >
+        <img
           ref={imageRef}
           src={mediaUrl}
           alt="Viewer"
           style={{
+            maxWidth: "100%",
+            maxHeight: "100%",
+            objectFit: "contain",
+            userSelect: "none",
             transform: `scale(${zoom / 100}) rotate(${rotation}deg) scaleX(${flipH ? -1 : 1}) scaleY(${flipV ? -1 : 1})`,
             filter: `brightness(${brightness}%) contrast(${contrast}%)`,
+            transition: "transform 0.3s ease",
           }}
           onError={() => onError(t("media.failedToLoadImage"))}
         />
-      </ImageWrapper>
-
-      {/* Top Controls */}
-      <TopControls elevation={0}>
-        <Tooltip title="Image Info">
-          <IconButton
-            size="small"
-            onClick={handleToggleInfo}
-            sx={{
-              color: showImageInfo ? "#1976d2" : "#fff",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.15)",
-              },
-            }}
-          >
-            <InfoIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title={t("media.download")}>
-          <IconButton
-            size="small"
-            onClick={handleDownload}
-            sx={{
-              color: "#fff",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.15)",
-              },
-            }}
-          >
-            <DownloadIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title={isFullscreen ? t("media.exitFullscreen") : t("media.fullscreen")}>
-          <IconButton
-            size="small"
-            onClick={handleFullscreen}
-            sx={{
-              color: "#fff",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.15)",
-              },
-            }}
-          >
-            {isFullscreen ? (
-              <FullscreenExitIcon fontSize="small" />
-            ) : (
-              <FullscreenIcon fontSize="small" />
-            )}
-          </IconButton>
-        </Tooltip>
-      </TopControls>
-
-      {/* Bottom Controls */}
-      <ControlsOverlay
-        elevation={0}
-        sx={{
-          opacity: showControls ? 1 : 0,
-          transition: "opacity 0.3s ease",
-        }}
-      >
-        {/* Zoom Out */}
-        <Tooltip title={`${t("media.zoomOut")} (Scroll)`}>
-          <IconButton
-            size="small"
-            onClick={handleZoomOut}
-            disabled={zoom <= MIN_ZOOM}
-            sx={{
-              color: "#fff",
-              transition: "all 0.3s ease",
-              "&:hover:not(:disabled)": {
-                transform: "scale(1.15)",
-              },
-            }}
-          >
-            <ZoomOutIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-
-        {/* Zoom Display */}
-        <Typography
-          variant="caption"
-          sx={{
-            color: "#fff",
-            minWidth: "45px",
-            textAlign: "center",
-            fontWeight: 600,
-          }}
-        >
-          {zoom}%
-        </Typography>
-
-        {/* Zoom In */}
-        <Tooltip title={`${t("media.zoomIn")} (Scroll)`}>
-          <IconButton
-            size="small"
-            onClick={handleZoomIn}
-            disabled={zoom >= MAX_ZOOM}
-            sx={{
-              color: "#fff",
-              transition: "all 0.3s ease",
-              "&:hover:not(:disabled)": {
-                transform: "scale(1.15)",
-              },
-            }}
-          >
-            <ZoomInIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-
-        {/* Divider */}
-        <Box sx={{ width: 1, height: 20, backgroundColor: "rgba(255,255,255,0.2)" }} />
-
-        {/* Flip Horizontal */}
-        <Tooltip title="Flip Horizontal">
-          <IconButton
-            size="small"
-            onClick={handleFlipH}
-            sx={{
-              color: flipH ? "#1976d2" : "#fff",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.15)",
-              },
-            }}
-          >
-            <FlipHIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-
-        {/* Flip Vertical */}
-        <Tooltip title="Flip Vertical">
-          <IconButton
-            size="small"
-            onClick={handleFlipV}
-            sx={{
-              color: flipV ? "#1976d2" : "#fff",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.15)",
-              },
-            }}
-          >
-            <FlipVIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-
-        {/* Rotate */}
-        <Tooltip title={`Rotate 90°`}>
-          <IconButton
-            size="small"
-            onClick={handleRotate}
-            sx={{
-              color: "#fff",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.15)",
-              },
-            }}
-          >
-            <RotateRightIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-
-        {/* Divider */}
-        <Box sx={{ width: 1, height: 20, backgroundColor: "rgba(255,255,255,0.2)" }} />
-
-        {/* Brightness Down */}
-        <Tooltip title="Brightness -">
-          <IconButton
-            size="small"
-            onClick={() => adjustBrightness(-10)}
-            sx={{
-              color: "#fff",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.15)",
-              },
-            }}
-          >
-            <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>B-</Typography>
-          </IconButton>
-        </Tooltip>
-
-        {/* Brightness Up */}
-        <Tooltip title="Brightness +">
-          <IconButton
-            size="small"
-            onClick={() => adjustBrightness(10)}
-            sx={{
-              color: "#fff",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.15)",
-              },
-            }}
-          >
-            <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>B+</Typography>
-          </IconButton>
-        </Tooltip>
-
-        {/* Contrast Down */}
-        <Tooltip title="Contrast -">
-          <IconButton
-            size="small"
-            onClick={() => adjustContrast(-10)}
-            sx={{
-              color: "#fff",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.15)",
-              },
-            }}
-          >
-            <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>C-</Typography>
-          </IconButton>
-        </Tooltip>
-
-        {/* Contrast Up */}
-        <Tooltip title="Contrast +">
-          <IconButton
-            size="small"
-            onClick={() => adjustContrast(10)}
-            sx={{
-              color: "#fff",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.15)",
-              },
-            }}
-          >
-            <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>C+</Typography>
-          </IconButton>
-        </Tooltip>
-
-        {/* Divider */}
-        <Box sx={{ width: 1, height: 20, backgroundColor: "rgba(255,255,255,0.2)" }} />
-
-        {/* Fit to Screen */}
-        <Tooltip title="Fit to Screen">
-          <IconButton
-            size="small"
-            onClick={handleFitToScreen}
-            sx={{
-              color: "#fff",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.15)",
-              },
-            }}
-          >
-            <FitScreenIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-
-        {/* Reset */}
-        <Tooltip title="Reset All">
-          <IconButton
-            size="small"
-            onClick={handleReset}
-            sx={{
-              color: "#fff",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.15)",
-              },
-            }}
-          >
-            <ResetIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-      </ControlsOverlay>
-    </ImageContainer>
+      </Box>
+    </Paper>
   );
 };
 

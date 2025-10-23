@@ -1,4 +1,4 @@
-export type MediaType = "iframe" | "image" | "video" | "audio" | "unsupported";
+export type MediaType = "iframe" | "image" | "video" | "audio" | "excel" | "word" | "unsupported";
 
 export interface MediaContentProps {
   mediaType: MediaType;
@@ -6,4 +6,9 @@ export interface MediaContentProps {
   isLoading: boolean;
   getFileExtension: () => string;
   onError: (message: string) => void;
+  onBack?: () => void;
+  fileName?: string;
+  onDownload?: () => void;
+  onRetry?: () => void;
+  error?: string | null;
 }

@@ -478,7 +478,9 @@ const MyDataGrid = ({
   t = (key) => key,
   showNavigationButtons = true,
   onNavigationUpdate = null,
-  excludeColumnsFromExport=[], // New prop to get navigation update function
+  excludeColumnsFromExport=[],
+  viewMode = "list",
+  onViewModeChange,
   ...otherProps
 }) => {
   const theme = useTheme();
@@ -537,6 +539,8 @@ const MyDataGrid = ({
               fileName={fileName}
               reportPdfHeader={reportPdfHeader}
               excludeColumnsFromExport={excludeColumnsFromExport}
+              viewMode={viewMode}
+              onViewModeChange={onViewModeChange}
             />
           ),
           ...(showNavigationButtons && {

@@ -8,52 +8,42 @@ import AudioPlayer from "./AudioPlayer";
 import VideoPlayer from "./VideoPlayer";
 import ImageViewer from "./ImageViewer";
 import ExcelViewer from "./ExcelViewer";
+import PdfViewer from "./PdfViewer";
+import WordViewer from "./WordViewer";
+import MediaErrorView from "./MediaErrorView";
 
 const MediaContent: React.FC<MediaContentProps> = ({
   mediaType,
   mediaUrl,
-  isLoading,
   getFileExtension,
   onError,
+  onBack,
+  fileName,
+  onDownload,
+  onRetry,
+  error,
 }) => {
   const { t } = useTranslation();
 
-  if (mediaType === "unsupported") {
+  if (mediaType === "unsupported" || error) {
     return (
-      <Card sx={{ maxWidth: 600 }}>
-        <CardContent>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-            <ErrorIcon color="error" fontSize="large" />
-            <Typography variant="h6" color="error">
-              {t("media.unsupportedFormat")}
-            </Typography>
-          </Box>
-          <Typography color="text.secondary">
-            {t("media.unsupportedExtension", { extension: getFileExtension() })}
-          </Typography>
-        </CardContent>
-      </Card>
+      <MediaErrorView
+        fileName={fileName}
+        fileExtension={getFileExtension()}
+        onDownload={onDownload}
+        onBack={onBack}
+        onRetry={onRetry}
+        errorMessage={error || t("media.unsupportedFormat")}
+      />
     );
   }
 
   switch (mediaType) {
     case "iframe":
-      return (
-        <iframe
-          id="media-content"
-          src={mediaUrl}
-          style={{ width: "100%", height: "80vh", maxWidth: "1200px" }}
-          title={t("media.documentViewer")}
-          onLoad={() => console.log("Iframe loaded")}
-          onError={(e) => {
-            console.error("Iframe error:", e);
-            onError(t("media.failedToLoadDocument"));
-          }}
-        />
-      );
+      return <PdfViewer mediaUrl={mediaUrl} onError={onError} onBack={onBack} />;
 
     case "image":
-      return <ImageViewer mediaUrl={mediaUrl} onError={onError} />;
+      return <ImageViewer mediaUrl={mediaUrl} onError={onError} onBack={onBack} />;
 
     case "video":
       return <VideoPlayer mediaUrl={mediaUrl} onError={onError} />;
@@ -63,6 +53,9 @@ const MediaContent: React.FC<MediaContentProps> = ({
 
     case "excel":
       return <ExcelViewer mediaUrl={mediaUrl} onError={onError} />;
+
+    case "word":
+      return <WordViewer mediaUrl={mediaUrl} onError={onError} onBack={onBack} />;
 
     default:
       return null;

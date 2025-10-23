@@ -7,6 +7,7 @@ export type MediaType = "iframe" | "image" | "video" | "audio" | "excel" | "unsu
 
 const allowedIframeExtensions = ["pdf"] as const;
 const excelExtensions = ["xlsx", "xls", "csv"] as const;
+const wordExtensions = ["docx", "doc"] as const;
 const imageExtensions = [
   "jpg",
   "jpeg",
@@ -65,6 +66,9 @@ export default function useMediaViewer(): UseMediaViewerReturn {
     }
     if (excelExtensions.includes(ext as typeof excelExtensions[number])) {
       return "excel";
+    }
+    if (wordExtensions.includes(ext as typeof wordExtensions[number])) {
+      return "word";
     }
 
     return "unsupported";

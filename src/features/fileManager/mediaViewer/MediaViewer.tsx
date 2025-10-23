@@ -2,7 +2,7 @@
 import { Alert, Typography, Fade } from "@mui/material";
 import MediaContent from "./components/MediaContent";
 import { Container, MediaContainer } from "./components/Containers";
-import { BackOverlayButton, BusyOverlay } from "./components/Overlays";
+import { BusyOverlay } from "./components/Overlays";
 import useMediaViewer from "./hooks/useMediaViewer";
 
 const MediaViewer = () => {
@@ -13,6 +13,7 @@ const MediaViewer = () => {
     mediaType,
     getFileExtension,
     handleBack,
+    handleDownload,
     setError,
   } = useMediaViewer();
 
@@ -24,24 +25,19 @@ const MediaViewer = () => {
       isLoading={isLoading}
       getFileExtension={getFileExtension}
       onError={(msg) => setError(msg || null)}
+      onBack={handleBack}
+      fileName={`Document.${getFileExtension()}`}
+      onDownload={handleDownload}
+      onRetry={() => window.location.reload()}
+      error={error}
     />
   );
 
   return (
     <Container>
-      <BackOverlayButton onBack={handleBack} />
       <BusyOverlay show={isLoading} />
 
-      {error && !isLoading && (
-        <Alert severity="error" sx={{ maxWidth: 600 }}>
-          <Typography variant="h6" gutterBottom>
-            Error
-          </Typography>
-          <Typography>{error}</Typography>
-        </Alert>
-      )}
-
-      {!error && !isLoading && mediaUrl && (
+      {!isLoading && (
         <Fade in={true}>
           <MediaContainer>
             {renderMedia()}

@@ -17,6 +17,15 @@ class FileService {
     this.client = axios.create({
       baseURL: this.getBaseURL(),
     });
+    
+    // Add request interceptor for auth headers
+    this.client.interceptors.request.use((config) => {
+      const token = sessionStorage.getItem('token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    });
   }
 
   private processError(error: any) {

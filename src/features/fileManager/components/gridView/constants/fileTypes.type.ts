@@ -23,6 +23,8 @@ export const VIEWABLE_EXTENSIONS = [
   "xlsx",
   "xls",
   "csv",
+  "docx",
+  "doc",
 ] as const;
 
 // Map extension to icon and colors
