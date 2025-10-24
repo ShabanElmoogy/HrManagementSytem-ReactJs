@@ -1,5 +1,5 @@
 import MyDataGrid from "@/shared/components/common/datagrid/myDataGrid";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import makeFileActions from "./gridView/components/makeFileActions";
 import makeFileColumns from "./gridView/components/makeFileColumns";
 import { FilesDataGridProps } from "./gridView/types/gridView.type";
@@ -14,9 +14,6 @@ const FilesDataGrid = ({
   onAdd,
   t,
 }: FilesDataGridProps) => {
-  const [viewMode, setViewMode] = useState("list");
-
-
   const getActions = useCallback(
     makeFileActions({ t, onDownload, onView, onDelete }),
     [t, onDownload, onView, onDelete]
@@ -40,8 +37,6 @@ const FilesDataGrid = ({
       pageSizeOptions={[5, 10, 25, 50]}
       fileName="files"
       reportPdfHeader="Files Report"
-      viewMode={viewMode}
-      onViewModeChange={setViewMode}
     />
   );
 };

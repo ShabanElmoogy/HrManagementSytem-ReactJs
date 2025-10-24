@@ -5,7 +5,7 @@ import { Dialog } from "@mui/material";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import FileDeleteDialog from "@/features/fileManager/components/dialog/FileDeleteDialog";
-import FilesDataGrid from "./components/FilesDataGrid";
+import FilesMultiView from "./components/FilesMultiView";
 import FileUpload from "./components/fileUpload/FileUploadPage";
 import useFileGridLogic from "./hooks/useFileGridLogic";
 
@@ -48,7 +48,7 @@ const FilesGrid = () => {
       <ContentsWrapper>
         <Header title={t("files.title")} subTitle={t("files.subTitle")} />
 
-        <FilesDataGrid
+        <FilesMultiView
           files={files}
           loading={loading}
           apiRef={apiRef}
@@ -56,6 +56,7 @@ const FilesGrid = () => {
           onView={handleView}
           onDelete={onDelete}
           onAdd={onUpload}
+          onRefresh={handleRefresh}
           t={t}
         />
 

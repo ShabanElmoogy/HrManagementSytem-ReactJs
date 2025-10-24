@@ -9,9 +9,10 @@ import { useExcelViewer } from "./excel/useExcelViewer";
 interface ExcelViewerProps {
   mediaUrl: string;
   onError: (message: string) => void;
+  onBack?: () => void;
 }
 
-const ExcelViewer: React.FC<ExcelViewerProps> = ({ mediaUrl, onError }) => {
+const ExcelViewer: React.FC<ExcelViewerProps> = ({ mediaUrl, onError, onBack }) => {
   const { open: sidebarOpen } = useSidebar();
   const {
     isLoading,
@@ -30,6 +31,11 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ mediaUrl, onError }) => {
   
   const filteredData = useExcelFilter(sheetData, currentSheetIndex, searchTerm);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleBack = () => {
+    if (onBack) onBack();
+    else window.history.back();
+  };
 
   const currentData = sheetData[currentSheetIndex] || [];
   const headers = currentData[0] || [];
@@ -59,7 +65,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ mediaUrl, onError }) => {
       ref={containerRef}
       elevation={3}
       sx={{
-        width: sidebarOpen ? "calc(100vw - 180px)" : "calc(100vw - 90px)",
+        width: sidebarOpen ? "calc(100vw - 267px)" : "calc(100vw - 90px)",
         height: "100vh",
         display: "flex",
         flexDirection: "column",
@@ -79,6 +85,7 @@ const ExcelViewer: React.FC<ExcelViewerProps> = ({ mediaUrl, onError }) => {
         isFullscreen={isFullscreen}
         onToggleFullscreen={() => handleFullscreen(containerRef)}
         onDownload={handleDownload}
+        onBack={handleBack}
       />
 
       <ExcelTable headers={headers} rows={rows} searchTerm={searchTerm} />

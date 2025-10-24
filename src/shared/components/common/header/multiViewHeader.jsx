@@ -8,6 +8,7 @@ import {
   ViewModule,
   TableChart,
   BarChart,
+  ArrowBack,
 } from "@mui/icons-material";
 import {
   Box,
@@ -27,6 +28,9 @@ import useViewLayout from "@/shared/hooks/useViewLayout";
 const MultiViewHeader = ({
   // Required props
   title,
+  titleIcon,
+  onBack,
+  showBackButton = false,
   onAdd,
   storageKey,
 
@@ -157,17 +161,28 @@ const MultiViewHeader = ({
           {/* Left Section - Title and Stats */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 2, flex: 1 }}>
             <Box>
-              <Typography
-                variant="h5"
-                color="text.primary"
-                sx={{
-                  fontWeight: 600,
-                  mb: 0.5,
-                }}
-              >
-                {title}
-              </Typography>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
+                {showBackButton && (
+                  <IconButton onClick={onBack} size="small" sx={{ mr: 1 }}>
+                    <ArrowBack />
+                  </IconButton>
+                )}
+                {titleIcon && (
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    {titleIcon}
+                  </Box>
+                )}
+                <Typography
+                  variant="h5"
+                  color="text.primary"
+                  sx={{
+                    fontWeight: 600,
+                  }}
+                >
+                  {title}
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1, ml: showBackButton ? 6 : titleIcon ? 4 : 0 }}>
                 <Chip
                   label={
                     viewOptions.find((opt) => opt.value === viewType)?.label ||
@@ -306,17 +321,28 @@ const MultiViewHeader = ({
         >
           {/* Title and Stats */}
           <Box sx={{ mb: 2 }}>
-            <Typography
-              variant="h6"
-              color="text.primary"
-              sx={{
-                fontWeight: 600,
-                mb: 1,
-                fontSize: "1.1rem",
-              }}
-            >
-              {title}
-            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+              {showBackButton && (
+                <IconButton onClick={onBack} size="small" sx={{ mr: 1 }}>
+                  <ArrowBack />
+                </IconButton>
+              )}
+              {titleIcon && (
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  {titleIcon}
+                </Box>
+              )}
+              <Typography
+                variant="h6"
+                color="text.primary"
+                sx={{
+                  fontWeight: 600,
+                  fontSize: "1.1rem",
+                }}
+              >
+                {title}
+              </Typography>
+            </Box>
             <Box
               sx={{
                 display: "flex",

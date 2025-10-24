@@ -8,6 +8,7 @@ import {
   Grid,
   Toolbar,
 } from "@mui/material";
+import axios from "axios";
 import {
   ZoomIn as ZoomInIcon,
   ZoomOut as ZoomOutIcon,
@@ -51,25 +52,44 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError, onBack }) 
   const [contrast, setContrast] = useState(100);
   const controlsTimeoutRef = useRef<NodeJS.Timeout>();
   const zoomInfoTimeoutRef = useRef<NodeJS.Timeout>();
+  const [imageBlobUrl, setImageBlobUrl] = useState<string | null>(null);
 
   const MIN_ZOOM = 50;
   const MAX_ZOOM = 300;
   const ZOOM_STEP = 10;
 
   useEffect(() => {
-    const img = new Image();
-    img.onload = () => {
-      setImageInfo({
-        width: img.naturalWidth,
-        height: img.naturalHeight,
-        size: 0,
+    const token = sessionStorage.getItem('token');
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    
+    axios.get(mediaUrl, { responseType: 'blob', headers })
+      .then(response => {
+        const blobUrl = URL.createObjectURL(response.data);
+        setImageBlobUrl(blobUrl);
+        
+        const img = new Image();
+        img.onload = () => {
+          setImageInfo({
+            width: img.naturalWidth,
+            height: img.naturalHeight,
+            size: response.data.size || 0,
+          });
+          onError("");
+        };
+        img.onerror = () => {
+          onError(t("media.failedToLoadImage"));
+        };
+        img.src = blobUrl;
+      })
+      .catch(() => {
+        onError(t("media.failedToLoadImage"));
       });
-      onError("");
+    
+    return () => {
+      if (imageBlobUrl) {
+        URL.revokeObjectURL(imageBlobUrl);
+      }
     };
-    img.onerror = () => {
-      onError(t("media.failedToLoadImage"));
-    };
-    img.src = mediaUrl;
   }, [mediaUrl, onError, t]);
 
   const handleZoomIn = () => {
@@ -217,8 +237,11 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError, onBack }) 
       if (controlsTimeoutRef.current) {
         clearTimeout(controlsTimeoutRef.current);
       }
+      if (imageBlobUrl) {
+        URL.revokeObjectURL(imageBlobUrl);
+      }
     };
-  }, []);
+  }, [imageBlobUrl]);
 
   return (
     <Paper
@@ -404,21 +427,27 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError, onBack }) 
           },
         }}
       >
-        <img
-          ref={imageRef}
-          src={mediaUrl}
-          alt="Viewer"
-          style={{
-            maxWidth: "100%",
-            maxHeight: "100%",
-            objectFit: "contain",
-            userSelect: "none",
-            transform: `scale(${zoom / 100}) rotate(${rotation}deg) scaleX(${flipH ? -1 : 1}) scaleY(${flipV ? -1 : 1})`,
-            filter: `brightness(${brightness}%) contrast(${contrast}%)`,
-            transition: "transform 0.3s ease",
-          }}
-          onError={() => onError(t("media.failedToLoadImage"))}
-        />
+        {imageBlobUrl ? (
+          <img
+            ref={imageRef}
+            src={imageBlobUrl}
+            alt="Viewer"
+            style={{
+              maxWidth: "100%",
+              maxHeight: "100%",
+              objectFit: "contain",
+              userSelect: "none",
+              transform: `scale(${zoom / 100}) rotate(${rotation}deg) scaleX(${flipH ? -1 : 1}) scaleY(${flipV ? -1 : 1})`,
+              filter: `brightness(${brightness}%) contrast(${contrast}%)`,
+              transition: "transform 0.3s ease",
+            }}
+            onError={() => onError(t("media.failedToLoadImage"))}
+          />
+        ) : (
+          <Typography variant="h6" color="text.secondary">
+            Loading image...
+          </Typography>
+        )}
       </Box>
     </Paper>
   );
