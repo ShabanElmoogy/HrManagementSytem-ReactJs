@@ -28,7 +28,7 @@ const getBrowserDirection = () => {
 export const useThemeSettings = () => {
   const savedDirection =
     localStorage.getItem("direction") || getBrowserDirection();
-  const currentMode = localStorage.getItem("currentMode") || getBrowserTheme();
+  const currentMode = localStorage.getItem("currentMode") || "dark";
   const [mode, setMode] = React.useState(currentMode);
   const [direction, setDirection] = React.useState(savedDirection);
 

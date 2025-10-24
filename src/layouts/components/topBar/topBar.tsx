@@ -120,7 +120,7 @@ const TopBar = ({
               <Typography
                 variant="body1"
                 sx={{ fontWeight: "bold" }}
-                color={theme.palette.primary.main}
+                color={theme.palette.mode === "light" ? "white" : theme.palette.primary.main}
               >
                 {t("general.mainTitle")}
               </Typography>
@@ -210,8 +210,8 @@ const TopBar = ({
           />
         </StyledToolbar>
       </AppBar>
-      
-      </>
+
+    </>
   );
 };
 
