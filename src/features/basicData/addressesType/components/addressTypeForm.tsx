@@ -1,10 +1,12 @@
 import { MyForm, MyTextField } from "@/shared/components";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, TextField } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { getAddressTypeValidationSchema } from "../utils/validation";
 import { CreateAddressTypeRequest, AddressTypeFormProps } from "../types/AddressType";
+import { Casino } from "@mui/icons-material";
+import { addressTypes } from "../utils/fakeData";
 
 const AddressTypeForm = ({
   open,
@@ -30,7 +32,7 @@ const AddressTypeForm = ({
     control,
     formState: { errors },
   } = useForm<CreateAddressTypeRequest>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema) as any,
     mode: "onChange",
     defaultValues: { nameAr: "", nameEn: "" },
   });
@@ -51,6 +53,32 @@ const AddressTypeForm = ({
     isViewMode,
     isAddMode,
   ]);
+
+  const usedIndexes = useRef(new Set<number>());
+
+  const generateMockData = (): void => {
+    if (usedIndexes.current.size === addressTypes.length) {
+      usedIndexes.current.clear(); // Reset if all data has been used
+    }
+
+    let index: number;
+    do {
+      index = Math.floor(Math.random() * addressTypes.length);
+    } while (usedIndexes.current.has(index));
+    usedIndexes.current.add(index);
+
+    const addressType = addressTypes[index];
+
+    const mockData = {
+      nameEn: addressType.nameEn,
+      nameAr: addressType.nameAr,
+    };
+
+    reset({
+      nameEn: mockData.nameEn,
+      nameAr: mockData.nameAr,
+    });
+  };
 
   const getOverlayActionType = (): string => {
     if (isAddMode) return "create";
@@ -86,7 +114,7 @@ const AddressTypeForm = ({
 
   return (
     <MyForm
-      maxHeight = "39vh"
+      maxHeight = "58vh"
       open={open}
       onClose={onClose}
       title={
@@ -158,9 +186,35 @@ const AddressTypeForm = ({
         control={control}
         placeholder={t("addressTypes.nameEnPlaceholder")}
         showCounter={!isViewMode}
-        readOnly={isViewMode}
-        data-field-name="nameEn"
-      />
+      readOnly={isViewMode}
+      data-field-name="nameEn"
+    />
+
+      {(isAddMode || isEditMode) && (
+        <Box sx={{ mt: 3, mb: 2 }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<Casino />}
+            onClick={generateMockData}
+            disabled={loading}
+            fullWidth
+            sx={{
+              py: 1.5,
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              textTransform: 'none',
+              boxShadow: 2,
+              '&:hover': {
+                boxShadow: 4,
+                transform: 'translateY(-1px)'
+              }
+            }}
+          >
+            {t("addressTypes.generateMockData") || "🎲 Generate Mock Data"}
+          </Button>
+        </Box>
+      )}
     </MyForm>
   );
 };

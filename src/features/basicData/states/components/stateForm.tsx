@@ -179,11 +179,19 @@ const StateForm = ({
       nameEn: state.en,
       nameAr: state.ar,
       code: state.code,
+      countryId: 0, // Default or placeholder
     };
+
+    // If countriesData is available, pick a random countryId
+    if (countriesData.length > 0) {
+      const randomCountryIndex = Math.floor(Math.random() * countriesData.length);
+      mockData.countryId = countriesData[randomCountryIndex].id;
+    }
 
     setValue("nameEn", mockData.nameEn);
     setValue("nameAr", mockData.nameAr);
     setValue("code", mockData.code);
+    setValue("countryId", mockData.countryId);
   };
 
   const onSubmitHandler: SubmitHandler<StateFormData> = (data) => onSubmit(data);
