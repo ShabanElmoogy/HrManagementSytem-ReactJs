@@ -4,76 +4,59 @@ import {
   flexNumber,
   uppercaseCode,
 } from "@/constants";
-import * as yup from "yup";
+import { z } from "zod";
 
-export const getCountryValidationSchema = (t) => {
-  return yup.object({
+export const getCountryValidationSchema = (t: any) => {
+  return z.object({
     // Required: Arabic Name
-    nameAr: yup
-      .string()
+    nameAr: z
+      .string({ message: t("validation.required") })
       .trim()
-      .required(t("validation.required"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
-      .matches(arabicOnly, t("validation.invalidArabicName")),
+      .regex(arabicOnly, t("validation.invalidArabicName")),
 
     // Required: English Name
-    nameEn: yup
-      .string()
+    nameEn: z
+      .string({ message: t("validation.required") })
       .trim()
-      .required(t("validation.required"))
       .min(2, t("validation.minLength", { count: 2 }))
       .max(100, t("validation.maxLength", { count: 100 }))
-      .matches(englishOnly, t("validation.invalidEnglishName")),
+      .regex(englishOnly, t("validation.invalidEnglishName")),
 
     // Optional: Alpha2 Code
-    alpha2Code: yup
+    alpha2Code: z
       .string()
-      .nullable()
-      .trim()
-      .transform((value) => (value ? value.toUpperCase() : null))
-      .when([], {
-        is: () => true,
-        then: (schema) =>
-          schema.matches(uppercaseCode(2), t("countries.invalidAlpha2Code")),
+      .optional()
+      .transform((val) => val ? val.toUpperCase() : "")
+      .refine((val) => !val || uppercaseCode(2).test(val), {
+        message: t("countries.invalidAlpha2Code")
       }),
 
     // Optional: Alpha3 Code
-    alpha3Code: yup
+    alpha3Code: z
       .string()
-      .nullable()
-      .trim()
-      .transform((value) => (value ? value.toUpperCase() : null))
-      .when([], {
-        is: () => true,
-        then: (schema) =>
-          schema.matches(uppercaseCode(3), t("countries.invalidAlpha3Code")),
+      .optional()
+      .transform((val) => val ? val.toUpperCase() : "")
+      .refine((val) => !val || uppercaseCode(3).test(val), {
+        message: t("countries.invalidAlpha3Code")
       }),
 
     // Optional: Phone Code
-    phoneCode: yup
+    phoneCode: z
       .string()
-      .nullable()
-      .trim()
-      .when([], {
-        is: () => true,
-        then: (schema) =>
-          schema.matches(
-            flexNumber.range(1, 5),
-            t("countries.invalidPhoneCode")
-          ),
+      .optional()
+      .refine((val) => !val || flexNumber.range(1, 5).test(val), {
+        message: t("countries.invalidPhoneCode")
       }),
 
     // Optional: Currency Code
-    currencyCode: yup
+    currencyCode: z
       .string()
-      .nullable()
-      .trim()
-      .transform((value) => (value ? value.toUpperCase() : null))
-      .when([], {
-        is: () => true,
-        then: (schema) =>
-          schema.matches(uppercaseCode(3), t("countries.invalidCurrency")),
+      .optional()
+      .transform((val) => val ? val.toUpperCase() : "")
+      .refine((val) => !val || uppercaseCode(3).test(val), {
+        message: t("countries.invalidCurrency")
       }),
   });
 };

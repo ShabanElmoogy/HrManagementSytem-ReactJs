@@ -65,3 +65,21 @@ export interface CountryQueryParams {
   filters?: CountryFilters;
 }
 
+export interface CountryFormData {
+  nameAr: string;
+  nameEn: string;
+  alpha2Code: string;
+  alpha3Code: string;
+  phoneCode: string;
+  currencyCode: string;
+}
+
+export interface CountryFormProps {
+  open: boolean;
+  dialogType: "add" | "edit" | "view";
+  selectedCountry?: Country | null;
+  onClose: () => void;
+  onSubmit: (data: CountryFormData) => void;
+  loading: boolean;
+  t: (key: string) => string;
+}

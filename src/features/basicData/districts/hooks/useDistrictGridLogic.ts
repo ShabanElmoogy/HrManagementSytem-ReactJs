@@ -76,11 +76,13 @@ const useDistrictGridLogic = (): UseDistrictGridLogicReturn => {
           `District "${newDistrict.nameEn}" created successfully!`
       );
 
-      const newId: number = typeof newDistrict.id === 'string' ? parseInt(newDistrict.id as any, 10) : (newDistrict.id as number);
-      setLastAddedRowId(newId);
-      setNewRowAdded(true);
       setDialogType(null);
       setSelectedDistrict(null);
+      
+      // Trigger navigation to last row after data refresh
+      setTimeout(() => {
+        setNewRowAdded(true);
+      }, 500);
 
       setTimeout(() => setLastAddedRowId(null), 4000);
     },
@@ -213,22 +215,28 @@ const useDistrictGridLogic = (): UseDistrictGridLogicReturn => {
     openDialog("add");
   }, [openDialog]);
 
-  // Grid navigation effects
+  // Grid navigation effects - Navigate to last row when adding new district
   useEffect(() => {
-    if (newRowAdded && districts.length > 0 && apiRef.current && lastAddedRowId) {
-      const newRowIndex = districts.findIndex((d) => d.id === lastAddedRowId);
-      if (newRowIndex >= 0) {
-        const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
-        const newPage = Math.floor(newRowIndex / pageSize);
-        apiRef.current.setPage(newPage);
-        apiRef.current.setRowSelectionModel([lastAddedRowId]);
-        setTimeout(() => {
-          apiRef.current.scrollToIndexes({ rowIndex: newRowIndex, colIndex: 0 });
-        }, 300);
-      }
+    if (newRowAdded && districts.length > 0 && apiRef.current && !isFetching) {
+      // Navigate to the last row
+      const lastRowIndex = districts.length - 1;
+      const lastRowId = districts[lastRowIndex].id;
+      
+      const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
+      const lastPage = Math.floor(lastRowIndex / pageSize);
+      
+      apiRef.current.setPage(lastPage);
+      apiRef.current.setRowSelectionModel([lastRowId]);
+      
+      setTimeout(() => {
+        if (apiRef.current) {
+          apiRef.current.scrollToIndexes({ rowIndex: lastRowIndex, colIndex: 0 });
+        }
+      }, 300);
+      
       setNewRowAdded(false);
     }
-  }, [newRowAdded, districts, lastAddedRowId]);
+  }, [newRowAdded, districts, isFetching]);
 
   useEffect(() => {
     if (rowEdited && districts.length > 0 && apiRef.current) {

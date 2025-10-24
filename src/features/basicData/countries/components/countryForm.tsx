@@ -1,33 +1,14 @@
 // components/CountryForm.tsx
 import { MyForm, MyTextField } from "@/shared/components";
 import { faker } from '@faker-js/faker';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Casino } from "@mui/icons-material";
 import { Box, Button, TextField } from "@mui/material";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { countries } from "../utils/fakeData";
 import { getCountryValidationSchema } from "../utils/validation";
-import { Country } from "../types/Country";
-
-interface CountryFormData {
-  nameAr: string;
-  nameEn: string;
-  alpha2Code: string;
-  alpha3Code: string;
-  phoneCode: string;
-  currencyCode: string;
-}
-
-interface CountryFormProps {
-  open: boolean;
-  dialogType: "add" | "edit" | "view";
-  selectedCountry?: Country | null;
-  onClose: () => void;
-  onSubmit: (data: CountryFormData) => void;
-  loading: boolean;
-  t: (key: string) => string;
-}
+import { CountryFormData, CountryFormProps } from "../types/Country";
 
 const CountryForm = ({
   open,
@@ -56,7 +37,7 @@ const CountryForm = ({
     setValue,
     formState: { errors },
   } = useForm<CountryFormData>({
-    resolver: yupResolver(schema),
+    resolver: zodResolver(schema),
     mode: "onChange",
     defaultValues: {
       nameAr: "",
@@ -111,15 +92,6 @@ const CountryForm = ({
       }
     });
     return errorMessages;
-  };
-
-  // Handle error found callback
-  const handleErrorFound = (fieldName: string, fieldElement: HTMLElement): void => {
-    console.log(`Validation error in field: ${fieldName}`, fieldElement);
-    // You can add custom logic here, such as:
-    // - Analytics tracking
-    // - Custom focus behavior
-    // - Additional UI feedback
   };
 
   // Generate mock data using Faker.js
@@ -195,7 +167,6 @@ const CountryForm = ({
       overlayMessage={getOverlayMessage()}
       // Error handling props
       errors={getErrorMessages()} // Pass the converted errors
-      onErrorFound={handleErrorFound} // Optional callback when error is found
     >
       {(isEditMode || isViewMode) && (
         <TextField
