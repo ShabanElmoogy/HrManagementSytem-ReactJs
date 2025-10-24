@@ -518,6 +518,7 @@ const MyDataGrid = ({
       }
     };
 
+    // Effect to handle last added/edited/deleted row selection and scroll
     // Use a timeout to ensure the grid has rendered the new rows
     // before attempting to select and scroll.
     const timer = setTimeout(() => {

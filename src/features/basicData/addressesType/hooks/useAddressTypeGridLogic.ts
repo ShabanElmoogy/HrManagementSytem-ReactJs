@@ -67,12 +67,16 @@ const useAddressTypeGridLogic = (): UseAddressTypeGridLogicReturn => {
       );
 
       const newId: number = typeof newItem.id === 'string' ? parseInt(newItem.id, 10) : newItem.id;
+      console.log("🟢 Address type created with ID:", newId);
       setLastAddedRowId(newId);
       setNewRowAdded(true);
       setDialogType(null);
       setSelectedItem(null);
 
-      setTimeout(() => setLastAddedRowId(null), 4000);
+      setTimeout(() => {
+        console.log("🔄 Clearing lastAddedRowId");
+        setLastAddedRowId(null);
+      }, 4000);
     },
     onError: (error: any) => {
       const errorMessage = extractErrorMessage(error);
@@ -90,12 +94,16 @@ const useAddressTypeGridLogic = (): UseAddressTypeGridLogicReturn => {
       );
 
       const updatedId: number = typeof updated.id === 'string' ? parseInt(updated.id, 10) : updated.id;
+      console.log("🟡 Address type updated with ID:", updatedId);
       setRowEdited(true);
       setLastEditedRowId(updatedId);
       setDialogType(null);
       setSelectedItem(null);
 
-      setTimeout(() => setLastEditedRowId(null), 4000);
+      setTimeout(() => {
+        console.log("🔄 Clearing lastEditedRowId");
+        setLastEditedRowId(null);
+      }, 4000);
     },
     onError: (error: any) => {
       const errorMessage = extractErrorMessage(error);
@@ -108,11 +116,15 @@ const useAddressTypeGridLogic = (): UseAddressTypeGridLogicReturn => {
   const deleteMutation = useDeleteAddressType({
     onSuccess: () => {
       showToast.success(t("addressTypes.deleted") || "Address type deleted successfully!");
+      console.log("🔴 Address type deleted, lastDeletedRowIndex:", lastDeletedRowIndex);
       setRowDeleted(true);
       setDialogType(null);
       setSelectedItem(null);
 
-      setTimeout(() => setLastDeletedRowIndex(null), 4000);
+      setTimeout(() => {
+        console.log("🔄 Clearing lastDeletedRowIndex");
+        setLastDeletedRowIndex(null);
+      }, 4000);
     },
     onError: (error: any) => {
       const errorMessage = extractErrorMessage(error);
@@ -154,26 +166,68 @@ const useAddressTypeGridLogic = (): UseAddressTypeGridLogicReturn => {
     setSelectedItem(null);
   }, []);
 
+  // Scroll to the last added row
   useEffect(() => {
-    if (newRowAdded && items.length > 0 && apiRef.current && lastAddedRowId) {
-      const newRowIndex = items.findIndex((row) => row.id === lastAddedRowId);
+    if (
+      newRowAdded &&
+      items.length > 0 &&
+      apiRef.current &&
+      lastAddedRowId
+    ) {
+      // Find the actual index of the newly added row
+      const newRowIndex = items.findIndex(
+        (item) => item.id === lastAddedRowId
+      );
+
       if (newRowIndex >= 0) {
-        const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
+        console.log("Found new row at index:", newRowIndex);
+
+        const pageSize =
+          apiRef.current.state.pagination.paginationModel.pageSize;
         const newPage = Math.floor(newRowIndex / pageSize);
+
+        // Set the page first
         apiRef.current.setPage(newPage);
+
+        // Select the row
         apiRef.current.setRowSelectionModel([lastAddedRowId]);
-        setTimeout(() => apiRef.current.scrollToIndexes({ rowIndex: newRowIndex, colIndex: 0 }), 500);
+
+        // Scroll to the row with a delay to ensure the page change has completed
+        setTimeout(() => {
+          apiRef.current.scrollToIndexes({
+            rowIndex: newRowIndex,
+            colIndex: 0,
+          });
+        }, 500); // Increased delay to ensure data is loaded
+
+        console.log(
+          "Row selection and scroll initiated for ID:",
+          lastAddedRowId
+        );
+      } else {
+        console.log("New row not found in items list yet, will retry...");
+        // If the row is not found yet, it might be because the data is still loading
+        // The effect will run again when items data updates
+        return;
       }
+
       setNewRowAdded(false);
     }
   }, [newRowAdded, items, lastAddedRowId]);
 
+  // Scroll to the last edited row
   useEffect(() => {
     if (rowEdited && items.length > 0 && apiRef.current) {
-      const editedIndex = items.findIndex((row) => row.id === lastEditedRowId);
+      const editedIndex = items.findIndex(
+        (row) => row.id === lastEditedRowId
+      );
+
       if (editedIndex >= 0 && editedIndex < items.length) {
-        const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
+        const pageSize =
+          apiRef.current.state.pagination.paginationModel.pageSize;
+
         const newPage = Math.floor(editedIndex / pageSize);
+
         apiRef.current.setPage(newPage);
         apiRef.current.scrollToIndexes({ rowIndex: editedIndex, colIndex: 0 });
         apiRef.current.setRowSelectionModel([lastEditedRowId]);
@@ -182,15 +236,20 @@ const useAddressTypeGridLogic = (): UseAddressTypeGridLogicReturn => {
     }
   }, [rowEdited, items.length, lastEditedRowId]);
 
+  // Scroll to the previous row after deletion
   useEffect(() => {
     if (rowDeleted && items.length > 0 && apiRef.current) {
-      let prevRowIndex = (lastDeletedRowIndex ?? 0) - 1;
-      if (prevRowIndex < 0) prevRowIndex = 0;
+      let prevRowIndex = lastDeletedRowIndex - 1;
+      if (prevRowIndex < 0) {
+        prevRowIndex = 0;
+      }
 
       if (prevRowIndex >= 0 && prevRowIndex < items.length) {
         const prevRowId = items[prevRowIndex].id;
-        const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
+        const pageSize =
+          apiRef.current.state.pagination.paginationModel.pageSize;
         const newPage = Math.floor(prevRowIndex / pageSize);
+
         apiRef.current.setPage(newPage);
         apiRef.current.scrollToIndexes({ rowIndex: prevRowIndex, colIndex: 0 });
         apiRef.current.setRowSelectionModel([prevRowId]);
@@ -198,6 +257,64 @@ const useAddressTypeGridLogic = (): UseAddressTypeGridLogicReturn => {
       setRowDeleted(false);
     }
   }, [rowDeleted, items.length, lastDeletedRowIndex]);
+
+  // Additional effect to handle row selection when data is refetched
+  useEffect(() => {
+    if (
+      !isFetching &&
+      !loading &&
+      lastAddedRowId &&
+      newRowAdded &&
+      items.length > 0 &&
+      apiRef.current
+    ) {
+      // Find the newly added row
+      const newRowIndex = items.findIndex(
+        (item) => item.id === lastAddedRowId
+      );
+
+      if (newRowIndex >= 0) {
+        console.log(
+          "Found new row at index:",
+          newRowIndex,
+          "for ID:",
+          lastAddedRowId
+        );
+
+        // Use a timeout to ensure the grid has rendered the new data
+        setTimeout(() => {
+          if (apiRef.current) {
+            const pageSize =
+              apiRef.current.state.pagination.paginationModel.pageSize;
+            const newPage = Math.floor(newRowIndex / pageSize);
+
+            // Set the page and select the row
+            apiRef.current.setPage(newPage);
+            apiRef.current.setRowSelectionModel([lastAddedRowId]);
+
+            // Scroll to the row
+            setTimeout(() => {
+              if (apiRef.current) {
+                apiRef.current.scrollToIndexes({
+                  rowIndex: newRowIndex,
+                  colIndex: 0,
+                });
+              }
+            }, 200);
+
+            console.log(
+              "Successfully selected and scrolled to new row:",
+              lastAddedRowId
+            );
+          }
+        }, 300);
+
+        // Reset the flags
+        setNewRowAdded(false);
+        setLastAddedRowId(null);
+      }
+    }
+  }, [isFetching, loading, lastAddedRowId, newRowAdded, items]);
 
   const handleFormSubmit = useCallback(
     async (formdata: Partial<AddressType>) => {
@@ -220,8 +337,20 @@ const useAddressTypeGridLogic = (): UseAddressTypeGridLogicReturn => {
     try {
       const deletedId: number = typeof selectedItem.id === 'string' ? parseInt(selectedItem.id, 10) : selectedItem.id;
       const currentIndex: number = items.findIndex((row) => row.id === deletedId);
+
       await deleteMutation.mutateAsync(deletedId);
-      setSelectedItem(null);
+
+      // Update selected item for navigation
+      let newSelectedItem: AddressType | null = null;
+      if (items.length > 1) {
+        // Will be length - 1 after deletion
+        newSelectedItem =
+          currentIndex > 0
+            ? items[Math.min(currentIndex - 1, items.length - 2)]
+            : items[1]; // Take the second item since first will be deleted
+      }
+
+      setSelectedItem(newSelectedItem);
       setLastDeletedRowIndex(currentIndex);
     } catch (error) {
       console.error("Delete error:", error);
