@@ -739,7 +739,11 @@
     "Uploading": "جارى الرفع ...",
     "close": "إغلاق",
     "title": "مدير الملفات",
-    "subTitle": "قائمة الملفات"
+    "subTitle": "قائمة الملفات",
+    "groupView" : "عرض مجموعات",
+    "gridView" : "عرض الجدول",
+    "filtered" : "ناتج البحث",
+    "total" : "المجموع"
   },
   "media": {
     "unsupportedFormat": "صيغة غير مدعومة",

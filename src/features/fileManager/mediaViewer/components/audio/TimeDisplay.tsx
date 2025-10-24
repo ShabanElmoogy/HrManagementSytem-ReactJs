@@ -9,9 +9,16 @@ export interface TimeDisplayProps {
 
 const TimeDisplay: React.FC<TimeDisplayProps> = ({ currentTime, duration, formatTime }) => {
   return (
-    <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-      <Typography variant="caption">{formatTime(currentTime)}</Typography>
-      <Typography variant="caption">{formatTime(duration)}</Typography>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: { xs: 80, sm: 100 } }}>
+      <Typography variant="caption" sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+        {formatTime(currentTime)}
+      </Typography>
+      <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+        /
+      </Typography>
+      <Typography variant="caption" sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+        {formatTime(duration)}
+      </Typography>
     </Box>
   );
 };

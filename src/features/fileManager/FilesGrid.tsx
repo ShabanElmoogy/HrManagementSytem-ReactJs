@@ -1,5 +1,4 @@
 import ContentsWrapper from "@/layouts/components/myContentsWrapper";
-import Header from "@/shared/components/common/header/myHeader";
 import { useSnackbar } from "@/shared/hooks";
 import { Dialog } from "@mui/material";
 import { useCallback } from "react";
@@ -46,8 +45,6 @@ const FilesGrid = () => {
   return (
     <>
       <ContentsWrapper>
-        <Header title={t("files.title")} subTitle={t("files.subTitle")} />
-
         <FilesMultiView
           files={files}
           loading={loading}

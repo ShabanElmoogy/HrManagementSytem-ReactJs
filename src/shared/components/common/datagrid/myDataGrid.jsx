@@ -592,7 +592,6 @@ const MyDataGrid = ({
               reportPdfHeader={reportPdfHeader}
               excludeColumnsFromExport={excludeColumnsFromExport}
               viewMode={viewMode}
-              onViewModeChange={onViewModeChange}
             />
           ),
           ...(showNavigationButtons && {

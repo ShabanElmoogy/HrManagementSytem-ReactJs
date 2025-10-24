@@ -33,13 +33,16 @@ const FilesMultiView = ({
   onDelete,
   onAdd,
   onRefresh,
-  t
+  t,
 }: FilesMultiViewProps) => {
-  
-  console.log('FilesMultiView onDelete:', onDelete); // Debug log
-  const [currentViewType, setCurrentViewType] = useState<"list" | "grouped">("list");
+  const [currentViewType, setCurrentViewType] = useState<"list" | "grouped">(
+    "list"
+  );
   const [searchTerm] = useState("");
-  const [selectedGroup, setSelectedGroup] = useState<{name: string, icon: React.ReactNode} | null>(null);
+  const [selectedGroup, setSelectedGroup] = useState<{
+    name: string;
+    icon: React.ReactNode;
+  } | null>(null);
   const backToGroupsRef = useRef<(() => void) | null>(null);
 
   const displayFiles = files;
@@ -53,9 +56,12 @@ const FilesMultiView = ({
     }
   };
 
-  const handleViewTypeChange = useCallback((newViewType: "list" | "grouped") => {
-    setCurrentViewType(newViewType);
-  }, []);
+  const handleViewTypeChange = useCallback(
+    (newViewType: "list" | "grouped") => {
+      setCurrentViewType(newViewType);
+    },
+    []
+  );
 
   const handleBackToGroups = useCallback(() => {
     if (backToGroupsRef.current) {
@@ -85,8 +91,8 @@ const FilesMultiView = ({
             files={displayFiles as any}
             onOpenFile={(f) => onView?.(f as any)}
             onDeleteFile={(f) => {
-              console.log('GroupedFilesView delete clicked:', f);
-              console.log('File structure:', JSON.stringify(f, null, 2));
+              console.log("GroupedFilesView delete clicked:", f);
+              console.log("File structure:", JSON.stringify(f, null, 2));
               onDelete?.(f as any);
             }}
             onOpenGroup={() => {}}
@@ -121,7 +127,11 @@ const FilesMultiView = ({
       }}
     >
       <MultiViewHeader
-        title={selectedGroup ? selectedGroup.name : (t("files.viewTitle") || "Files Management")}
+        title={
+          selectedGroup
+            ? selectedGroup.name
+            : t("files.title") || "Files Management"
+        }
         titleIcon={selectedGroup?.icon}
         showBackButton={!!selectedGroup}
         onBack={handleBackToGroups}
@@ -129,12 +139,16 @@ const FilesMultiView = ({
         defaultView="list"
         availableViews={["list", "grouped"]}
         viewLabels={{
-          list: t("files.views.list") || "List",
-          grouped: t("files.views.grouped") || "Grouped",
+          list: t("files.gridView") || "List",
+          grouped: t("files.groupView") || "Grouped",
         }}
         onAdd={onAdd}
         dataCount={displayFiles?.length || 0}
-        totalLabel={searchTerm ? (t("files.filtered") || "Filtered") : (t("files.total") || "Total")}
+        totalLabel={
+          searchTerm
+            ? t("files.filtered") || "Filtered"
+            : t("files.total") || "Total"
+        }
         onRefresh={handleRefresh}
         onViewTypeChange={handleViewTypeChange}
         t={(key) => t(key)}

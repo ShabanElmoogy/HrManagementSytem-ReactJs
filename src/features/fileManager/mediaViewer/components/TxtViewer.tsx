@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Paper, Typography, CircularProgress, IconButton, Tooltip, TextField, Toolbar } from '@mui/material';
+import { Box, Paper, Typography, CircularProgress, IconButton, Tooltip, TextField, Toolbar, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material';
 import { 
   ArrowBack as ArrowBackIcon, 
   Download as DownloadIcon, 
@@ -15,7 +15,8 @@ import {
   LightMode as LightModeIcon,
   Refresh as RefreshIcon,
   Share as ShareIcon,
-  Info as InfoIcon
+  Info as InfoIcon,
+  MoreVert as MoreVertIcon
 } from '@mui/icons-material';
 import { useSidebar } from "@/layouts/components/sidebar/sidebarContext";
 
@@ -28,17 +29,21 @@ interface TxtViewerProps {
 
 export const TxtViewer: React.FC<TxtViewerProps> = ({ fileUrl, fileName = 'Text File', onBack, onError }) => {
   const { open: sidebarOpen } = useSidebar();
+  const theme = useTheme();
+  const isXs = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSm = useMediaQuery(theme.breakpoints.down('md'));
+  const isMd = useMediaQuery(theme.breakpoints.down('lg'));
+  
   const [content, setContent] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-
   const [fontSize, setFontSize] = useState(14);
-
   const [darkMode, setDarkMode] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [showInfo, setShowInfo] = useState(false);
+  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
     const fetchFile = async () => {
@@ -160,58 +165,116 @@ export const TxtViewer: React.FC<TxtViewerProps> = ({ fileUrl, fileName = 'Text 
           )}
         </Box>
         <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-          <Tooltip title="Search">
-            <IconButton onClick={handleSearch} size="small" sx={{ bgcolor: showSearch ? "primary.main" : "action.hover", color: showSearch ? "white" : "inherit" }}>
-              <SearchIcon />
-            </IconButton>
-          </Tooltip>
-
-          <Tooltip title="Font Size -">
-            <IconButton onClick={handleFontDecrease} size="small" sx={{ bgcolor: "action.hover" }}>
-              <TextDecreaseIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Font Size +">
-            <IconButton onClick={handleFontIncrease} size="small" sx={{ bgcolor: "action.hover" }}>
-              <TextIncreaseIcon />
-            </IconButton>
-          </Tooltip>
-
-          <Tooltip title={darkMode ? "Light Mode" : "Dark Mode"}>
-            <IconButton onClick={handleThemeToggle} size="small" sx={{ bgcolor: "action.hover" }}>
-              {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Refresh">
-            <IconButton onClick={handleRefresh} size="small" sx={{ bgcolor: "action.hover" }}>
-              <RefreshIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Share">
-            <IconButton onClick={handleShare} size="small" disabled={loading || !!error} sx={{ bgcolor: "action.hover" }}>
-              <ShareIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Info">
-            <IconButton onClick={handleInfo} size="small" sx={{ bgcolor: showInfo ? "primary.main" : "action.hover", color: showInfo ? "white" : "inherit" }}>
-              <InfoIcon />
-            </IconButton>
-          </Tooltip>
+          {/* Large screens - show most buttons */}
+          {!isMd && (
+            <>
+              <Tooltip title="Search">
+                <IconButton onClick={handleSearch} size="small" sx={{ bgcolor: showSearch ? "primary.main" : "action.hover", color: showSearch ? "white" : "inherit" }}>
+                  <SearchIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Font Size -">
+                <IconButton onClick={handleFontDecrease} size="small" sx={{ bgcolor: "action.hover" }}>
+                  <TextDecreaseIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Font Size +">
+                <IconButton onClick={handleFontIncrease} size="small" sx={{ bgcolor: "action.hover" }}>
+                  <TextIncreaseIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={darkMode ? "Light Mode" : "Dark Mode"}>
+                <IconButton onClick={handleThemeToggle} size="small" sx={{ bgcolor: "action.hover" }}>
+                  {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Refresh">
+                <IconButton onClick={handleRefresh} size="small" sx={{ bgcolor: "action.hover" }}>
+                  <RefreshIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Share">
+                <IconButton onClick={handleShare} size="small" disabled={loading || !!error} sx={{ bgcolor: "action.hover" }}>
+                  <ShareIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Info">
+                <IconButton onClick={handleInfo} size="small" sx={{ bgcolor: showInfo ? "primary.main" : "action.hover", color: showInfo ? "white" : "inherit" }}>
+                  <InfoIcon />
+                </IconButton>
+              </Tooltip>
+            </>
+          )}
+          
+          {/* Medium screens - show search and font controls */}
+          {isMd && !isSm && (
+            <>
+              <Tooltip title="Search">
+                <IconButton onClick={handleSearch} size="small" sx={{ bgcolor: showSearch ? "primary.main" : "action.hover", color: showSearch ? "white" : "inherit" }}>
+                  <SearchIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Font Size -">
+                <IconButton onClick={handleFontDecrease} size="small" sx={{ bgcolor: "action.hover" }}>
+                  <TextDecreaseIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Font Size +">
+                <IconButton onClick={handleFontIncrease} size="small" sx={{ bgcolor: "action.hover" }}>
+                  <TextIncreaseIcon />
+                </IconButton>
+              </Tooltip>
+            </>
+          )}
+          
+          {/* Small screens - show only search */}
+          {isSm && !isXs && (
+            <Tooltip title="Search">
+              <IconButton onClick={handleSearch} size="small" sx={{ bgcolor: showSearch ? "primary.main" : "action.hover", color: showSearch ? "white" : "inherit" }}>
+                <SearchIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+          
+          {/* Always show essential buttons */}
           <Tooltip title={copied ? 'Copied!' : 'Copy to clipboard'}>
             <IconButton onClick={handleCopy} size="small" disabled={loading || !!error} sx={{ bgcolor: "action.hover" }}>
               <CopyIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Print">
-            <IconButton onClick={handlePrint} size="small" disabled={loading || !!error} sx={{ bgcolor: "action.hover" }}>
-              <PrintIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Download">
-            <IconButton onClick={handleDownload} size="small" disabled={loading || !!error} sx={{ bgcolor: "action.hover" }}>
-              <DownloadIcon />
-            </IconButton>
-          </Tooltip>
+          
+          {!isXs && (
+            <>
+              <Tooltip title="Print">
+                <IconButton onClick={handlePrint} size="small" disabled={loading || !!error} sx={{ bgcolor: "action.hover" }}>
+                  <PrintIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Download">
+                <IconButton onClick={handleDownload} size="small" disabled={loading || !!error} sx={{ bgcolor: "action.hover" }}>
+                  <DownloadIcon />
+                </IconButton>
+              </Tooltip>
+            </>
+          )}
+          
+          {/* Show menu for smaller screens */}
+          {(isMd || isSm || isXs) && (
+            <Tooltip title="More">
+              <IconButton size="small" onClick={(e) => setMenuAnchor(e.currentTarget)} sx={{ bgcolor: "action.hover" }}>
+                <MoreVertIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+          
+          {/* XS screens - show download in toolbar */}
+          {isXs && (
+            <Tooltip title="Download">
+              <IconButton onClick={handleDownload} size="small" disabled={loading || !!error} sx={{ bgcolor: "action.hover" }}>
+                <DownloadIcon />
+              </IconButton>
+            </Tooltip>
+          )}
         </Box>
       </Toolbar>
 
@@ -292,6 +355,87 @@ export const TxtViewer: React.FC<TxtViewerProps> = ({ fileUrl, fileName = 'Text 
           />
         )}
       </Box>
+      
+      <Menu
+        anchorEl={menuAnchor}
+        open={Boolean(menuAnchor)}
+        onClose={() => setMenuAnchor(null)}
+      >
+        {/* XS screens - show all menu items */}
+        {isXs && (
+          <>
+            <MenuItem onClick={() => { handleSearch(); setMenuAnchor(null); }}>
+              <SearchIcon sx={{ mr: 1 }} /> Search
+            </MenuItem>
+            <MenuItem onClick={() => { handleFontDecrease(); setMenuAnchor(null); }}>
+              <TextDecreaseIcon sx={{ mr: 1 }} /> Font Size -
+            </MenuItem>
+            <MenuItem onClick={() => { handleFontIncrease(); setMenuAnchor(null); }}>
+              <TextIncreaseIcon sx={{ mr: 1 }} /> Font Size +
+            </MenuItem>
+            <MenuItem onClick={() => { handleThemeToggle(); setMenuAnchor(null); }}>
+              {darkMode ? <LightModeIcon sx={{ mr: 1 }} /> : <DarkModeIcon sx={{ mr: 1 }} />}
+              {darkMode ? 'Light Mode' : 'Dark Mode'}
+            </MenuItem>
+            <MenuItem onClick={() => { handleRefresh(); setMenuAnchor(null); }}>
+              <RefreshIcon sx={{ mr: 1 }} /> Refresh
+            </MenuItem>
+            <MenuItem onClick={() => { handleShare(); setMenuAnchor(null); }}>
+              <ShareIcon sx={{ mr: 1 }} /> Share
+            </MenuItem>
+            <MenuItem onClick={() => { handleInfo(); setMenuAnchor(null); }}>
+              <InfoIcon sx={{ mr: 1 }} /> Info
+            </MenuItem>
+            <MenuItem onClick={() => { handlePrint(); setMenuAnchor(null); }}>
+              <PrintIcon sx={{ mr: 1 }} /> Print
+            </MenuItem>
+          </>
+        )}
+        
+        {/* SM screens - show font controls + other options */}
+        {isSm && !isXs && (
+          <>
+            <MenuItem onClick={() => { handleFontDecrease(); setMenuAnchor(null); }}>
+              <TextDecreaseIcon sx={{ mr: 1 }} /> Font Size -
+            </MenuItem>
+            <MenuItem onClick={() => { handleFontIncrease(); setMenuAnchor(null); }}>
+              <TextIncreaseIcon sx={{ mr: 1 }} /> Font Size +
+            </MenuItem>
+            <MenuItem onClick={() => { handleThemeToggle(); setMenuAnchor(null); }}>
+              {darkMode ? <LightModeIcon sx={{ mr: 1 }} /> : <DarkModeIcon sx={{ mr: 1 }} />}
+              {darkMode ? 'Light Mode' : 'Dark Mode'}
+            </MenuItem>
+            <MenuItem onClick={() => { handleRefresh(); setMenuAnchor(null); }}>
+              <RefreshIcon sx={{ mr: 1 }} /> Refresh
+            </MenuItem>
+            <MenuItem onClick={() => { handleShare(); setMenuAnchor(null); }}>
+              <ShareIcon sx={{ mr: 1 }} /> Share
+            </MenuItem>
+            <MenuItem onClick={() => { handleInfo(); setMenuAnchor(null); }}>
+              <InfoIcon sx={{ mr: 1 }} /> Info
+            </MenuItem>
+          </>
+        )}
+        
+        {/* MD screens - show theme + other options */}
+        {isMd && !isSm && (
+          <>
+            <MenuItem onClick={() => { handleThemeToggle(); setMenuAnchor(null); }}>
+              {darkMode ? <LightModeIcon sx={{ mr: 1 }} /> : <DarkModeIcon sx={{ mr: 1 }} />}
+              {darkMode ? 'Light Mode' : 'Dark Mode'}
+            </MenuItem>
+            <MenuItem onClick={() => { handleRefresh(); setMenuAnchor(null); }}>
+              <RefreshIcon sx={{ mr: 1 }} /> Refresh
+            </MenuItem>
+            <MenuItem onClick={() => { handleShare(); setMenuAnchor(null); }}>
+              <ShareIcon sx={{ mr: 1 }} /> Share
+            </MenuItem>
+            <MenuItem onClick={() => { handleInfo(); setMenuAnchor(null); }}>
+              <InfoIcon sx={{ mr: 1 }} /> Info
+            </MenuItem>
+          </>
+        )}
+      </Menu>
     </Paper>
   );
 };

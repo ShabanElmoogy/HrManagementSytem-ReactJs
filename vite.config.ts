@@ -77,6 +77,12 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+
+    optimizeDeps: {
+      exclude: ['pdfjs-dist'],
+    },
+
+    assetsInclude: ['**/*.worker.js'],
     
     server: isDev
       ? {

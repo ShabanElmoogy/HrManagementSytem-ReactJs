@@ -1,334 +1,161 @@
-import React, { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useTheme } from "@mui/material/styles";
 import {
-  Box,
-  IconButton,
-  Typography,
+  PdfViewerComponent,
   Toolbar,
-  Paper,
-  Tooltip,
-  TextField,
-  Divider,
-  Grid,
-} from "@mui/material";
-import {
-  ZoomIn,
-  ZoomOut,
-  Download,
-  Fullscreen,
-  NavigateBefore,
-  NavigateNext,
-  FirstPage,
-  LastPage,
-  FitScreen,
-  ArrowBack,
+  Magnification,
+  Navigation,
+  LinkAnnotation,
+  BookmarkView,
+  ThumbnailView,
   Print,
-  Save,
-} from "@mui/icons-material";
-import { Document, Page, pdfjs } from "react-pdf";
-import "react-pdf/dist/Page/AnnotationLayer.css";
-import "react-pdf/dist/Page/TextLayer.css";
-import { useSidebar } from "@/layouts/components/sidebar/sidebarContext";
-
-// ✅ إعداد الـ worker بشكل صحيح لمشاريع React
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+  TextSelection,
+  TextSearch,
+  Inject,
+  Annotation,
+  FormFields,
+  FormDesigner,
+} from "@syncfusion/ej2-react-pdfviewer";
+import "@syncfusion/ej2-base/styles/material.css";
+import "@syncfusion/ej2-buttons/styles/material.css";
+import "@syncfusion/ej2-dropdowns/styles/material.css";
+import "@syncfusion/ej2-inputs/styles/material.css";
+import "@syncfusion/ej2-navigations/styles/material.css";
+import "@syncfusion/ej2-popups/styles/material.css";
+import "@syncfusion/ej2-splitbuttons/styles/material.css";
+import "@syncfusion/ej2-pdfviewer/styles/material.css";
 
 interface PdfViewerProps {
   mediaUrl: string;
-  onError: (msg: string) => void;
+  onError?: (message: string) => void;
   onBack?: () => void;
 }
 
 const PdfViewer: React.FC<PdfViewerProps> = ({ mediaUrl, onError, onBack }) => {
-  const { open: sidebarOpen } = useSidebar();
-  const [scale, setScale] = useState(1.25);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [numPages, setNumPages] = useState(0);
-  const [pageInput, setPageInput] = useState("1");
+  const viewerRef = useRef<PdfViewerComponent>(null);
+  const [isComponentReady, setIsComponentReady] = useState(false);
+  const theme = useTheme();
 
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    setNumPages(numPages);
-    setPageNumber(1);
-    setPageInput("1");
-  };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsComponentReady(true);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
-  const onDocumentLoadError = (error: Error) => {
-    console.error("PDF load error:", error);
-    onError("Failed to load PDF");
-  };
-
-  const handleZoomIn = () => setScale((prev) => Math.min(prev + 0.25, 3));
-  const handleZoomOut = () => setScale((prev) => Math.max(prev - 0.25, 0.5));
-  const handleFitToWidth = () => setScale(1.0);
-
-  const handlePrevPage = () => {
-    const newPage = Math.max(pageNumber - 1, 1);
-    setPageNumber(newPage);
-    setPageInput(newPage.toString());
-  };
-
-  const handleNextPage = () => {
-    const newPage = Math.min(pageNumber + 1, numPages);
-    setPageNumber(newPage);
-    setPageInput(newPage.toString());
-  };
-
-  const handleFirstPage = () => {
-    setPageNumber(1);
-    setPageInput("1");
-  };
-
-  const handleLastPage = () => {
-    setPageNumber(numPages);
-    setPageInput(numPages.toString());
-  };
-
-  const handlePageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPageInput(e.target.value);
-  };
-
-  const handlePageInputSubmit = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      const page = parseInt(pageInput);
-      if (page >= 1 && page <= numPages) {
-        setPageNumber(page);
-      } else {
-        setPageInput(pageNumber.toString());
+  useEffect(() => {
+    const loadDocument = async () => {
+      if (mediaUrl && viewerRef.current && isComponentReady) {
+        try {
+          const response = await fetch(mediaUrl);
+          if (!response.ok) throw new Error("Failed to fetch PDF");
+          
+          const arrayBuffer = await response.arrayBuffer();
+          const uint8Array = new Uint8Array(arrayBuffer);
+          let binaryString = '';
+          for (let i = 0; i < uint8Array.length; i++) {
+            binaryString += String.fromCharCode(uint8Array[i]);
+          }
+          const base64String = btoa(binaryString);
+          
+          setTimeout(() => {
+            viewerRef.current?.load(`data:application/pdf;base64,${base64String}`, null);
+          }, 500);
+          
+        } catch (error) {
+          console.error("Error loading PDF:", error);
+          onError?.(error instanceof Error ? error.message : "Failed to load PDF");
+        }
       }
-    }
+    };
+
+    loadDocument();
+  }, [mediaUrl, isComponentReady, onError]);
+
+  const handleDocumentLoad = () => {
+    console.log("Document loaded successfully");
   };
 
-  const handleDownload = () => {
-    const link = document.createElement("a");
-    link.href = mediaUrl;
-    link.download = "document.pdf";
-    link.click();
-  };
-
-  const handleFullscreen = () => {
-    const element = document.getElementById("pdf-viewer");
-    if (element?.requestFullscreen) element.requestFullscreen();
-  };
-
-  const handleBack = () => {
-    if (onBack) onBack();
-    else window.history.back();
-  };
-
-  const handlePrint = () => {
-    window.print();
-  };
-
-  const handleSave = () => {
-    const link = document.createElement("a");
-    link.href = mediaUrl;
-    link.download = "document.pdf";
-    link.click();
-  };
+  const isDarkMode = theme.palette.mode === 'dark';
+  const appBarHeight = theme.mixins.toolbar.minHeight || 64;
 
   return (
-    <Paper
-      id="pdf-viewer"
-      elevation={3}
-      sx={{
-        width: sidebarOpen ? "calc(100vw - 265px)" : "calc(100vw - 90px)",
-        height: "calc(100vh - 100px)",
-        display: "flex",
-        flexDirection: "column",
-        bgcolor: "background.default",
-      }}
-    >
-      {/* ✅ Toolbar */}
-      <Toolbar
-        variant="dense"
-        sx={{
-          bgcolor: "background.paper",
-          borderBottom: "3px solid",
-          borderColor: "divider",
-          minHeight: 48,
-          px: 2,
-        }}
-      >
-        <Grid
-          container
-          justifyContent="space-between"
-          alignItems="center"
-          sx={{ width: "100%" }}
+    <div style={{ 
+      height: "100vh", 
+      width: "100%",
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      overflow: "hidden",
+      paddingTop: typeof appBarHeight === 'number' ? `${appBarHeight}px` : appBarHeight,
+      boxSizing: "border-box",
+      backgroundColor: isDarkMode ? theme.palette.background.default : '#fafafa'
+    }}>
+      {!isComponentReady && (
+        <div style={{ 
+          display: "flex", 
+          justifyContent: "center", 
+          alignItems: "center", 
+          height: "100%",
+          fontSize: "18px",
+          color: theme.palette.text.primary
+        }}>
+          Loading PDF Viewer...
+        </div>
+      )}
+      {isComponentReady && (
+        <PdfViewerComponent
+          ref={viewerRef}
+          id="container"
+          resourceUrl="https://cdn.syncfusion.com/ej2/26.2.11/dist/ej2-pdfviewer-lib"
+          enableToolbar={true}
+          enableNavigationToolbar={true}
+          documentLoad={handleDocumentLoad}
+          style={{ 
+            height: "100%", 
+            width: "100%",
+            display: "block"
+          }}
         >
-          <Grid size={{ xs: 4 }}>
-            <Tooltip title="Back">
-              <IconButton size="small" onClick={handleBack}>
-                <ArrowBack />
-              </IconButton>
-            </Tooltip>
-          </Grid>
-
-          <Grid
-            size={{ xs: 4 }}
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Tooltip title="First Page">
-              <span>
-                <IconButton
-                  size="small"
-                  onClick={handleFirstPage}
-                  disabled={pageNumber <= 1}
-                >
-                  <FirstPage />
-                </IconButton>
-              </span>
-            </Tooltip>
-
-            <Tooltip title="Previous Page">
-              <span>
-                <IconButton
-                  size="small"
-                  onClick={handlePrevPage}
-                  disabled={pageNumber <= 1}
-                >
-                  <NavigateBefore />
-                </IconButton>
-              </span>
-            </Tooltip>
-
-            <TextField
-              size="small"
-              value={pageInput}
-              onChange={handlePageInputChange}
-              onKeyDown={handlePageInputSubmit}
-              sx={{ width: 60, mx: 1 }}
-              inputProps={{ style: { textAlign: "center" } }}
-            />
-
-            <Typography variant="body2">/ {numPages || "—"}</Typography>
-
-            <Tooltip title="Next Page">
-              <span>
-                <IconButton
-                  size="small"
-                  onClick={handleNextPage}
-                  disabled={pageNumber >= numPages}
-                >
-                  <NavigateNext />
-                </IconButton>
-              </span>
-            </Tooltip>
-
-            <Tooltip title="Last Page">
-              <span>
-                <IconButton
-                  size="small"
-                  onClick={handleLastPage}
-                  disabled={pageNumber >= numPages}
-                >
-                  <LastPage />
-                </IconButton>
-              </span>
-            </Tooltip>
-          </Grid>
-
-          <Grid
-            size={{ xs: 4 }}
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
-              gap: 0.5,
-              px: 1,
-            }}
-          >
-            <Typography variant="body2">
-              Zoom: {Math.round(scale * 100)}%
-            </Typography>
-
-            <Tooltip title="Zoom Out">
-              <span>
-                <IconButton
-                  size="small"
-                  onClick={handleZoomOut}
-                  disabled={scale <= 0.5}
-                >
-                  <ZoomOut />
-                </IconButton>
-              </span>
-            </Tooltip>
-
-            <Tooltip title="Fit to Width">
-              <IconButton size="small" onClick={handleFitToWidth}>
-                <FitScreen />
-              </IconButton>
-            </Tooltip>
-
-            <Tooltip title="Zoom In">
-              <span>
-                <IconButton
-                  size="small"
-                  onClick={handleZoomIn}
-                  disabled={scale >= 3}
-                >
-                  <ZoomIn />
-                </IconButton>
-              </span>
-            </Tooltip>
-
-            <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
-
-            <Tooltip title="Print">
-              <IconButton size="small" onClick={handlePrint}>
-                <Print />
-              </IconButton>
-            </Tooltip>
-
-            <Tooltip title="Save">
-              <IconButton size="small" onClick={handleSave}>
-                <Save />
-              </IconButton>
-            </Tooltip>
-
-            <Tooltip title="Download PDF">
-              <IconButton size="small" onClick={handleDownload}>
-                <Download />
-              </IconButton>
-            </Tooltip>
-
-            <Tooltip title="Fullscreen">
-              <IconButton size="small" onClick={handleFullscreen}>
-                <Fullscreen />
-              </IconButton>
-            </Tooltip>
-          </Grid>
-        </Grid>
-      </Toolbar>
-
-      {/* ✅ PDF Content */}
-      <Box
-        sx={{
-          flex: 1,
-          overflow: "auto",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "flex-start",
-          bgcolor: "background.default",
-          p: 4,
-        }}
-      >
-        <Document
-          file={mediaUrl}
-          onLoadSuccess={onDocumentLoadSuccess}
-          onLoadError={onDocumentLoadError}
-          loading={<Typography>Loading PDF...</Typography>}
-        >
-          <Page
-            pageNumber={pageNumber}
-            scale={scale}
-            loading={<Typography>Loading page...</Typography>}
+          <Inject
+            services={[
+              Toolbar,
+              Magnification,
+              Navigation,
+              LinkAnnotation,
+              BookmarkView,
+              ThumbnailView,
+              Print,
+              TextSelection,
+              TextSearch,
+              Annotation,
+              FormFields,
+              FormDesigner,
+            ]}
           />
-        </Document>
-      </Box>
-    </Paper>
+        </PdfViewerComponent>
+      )}
+      <style>{`
+        #container_toolbarContainer {
+          z-index: 999 !important;
+          margin-left : 61px !important;
+          margin-top: 12px !important;
+        }
+        #container .e-pv-page-container {
+          padding-top: 25px !important;
+          background-color: ${isDarkMode ? '#1a1a1a' : '#e0e0e0'} !important;
+        }
+        #container_viewerContainer {
+          padding-top: 15px !important;
+          background-color: ${isDarkMode ? '#1a1a1a' : '#fafafa'} !important;
+        }
+        #container .e-pv-page-div {
+          margin-bottom: 20px !important;
+        }
+      `}</style>
+    </div>
   );
 };
 

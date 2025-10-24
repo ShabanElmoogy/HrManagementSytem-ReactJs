@@ -9,6 +9,7 @@ import {
   TableChart,
   BarChart,
   ArrowBack,
+  MoreVert,
 } from "@mui/icons-material";
 import {
   Box,
@@ -22,6 +23,9 @@ import {
   Tooltip,
   Chip,
   Divider,
+  Menu,
+  MenuItem,
+  useMediaQuery,
 } from "@mui/material";
 import useViewLayout from "@/shared/hooks/useViewLayout";
 
@@ -73,6 +77,9 @@ const MultiViewHeader = ({
   enableActivity = false,
 }) => {
   const theme = useTheme();
+  const isXs = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSm = useMediaQuery(theme.breakpoints.down('md'));
+  const [menuAnchor, setMenuAnchor] = React.useState(null);
 
   const [viewType, handleViewChange] = useViewLayout(
     storageKey,
@@ -319,9 +326,10 @@ const MultiViewHeader = ({
             display: { xs: "block", md: "none" },
           }}
         >
-          {/* Title and Stats */}
-          <Box sx={{ mb: 2 }}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+          {/* Top Row: Title, Actions, View Toggle */}
+          <Box sx={{ display: "flex", alignItems: "center", mb: 1, position: "relative" }}>
+            {/* Left: Title */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, flex: 1 }}>
               {showBackButton && (
                 <IconButton onClick={onBack} size="small" sx={{ mr: 1 }}>
                   <ArrowBack />
@@ -343,57 +351,9 @@ const MultiViewHeader = ({
                 {title}
               </Typography>
             </Box>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                flexWrap: "wrap",
-              }}
-            >
-              <Chip
-                label={`${dataCount} ${totalLabel}`}
-                size="small"
-                color="primary"
-                variant="outlined"
-              />
-              <Chip
-                label={
-                  viewOptions.find((opt) => opt.value === viewType)?.label ||
-                  viewType
-                }
-                size="small"
-                color="secondary"
-                sx={{
-                  backgroundColor: theme.palette.secondary.main + "20",
-                  color: theme.palette.secondary.main,
-                }}
-              />
-              {additionalChips.map((chip, index) => (
-                <Chip key={index} {...chip} />
-              ))}
-            </Box>
-          </Box>
-
-          {/* Actions and View Toggle */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: 1,
-              flexWrap: "nowrap",
-            }}
-          >
-            {/* Action Buttons - Compact */}
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 0.5,
-                flexShrink: 1,
-              }}
-            >
+            
+            {/* Center: Action Buttons */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
               {showActions.add && (
                 <Tooltip title={t("actions.add") || "Add"} arrow>
                   <Button
@@ -405,9 +365,9 @@ const MultiViewHeader = ({
                       borderRadius: 2,
                       textTransform: "none",
                       fontWeight: 700,
-                      fontSize: "0.75rem",
+                      fontSize: { xs: "0.7rem", sm: "0.75rem" },
                       minWidth: "auto",
-                      px: 1.25,
+                      px: { xs: 1, sm: 1.25 },
                       boxShadow: `0 3px 10px ${theme.palette.primary.main}30`,
                       background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
                       color: theme.palette.primary.contrastText,
@@ -424,7 +384,7 @@ const MultiViewHeader = ({
                       "& .MuiButton-startIcon": { mr: 0.5 },
                     }}
                   >
-                    {t("actions.add") || "Add"}
+                    {isXs ? "" : (t("actions.add") || "Add")}
                   </Button>
                 </Tooltip>
               )}
@@ -448,8 +408,8 @@ const MultiViewHeader = ({
                 </Tooltip>
               )}
             </Box>
-
-            {/* View Toggle - Always Visible */}
+            
+            {/* Right: View Toggle */}
             <Box sx={{ flexShrink: 0 }}>
               <ToggleButtonGroup
                 value={viewType}
@@ -465,10 +425,10 @@ const MultiViewHeader = ({
                     border: `1px solid ${theme.palette.divider}`,
                     borderRadius: "4px !important",
                     mx: 0.125,
-                    px: 0.5,
+                    px: { xs: 0.25, sm: 0.5 },
                     py: 0.5,
-                    minWidth: 32,
-                    height: 32,
+                    minWidth: { xs: 28, sm: 32 },
+                    height: { xs: 28, sm: 32 },
                     transition: "all 0.2s ease-in-out",
                     "&.Mui-selected": {
                       backgroundColor: theme.palette.primary.main,
@@ -484,18 +444,73 @@ const MultiViewHeader = ({
                   },
                 }}
               >
-                {viewOptions.map((option) => (
+                {viewOptions.slice(0, isXs ? 2 : viewOptions.length).map((option) => (
                   <ToggleButton
                     key={option.value}
                     value={option.value}
                     aria-label={option.label}
                   >
-                    {option.icon}
+                    {React.cloneElement(option.icon, { fontSize: isXs ? "small" : "medium" })}
                   </ToggleButton>
                 ))}
               </ToggleButtonGroup>
             </Box>
           </Box>
+          
+          {/* Stats Row */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              flexWrap: "wrap",
+              mb: 2,
+              ml: showBackButton ? 6 : titleIcon ? 4 : 0,
+            }}
+          >
+            <Chip
+              label={`${dataCount} ${totalLabel}`}
+              size="small"
+              color="primary"
+              variant="outlined"
+            />
+            <Chip
+              label={
+                viewOptions.find((opt) => opt.value === viewType)?.label ||
+                viewType
+              }
+              size="small"
+              color="secondary"
+              sx={{
+                backgroundColor: theme.palette.secondary.main + "20",
+                color: theme.palette.secondary.main,
+              }}
+            />
+            {additionalChips.map((chip, index) => (
+              <Chip key={index} {...chip} />
+            ))}
+          </Box>
+
+
+          
+          {/* Menu for additional view options on XS */}
+          <Menu
+            anchorEl={menuAnchor}
+            open={Boolean(menuAnchor)}
+            onClose={() => setMenuAnchor(null)}
+          >
+            {viewOptions.slice(2).map((option) => (
+              <MenuItem 
+                key={option.value}
+                onClick={() => { 
+                  handleViewChangeInternal(null, option.value); 
+                  setMenuAnchor(null); 
+                }}
+              >
+                {option.icon} <Box sx={{ ml: 1 }}>{option.label}</Box>
+              </MenuItem>
+            ))}
+          </Menu>
         </Box>
       </Paper>
 

@@ -7,6 +7,10 @@ import {
   Paper,
   Tooltip,
   Grid,
+  Menu,
+  MenuItem,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import {
   Download,
@@ -17,6 +21,7 @@ import {
   NavigateNext,
   FirstPage,
   LastPage,
+  MoreVert,
 } from "@mui/icons-material";
 import { useSidebar } from "@/layouts/components/sidebar/sidebarContext";
 import { renderAsync } from "docx-preview";
@@ -71,6 +76,11 @@ const WordViewer: React.FC<WordViewerProps> = ({ mediaUrl, onError, onBack }) =>
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const theme = useTheme();
+  const isXs = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSm = useMediaQuery(theme.breakpoints.down('md'));
+  const isMd = useMediaQuery(theme.breakpoints.down('lg'));
+  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
   const handleDownload = () => {
     const link = document.createElement("a");
@@ -180,24 +190,26 @@ const WordViewer: React.FC<WordViewerProps> = ({ mediaUrl, onError, onBack }) =>
           px: 2,
         }}
       >
-        <Grid container sx={{ width: "100%", alignItems: "center" }}>
-          <Grid size={{ xs: 4 }} sx={{ display: "flex", justifyContent: "flex-start" }}>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: { xs: 1, sm: 2 }, width: "100%" }}>
+          {/* Left Section - Back */}
+          <Box sx={{ display: "flex", alignItems: "center" }}>
             <Tooltip title="Back">
               <IconButton size="small" onClick={handleBack}>
                 <ArrowBack />
               </IconButton>
             </Tooltip>
-          </Grid>
+          </Box>
 
-          <Grid size={{ xs: 4 }} sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 1 }}>
-            {(totalPages > 1 || !isLoading) && (
-              <>
-                <Typography variant="body2" sx={{ mx: 1, color: 'primary.main' }}>
-                  Pages: {totalPages}
-                </Typography>
-              </>
+          {/* Center Section - Navigation */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 0.5, sm: 1 }, flex: 1, justifyContent: "center" }}>
+            {!isXs && (totalPages > 1 || !isLoading) && (
+              <Typography variant="body2" sx={{ color: 'primary.main', fontSize: { xs: '0.7rem', sm: '0.875rem' } }}>
+                Pages: {totalPages}
+              </Typography>
             )}
-            {true && (
+            
+            {/* Large screens - show all navigation */}
+            {!isMd && (
               <>
                 <Tooltip title="First Page">
                   <span>
@@ -221,9 +233,47 @@ const WordViewer: React.FC<WordViewerProps> = ({ mediaUrl, onError, onBack }) =>
                     </IconButton>
                   </span>
                 </Tooltip>
-                <Typography variant="body2" sx={{ mx: 1 }}>
-                  {currentPage} / {totalPages}
-                </Typography>
+              </>
+            )}
+            
+            {/* Medium+ screens - show prev/next */}
+            {isMd && !isSm && (
+              <Tooltip title="Previous Page">
+                <span>
+                  <IconButton
+                    size="small"
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                    disabled={currentPage <= 1}
+                  >
+                    <NavigateBefore />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            )}
+            
+            {/* Always show page counter */}
+            <Typography variant="body2" sx={{ mx: 1, fontSize: { xs: '0.7rem', sm: '0.875rem' } }}>
+              {currentPage} / {totalPages}
+            </Typography>
+            
+            {/* Medium+ screens - show prev/next */}
+            {isMd && !isSm && (
+              <Tooltip title="Next Page">
+                <span>
+                  <IconButton
+                    size="small"
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage >= totalPages}
+                  >
+                    <NavigateNext />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            )}
+            
+            {/* Large screens - show all navigation */}
+            {!isMd && (
+              <>
                 <Tooltip title="Next Page">
                   <span>
                     <IconButton
@@ -248,14 +298,11 @@ const WordViewer: React.FC<WordViewerProps> = ({ mediaUrl, onError, onBack }) =>
                 </Tooltip>
               </>
             )}
-            {false && (
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                Word Document
-              </Typography>
-            )}
-          </Grid>
+          </Box>
 
-          <Grid size={{ xs: 4 }} sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
+          {/* Right Section - Actions */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            {/* Always show all actions */}
             <Tooltip title="Print">
               <IconButton size="small" onClick={handlePrint} sx={{ bgcolor: "action.hover" }}>
                 <Print />
@@ -273,8 +320,12 @@ const WordViewer: React.FC<WordViewerProps> = ({ mediaUrl, onError, onBack }) =>
                 <Fullscreen />
               </IconButton>
             </Tooltip>
-          </Grid>
-        </Grid>
+            
+
+          </Box>
+        </Box>
+        
+
       </Toolbar>
 
       {/* Word Content */}
@@ -291,15 +342,7 @@ const WordViewer: React.FC<WordViewerProps> = ({ mediaUrl, onError, onBack }) =>
             <Typography>Loading Word document...</Typography>
           </Box>
         )}
-        <div
-          ref={containerRef}
-          style={{
-            width: "100%",
-            minHeight: "100%",
-            backgroundColor: "#f5f5f5",
-            borderRadius: "8px",
-          }}
-        />
+        <div ref={containerRef} />
       </Box>
     </Paper>
   );

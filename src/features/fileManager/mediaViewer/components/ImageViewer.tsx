@@ -7,6 +7,10 @@ import {
   Paper,
   Grid,
   Toolbar,
+  Menu,
+  MenuItem,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import axios from "axios";
 import {
@@ -20,6 +24,7 @@ import {
   Flip as FlipHIcon,
   SwapVert as FlipVIcon,
   ArrowBack,
+  MoreVert as MoreVertIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { useSidebar } from "@/layouts/components/sidebar/sidebarContext";
@@ -35,6 +40,10 @@ interface ImageViewerProps {
 const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError, onBack }) => {
   const { t } = useTranslation();
   const { open: sidebarOpen } = useSidebar();
+  const theme = useTheme();
+  const isXs = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSm = useMediaQuery(theme.breakpoints.down('md'));
+  const isMd = useMediaQuery(theme.breakpoints.down('lg'));
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [zoom, setZoom] = useState(100);
@@ -53,6 +62,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError, onBack }) 
   const controlsTimeoutRef = useRef<NodeJS.Timeout>();
   const zoomInfoTimeoutRef = useRef<NodeJS.Timeout>();
   const [imageBlobUrl, setImageBlobUrl] = useState<string | null>(null);
+  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
   const MIN_ZOOM = 50;
   const MAX_ZOOM = 300;
@@ -316,78 +326,117 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError, onBack }) 
           </Grid>
 
           <Grid size={{ xs: 4 }} sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 0.5 }}>
-            <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
-              <Tooltip title="Flip Horizontal">
-                <IconButton 
-                  size="small" 
-                  onClick={handleFlipH} 
-                  sx={{ 
-                    bgcolor: flipH ? "primary.main" : "action.hover",
-                    color: flipH ? "primary.contrastText" : "inherit",
-                    "&:hover": { bgcolor: flipH ? "primary.dark" : "action.selected" }
-                  }}
-                >
-                  <FlipHIcon />
-                </IconButton>
-              </Tooltip>
-              
-              <Tooltip title="Flip Vertical">
-                <IconButton 
-                  size="small" 
-                  onClick={handleFlipV} 
-                  sx={{ 
-                    bgcolor: flipV ? "primary.main" : "action.hover",
-                    color: flipV ? "primary.contrastText" : "inherit",
-                    "&:hover": { bgcolor: flipV ? "primary.dark" : "action.selected" }
-                  }}
-                >
-                  <FlipVIcon />
-                </IconButton>
-              </Tooltip>
-            </Box>
+            {/* Large screens - show all buttons */}
+            {!isMd && (
+              <>
+                <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
+                  <Tooltip title="Flip Horizontal">
+                    <IconButton 
+                      size="small" 
+                      onClick={handleFlipH} 
+                      sx={{ 
+                        bgcolor: flipH ? "primary.main" : "action.hover",
+                        color: flipH ? "primary.contrastText" : "inherit",
+                        "&:hover": { bgcolor: flipH ? "primary.dark" : "action.selected" }
+                      }}
+                    >
+                      <FlipHIcon />
+                    </IconButton>
+                  </Tooltip>
+                  
+                  <Tooltip title="Flip Vertical">
+                    <IconButton 
+                      size="small" 
+                      onClick={handleFlipV} 
+                      sx={{ 
+                        bgcolor: flipV ? "primary.main" : "action.hover",
+                        color: flipV ? "primary.contrastText" : "inherit",
+                        "&:hover": { bgcolor: flipV ? "primary.dark" : "action.selected" }
+                      }}
+                    >
+                      <FlipVIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+                
+                <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
+                  <Tooltip title="Brightness -">
+                    <IconButton 
+                      size="small" 
+                      onClick={() => adjustBrightness(-10)}
+                      sx={{ bgcolor: "action.hover", minWidth: 32 }}
+                    >
+                      <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>B-</Typography>
+                    </IconButton>
+                  </Tooltip>
+                  
+                  <Tooltip title="Brightness +">
+                    <IconButton 
+                      size="small" 
+                      onClick={() => adjustBrightness(10)}
+                      sx={{ bgcolor: "action.hover", minWidth: 32 }}
+                    >
+                      <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>B+</Typography>
+                    </IconButton>
+                  </Tooltip>
+                  
+                  <Tooltip title="Contrast -">
+                    <IconButton 
+                      size="small" 
+                      onClick={() => adjustContrast(-10)}
+                      sx={{ bgcolor: "action.hover", minWidth: 32 }}
+                    >
+                      <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>C-</Typography>
+                    </IconButton>
+                  </Tooltip>
+                  
+                  <Tooltip title="Contrast +">
+                    <IconButton 
+                      size="small" 
+                      onClick={() => adjustContrast(10)}
+                      sx={{ bgcolor: "action.hover", minWidth: 32 }}
+                    >
+                      <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>C+</Typography>
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              </>
+            )}
             
-            <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
-              <Tooltip title="Brightness -">
-                <IconButton 
-                  size="small" 
-                  onClick={() => adjustBrightness(-10)}
-                  sx={{ bgcolor: "action.hover", minWidth: 32 }}
-                >
-                  <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>B-</Typography>
-                </IconButton>
-              </Tooltip>
-              
-              <Tooltip title="Brightness +">
-                <IconButton 
-                  size="small" 
-                  onClick={() => adjustBrightness(10)}
-                  sx={{ bgcolor: "action.hover", minWidth: 32 }}
-                >
-                  <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>B+</Typography>
-                </IconButton>
-              </Tooltip>
-              
-              <Tooltip title="Contrast -">
-                <IconButton 
-                  size="small" 
-                  onClick={() => adjustContrast(-10)}
-                  sx={{ bgcolor: "action.hover", minWidth: 32 }}
-                >
-                  <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>C-</Typography>
-                </IconButton>
-              </Tooltip>
-              
-              <Tooltip title="Contrast +">
-                <IconButton 
-                  size="small" 
-                  onClick={() => adjustContrast(10)}
-                  sx={{ bgcolor: "action.hover", minWidth: 32 }}
-                >
-                  <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>C+</Typography>
-                </IconButton>
-              </Tooltip>
-            </Box>
+            {/* Medium screens - show flip buttons only */}
+            {isMd && !isSm && (
+              <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
+                <Tooltip title="Flip Horizontal">
+                  <IconButton 
+                    size="small" 
+                    onClick={handleFlipH} 
+                    sx={{ 
+                      bgcolor: flipH ? "primary.main" : "action.hover",
+                      color: flipH ? "primary.contrastText" : "inherit",
+                      "&:hover": { bgcolor: flipH ? "primary.dark" : "action.selected" }
+                    }}
+                  >
+                    <FlipHIcon />
+                  </IconButton>
+                </Tooltip>
+                
+                <Tooltip title="Flip Vertical">
+                  <IconButton 
+                    size="small" 
+                    onClick={handleFlipV} 
+                    sx={{ 
+                      bgcolor: flipV ? "primary.main" : "action.hover",
+                      color: flipV ? "primary.contrastText" : "inherit",
+                      "&:hover": { bgcolor: flipV ? "primary.dark" : "action.selected" }
+                    }}
+                  >
+                    <FlipVIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            )}
             
+            {/* Always show essential buttons */}
             <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
               <Tooltip title="Download">
                 <IconButton size="small" onClick={handleDownload} sx={{ bgcolor: "action.hover" }}>
@@ -395,11 +444,22 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError, onBack }) 
                 </IconButton>
               </Tooltip>
               
-              <Tooltip title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}>
-                <IconButton size="small" onClick={handleFullscreen} sx={{ bgcolor: "action.hover" }}>
-                  {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
-                </IconButton>
-              </Tooltip>
+              {!isXs && (
+                <Tooltip title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}>
+                  <IconButton size="small" onClick={handleFullscreen} sx={{ bgcolor: "action.hover" }}>
+                    {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+                  </IconButton>
+                </Tooltip>
+              )}
+              
+              {/* Show menu for smaller screens */}
+              {(isMd || isSm || isXs) && (
+                <Tooltip title="More">
+                  <IconButton size="small" onClick={(e) => setMenuAnchor(e.currentTarget)} sx={{ bgcolor: "action.hover" }}>
+                    <MoreVertIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
             </Box>
           </Grid>
         </Grid>
@@ -449,6 +509,80 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError, onBack }) 
           </Typography>
         )}
       </Box>
+      
+      <Menu
+        anchorEl={menuAnchor}
+        open={Boolean(menuAnchor)}
+        onClose={() => setMenuAnchor(null)}
+      >
+        {/* XS screens - show all menu items */}
+        {isXs && (
+          <>
+            <MenuItem onClick={() => { handleFlipH(); setMenuAnchor(null); }}>
+              <FlipHIcon sx={{ mr: 1 }} /> Flip Horizontal
+            </MenuItem>
+            <MenuItem onClick={() => { handleFlipV(); setMenuAnchor(null); }}>
+              <FlipVIcon sx={{ mr: 1 }} /> Flip Vertical
+            </MenuItem>
+            <MenuItem onClick={() => { adjustBrightness(-10); setMenuAnchor(null); }}>
+              <Typography sx={{ mr: 1 }}>B-</Typography> Brightness -
+            </MenuItem>
+            <MenuItem onClick={() => { adjustBrightness(10); setMenuAnchor(null); }}>
+              <Typography sx={{ mr: 1 }}>B+</Typography> Brightness +
+            </MenuItem>
+            <MenuItem onClick={() => { adjustContrast(-10); setMenuAnchor(null); }}>
+              <Typography sx={{ mr: 1 }}>C-</Typography> Contrast -
+            </MenuItem>
+            <MenuItem onClick={() => { adjustContrast(10); setMenuAnchor(null); }}>
+              <Typography sx={{ mr: 1 }}>C+</Typography> Contrast +
+            </MenuItem>
+            <MenuItem onClick={() => { handleFullscreen(); setMenuAnchor(null); }}>
+              {isFullscreen ? <FullscreenExitIcon sx={{ mr: 1 }} /> : <FullscreenIcon sx={{ mr: 1 }} />}
+              {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+            </MenuItem>
+          </>
+        )}
+        
+        {/* SM screens - show brightness/contrast + fullscreen */}
+        {isSm && !isXs && (
+          <>
+            <MenuItem onClick={() => { adjustBrightness(-10); setMenuAnchor(null); }}>
+              <Typography sx={{ mr: 1 }}>B-</Typography> Brightness -
+            </MenuItem>
+            <MenuItem onClick={() => { adjustBrightness(10); setMenuAnchor(null); }}>
+              <Typography sx={{ mr: 1 }}>B+</Typography> Brightness +
+            </MenuItem>
+            <MenuItem onClick={() => { adjustContrast(-10); setMenuAnchor(null); }}>
+              <Typography sx={{ mr: 1 }}>C-</Typography> Contrast -
+            </MenuItem>
+            <MenuItem onClick={() => { adjustContrast(10); setMenuAnchor(null); }}>
+              <Typography sx={{ mr: 1 }}>C+</Typography> Contrast +
+            </MenuItem>
+            <MenuItem onClick={() => { handleFullscreen(); setMenuAnchor(null); }}>
+              {isFullscreen ? <FullscreenExitIcon sx={{ mr: 1 }} /> : <FullscreenIcon sx={{ mr: 1 }} />}
+              {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+            </MenuItem>
+          </>
+        )}
+        
+        {/* MD screens - show only brightness/contrast */}
+        {isMd && !isSm && (
+          <>
+            <MenuItem onClick={() => { adjustBrightness(-10); setMenuAnchor(null); }}>
+              <Typography sx={{ mr: 1 }}>B-</Typography> Brightness -
+            </MenuItem>
+            <MenuItem onClick={() => { adjustBrightness(10); setMenuAnchor(null); }}>
+              <Typography sx={{ mr: 1 }}>B+</Typography> Brightness +
+            </MenuItem>
+            <MenuItem onClick={() => { adjustContrast(-10); setMenuAnchor(null); }}>
+              <Typography sx={{ mr: 1 }}>C-</Typography> Contrast -
+            </MenuItem>
+            <MenuItem onClick={() => { adjustContrast(10); setMenuAnchor(null); }}>
+              <Typography sx={{ mr: 1 }}>C+</Typography> Contrast +
+            </MenuItem>
+          </>
+        )}
+      </Menu>
     </Paper>
   );
 };

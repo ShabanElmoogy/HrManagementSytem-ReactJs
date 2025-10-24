@@ -8,6 +8,11 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./routes/routes";
 import PullToRefresh from 'pulltorefreshjs';
+import { registerLicense } from '@syncfusion/ej2-base';
+
+
+registerLicense('Ix0oFS8QJAw9HSQvXkVhQlBad1hJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXxWd0VhXX5acHVQQWhZWEd9XEM=');
+
 
 // Create a client
 const queryClient = new QueryClient({

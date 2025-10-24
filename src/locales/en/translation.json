@@ -782,7 +782,11 @@
     "Uploading": "Uploading...",
     "close": "Close",
     "title": "Files Manager",
-    "subTitle": "List of files"
+    "subTitle": "List of files",
+    "groupView": "Group View",
+    "gridView": "Grid View",
+    "filtered" : "Filtered",
+    "total" : "Total"
   },
   "media": {
     "unsupportedFormat": "Unsupported file format",

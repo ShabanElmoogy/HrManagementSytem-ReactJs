@@ -22,51 +22,23 @@ export interface PlaybackControlsProps {
 const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   isPlaying,
   onPlayPause,
-  onSkipBack,
-  onPrev,
-  onNext,
-  onSkipForward,
   pulseAnim,
 }) => {
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      <IconButton 
-        onClick={onSkipBack}
-        size="medium"
-        sx={{ transition: 'all 0.2s ease', '&:hover': { transform: 'scale(1.1)' } }}
-      >
-        <Replay10Icon />
-      </IconButton>
-      <IconButton 
-        size="medium"
-        sx={{ transition: 'all 0.2s ease', '&:hover': { transform: 'scale(1.1)' } }}
-        onClick={onPrev}
-      >
-        <SkipPreviousIcon />
-      </IconButton>
-      <IconButton 
-        onClick={onPlayPause} 
-        size="large" 
-        color="primary"
-        sx={{ animation: pulseAnim || 'none', transition: 'all 0.3s ease', '&:hover': { transform: 'scale(1.1)', boxShadow: '0 0 20px rgba(25, 118, 210, 0.5)' } }}
-      >
-        {isPlaying ? <PauseIcon /> : <PlayIcon />}
-      </IconButton>
-      <IconButton 
-        size="medium"
-        sx={{ transition: 'all 0.2s ease', '&:hover': { transform: 'scale(1.1)' } }}
-        onClick={onNext}
-      >
-        <SkipNextIcon />
-      </IconButton>
-      <IconButton 
-        onClick={onSkipForward}
-        size="medium"
-        sx={{ transition: 'all 0.2s ease', '&:hover': { transform: 'scale(1.1)' } }}
-      >
-        <Forward10Icon />
-      </IconButton>
-    </Box>
+    <IconButton 
+      onClick={onPlayPause} 
+      size="large" 
+      color="primary"
+      sx={{ 
+        animation: pulseAnim || 'none', 
+        transition: 'all 0.3s ease', 
+        width: { xs: 48, sm: 56 },
+        height: { xs: 48, sm: 56 },
+        '&:hover': { transform: 'scale(1.1)', boxShadow: '0 0 20px rgba(25, 118, 210, 0.5)' } 
+      }}
+    >
+      {isPlaying ? <PauseIcon sx={{ fontSize: { xs: 24, sm: 32 } }} /> : <PlayIcon sx={{ fontSize: { xs: 24, sm: 32 } }} />}
+    </IconButton>
   );
 };
 
