@@ -277,7 +277,7 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "welcome": "Welcome to the Information Dashboard",
+    "welcome": "Welcome",
     "usersCount": "Users Count"
   },
   "search": {

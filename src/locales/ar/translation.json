@@ -87,11 +87,11 @@
     "appointments": "المواعيد",
     "collapseAllSections": "غلق كل الأقسام",
     "expandAllSections": "فتح كل الأقسام",
-    "all" : "الكل",
-    "unread" : "غير مقروء",
-    "markAllAsRead" : "تحديد كل كمل المقروء",
-    "markAllAsUnread" : "تحديد كل كمل غير مقروء",
-    "clearAll" : "مسح الكل"
+    "all": "الكل",
+    "unread": "غير مقروء",
+    "markAllAsRead": "تحديد كل كمل المقروء",
+    "markAllAsUnread": "تحديد كل كمل غير مقروء",
+    "clearAll": "مسح الكل"
   },
   "actions": {
     "buttons": "العمليات",
@@ -267,7 +267,7 @@
   },
   "dashboard": {
     "title": "لوحة التحكم",
-    "welcome": "مرحبا بك في لوحة المعلومات",
+    "welcome": "مرحبا",
     "usersCount": "عدد المستخدمين"
   },
   "search": {
