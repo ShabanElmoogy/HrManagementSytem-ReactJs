@@ -37,6 +37,19 @@ export const NotesTab: React.FC<NotesTabProps> = ({
 }) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <Box sx={{ 
+        p: 1.5, 
+        mb: 2, 
+        backgroundColor: '#fff3cd', 
+        borderRadius: 1, 
+        border: 2, 
+        borderColor: '#ffc107',
+        boxShadow: '0 2px 4px rgba(255, 193, 7, 0.2)'
+      }}>
+        <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#856404' }}>
+          ⚠️ Under Construction: Notes are not saved to database yet
+        </Typography>
+      </Box>
       <Box sx={{ mb: 2 }}>
         <TextField
           fullWidth
