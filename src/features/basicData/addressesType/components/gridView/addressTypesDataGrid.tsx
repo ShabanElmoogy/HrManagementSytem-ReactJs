@@ -17,6 +17,9 @@ interface AddressTypesDataGridProps {
   onView: (item: AddressType) => void;
   onAdd: () => void;
   t: (key: string) => string;
+  lastAddedId?: string | number | null;
+  lastEditedId?: string | number | null;
+  lastDeletedIndex?: number | null;
 }
 
 const AddressTypesDataGrid: React.FC<AddressTypesDataGridProps> = ({
@@ -28,6 +31,9 @@ const AddressTypesDataGrid: React.FC<AddressTypesDataGridProps> = ({
   onView,
   onAdd,
   t,
+  lastAddedId,
+  lastEditedId,
+  lastDeletedIndex,
 }) => {
   const permissions = useModulePermissions("AddressTypes");
 
@@ -58,6 +64,9 @@ const AddressTypesDataGrid: React.FC<AddressTypesDataGridProps> = ({
         pageSizeOptions={[5, 10, 25]}
         fileName={t("addressTypes.title")}
         reportPdfHeader={t("addressTypes.title")}
+        lastAddedId={lastAddedId}
+        lastEditedId={lastEditedId}
+        lastDeletedIndex={lastDeletedIndex}
       />
     </MyContentsWrapper>
   );

@@ -478,15 +478,66 @@ const MyDataGrid = ({
   t = (key) => key,
   showNavigationButtons = true,
   onNavigationUpdate = null,
-  excludeColumnsFromExport=[],
+  excludeColumnsFromExport = [],
   viewMode = "list",
-  onViewModeChange,
+  onViewModeChange = () => {}, // Make optional with a default empty function
+  lastAddedId = null,
+  lastEditedId = null,
+  lastDeletedIndex = null,
   ...otherProps
 }) => {
   const theme = useTheme();
 
   // Store the navigation update function
   const navigationUpdateRef = React.useRef(null);
+
+  // Effect to handle last added/edited/deleted row selection and scroll
+  React.useEffect(() => {
+    if (!apiRef?.current || rows.length === 0) return;
+
+    const selectAndScroll = (id) => {
+      const orderedIds = apiRef.current.getSortedRowIds();
+      const rowIndex = orderedIds.findIndex((rowId) => rowId === id);
+
+      if (rowIndex !== -1) {
+        const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
+        const targetPage = Math.floor(rowIndex / pageSize);
+        const rowIndexOnPage = rowIndex % pageSize;
+
+        // Set page first, then select and scroll after a short delay
+        apiRef.current.setPage(targetPage);
+        setTimeout(() => {
+          apiRef.current.setRowSelectionModel([id]);
+          apiRef.current.scrollToIndexes({ rowIndex: rowIndexOnPage });
+
+          // Trigger navigation update to sync counter
+          if (navigationUpdateRef.current) {
+            navigationUpdateRef.current();
+          }
+        }, 200); // Increased inner delay to allow page change to render
+      }
+    };
+
+    // Use a timeout to ensure the grid has rendered the new rows
+    // before attempting to select and scroll.
+    const timer = setTimeout(() => {
+      if (lastAddedId && rows.some(row => row.id === lastAddedId)) {
+        selectAndScroll(lastAddedId);
+      } else if (lastEditedId && rows.some(row => row.id === lastEditedId)) {
+        selectAndScroll(lastEditedId);
+      } else if (lastDeletedIndex !== null) {
+        // For deleted, try to select the row at the same index if it exists
+        // Or the last row if the deleted was the last one
+        const orderedIds = apiRef.current.getSortedRowIds();
+        const targetIndex = Math.min(lastDeletedIndex, orderedIds.length - 1);
+        if (targetIndex >= 0) {
+          selectAndScroll(orderedIds[targetIndex]);
+        }
+      }
+    }, 300); // Increased delay to allow page change and row rendering
+
+    return () => clearTimeout(timer);
+  }, [apiRef, rows, lastAddedId, lastEditedId, lastDeletedIndex]);
 
   const getLocaleText = () => {
     if (theme.direction !== "rtl") return {};

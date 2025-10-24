@@ -77,6 +77,9 @@ const AddressTypesMultiView = ({
             onView={onView}
             onAdd={onAdd}
             t={t}
+            lastAddedId={lastAddedId}
+            lastEditedId={lastEditedId}
+            lastDeletedIndex={lastDeletedIndex}
           />
         );
       case "cards":
@@ -114,6 +117,9 @@ const AddressTypesMultiView = ({
             onView={onView}
             onAdd={onAdd}
             t={t}
+            lastAddedId={lastAddedId}
+            lastEditedId={lastEditedId}
+            lastDeletedIndex={lastDeletedIndex}
           />
         );
     }
