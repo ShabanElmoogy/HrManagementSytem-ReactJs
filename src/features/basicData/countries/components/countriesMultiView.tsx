@@ -136,8 +136,10 @@ const CountriesMultiView = ({
       }}
     >
       {/* Shared Multi-View Header */}
-      <MultiViewHeader
+      {/* <MultiViewHeader
         title={t("countries.viewTitle") || "Countries Management"}
+        titleIcon={null}
+        onBack={() => {}}
         storageKey="countries-view-layout"
         defaultView="grid"
         availableViews={["grid", "cards", "chart", "report", "import"]}
@@ -160,7 +162,7 @@ const CountriesMultiView = ({
           refresh: true,
           export: false,
           filter: false,
-        }} onFilter={undefined}      />
+        }} onFilter={undefined}      /> */}
 
       {/* Scrollable View Content */}
       <Box
