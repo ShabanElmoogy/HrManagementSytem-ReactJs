@@ -20,8 +20,8 @@ export default defineConfig(({ mode }) => {
           maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
           globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg}"],
           navigateFallback: "index.html",
-          skipWaiting: false,
-          clientsClaim: false,
+          skipWaiting: true,
+          clientsClaim: true,
           runtimeCaching: [
             {
               urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
