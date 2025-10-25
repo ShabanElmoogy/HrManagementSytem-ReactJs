@@ -11,6 +11,44 @@ import PullToRefresh from 'pulltorefreshjs';
 import { registerLicense } from '@syncfusion/ej2-base';
 import { checkForUpdates, forceReload } from './shared/utils/versionManager';
 
+// Register Service Worker with auto-update and reload on new version
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const registration = await navigator.serviceWorker.register('/sw.js');
+
+      // Reload page when new SW takes control
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        window.location.reload();
+      });
+
+      // Listen for updates found
+      registration.addEventListener('updatefound', () => {
+        const newWorker = registration.installing;
+        if (!newWorker) return;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed') {
+            // If there's a waiting SW, activate it immediately
+            if (registration.waiting) {
+              registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+            }
+          }
+        });
+      });
+
+      // If there's already a waiting worker on load, trigger it
+      if (registration.waiting) {
+        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+      }
+
+      // Periodically check for updates
+      setInterval(() => registration.update(), 60 * 1000);
+    } catch (e) {
+      console.warn('SW registration failed', e);
+    }
+  });
+}
+
 registerLicense('Ix0oFS8QJAw9HSQvXkVhQlBad1hJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXxWd0VhXX5acHVQQWhZWEd9XEM=');
 
 const queryClient = new QueryClient({
@@ -31,8 +69,7 @@ const queryClient = new QueryClient({
 const AppWithPullToRefresh = () => {
   useEffect(() => {
     if (checkForUpdates()) {
-      console.log('New version detected, clearing cache...');
-      setTimeout(() => forceReload(), 1000);
+      setTimeout(() => forceReload(), 500);
       return;
     }
 
@@ -42,12 +79,6 @@ const AppWithPullToRefresh = () => {
         window.location.reload();
       }
     });
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        window.location.reload();
-      });
-    }
 
     return () => {
       PullToRefresh.destroyAll();
