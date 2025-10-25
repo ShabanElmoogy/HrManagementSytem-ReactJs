@@ -740,10 +740,16 @@
     "close": "إغلاق",
     "title": "مدير الملفات",
     "subTitle": "قائمة الملفات",
-    "groupView" : "عرض مجموعات",
-    "gridView" : "عرض الجدول",
-    "filtered" : "ناتج البحث",
-    "total" : "المجموع"
+    "groupView": "عرض مجموعات",
+    "gridView": "عرض الجدول",
+    "filtered": "ناتج البحث",
+    "total": "المجموع",
+    "fileTooLarge": "الملف \"{{fileName}}\" يتجاوز الحجم الأقصى المسموح به وهو {{size}} ميجابايت",
+    "fileTypeNotAllowed": "نوع الملف \"{{type}}\" غير مسموح به للملف \"{{fileName}}\"",
+    "onlyOneAllowed": "مسموح بملف واحد فقط",
+    "onlyOneAtATime": "يمكن رفع ملف واحد فقط في كل مرة",
+    "uploadSuccess": "تم رفع {{count}} ملف(ات) بنجاح",
+    "uploadFailed": "فشل الرفع"
   },
   "media": {
     "unsupportedFormat": "صيغة غير مدعومة",

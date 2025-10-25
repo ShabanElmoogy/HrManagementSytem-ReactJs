@@ -11,38 +11,37 @@ import PullToRefresh from 'pulltorefreshjs';
 import { registerLicense } from '@syncfusion/ej2-base';
 import { checkForUpdates, forceReload } from './shared/utils/versionManager';
 
-// Register Service Worker with auto-update and reload on new version
-if ('serviceWorker' in navigator) {
+// Register Service Worker only in production to avoid dev HMR loops
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      const registration = await navigator.serviceWorker.register('/sw.js');
+      const registration = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
 
       // Reload page when new SW takes control
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        window.location.reload();
+        // Ensure we only reload once per update cycle
+        if (!window.__swReloaded) {
+          window.__swReloaded = true;
+          window.location.reload();
+        }
       });
 
-      // Listen for updates found
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
         if (!newWorker) return;
         newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed') {
-            // If there's a waiting SW, activate it immediately
-            if (registration.waiting) {
-              registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-            }
+          if (newWorker.state === 'installed' && registration.waiting) {
+            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
           }
         });
       });
 
-      // If there's already a waiting worker on load, trigger it
       if (registration.waiting) {
         registration.waiting.postMessage({ type: 'SKIP_WAITING' });
       }
 
       // Periodically check for updates
-      setInterval(() => registration.update(), 60 * 1000);
+      setInterval(() => registration.update(), 5 * 60 * 1000);
     } catch (e) {
       console.warn('SW registration failed', e);
     }
@@ -69,7 +68,8 @@ const queryClient = new QueryClient({
 
 const AppWithPullToRefresh = () => {
   useEffect(() => {
-    if (checkForUpdates()) {
+    // Only run version checks in production to avoid infinite reloads during dev
+    if (import.meta.env.PROD && checkForUpdates()) {
       setTimeout(() => forceReload(), 500);
       return;
     }

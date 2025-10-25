@@ -786,7 +786,13 @@
     "groupView": "Group View",
     "gridView": "Grid View",
     "filtered" : "Filtered",
-    "total" : "Total"
+    "total" : "Total",
+    "fileTooLarge": "File \"{{fileName}}\" exceeds maximum size of {{size}}MB",
+    "fileTypeNotAllowed": "File type \"{{type}}\" is not allowed for \"{{fileName}}\"",
+    "onlyOneAllowed": "Only one file allowed",
+    "onlyOneAtATime": "Only one file can be uploaded at a time",
+    "uploadSuccess": "{{count}} file(s) uploaded successfully",
+    "uploadFailed": "Upload failed"
   },
   "media": {
     "unsupportedFormat": "Unsupported file format",

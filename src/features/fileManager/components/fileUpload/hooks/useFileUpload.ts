@@ -4,19 +4,28 @@ import { useSnackbar } from "@/shared/hooks";
 import HandleApiError from "@/shared/services/apiError";
 import { FILE_CONFIG } from "../constants/fileUpload.type";
 import { FileUploadItem, UseFileUploadArgs } from "../types/fileUpload.type";
+import { useTranslation } from "react-i18next";
 
-export default function useFileUpload({ onSuccess, onClose, multiple = true }: UseFileUploadArgs) {
-
+export default function useFileUpload({
+  onSuccess,
+  onClose,
+  multiple = true,
+}: UseFileUploadArgs) {
   const [files, setFiles] = useState<FileUploadItem[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [globalError, setGlobalError] = useState<string | null>(null);
   const { showSnackbar, SnackbarComponent } = useSnackbar();
+  const { t } = useTranslation();
 
   const validateFileSize = (file: File): boolean => {
     if (file.size > FILE_CONFIG.MAX_FILE_SIZE) {
       const sizeMB = (FILE_CONFIG.MAX_FILE_SIZE / (1024 * 1024)).toFixed(0);
-      const errorMessage = `File "${file.name}" exceeds maximum size of ${sizeMB}MB`;
+      // const errorMessage = `File "${file.name}" exceeds maximum size of ${sizeMB}MB`;
+      const errorMessage = t("files.fileTooLarge", {
+        fileName: file.name,
+        size: sizeMB,
+      });
       setGlobalError(errorMessage);
       return false;
     }
@@ -25,7 +34,7 @@ export default function useFileUpload({ onSuccess, onClose, multiple = true }: U
 
   const validateFileType = (file: File): boolean => {
     if (!FILE_CONFIG.ALLOWED_TYPES.includes(file.type as any)) {
-      const errorMessage = `File type "${file.type}" is not allowed for "${file.name}"`;
+      const errorMessage = t('files.fileTypeNotAllowed', { type: file.type, fileName: file.name });
       setGlobalError(errorMessage);
       return false;
     }
@@ -33,7 +42,9 @@ export default function useFileUpload({ onSuccess, onClose, multiple = true }: U
   };
 
   const validateFiles = (fileList: File[]): File[] => {
-    return fileList.filter((file) => validateFileSize(file) && validateFileType(file));
+    return fileList.filter(
+      (file) => validateFileSize(file) && validateFileType(file)
+    );
   };
 
   const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
@@ -70,12 +81,18 @@ export default function useFileUpload({ onSuccess, onClose, multiple = true }: U
     }));
 
     if (!multiple && newFiles.length > 1) {
-      setGlobalError("Only one file allowed");
-      showSnackbar("error", ["Only one file can be uploaded at a time"], "Error");
+      setGlobalError(t('files.onlyOneAllowed'));
+      showSnackbar(
+        "error",
+        [t('files.onlyOneAtATime')],
+        t('messages.error')
+      );
       return;
     }
 
-    setFiles((prevFiles) => (multiple ? [...prevFiles, ...newFiles] : newFiles));
+    setFiles((prevFiles) =>
+      multiple ? [...prevFiles, ...newFiles] : newFiles
+    );
     setGlobalError(null);
   };
 
@@ -98,7 +115,9 @@ export default function useFileUpload({ onSuccess, onClose, multiple = true }: U
     const uploadUrl = `api/v1/Files/UploadMany`;
 
     // Update all files to uploading status
-    setFiles((prevFiles) => prevFiles.map((f) => ({ ...f, status: "uploading", progress: 0 })));
+    setFiles((prevFiles) =>
+      prevFiles.map((f) => ({ ...f, status: "uploading", progress: 0 }))
+    );
 
     try {
       const formData = new FormData();
@@ -113,25 +132,34 @@ export default function useFileUpload({ onSuccess, onClose, multiple = true }: U
       });
 
       // Update all files to success status
-      setFiles((prevFiles) => prevFiles.map((f) => ({ ...f, status: "success", progress: 100 })));
+      setFiles((prevFiles) =>
+        prevFiles.map((f) => ({ ...f, status: "success", progress: 100 }))
+      );
 
       // Call onSuccess for each file
       files.forEach((fileItem) => {
         onSuccess?.(fileItem.file.name);
       });
 
-      showSnackbar("success", [`${files.length} file(s) uploaded successfully`], "Success");
+      showSnackbar(
+        "success",
+        [t('files.uploadSuccess', { count: files.length })],
+        t('messages.success')
+      );
 
       setTimeout(() => {
         onClose?.();
       }, 1000);
     } catch (error: any) {
       // Update all files to error status
-      const errorMessage = error instanceof Error ? error.message : "Upload failed";
-      setFiles((prevFiles) => prevFiles.map((f) => ({ ...f, status: "error", error: errorMessage })));
+      const errorMessage =
+        error instanceof Error ? error.message : t('files.uploadFailed');
+      setFiles((prevFiles) =>
+        prevFiles.map((f) => ({ ...f, status: "error", error: errorMessage }))
+      );
 
       HandleApiError(error, (updatedState: any) => {
-        showSnackbar("error", updatedState.messages, error?.title || "Error");
+        showSnackbar("error", updatedState.messages, error?.title || t('messages.error'));
       });
     } finally {
       setIsUploading(false);

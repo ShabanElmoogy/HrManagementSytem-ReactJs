@@ -14,8 +14,6 @@ import { useThemeSettings } from "../../theme/useThemeSettings";
 import SideBar from "../components/sidebar/sideBar";
 import SidebarContext from "../components/sidebar/sidebarContext"; // Import context
 import TopBar from "../components/topBar/topBar";
-import { MediaPlayerProvider } from "../../features/fileManager/contexts/MediaPlayerContext";
-import PersistentMediaPlayer from "../../features/fileManager/components/PersistentMediaPlayer";
 // NotificationProvider removed - using simplified notification system
 
 const DrawerHeader = styled("div")(({ theme }) => ({
@@ -50,7 +48,7 @@ const MainLayout = () => {
   return (
     <ThemeProvider theme={theme}>
       <CacheProvider value={cacheProvider}>
-        <MediaPlayerProvider>
+       
           <SidebarContext.Provider value={{ open, setOpen: handleSetOpen }}>
             <Box sx={{ display: "flex", width: "100%", overflow: "hidden" }}>
               <CssBaseline />
@@ -73,10 +71,9 @@ const MainLayout = () => {
             </Box>
             
             {/* Global persistent audio player */}
-            <PersistentMediaPlayer />
+   
           </SidebarContext.Provider>
-          <ToastProvider position="top-right" children={""} />
-        </MediaPlayerProvider>
+          <ToastProvider position="top-right" children={""} />        
       </CacheProvider>
     </ThemeProvider>
   );
