@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       VitePWA({
-        registerType: "prompt",
+        registerType: "autoUpdate",
         workbox: {
           maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
           globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg}"],
