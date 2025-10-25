@@ -9,6 +9,7 @@ import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./routes/routes";
 import PullToRefresh from 'pulltorefreshjs';
 import { registerLicense } from '@syncfusion/ej2-base';
+import { checkForUpdates, forceReload } from './shared/utils/versionManager';
 
 
 registerLicense('Ix0oFS8QJAw9HSQvXkVhQlBad1hJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXxWd0VhXX5acHVQQWhZWEd9XEM=');
@@ -34,6 +35,13 @@ const queryClient = new QueryClient({
 // Create a wrapper component for PullToRefresh
 const AppWithPullToRefresh = () => {
   useEffect(() => {
+    // Check for version updates
+    if (checkForUpdates()) {
+      console.log('New version detected, clearing cache...');
+      setTimeout(() => forceReload(), 1000);
+      return;
+    }
+
     // Initialize PullToRefresh after component mounts
     const ptr = PullToRefresh.init({
       mainElement: 'body',
@@ -41,6 +49,13 @@ const AppWithPullToRefresh = () => {
         window.location.reload();
       }
     });
+
+    // Handle PWA updates
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        window.location.reload();
+      });
+    }
 
     // Cleanup on unmount
     return () => {

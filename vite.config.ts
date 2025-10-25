@@ -15,11 +15,26 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       VitePWA({
-        registerType: "autoUpdate",
+        registerType: "prompt",
         workbox: {
           maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
           globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg}"],
           navigateFallback: "index.html",
+          skipWaiting: false,
+          clientsClaim: false,
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'google-fonts-cache',
+                expiration: {
+                  maxEntries: 10,
+                  maxAgeSeconds: 60 * 60 * 24 * 365
+                }
+              }
+            }
+          ]
         },
         includeAssets: [
           "favicon.ico",
@@ -71,6 +86,9 @@ export default defineConfig(({ mode }) => {
       chunkSizeWarningLimit: 3000,
       rollupOptions: {
         output: {
+          entryFileNames: `assets/[name].[hash].js`,
+          chunkFileNames: `assets/[name].[hash].js`,
+          assetFileNames: `assets/[name].[hash].[ext]`,
           manualChunks: {
             "vendor-react": ["react", "react-dom"],
           },
