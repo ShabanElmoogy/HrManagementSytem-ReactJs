@@ -5,6 +5,7 @@ import HandleApiError from "@/shared/services/apiError";
 import { FILE_CONFIG } from "../constants/fileUpload.type";
 import { FileUploadItem, UseFileUploadArgs } from "../types/fileUpload.type";
 import { useTranslation } from "react-i18next";
+import { apiRoutes } from "@/routes";
 
 export default function useFileUpload({
   onSuccess,
@@ -112,7 +113,7 @@ export default function useFileUpload({
     setIsUploading(true);
     setGlobalError(null);
 
-    const uploadUrl = `api/v1/Files/UploadMany`;
+    const uploadUrl = apiRoutes.files.uploadMany;
 
     // Update all files to uploading status
     setFiles((prevFiles) =>
