@@ -49,6 +49,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+//syncfusion license
 registerLicense('Ix0oFS8QJAw9HSQvXkVhQlBad1hJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXxWd0VhXX5acHVQQWhZWEd9XEM=');
 
 const queryClient = new QueryClient({
