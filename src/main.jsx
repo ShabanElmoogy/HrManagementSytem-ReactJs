@@ -11,20 +11,16 @@ import PullToRefresh from 'pulltorefreshjs';
 import { registerLicense } from '@syncfusion/ej2-base';
 import { checkForUpdates, forceReload } from './shared/utils/versionManager';
 
-
 registerLicense('Ix0oFS8QJAw9HSQvXkVhQlBad1hJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXxWd0VhXX5acHVQQWhZWEd9XEM=');
 
-
-// Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 600, // 20ms - data is fresh for 20ms
-      gcTime: 10 * 60 * 1000, // 5 minutes garbage collection
+      staleTime: 600,
+      gcTime: 10 * 60 * 1000,
       retry: 1,
       refetchOnWindowFocus: false,
-      refetchOnMount: false, // Don't refetch on mount if data is still fresh (respects staleTime)
-      // refetchInterval : 3000
+      refetchOnMount: false,
     },
     mutations: {
       retry: 1,
@@ -32,17 +28,14 @@ const queryClient = new QueryClient({
   },
 });
 
-// Create a wrapper component for PullToRefresh
 const AppWithPullToRefresh = () => {
   useEffect(() => {
-    // Check for version updates
     if (checkForUpdates()) {
       console.log('New version detected, clearing cache...');
       setTimeout(() => forceReload(), 1000);
       return;
     }
 
-    // Initialize PullToRefresh after component mounts
     const ptr = PullToRefresh.init({
       mainElement: 'body',
       onRefresh() {
@@ -50,14 +43,12 @@ const AppWithPullToRefresh = () => {
       }
     });
 
-    // Handle PWA updates
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         window.location.reload();
       });
     }
 
-    // Cleanup on unmount
     return () => {
       PullToRefresh.destroyAll();
     };
