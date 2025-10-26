@@ -37,8 +37,12 @@ function getExtension(name: string): string | undefined {
 }
 
 export function classifyFileType(file: FileItem): FileTypeGroup {
-  const ext = (file.extension || getExtension(file.name) || "").toLowerCase();
-  const mime = (file.mimeType || "").toLowerCase();
+  // Support both mapped and unmapped file properties
+  const extension = file.extension || (file as any).fileExtension?.replace(".", "") || getExtension(file.name) || "";
+  const mimeType = file.mimeType || (file as any).contentType || "";
+  
+  const ext = extension.toLowerCase();
+  const mime = mimeType.toLowerCase();
 
   if (mime.startsWith("image/") || imageExt.includes(ext)) return "Images";
   if (mime === "application/pdf" || pdfExt.includes(ext)) return "PDFs";

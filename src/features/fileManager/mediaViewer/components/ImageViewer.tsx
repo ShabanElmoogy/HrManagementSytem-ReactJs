@@ -1,33 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import {
-  Box,
-  IconButton,
-  Tooltip,
-  Typography,
-  Paper,
-  Grid,
-  Toolbar,
-  Menu,
-  MenuItem,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Paper, useMediaQuery, useTheme } from "@mui/material";
 import axios from "axios";
-import {
-  ZoomIn as ZoomInIcon,
-  ZoomOut as ZoomOutIcon,
-  Fullscreen as FullscreenIcon,
-  FullscreenExit as FullscreenExitIcon,
-  FileDownload as DownloadIcon,
-  RotateRight as RotateRightIcon,
-  Refresh as ResetIcon,
-  Flip as FlipHIcon,
-  SwapVert as FlipVIcon,
-  ArrowBack,
-  MoreVert as MoreVertIcon,
-} from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { useSidebar } from "@/layouts/components/sidebar/sidebarContext";
+import ImageToolbar from "./image/Toolbar";
+import ImageViewerArea from "./image/Viewer";
+import ImageMenu from "./image/Menu";
 
 interface ImageViewerProps {
   mediaUrl: string;
@@ -59,8 +37,8 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError, onBack }) 
   const [flipV, setFlipV] = useState(false);
   const [brightness, setBrightness] = useState(100);
   const [contrast, setContrast] = useState(100);
-  const controlsTimeoutRef = useRef<NodeJS.Timeout>();
-  const zoomInfoTimeoutRef = useRef<NodeJS.Timeout>();
+  const controlsTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const zoomInfoTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const [imageBlobUrl, setImageBlobUrl] = useState<string | null>(null);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
@@ -145,27 +123,6 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError, onBack }) 
 
   const handleFlipV = () => {
     setFlipV(prev => !prev);
-  };
-
-  const handleFitToScreen = () => {
-    setZoom(100);
-    setRotation(0);
-    if (containerRef.current) {
-      containerRef.current.scrollLeft = 0;
-      containerRef.current.scrollTop = 0;
-    }
-  };
-
-  const handleToggleInfo = () => {
-    setShowImageInfo(prev => !prev);
-  };
-
-  const adjustBrightness = (delta: number) => {
-    setBrightness(prev => Math.max(50, Math.min(150, prev + delta)));
-  };
-
-  const adjustContrast = (delta: number) => {
-    setContrast(prev => Math.max(50, Math.min(150, prev + delta)));
   };
 
   const handleFullscreen = () => {
@@ -257,332 +214,56 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError, onBack }) 
     <Paper
       elevation={3}
       sx={{
-        width: sidebarOpen ? "calc(100vw - 180px)" : "calc(100vw - 90px)",
+        width: sidebarOpen ? "calc(100vw - 275px)" : "calc(100vw - 90px)",
         height: "100vh",
         display: "flex",
         flexDirection: "column",
         bgcolor: "background.default",
       }}
     >
-      {/* Toolbar */}
-      <Toolbar
-        variant="dense"
-        sx={{
-          bgcolor: "background.paper",
-          borderBottom: "1px solid",
-          borderColor: "divider",
-          minHeight: 48,
-          mt: 5,
-          px: 2,
-        }}
-      >
-        <Grid container sx={{ width: "100%", alignItems: "center" }}>
-          <Grid size={{ xs: 4 }} sx={{ display: "flex", justifyContent: "flex-start" }}>
-            <Tooltip title="Back">
-              <IconButton size="small" onClick={handleBack}>
-                <ArrowBack />
-              </IconButton>
-            </Tooltip>
-          </Grid>
+      <ImageToolbar
+        onBack={handleBack}
+        zoom={zoom}
+        onZoomIn={handleZoomIn}
+        onZoomOut={handleZoomOut}
+        onRotate={handleRotate}
+        onReset={handleReset}
+        flipH={flipH}
+        flipV={flipV}
+        onFlipH={handleFlipH}
+        onFlipV={handleFlipV}
+        isFullscreen={isFullscreen}
+        onFullscreen={handleFullscreen}
+        onOpenMenu={(e) => setMenuAnchor(e.currentTarget)}
+        onDownload={handleDownload}
+      />
 
-          <Grid size={{ xs: 4 }} sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 0.5 }}>
-            <Box sx={{ 
-              display: "flex", 
-              alignItems: "center", 
-              gap: 0.5, 
-              bgcolor: "action.hover", 
-              borderRadius: 2, 
-              px: 1, 
-              py: 0.5 
-            }}>
-              <Tooltip title="Zoom Out">
-                <IconButton size="small" onClick={handleZoomOut} disabled={zoom <= MIN_ZOOM}>
-                  <ZoomOutIcon />
-                </IconButton>
-              </Tooltip>
-              
-              <Typography variant="body2" sx={{ minWidth: 50, textAlign: "center", fontWeight: 600 }}>
-                {zoom}%
-              </Typography>
-              
-              <Tooltip title="Zoom In">
-                <IconButton size="small" onClick={handleZoomIn} disabled={zoom >= MAX_ZOOM}>
-                  <ZoomInIcon />
-                </IconButton>
-              </Tooltip>
-            </Box>
-            
-            <Tooltip title="Rotate 90°">
-              <IconButton size="small" onClick={handleRotate} sx={{ bgcolor: "action.hover" }}>
-                <RotateRightIcon />
-              </IconButton>
-            </Tooltip>
-            
-            <Tooltip title="Reset All">
-              <IconButton size="small" onClick={handleReset} sx={{ bgcolor: "action.hover" }}>
-                <ResetIcon />
-              </IconButton>
-            </Tooltip>
-          </Grid>
-
-          <Grid size={{ xs: 4 }} sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 0.5 }}>
-            {/* Large screens - show all buttons */}
-            {!isMd && (
-              <>
-                <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
-                  <Tooltip title="Flip Horizontal">
-                    <IconButton 
-                      size="small" 
-                      onClick={handleFlipH} 
-                      sx={{ 
-                        bgcolor: flipH ? "primary.main" : "action.hover",
-                        color: flipH ? "primary.contrastText" : "inherit",
-                        "&:hover": { bgcolor: flipH ? "primary.dark" : "action.selected" }
-                      }}
-                    >
-                      <FlipHIcon />
-                    </IconButton>
-                  </Tooltip>
-                  
-                  <Tooltip title="Flip Vertical">
-                    <IconButton 
-                      size="small" 
-                      onClick={handleFlipV} 
-                      sx={{ 
-                        bgcolor: flipV ? "primary.main" : "action.hover",
-                        color: flipV ? "primary.contrastText" : "inherit",
-                        "&:hover": { bgcolor: flipV ? "primary.dark" : "action.selected" }
-                      }}
-                    >
-                      <FlipVIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-                
-                <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
-                  <Tooltip title="Brightness -">
-                    <IconButton 
-                      size="small" 
-                      onClick={() => adjustBrightness(-10)}
-                      sx={{ bgcolor: "action.hover", minWidth: 32 }}
-                    >
-                      <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>B-</Typography>
-                    </IconButton>
-                  </Tooltip>
-                  
-                  <Tooltip title="Brightness +">
-                    <IconButton 
-                      size="small" 
-                      onClick={() => adjustBrightness(10)}
-                      sx={{ bgcolor: "action.hover", minWidth: 32 }}
-                    >
-                      <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>B+</Typography>
-                    </IconButton>
-                  </Tooltip>
-                  
-                  <Tooltip title="Contrast -">
-                    <IconButton 
-                      size="small" 
-                      onClick={() => adjustContrast(-10)}
-                      sx={{ bgcolor: "action.hover", minWidth: 32 }}
-                    >
-                      <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>C-</Typography>
-                    </IconButton>
-                  </Tooltip>
-                  
-                  <Tooltip title="Contrast +">
-                    <IconButton 
-                      size="small" 
-                      onClick={() => adjustContrast(10)}
-                      sx={{ bgcolor: "action.hover", minWidth: 32 }}
-                    >
-                      <Typography sx={{ fontSize: "0.7rem", fontWeight: 600 }}>C+</Typography>
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              </>
-            )}
-            
-            {/* Medium screens - show flip buttons only */}
-            {isMd && !isSm && (
-              <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
-                <Tooltip title="Flip Horizontal">
-                  <IconButton 
-                    size="small" 
-                    onClick={handleFlipH} 
-                    sx={{ 
-                      bgcolor: flipH ? "primary.main" : "action.hover",
-                      color: flipH ? "primary.contrastText" : "inherit",
-                      "&:hover": { bgcolor: flipH ? "primary.dark" : "action.selected" }
-                    }}
-                  >
-                    <FlipHIcon />
-                  </IconButton>
-                </Tooltip>
-                
-                <Tooltip title="Flip Vertical">
-                  <IconButton 
-                    size="small" 
-                    onClick={handleFlipV} 
-                    sx={{ 
-                      bgcolor: flipV ? "primary.main" : "action.hover",
-                      color: flipV ? "primary.contrastText" : "inherit",
-                      "&:hover": { bgcolor: flipV ? "primary.dark" : "action.selected" }
-                    }}
-                  >
-                    <FlipVIcon />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            )}
-            
-            {/* Always show essential buttons */}
-            <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
-              <Tooltip title="Download">
-                <IconButton size="small" onClick={handleDownload} sx={{ bgcolor: "action.hover" }}>
-                  <DownloadIcon />
-                </IconButton>
-              </Tooltip>
-              
-              {!isXs && (
-                <Tooltip title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}>
-                  <IconButton size="small" onClick={handleFullscreen} sx={{ bgcolor: "action.hover" }}>
-                    {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
-                  </IconButton>
-                </Tooltip>
-              )}
-              
-              {/* Show menu for smaller screens */}
-              {(isMd || isSm || isXs) && (
-                <Tooltip title="More">
-                  <IconButton size="small" onClick={(e) => setMenuAnchor(e.currentTarget)} sx={{ bgcolor: "action.hover" }}>
-                    <MoreVertIcon />
-                  </IconButton>
-                </Tooltip>
-              )}
-            </Box>
-          </Grid>
-        </Grid>
-      </Toolbar>
-
-      {/* Image Content */}
-      <Box
-        ref={containerRef}
+      <ImageViewerArea
+        containerRef={containerRef}
+        imageBlobUrl={imageBlobUrl}
+        zoom={zoom}
+        rotation={rotation}
+        flipH={flipH}
+        flipV={flipV}
+        brightness={brightness}
+        contrast={contrast}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
         onWheel={handleWheel}
-        sx={{
-          flex: 1,
-          overflow: "auto",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          bgcolor: "background.default",
-          position: "relative",
-          cursor: zoom > 100 ? "grab" : "default",
-          "&:active": {
-            cursor: zoom > 100 ? "grabbing" : "default",
-          },
-        }}
-      >
-        {imageBlobUrl ? (
-          <img
-            ref={imageRef}
-            src={imageBlobUrl}
-            alt="Viewer"
-            style={{
-              maxWidth: "100%",
-              maxHeight: "100%",
-              objectFit: "contain",
-              userSelect: "none",
-              transform: `scale(${zoom / 100}) rotate(${rotation}deg) scaleX(${flipH ? -1 : 1}) scaleY(${flipV ? -1 : 1})`,
-              filter: `brightness(${brightness}%) contrast(${contrast}%)`,
-              transition: "transform 0.3s ease",
-            }}
-            onError={() => onError(t("media.failedToLoadImage"))}
-          />
-        ) : (
-          <Typography variant="h6" color="text.secondary">
-            Loading image...
-          </Typography>
-        )}
-      </Box>
-      
-      <Menu
+        onError={() => onError(t("media.failedToLoadImage"))}
+      />
+
+      <ImageMenu
         anchorEl={menuAnchor}
         open={Boolean(menuAnchor)}
+        isFullscreen={isFullscreen}
         onClose={() => setMenuAnchor(null)}
-      >
-        {/* XS screens - show all menu items */}
-        {isXs && (
-          <>
-            <MenuItem onClick={() => { handleFlipH(); setMenuAnchor(null); }}>
-              <FlipHIcon sx={{ mr: 1 }} /> Flip Horizontal
-            </MenuItem>
-            <MenuItem onClick={() => { handleFlipV(); setMenuAnchor(null); }}>
-              <FlipVIcon sx={{ mr: 1 }} /> Flip Vertical
-            </MenuItem>
-            <MenuItem onClick={() => { adjustBrightness(-10); setMenuAnchor(null); }}>
-              <Typography sx={{ mr: 1 }}>B-</Typography> Brightness -
-            </MenuItem>
-            <MenuItem onClick={() => { adjustBrightness(10); setMenuAnchor(null); }}>
-              <Typography sx={{ mr: 1 }}>B+</Typography> Brightness +
-            </MenuItem>
-            <MenuItem onClick={() => { adjustContrast(-10); setMenuAnchor(null); }}>
-              <Typography sx={{ mr: 1 }}>C-</Typography> Contrast -
-            </MenuItem>
-            <MenuItem onClick={() => { adjustContrast(10); setMenuAnchor(null); }}>
-              <Typography sx={{ mr: 1 }}>C+</Typography> Contrast +
-            </MenuItem>
-            <MenuItem onClick={() => { handleFullscreen(); setMenuAnchor(null); }}>
-              {isFullscreen ? <FullscreenExitIcon sx={{ mr: 1 }} /> : <FullscreenIcon sx={{ mr: 1 }} />}
-              {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
-            </MenuItem>
-          </>
-        )}
-        
-        {/* SM screens - show brightness/contrast + fullscreen */}
-        {isSm && !isXs && (
-          <>
-            <MenuItem onClick={() => { adjustBrightness(-10); setMenuAnchor(null); }}>
-              <Typography sx={{ mr: 1 }}>B-</Typography> Brightness -
-            </MenuItem>
-            <MenuItem onClick={() => { adjustBrightness(10); setMenuAnchor(null); }}>
-              <Typography sx={{ mr: 1 }}>B+</Typography> Brightness +
-            </MenuItem>
-            <MenuItem onClick={() => { adjustContrast(-10); setMenuAnchor(null); }}>
-              <Typography sx={{ mr: 1 }}>C-</Typography> Contrast -
-            </MenuItem>
-            <MenuItem onClick={() => { adjustContrast(10); setMenuAnchor(null); }}>
-              <Typography sx={{ mr: 1 }}>C+</Typography> Contrast +
-            </MenuItem>
-            <MenuItem onClick={() => { handleFullscreen(); setMenuAnchor(null); }}>
-              {isFullscreen ? <FullscreenExitIcon sx={{ mr: 1 }} /> : <FullscreenIcon sx={{ mr: 1 }} />}
-              {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
-            </MenuItem>
-          </>
-        )}
-        
-        {/* MD screens - show only brightness/contrast */}
-        {isMd && !isSm && (
-          <>
-            <MenuItem onClick={() => { adjustBrightness(-10); setMenuAnchor(null); }}>
-              <Typography sx={{ mr: 1 }}>B-</Typography> Brightness -
-            </MenuItem>
-            <MenuItem onClick={() => { adjustBrightness(10); setMenuAnchor(null); }}>
-              <Typography sx={{ mr: 1 }}>B+</Typography> Brightness +
-            </MenuItem>
-            <MenuItem onClick={() => { adjustContrast(-10); setMenuAnchor(null); }}>
-              <Typography sx={{ mr: 1 }}>C-</Typography> Contrast -
-            </MenuItem>
-            <MenuItem onClick={() => { adjustContrast(10); setMenuAnchor(null); }}>
-              <Typography sx={{ mr: 1 }}>C+</Typography> Contrast +
-            </MenuItem>
-          </>
-        )}
-      </Menu>
+        onFlipH={handleFlipH}
+        onFlipV={handleFlipV}
+        onFullscreen={handleFullscreen}
+      />
     </Paper>
   );
 };

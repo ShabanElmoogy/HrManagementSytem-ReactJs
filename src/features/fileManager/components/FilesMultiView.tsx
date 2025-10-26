@@ -91,8 +91,6 @@ const FilesMultiView = ({
             files={displayFiles as any}
             onOpenFile={(f) => onView?.(f as any)}
             onDeleteFile={(f) => {
-              console.log("GroupedFilesView delete clicked:", f);
-              console.log("File structure:", JSON.stringify(f, null, 2));
               onDelete?.(f as any);
             }}
             onOpenGroup={() => {}}

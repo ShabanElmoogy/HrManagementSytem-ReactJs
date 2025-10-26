@@ -1,6 +1,15 @@
 import React from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
   flex: 1,
@@ -44,7 +53,13 @@ export interface ExcelTableProps {
   searchTerm: string;
 }
 
-const ExcelTable: React.FC<ExcelTableProps> = ({ headers, rows, searchTerm }) => {
+const ExcelTable: React.FC<ExcelTableProps> = ({
+  headers,
+  rows,
+  searchTerm,
+}) => {
+  const { t } = useTranslation();
+
   return (
     <StyledTableContainer>
       <Table stickyHeader>
@@ -72,7 +87,7 @@ const ExcelTable: React.FC<ExcelTableProps> = ({ headers, rows, searchTerm }) =>
             <TableRow>
               <StyledTableCell colSpan={headers.length} align="center">
                 <Typography color="text.secondary" sx={{ py: 3 }}>
-                  {searchTerm ? "No results found" : "No data available"}
+                  {searchTerm ? t("files.NoResults") : t("files.NoData")}
                 </Typography>
               </StyledTableCell>
             </TableRow>

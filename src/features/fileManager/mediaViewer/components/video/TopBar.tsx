@@ -1,7 +1,8 @@
 import React from 'react';
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { FileDownload as DownloadIcon, PictureInPicture as PipIcon, MenuOpen as SidebarIcon, ArrowBack as ArrowBackIcon } from '@mui/icons-material';
+import { FileDownload as DownloadIcon, PictureInPicture as PipIcon, MenuOpen as SidebarIcon } from '@mui/icons-material';
+import BackButton from '@/shared/components/common/BackButton';
 
 const TopControlsOverlay = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -32,11 +33,12 @@ export const TopBar: React.FC<TopBarProps> = ({ title, show, onDownload, onPip, 
     <TopControlsOverlay className="controls-overlay" sx={{ opacity: show ? 1 : 0 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         {onBack && (
-          <Tooltip title="Back">
-            <IconButton onClick={onBack} sx={{ color: '#fff', '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' } }}>
-              <ArrowBackIcon />
-            </IconButton>
-          </Tooltip>
+          <BackButton
+            onClick={onBack}
+            tooltip="Back"
+            ariaLabel="Back"
+            sx={{ color: '#fff', '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' } }}
+          />
         )}
         <Typography sx={{ color: '#fff', fontWeight: 600, fontSize: '1rem' }}>{title}</Typography>
       </Box>

@@ -316,7 +316,8 @@
     "goToFirstRecord": "Go to first record",
     "goToPreviousRecord": "Go to previous record",
     "goToNextRecord": "Go to next record",
-    "goToLastRecord": "Go to last record"
+    "goToLastRecord": "Go to last record",
+    "pages" : "Pages"
   },
   "addressTypes": {
     "dashboard": {
@@ -331,7 +332,11 @@
       "nameLength": "Name Length Distribution",
       "timeline": "Address Types Added Over Time"
     },
-    "views": { "grid": "Grid", "chart": "Chart", "card": "Card" },
+    "views": {
+      "grid": "Grid",
+      "chart": "Chart",
+      "card": "Card"
+    },
     "title": "Address Types",
     "subTitle": "List of address types",
     "viewTitle": "Address Types Management",
@@ -785,14 +790,39 @@
     "subTitle": "List of files",
     "groupView": "Group View",
     "gridView": "Grid View",
-    "filtered" : "Filtered",
-    "total" : "Total",
+    "filtered": "Filtered",
+    "total": "Total",
     "fileTooLarge": "File \"{{fileName}}\" exceeds maximum size of {{size}}MB",
     "fileTypeNotAllowed": "File type \"{{type}}\" is not allowed for \"{{fileName}}\"",
     "onlyOneAllowed": "Only one file allowed",
     "onlyOneAtATime": "Only one file can be uploaded at a time",
     "uploadSuccess": "{{count}} file(s) uploaded successfully",
-    "uploadFailed": "Upload failed"
+    "uploadFailed": "Upload failed",
+    "name": "Name",
+    "size": "Size",
+    "lastUpdated": "Last Updated",
+    "searchAll": "Search all files",
+    "sortedBy": "Sort by",
+    "fetchError": "Fetch Error",
+    "deleted": "تم الحذف",
+    "deleteError": "Error During Delete",
+    "uploaded": "File Uploaded successfuly",
+    "uploadError": "Upload Error",
+    "downloadStarted": "DownLoad Started ...",
+    "downloadError": "Download Error",
+    "failedToOpenViewer": "Failed To Open Viewer",
+    "NoResults": "No Result Found",
+    "NoData": "No Data Available",
+    "previousSheet": "Previous Sheet",
+    "nextSheet": "Next Sheet",
+    "search": "Search ... ",
+    "refresh": "Refresh",
+    "print": "Print",
+    "export": "Export",
+    "exitFullscreen": "Exit Full Screen",
+    "fullScreen": "Full Screen",
+    "searchInSheet": "Search In Sheet",
+    "more": "More"
   },
   "media": {
     "unsupportedFormat": "Unsupported file format",

@@ -1,5 +1,18 @@
 import React, { useState } from "react";
-import { Box, Grid, IconButton, Paper, TextField, Tooltip, Typography, Chip, Select, MenuItem, FormControl, Menu, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Paper,
+  TextField,
+  Tooltip,
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  Menu,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
   FileDownload as DownloadIcon,
@@ -11,11 +24,10 @@ import {
   Print as PrintIcon,
   Refresh as RefreshIcon,
   GetApp as ExportIcon,
-  ArrowBack as BackIcon,
-  Info as InfoIcon,
   MoreVert as MoreVertIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
+import BackButton from "@/shared/components/common/BackButton";
 
 const ToolbarContainer = styled(Paper)(({ theme }) => ({
   display: "flex",
@@ -26,12 +38,6 @@ const ToolbarContainer = styled(Paper)(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.divider}`,
   gap: theme.spacing(2),
   flexWrap: "wrap",
-}));
-
-const InfoChip = styled(Chip)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.main,
-  color: theme.palette.primary.contrastText,
-  fontWeight: 600,
 }));
 
 export interface ExcelToolbarProps {
@@ -73,34 +79,47 @@ const ExcelToolbar: React.FC<ExcelToolbarProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const isXs = useMediaQuery(theme.breakpoints.down('sm'));
-  const isSm = useMediaQuery(theme.breakpoints.down('md'));
-  const isMd = useMediaQuery(theme.breakpoints.down('lg'));
+  const isXs = useMediaQuery(theme.breakpoints.down("sm"));
+  const isSm = useMediaQuery(theme.breakpoints.down("md"));
+  const isMd = useMediaQuery(theme.breakpoints.down("lg"));
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   return (
     <ToolbarContainer elevation={0}>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 1, width: "100%" }}>
+      <Box
+        sx={{ display: "flex", flexDirection: "column", gap: 1, width: "100%" }}
+      >
         {/* First Row */}
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: { xs: 1, sm: 2 } }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: { xs: 1, sm: 2 },
+          }}
+        >
           {/* Left Section - Navigation */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
             {onBack && (
-              <Tooltip title="Back">
-                <IconButton size="small" onClick={onBack}>
-                  <BackIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
+              <BackButton
+                onClick={onBack}
+                size="small"
+                ariaLabel="Back"
+              />
             )}
             {!isXs && (
               <>
-                <Tooltip title="Previous Sheet">
+                <Tooltip title={t("files.previousSheet")}>
                   <span>
-                    <IconButton size="small" onClick={onPrev} disabled={currentSheetIndex === 0}>
+                    <IconButton
+                      size="small"
+                      onClick={onPrev}
+                      disabled={currentSheetIndex === 0}
+                    >
                       <PrevIcon fontSize="small" />
                     </IconButton>
                   </span>
                 </Tooltip>
-                <Tooltip title="Next Sheet">
+                <Tooltip title={t("files.nextSheet")}>
                   <span>
                     <IconButton
                       size="small"
@@ -118,7 +137,14 @@ const ExcelToolbar: React.FC<ExcelToolbarProps> = ({
           {/* Center Section - Empty for small screens */}
           <Box sx={{ flex: 1 }}>
             {!isSm && (
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2, justifyContent: "center" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2,
+                  justifyContent: "center",
+                }}
+              >
                 <FormControl size="small" sx={{ minWidth: 120 }}>
                   <Select
                     value={currentSheetIndex}
@@ -134,13 +160,21 @@ const ExcelToolbar: React.FC<ExcelToolbarProps> = ({
                 </FormControl>
                 <TextField
                   size="small"
-                  placeholder="Search..."
+                  placeholder={t("files.search")}
                   value={searchTerm}
                   onChange={(e) => onSearch(e.target.value)}
-                  InputProps={{ startAdornment: <SearchIcon sx={{ mr: 1, color: "text.secondary" }} /> }}
+                  InputProps={{
+                    startAdornment: (
+                      <SearchIcon sx={{ mr: 1, color: "text.secondary" }} />
+                    ),
+                  }}
                   sx={{ width: "100%", maxWidth: 200 }}
                 />
-                <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ whiteSpace: "nowrap" }}
+                >
                   {rowsCount} rows
                 </Typography>
               </Box>
@@ -153,21 +187,21 @@ const ExcelToolbar: React.FC<ExcelToolbarProps> = ({
             {!isMd && (
               <>
                 {onRefresh && (
-                  <Tooltip title="Refresh">
+                  <Tooltip title={t("files.refresh")}>
                     <IconButton size="small" onClick={onRefresh}>
                       <RefreshIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
                 )}
                 {onPrint && (
-                  <Tooltip title="Print">
+                  <Tooltip title={t("files.print")}>
                     <IconButton size="small" onClick={onPrint}>
                       <PrintIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
                 )}
                 {onExport && (
-                  <Tooltip title="Export">
+                  <Tooltip title={t("files.export")}>
                     <IconButton size="small" onClick={onExport}>
                       <ExportIcon fontSize="small" />
                     </IconButton>
@@ -175,33 +209,51 @@ const ExcelToolbar: React.FC<ExcelToolbarProps> = ({
                 )}
               </>
             )}
-            
+
             {/* Always show download and fullscreen */}
-            <Tooltip title="Download">
+            <Tooltip title={t("files.download")}>
               <IconButton size="small" onClick={onDownload}>
                 <DownloadIcon fontSize="small" />
               </IconButton>
             </Tooltip>
-            <Tooltip title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}>
+            <Tooltip
+              title={
+                isFullscreen ? t("media.exitFullscreen") : t("media.fullscreen")
+              }
+            >
               <IconButton size="small" onClick={onToggleFullscreen}>
-                {isFullscreen ? <FullscreenExitIcon fontSize="small" /> : <FullscreenIcon fontSize="small" />}
+                {isFullscreen ? (
+                  <FullscreenExitIcon fontSize="small" />
+                ) : (
+                  <FullscreenIcon fontSize="small" />
+                )}
               </IconButton>
             </Tooltip>
-            
+
             {/* Show menu for smaller screens */}
             {(isMd || isSm || isXs) && (
-              <Tooltip title="More">
-                <IconButton size="small" onClick={(e) => setMenuAnchor(e.currentTarget)}>
+              <Tooltip title={t("files.more")}>
+                <IconButton
+                  size="small"
+                  onClick={(e) => setMenuAnchor(e.currentTarget)}
+                >
                   <MoreVertIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
             )}
           </Box>
         </Box>
-        
+
         {/* Second Row - Sheet Select & Search for small screens */}
         {isSm && (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2, justifyContent: "center" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              justifyContent: "center",
+            }}
+          >
             <FormControl size="small" sx={{ minWidth: { xs: 80, sm: 120 } }}>
               <Select
                 value={currentSheetIndex}
@@ -217,19 +269,27 @@ const ExcelToolbar: React.FC<ExcelToolbarProps> = ({
             </FormControl>
             <TextField
               size="small"
-              placeholder="Search in sheet..."
+              placeholder={t("files.searchInSheet")}
               value={searchTerm}
               onChange={(e) => onSearch(e.target.value)}
-              InputProps={{ startAdornment: <SearchIcon sx={{ mr: 1, color: "text.secondary" }} /> }}
+              InputProps={{
+                startAdornment: (
+                  <SearchIcon sx={{ mr: 1, color: "text.secondary" }} />
+                ),
+              }}
               sx={{ width: "100%", maxWidth: 300 }}
             />
-            <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ whiteSpace: "nowrap" }}
+            >
               {rowsCount} rows
             </Typography>
           </Box>
         )}
       </Box>
-      
+
       <Menu
         anchorEl={menuAnchor}
         open={Boolean(menuAnchor)}
@@ -238,56 +298,108 @@ const ExcelToolbar: React.FC<ExcelToolbarProps> = ({
         {/* XS screens - show all menu items */}
         {isXs && (
           <>
-            <MenuItem onClick={() => { onPrev(); setMenuAnchor(null); }} disabled={currentSheetIndex === 0}>
+            <MenuItem
+              onClick={() => {
+                onPrev();
+                setMenuAnchor(null);
+              }}
+              disabled={currentSheetIndex === 0}
+            >
               Previous Sheet
             </MenuItem>
-            <MenuItem onClick={() => { onNext(); setMenuAnchor(null); }} disabled={currentSheetIndex === sheetNames.length - 1}>
+            <MenuItem
+              onClick={() => {
+                onNext();
+                setMenuAnchor(null);
+              }}
+              disabled={currentSheetIndex === sheetNames.length - 1}
+            >
               Next Sheet
             </MenuItem>
 
             {onRefresh && (
-              <MenuItem onClick={() => { onRefresh(); setMenuAnchor(null); }}>
+              <MenuItem
+                onClick={() => {
+                  onRefresh();
+                  setMenuAnchor(null);
+                }}
+              >
                 Refresh
               </MenuItem>
             )}
             {onPrint && (
-              <MenuItem onClick={() => { onPrint(); setMenuAnchor(null); }}>
+              <MenuItem
+                onClick={() => {
+                  onPrint();
+                  setMenuAnchor(null);
+                }}
+              >
                 Print
               </MenuItem>
             )}
             {onExport && (
-              <MenuItem onClick={() => { onExport(); setMenuAnchor(null); }}>
+              <MenuItem
+                onClick={() => {
+                  onExport();
+                  setMenuAnchor(null);
+                }}
+              >
                 Export
               </MenuItem>
             )}
             {onInfo && (
-              <MenuItem onClick={() => { onInfo(); setMenuAnchor(null); }}>
+              <MenuItem
+                onClick={() => {
+                  onInfo();
+                  setMenuAnchor(null);
+                }}
+              >
                 Info
               </MenuItem>
             )}
           </>
         )}
-        
+
         {/* SM/MD screens - show hidden actions */}
         {(isSm || isMd) && !isXs && (
           <>
             {onRefresh && (
-              <MenuItem onClick={() => { onRefresh(); setMenuAnchor(null); }}>
+              <MenuItem
+                onClick={() => {
+                  onRefresh();
+                  setMenuAnchor(null);
+                }}
+              >
                 Refresh
               </MenuItem>
             )}
             {onPrint && (
-              <MenuItem onClick={() => { onPrint(); setMenuAnchor(null); }}>
+              <MenuItem
+                onClick={() => {
+                  onPrint();
+                  setMenuAnchor(null);
+                }}
+              >
                 Print
               </MenuItem>
             )}
             {onExport && (
-              <MenuItem onClick={() => { onExport(); setMenuAnchor(null); }}>
+              <MenuItem
+                onClick={() => {
+                  onExport();
+                  setMenuAnchor(null);
+                }}
+              >
                 Export
               </MenuItem>
             )}
             {onInfo && (
-              <MenuItem onClick={() => { onInfo(); setMenuAnchor(null); }}>
+              <MenuItem
+                onClick={() => {
+                  onInfo();
+                  setMenuAnchor(null);
+                }}
+              >
                 Info
               </MenuItem>
             )}

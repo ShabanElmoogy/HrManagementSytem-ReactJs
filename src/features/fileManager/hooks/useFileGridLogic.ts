@@ -33,17 +33,13 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
   useEffect(() => {
     if (error) {
       const errorMessage = extractErrorMessage(error);
-      showToast.error(
-        errorMessage || t("files.fetchError") || "Failed to fetch files"
-      );
+      showToast.error(errorMessage || t("files.fetchError"));
     }
   }, [error, t]);
 
   const deleteFileMutation = useDeleteFile({
     onSuccess: () => {
-      showToast.success(
-        t("files.deleted") || "File deleted successfully!"
-      );
+      showToast.success(t("files.deleted"));
 
       setRowDeleted(true);
       setDialogType(null);
@@ -56,42 +52,32 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
     },
     onError: (error: any) => {
       const errorMessage = extractErrorMessage(error);
-      showToast.error(
-        t("files.deleteError") || errorMessage || "Failed to delete file"
-      );
+      showToast.error(t("files.deleteError") || errorMessage);
     },
   });
 
   const uploadFilesMutation = useUploadFiles({
     onSuccess: (result) => {
       if (result.success) {
-        showToast.success(
-          t("files.uploaded") || "Files uploaded successfully!"
-        );
+        showToast.success(t("files.uploaded"));
         setDialogType(null);
       } else {
-        showToast.error(result.message || "Upload failed");
+        showToast.error(result.message);
       }
     },
     onError: (error: any) => {
       const errorMessage = extractErrorMessage(error);
-      showToast.error(
-        t("files.uploadError") || errorMessage || "Failed to upload files"
-      );
+      showToast.error(t("files.uploadError") || errorMessage);
     },
   });
 
   const downloadFileMutation = useDownloadFile({
     onSuccess: () => {
-      showToast.success(
-        t("files.downloadStarted") || "Download started"
-      );
+      showToast.success(t("files.downloadStarted"));
     },
     onError: (error: any) => {
       const errorMessage = extractErrorMessage(error);
-      showToast.error(
-        t("files.downloadError") || errorMessage || "Download failed"
-      );
+      showToast.error(t("files.downloadError") || errorMessage);
     },
   });
 
@@ -101,45 +87,53 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
 
   // Navigation state variables
   const [rowDeleted, setRowDeleted] = useState<boolean>(false);
-  const [lastDeletedSortedIndex, setLastDeletedSortedIndex] = useState<number | null>(null);
+  const [lastDeletedSortedIndex, setLastDeletedSortedIndex] = useState<
+    number | null
+  >(null);
   const [newRowAdded, setNewRowAdded] = useState<boolean>(false);
   const [lastAddedRowId, setLastAddedRowId] = useState<number | null>(null);
-  const [pendingAddedFileName, setPendingAddedFileName] = useState<string | null>(null);
+  const [pendingAddedFileName, setPendingAddedFileName] = useState<
+    string | null
+  >(null);
 
   const apiRef = useGridApiRef<GridApiCommon>();
 
   // Reliable navigation helper: change page if needed, then select and scroll
-  const navigateTo = useCallback((targetIndex: number, targetRowId: any) => {
-    const api: any = apiRef.current;
-    if (!api || targetIndex < 0) return;
+  const navigateTo = useCallback(
+    (targetIndex: number, targetRowId: any) => {
+      const api: any = apiRef.current;
+      if (!api || targetIndex < 0) return;
 
-    const pageSize = api.state?.pagination?.paginationModel?.pageSize || 5;
-    const targetPage = Math.floor(targetIndex / pageSize);
-    const rowIndexOnPage = targetIndex % pageSize;
+      const pageSize = api.state?.pagination?.paginationModel?.pageSize || 5;
+      const targetPage = Math.floor(targetIndex / pageSize);
+      const rowIndexOnPage = targetIndex % pageSize;
 
-    const finalize = () => {
-      const cur: any = apiRef.current;
-      if (!cur) return;
-      cur.setRowSelectionModel([targetRowId]);
-      cur.scrollToIndexes({ rowIndex: rowIndexOnPage, colIndex: 0 });
-    };
-
-    const currentPage = api.state?.pagination?.paginationModel?.page ?? 0;
-    if (currentPage === targetPage) {
-      setTimeout(finalize, 0);
-    } else {
-      let unsub: any = null;
-      const onPageChange = (model: any) => {
-        const page = model?.page ?? api.state?.pagination?.paginationModel?.page;
-        if (page === targetPage) {
-          if (typeof unsub === "function") unsub();
-          setTimeout(finalize, 50);
-        }
+      const finalize = () => {
+        const cur: any = apiRef.current;
+        if (!cur) return;
+        cur.setRowSelectionModel([targetRowId]);
+        cur.scrollToIndexes({ rowIndex: rowIndexOnPage, colIndex: 0 });
       };
-      unsub = api.subscribeEvent("paginationModelChange", onPageChange);
-      api.setPage(targetPage);
-    }
-  }, [apiRef]);
+
+      const currentPage = api.state?.pagination?.paginationModel?.page ?? 0;
+      if (currentPage === targetPage) {
+        setTimeout(finalize, 0);
+      } else {
+        let unsub: any = null;
+        const onPageChange = (model: any) => {
+          const page =
+            model?.page ?? api.state?.pagination?.paginationModel?.page;
+          if (page === targetPage) {
+            if (typeof unsub === "function") unsub();
+            setTimeout(finalize, 50);
+          }
+        };
+        unsub = api.subscribeEvent("paginationModelChange", onPageChange);
+        api.setPage(targetPage);
+      }
+    },
+    [apiRef]
+  );
 
   // Memoized files
   const stableFiles = useMemo((): FileItem[] => files, [files]);
@@ -152,10 +146,13 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
     downloadFileMutation.isPending;
 
   // Dialog management
-  const openDialog = useCallback((type: DialogType, file: FileItem | null = null) => {
-    setDialogType(type);
-    setSelectedFile(file);
-  }, []);
+  const openDialog = useCallback(
+    (type: DialogType, file: FileItem | null = null) => {
+      setDialogType(type);
+      setSelectedFile(file);
+    },
+    []
+  );
 
   const closeDialog = useCallback(() => {
     setDialogType(null);
@@ -169,13 +166,17 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
       const prevSortedIndex = lastDeletedSortedIndex - 1;
       if (prevSortedIndex >= 0 && prevSortedIndex < newSortedIds.length) {
         const prevRowId = newSortedIds[prevSortedIndex];
-        const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
+        const pageSize =
+          apiRef.current.state.pagination.paginationModel.pageSize;
         const newPage = Math.floor(prevSortedIndex / pageSize);
         const rowIndexOnPage = prevSortedIndex % pageSize;
 
         apiRef.current.setPage(newPage);
         apiRef.current.setRowSelectionModel([prevRowId]);
-        apiRef.current.scrollToIndexes({ rowIndex: rowIndexOnPage, colIndex: 0 });
+        apiRef.current.scrollToIndexes({
+          rowIndex: rowIndexOnPage,
+          colIndex: 0,
+        });
       }
       setRowDeleted(false);
       setLastDeletedSortedIndex(null);
@@ -191,9 +192,14 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
     // Resolve effective ID
     let effectiveId: any = lastAddedRowId;
     if (!effectiveId && pendingAddedFileName) {
-      const uploadedFile = files.find((f: any) => f.fileName === pendingAddedFileName);
+      const uploadedFile = files.find(
+        (f: any) => f.fileName === pendingAddedFileName
+      );
       if (uploadedFile) {
-        effectiveId = typeof uploadedFile.id === "string" ? parseInt(uploadedFile.id, 10) : uploadedFile.id;
+        effectiveId =
+          typeof uploadedFile.id === "string"
+            ? parseInt(uploadedFile.id, 10)
+            : uploadedFile.id;
         setLastAddedRowId(effectiveId);
       }
     }
@@ -202,14 +208,22 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
     let targetIndex = -1;
     let targetRowId: any = null;
     if (effectiveId) {
-      const sortedIds = typeof api.getSortedRowIds === "function" ? api.getSortedRowIds() : files.map((r: any) => r.id);
-      targetIndex = sortedIds.findIndex((id: any) => String(id) === String(effectiveId));
+      const sortedIds =
+        typeof api.getSortedRowIds === "function"
+          ? api.getSortedRowIds()
+          : files.map((r: any) => r.id);
+      targetIndex = sortedIds.findIndex(
+        (id: any) => String(id) === String(effectiveId)
+      );
       if (targetIndex >= 0) targetRowId = sortedIds[targetIndex];
     }
 
     // Fallback to last row if ID not resolved
     if (targetIndex < 0) {
-      const sortedIds = typeof api.getSortedRowIds === "function" ? api.getSortedRowIds() : files.map((r: any) => r.id);
+      const sortedIds =
+        typeof api.getSortedRowIds === "function"
+          ? api.getSortedRowIds()
+          : files.map((r: any) => r.id);
       if (sortedIds.length > 0) {
         targetIndex = sortedIds.length - 1;
         targetRowId = sortedIds[targetIndex];
@@ -224,20 +238,30 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
     }
   }, [newRowAdded, files, lastAddedRowId, pendingAddedFileName, navigateTo]);
 
-  
-  
   // Additional effect to handle row selection when data is refetched (match Countries logic)
   useEffect(() => {
-    if (!newRowAdded || isFetching || loading || !apiRef.current || files.length === 0) return;
+    if (
+      !newRowAdded ||
+      isFetching ||
+      loading ||
+      !apiRef.current ||
+      files.length === 0
+    )
+      return;
 
     const api: any = apiRef.current;
 
     // Resolve effective ID
     let effectiveId: any = lastAddedRowId;
     if (!effectiveId && pendingAddedFileName) {
-      const uploadedFile = files.find((f: any) => f.fileName === pendingAddedFileName);
+      const uploadedFile = files.find(
+        (f: any) => f.fileName === pendingAddedFileName
+      );
       if (uploadedFile) {
-        effectiveId = typeof uploadedFile.id === "string" ? parseInt(uploadedFile.id, 10) : uploadedFile.id;
+        effectiveId =
+          typeof uploadedFile.id === "string"
+            ? parseInt(uploadedFile.id, 10)
+            : uploadedFile.id;
         setLastAddedRowId(effectiveId);
       }
     }
@@ -246,14 +270,22 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
     let targetIndex = -1;
     let targetRowId: any = null;
     if (effectiveId) {
-      const sortedIds = typeof api.getSortedRowIds === "function" ? api.getSortedRowIds() : files.map((r: any) => r.id);
-      targetIndex = sortedIds.findIndex((id: any) => String(id) === String(effectiveId));
+      const sortedIds =
+        typeof api.getSortedRowIds === "function"
+          ? api.getSortedRowIds()
+          : files.map((r: any) => r.id);
+      targetIndex = sortedIds.findIndex(
+        (id: any) => String(id) === String(effectiveId)
+      );
       if (targetIndex >= 0) targetRowId = sortedIds[targetIndex];
     }
 
     // Fallback to last row if ID not resolved
     if (targetIndex < 0) {
-      const sortedIds = typeof api.getSortedRowIds === "function" ? api.getSortedRowIds() : files.map((r: any) => r.id);
+      const sortedIds =
+        typeof api.getSortedRowIds === "function"
+          ? api.getSortedRowIds()
+          : files.map((r: any) => r.id);
       if (sortedIds.length > 0) {
         targetIndex = sortedIds.length - 1;
         targetRowId = sortedIds[targetIndex];
@@ -268,7 +300,15 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
         setPendingAddedFileName(null);
       }, 150);
     }
-  }, [isFetching, loading, lastAddedRowId, newRowAdded, files, pendingAddedFileName, navigateTo]);
+  }, [
+    isFetching,
+    loading,
+    lastAddedRowId,
+    newRowAdded,
+    files,
+    pendingAddedFileName,
+    navigateTo,
+  ]);
 
   // Delete handler
   const handleDelete = useCallback(async (): Promise<void> => {
@@ -284,7 +324,9 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
       let newSelectedFile: FileItem | null = null;
       if (files.length > 1) {
         // Will be length - 1 after deletion
-        const currentIndex = files.findIndex((file) => file.id === selectedFile.id);
+        const currentIndex = files.findIndex(
+          (file) => file.id === selectedFile.id
+        );
         newSelectedFile =
           currentIndex > 0
             ? files[Math.min(currentIndex - 1, files.length - 2)]
@@ -293,10 +335,7 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
 
       setSelectedFile(newSelectedFile);
       setLastDeletedSortedIndex(deletedSortedIndex);
-    } catch (error) {
-      console.error("Delete error:", error);
-      // Error handling is done in the mutation's onError callback
-    }
+    } catch (error) {}
   }, [selectedFile, files, deleteFileMutation, apiRef]);
 
   // Action handlers
@@ -317,7 +356,7 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
       if (!file?.storedFileName || !file?.fileName) return;
       downloadFileMutation.mutate({
         storedFileName: file.storedFileName,
-        fileName: file.fileName
+        fileName: file.fileName,
       });
     },
     [downloadFileMutation]
@@ -330,8 +369,7 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
         const url = `/extras-show-media/${file.id}/${file.fileExtension}/${file.storedFileName}/${file.fileName}`;
         navigate(url);
       } catch (error) {
-        console.error("Failed to open viewer:", error);
-        showToast.error(t("files.failedToOpenViewer") || "Failed to open viewer");
+        showToast.error(t("files.failedToOpenViewer"));
       }
     },
     [navigate, t]
@@ -343,22 +381,25 @@ const useFileGridLogic = (): UseFileGridLogicReturn => {
   }, [refetch]);
 
   // Upload success handler
-  const handleUploadSuccess = useCallback((fileName: string) => {
-    // Track the file name to resolve ID after refetch if needed
-    setPendingAddedFileName(fileName);
+  const handleUploadSuccess = useCallback(
+    (fileName: string) => {
+      // Track the file name to resolve ID after refetch if needed
+      setPendingAddedFileName(fileName);
 
-    // Try immediate ID resolution if available to speed up navigation
-    const uploadedFile = files.find((file) => file.fileName === fileName);
-    if (uploadedFile) {
-      const idNum: number =
-        typeof (uploadedFile as any).id === "string"
-          ? parseInt((uploadedFile as any).id, 10)
-          : (uploadedFile as any).id;
-      setLastAddedRowId(idNum);
-    }
+      // Try immediate ID resolution if available to speed up navigation
+      const uploadedFile = files.find((file) => file.fileName === fileName);
+      if (uploadedFile) {
+        const idNum: number =
+          typeof (uploadedFile as any).id === "string"
+            ? parseInt((uploadedFile as any).id, 10)
+            : (uploadedFile as any).id;
+        setLastAddedRowId(idNum);
+      }
 
-    setNewRowAdded(true);
-  }, [files]);
+      setNewRowAdded(true);
+    },
+    [files]
+  );
 
   return {
     // State

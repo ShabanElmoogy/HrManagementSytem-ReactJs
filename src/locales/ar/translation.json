@@ -306,7 +306,8 @@
     "goToFirstRecord": "الذهاب للسجل الاول",
     "goToPreviousRecord": "الذهاب للسجل السابق",
     "goToNextRecord": "الذهاب للسجل التالى",
-    "goToLastRecord": "الذهاب للسجل الاخير"
+    "goToLastRecord": "الذهاب للسجل الاخير",
+    "pages" : "الصفحات"
   },
   "addressTypes": {
     "dashboard": {
@@ -749,7 +750,28 @@
     "onlyOneAllowed": "مسموح بملف واحد فقط",
     "onlyOneAtATime": "يمكن رفع ملف واحد فقط في كل مرة",
     "uploadSuccess": "تم رفع {{count}} ملف(ات) بنجاح",
-    "uploadFailed": "فشل الرفع"
+    "uploadFailed": "فشل الرفع",
+    "name": "الإسم",
+    "size": "الحجم",
+    "lastUpdated": "أخر تعديل",
+    "searchAll": "بحث فى كل الملفات",
+    "sortedBy": "ترتيب ب",
+    "fetchError": "خطأ في التحميل",
+    "deleted": "تم الحذف بنجاح",
+    "deleteError": "خطأ أثناء الحذف",
+    "uploaded": "تم تحميل الملف بنجاح",
+    "uploadError": "خطأ اثناء التحميل",
+    "downloadStarted": "بدأ التحميل ...",
+    "downloadError": "فشل التحميل",
+    "failedToOpenViewer": "فشل فتح الملف فى المتصفح",
+    "NoResults": "لا توجد نتائج للبحث",
+    "NoData": "لا توجد بيانات متاحة",
+    "previousSheet": "الشيت السابق",
+    "nextSheet": "الشيت التالى",
+    "search": "البحث",
+    "refresh": "تحديث",
+    "print": "طباعة",
+    "more": "المزيد"
   },
   "media": {
     "unsupportedFormat": "صيغة غير مدعومة",

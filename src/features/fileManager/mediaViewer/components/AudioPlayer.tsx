@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, Box, useMediaQuery, useTheme, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import HeaderBar from "./audio/HeaderBar";
+import BackButton from "@/shared/components/common/BackButton";
 import ProgressBar from "./audio/ProgressBar";
 import PlaybackControls from "./audio/PlaybackControls";
 import VolumeControl from "./audio/VolumeControl";
@@ -101,7 +101,13 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack, is
       flexDirection: "column",
       margin: isXs ? 0 : "auto"
     }}>
-      <HeaderBar onBack={handleBack} />
+      {/* Top header: back button + optional header content */}
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", px: 1, py: 0.5 }}>
+        {onBack && (
+          <BackButton onClick={handleBack} />
+        )}
+        <Box sx={{ flex: 1 }} />
+      </Box>
 
       <Visualizer
         isPlaying={isPlaying}
