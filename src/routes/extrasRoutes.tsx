@@ -30,7 +30,6 @@ const HangfireDashboard = lazy(() =>
 const FilesGrid = lazy(() => import("@/features/fileManager/FilesGrid"));
 const MediaViewer = lazy(() => import("@/features/fileManager/mediaViewer/MediaViewer"));
 const AppointmentsPage = lazy(() => import("@/features/appointments/pages/AppointmentsPage"));
-const BookmarkTest = lazy(() => import("@/features/fileManager/mediaViewer/components/BookmarkTest"));
 
 export const ExtrasRoutes = () => (
   <>
@@ -157,16 +156,6 @@ export const ExtrasRoutes = () => (
             <AppointmentsPage />
           </Suspense>
         </ProtectedRoute>
-      }
-    />
-
-    {/* Bookmark Test */}
-    <Route
-      path={appRoutes.extras.bookmarkTest}
-      element={
-        <Suspense fallback={<MyLoadingIndicator />}>
-          <BookmarkTest />
-        </Suspense>
       }
     />
   </>

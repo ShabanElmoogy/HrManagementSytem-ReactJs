@@ -3,17 +3,15 @@ import { Card, Box, useMediaQuery, useTheme, IconButton, Menu, MenuItem, Tooltip
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import BackButton from "@/shared/components/common/BackButton";
-import ProgressBar from "./audio/ProgressBar";
-import PlaybackControls from "./audio/PlaybackControls";
-import VolumeControl from "./audio/VolumeControl";
-import Visualizer from "./audio/Visualizer";
-import { useAudioPlayer } from "./audio/useAudioPlayer";
-import { pulse, rotate, wave, glow } from "./audio/styles";
-import TimeDisplay from "./audio/TimeDisplay";
-import RepeatToggle from "./audio/RepeatToggle";
-import MiniPlayer from "./audio/MiniPlayer";
-import PipPlayer from "./audio/PipPlayer";
-import { formatTime } from "./utils/time";
+import ProgressBar from "../01audio/ProgressBar";
+import PlaybackControls from "../01audio/PlaybackControls";
+import VolumeControl from "../01audio/VolumeControl";
+import Visualizer from "../01audio/Visualizer";
+import { useAudioPlayer } from "../01audio/useAudioPlayer";
+import { pulse, rotate, wave, glow } from "../01audio/styles";
+import TimeDisplay from "../01audio/TimeDisplay";
+import RepeatToggle from "../01audio/RepeatToggle";
+import { formatTime } from "../10utils/time"
 
 interface AudioPlayerProps {
   mediaUrl: string;
@@ -22,7 +20,7 @@ interface AudioPlayerProps {
   isMinimal?: boolean;
 }
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack, isMinimal = false }) => {
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.down('sm'));
@@ -48,8 +46,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack, is
     toggleMute: handleMuteToggle,
     isRepeat,
     toggleRepeat: toggleRepeatMode,
-    isPictureInPicture,
-    setIsPictureInPicture,
     audioData,
   } = useAudioPlayer({ mediaUrl, onError });
 
@@ -63,35 +59,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack, is
     }
     onBack?.();
   };
-
-  if (isMinimal) {
-    return (
-      <MiniPlayer
-        isPlaying={isPlaying}
-        currentTime={currentTime}
-        duration={duration}
-        onPlayPause={handlePlayPause}
-        onProgressChange={handleProgressChange}
-        onToggleMute={handleMuteToggle}
-        isMuted={isMuted}
-        audioEl={<audio ref={audioRef} src={mediaUrl}>{t("media.audioNotSupported")}</audio>}
-      />
-    );
-  }
-
-  if (isPictureInPicture) {
-    return (
-      <PipPlayer
-        isPlaying={isPlaying}
-        currentTime={currentTime}
-        duration={duration}
-        onPlayPause={handlePlayPause}
-        onProgressChange={handleProgressChange}
-        onClose={() => setIsPictureInPicture(false)}
-        audioEl={<audio ref={audioRef} src={mediaUrl}>{t("media.audioNotSupported")}</audio>}
-      />
-    );
-  }
 
   return (
     <Card sx={{ 

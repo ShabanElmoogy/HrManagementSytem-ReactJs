@@ -1,15 +1,15 @@
 // cspell:words nodownload
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { MediaContentProps } from "../types/mediaViewer.type";
-import AudioPlayer from "./AudioPlayer";
-import VideoPlayer from "./VideoPlayer";
-import ImageViewer from "./ImageViewer";
-import ExcelViewer from "./ExcelViewer";
-import PdfViewer from "./PdfViewer";
-import WordViewer from "./WordViewer";
-import TxtViewer from "./TxtViewer";
-import MediaErrorView from "./MediaErrorView";
+import { MediaContentProps } from "../../types/mediaViewer.type";
+import AudioPlayer from "../11viewers/AudioPlayer"
+import VideoPlayer from "../11viewers/VideoPlayer";
+import ImageViewer from "../11viewers/ImageViewer";
+import ExcelViewer from "../11viewers/ExcelViewer";
+import PdfViewer from "../11viewers/PdfViewer";
+import WordViewer from "../11viewers/WordViewer";
+import TxtViewer from "../11viewers/TxtViewer";
+import MediaErrorView from "../09modals/MediaErrorView";
 
 const MediaContent: React.FC<MediaContentProps> = ({
   mediaType,

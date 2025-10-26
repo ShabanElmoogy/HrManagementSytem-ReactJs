@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Paper, Typography, useMediaQuery, useTheme } from '@mui/material';
-import { 
-  Download as DownloadIcon, 
-  ContentCopy as CopyIcon, 
-  Print as PrintIcon,
-  MoreVert as MoreVertIcon
-} from '@mui/icons-material';
+import { Box, Paper, useMediaQuery, useTheme } from '@mui/material';
 import { useSidebar } from "@/layouts/components/sidebar/sidebarContext";
-import TextToolbar from './text/Toolbar';
-import TextContent from './text/Content';
-import TextMenu from './text/Menu';
+import TextToolbar from '../04text/Toolbar';
+import TextContent from '../04text/Content';
+import TextMenu from '../04text/Menu';
 
 interface TxtViewerProps {
   fileUrl: string;

@@ -8,14 +8,14 @@ import {
   PlayArrow as PlayIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import TimeMarks from './TimeMarks';
-import VideoSidebar from './VideoSidebar';
-import { TopBar } from './video/TopBar';
-import { ProgressBar } from './video/ProgressBar';
-import { ControlsBar } from './video/ControlsBar';
-import { formatTime } from './video/utils';
-import { useVideoPlayer } from './video/useVideoPlayer';
-import { ControlsOverlay, TimeDisplay, VideoContainer, VideoElement } from "./video/styles";
+import TimeMarks from '../07controls/TimeMarks';
+import VideoSidebar from '../08layout/VideoSidebar';
+import { TopBar } from '../02video/TopBar';
+import { ProgressBar } from '../02video/ProgressBar';
+import { ControlsBar } from '../02video/ControlsBar';
+import { formatTime } from '../02video/utils';
+import { useVideoPlayer } from '../02video/useVideoPlayer';
+import { ControlsOverlay, TimeDisplay, VideoContainer, VideoElement } from "../02video/styles";
 
 interface VideoPlayerProps {
   mediaUrl: string;

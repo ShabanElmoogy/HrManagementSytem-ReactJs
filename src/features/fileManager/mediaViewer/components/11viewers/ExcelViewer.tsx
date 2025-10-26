@@ -1,10 +1,10 @@
 import React, { useRef } from "react";
 import { CircularProgress, Paper } from "@mui/material";
 import { useSidebar } from "@/layouts/components/sidebar/sidebarContext";
-import ExcelToolbar from "./excel/ExcelToolbar";
-import ExcelTable from "./excel/ExcelTable";
-import { useExcelFilter } from "./excel/useExcelFilter";
-import { useExcelViewer } from "./excel/useExcelViewer";
+import ExcelToolbar from "../06excel/ExcelToolbar";
+import ExcelTable from "../06excel/ExcelTable";
+import { useExcelFilter } from "../06excel/useExcelFilter";
+import { useExcelViewer } from "../06excel/useExcelViewer";
 
 interface ExcelViewerProps {
   mediaUrl: string;

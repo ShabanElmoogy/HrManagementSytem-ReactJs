@@ -1,10 +1,10 @@
 import React from 'react';
 import { Box, IconButton, Tab, Tabs, Typography } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
-import { useVideoSidebar } from './sidebar/useVideoSidebar';
-import { SidebarDrawer } from './sidebar/styles';
-import { NotesTab } from './sidebar/NotesTab';
-import { BookmarksTab } from './sidebar/BookmarksTab';
+import { useVideoSidebar } from '../02video/sidebar/useVideoSidebar';
+import { SidebarDrawer } from '../02video/sidebar/styles';
+import { NotesTab } from '../02video/sidebar/NotesTab';
+import { BookmarksTab } from '../02video/sidebar/BookmarksTab';
 
 interface VideoSidebarProps {
   open: boolean;

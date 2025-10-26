@@ -1,4 +1,4 @@
-export type MediaType = "iframe" | "image" | "video" | "audio" | "excel" | "word" | "unsupported";
+export type MediaType = "iframe" | "image" | "video" | "audio" | "excel" | "word" | "txt" | "unsupported";
 
 export interface MediaContentProps {
   mediaType: MediaType;

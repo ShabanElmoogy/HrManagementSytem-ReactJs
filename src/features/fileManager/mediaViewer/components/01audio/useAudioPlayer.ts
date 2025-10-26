@@ -50,7 +50,7 @@ export function useAudioPlayer({ mediaUrl, onError }: UseAudioPlayerArgs) {
   // Media event listeners
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio) return null;
 
     const handleLoadedMetadata = () => {
       setDuration(audio.duration);

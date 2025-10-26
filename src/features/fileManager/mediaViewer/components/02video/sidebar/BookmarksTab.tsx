@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, TextField, Button, Chip, List, Accordion, AccordionSummary, AccordionDetails, Typography, IconButton } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon, PlayArrow as PlayIcon, ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
-import { formatTime } from '../video/utils';
+import { formatTime } from '../utils';
 import { Bookmark, BookmarkNote } from './useVideoSidebar';
 
 interface BookmarksTabProps {

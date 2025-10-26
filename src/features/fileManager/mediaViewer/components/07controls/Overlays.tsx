@@ -9,7 +9,7 @@ import {
 } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@mui/material/styles";
-import { BackButtonOverlay, ControlsOverlay, LoadingOverlay } from "../constants/styles";
+import { BackButtonOverlay, ControlsOverlay, LoadingOverlay } from "../../constants/styles";
 
 
 export const BackOverlayButton: React.FC<{ onBack: () => void }> = ({

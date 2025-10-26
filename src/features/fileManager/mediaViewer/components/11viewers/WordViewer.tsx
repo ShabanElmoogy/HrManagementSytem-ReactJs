@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Paper } from "@mui/material";
 import { useSidebar } from "@/layouts/components/sidebar/sidebarContext";
-import WordToolbar from "./word/Toolbar";
-import Content from "./word/Content";
+import WordToolbar from "../05word/Toolbar";
+import Content from "../05word/Content";
 
 const docxStyles = `
   .docx { background: white; padding: 16px; font-family: 'Times New Roman', serif; line-height: 1.5; }

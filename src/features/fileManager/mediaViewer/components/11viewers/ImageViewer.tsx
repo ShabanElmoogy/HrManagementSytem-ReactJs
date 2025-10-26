@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Paper, useMediaQuery, useTheme } from "@mui/material";
+import { Paper } from "@mui/material";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { useSidebar } from "@/layouts/components/sidebar/sidebarContext";
-import ImageToolbar from "./image/Toolbar";
-import ImageViewerArea from "./image/Viewer";
-import ImageMenu from "./image/Menu";
+import ImageToolbar from "../03image/Toolbar";
+import ImageViewerArea from "../03image/Viewer";
+import ImageMenu from "../03image/Menu";
 
 interface ImageViewerProps {
   mediaUrl: string;
@@ -18,11 +18,6 @@ interface ImageViewerProps {
 const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError, onBack }) => {
   const { t } = useTranslation();
   const { open: sidebarOpen } = useSidebar();
-  const theme = useTheme();
-  const isXs = useMediaQuery(theme.breakpoints.down('sm'));
-  const isSm = useMediaQuery(theme.breakpoints.down('md'));
-  const isMd = useMediaQuery(theme.breakpoints.down('lg'));
-  const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [zoom, setZoom] = useState(100);
   const [rotation, setRotation] = useState(0);
@@ -32,7 +27,6 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ mediaUrl, onError, onBack }) 
   const [imageInfo, setImageInfo] = useState({ width: 0, height: 0, size: 0 });
   const [showControls, setShowControls] = useState(true);
   const [showZoomInfo, setShowZoomInfo] = useState(false);
-  const [showImageInfo, setShowImageInfo] = useState(false);
   const [flipH, setFlipH] = useState(false);
   const [flipV, setFlipV] = useState(false);
   const [brightness, setBrightness] = useState(100);

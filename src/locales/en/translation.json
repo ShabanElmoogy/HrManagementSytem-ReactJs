@@ -317,7 +317,7 @@
     "goToPreviousRecord": "Go to previous record",
     "goToNextRecord": "Go to next record",
     "goToLastRecord": "Go to last record",
-    "pages" : "Pages"
+    "pages": "Pages"
   },
   "addressTypes": {
     "dashboard": {
@@ -822,7 +822,17 @@
     "exitFullscreen": "Exit Full Screen",
     "fullScreen": "Full Screen",
     "searchInSheet": "Search In Sheet",
-    "more": "More"
+    "more": "More",
+    "prev": "Previous (-30s)",
+    "skip": "\"Skip -10s\"",
+    "skip10": "Skip -10s",
+    "skipMinus10": "Skip +10s",
+    "skipForward10": "Skip +10s",
+    "next30": "Next (+30s)",
+    "repeatOff": "Repaet Off",
+    "repeatAll": "Repeat All",
+    "repeatOne": "Repeat One",
+    "speed": "Speed"
   },
   "media": {
     "unsupportedFormat": "Unsupported file format",
@@ -854,7 +864,8 @@
     "zoomIn": "Zoom In",
     "zoomOut": "Zoom Out",
     "rotate": "Rotate",
-    "reset": "Reset"
+    "reset": "Reset",
+    "videoPlayer": "Video Player"
   },
   "imports": {
     "dragDropText": "Drag and drop your file here or click to browse",

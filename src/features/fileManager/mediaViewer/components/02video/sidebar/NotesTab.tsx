@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, TextField, Button, Chip, Divider, List, ListItem, Typography, IconButton } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon, PlayArrow as PlayIcon } from '@mui/icons-material';
-import { formatTime } from '../video/utils';
+import { formatTime } from '../utils';
 import { Note } from './useVideoSidebar';
 
 interface NotesTabProps {

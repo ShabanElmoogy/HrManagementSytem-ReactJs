@@ -307,7 +307,7 @@
     "goToPreviousRecord": "الذهاب للسجل السابق",
     "goToNextRecord": "الذهاب للسجل التالى",
     "goToLastRecord": "الذهاب للسجل الاخير",
-    "pages" : "الصفحات"
+    "pages": "الصفحات"
   },
   "addressTypes": {
     "dashboard": {
@@ -771,7 +771,17 @@
     "search": "البحث",
     "refresh": "تحديث",
     "print": "طباعة",
-    "more": "المزيد"
+    "more": "المزيد",
+    "prev": "السابق (-30 ثانية)",
+    "skip": "\"تخطي -10 ثوانٍ\"",
+    "skip10": "التأخر 10 ثوانٍ",
+    "skipMinus10": "التأخر 10 ثوان",
+    "skipForward10": "التقدم 10 ثوان",
+    "next30": "التالي (+30 ثانية)",
+    "repeatOff": "إيقاف الإعادة",
+    "repeatAll": "إعادة الكل",
+    "repeatOne": "إعادة واحدة",
+    "speed": "السرعة"
   },
   "media": {
     "unsupportedFormat": "صيغة غير مدعومة",
@@ -803,7 +813,8 @@
     "zoomIn": "تكبير",
     "zoomOut": "تصغير",
     "rotate": "تدوير",
-    "reset": "إعادة تعيين"
+    "reset": "إعادة تعيين",
+    "videoPlayer": "مشغل الفيديو"
   },
   "imports": {
     "dragDropText": "اسحب وافلت الملفات هنا او انقر للاختيار",

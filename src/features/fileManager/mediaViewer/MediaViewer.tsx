@@ -1,8 +1,8 @@
 // cspell:words nodownload
-import { Alert, Typography, Fade, Box } from "@mui/material";
-import MediaContent from "./components/MediaContent";
-import { Container, MediaContainer } from "./components/Containers";
-import { BusyOverlay } from "./components/Overlays";
+import { Fade, Box } from "@mui/material";
+import MediaContent from "./components/08layout/MediaContent";
+import { Container, MediaContainer } from "./components/08layout/Containers";
+import { BusyOverlay } from "./components/07controls/Overlays";
 import useMediaViewer from "./hooks/useMediaViewer";
 
 const MediaViewer = () => {

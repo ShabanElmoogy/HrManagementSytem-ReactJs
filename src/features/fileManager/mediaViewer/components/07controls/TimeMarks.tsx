@@ -19,8 +19,7 @@ import {
   Bookmark as BookmarkIcon,
   Delete as DeleteIcon,
   PlayArrow as PlayIcon,
-  Note as NoteIcon,
-  Edit as EditIcon,
+  Note as NoteIcon
 } from '@mui/icons-material';
 
 interface TimeMark {
