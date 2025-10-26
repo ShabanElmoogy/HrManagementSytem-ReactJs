@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import { Card, Box, useMediaQuery, useTheme, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
-import { MoreVert as MoreVertIcon } from "@mui/icons-material";
+import { Card, Box, useMediaQuery, useTheme, IconButton, Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import BackButton from "@/shared/components/common/BackButton";
 import ProgressBar from "../01audio/ProgressBar";
 import PlaybackControls from "../01audio/PlaybackControls";
 import VolumeControl from "../01audio/VolumeControl";
@@ -11,7 +9,11 @@ import { useAudioPlayer } from "../01audio/useAudioPlayer";
 import { pulse, rotate, wave, glow } from "../01audio/styles";
 import TimeDisplay from "../01audio/TimeDisplay";
 import RepeatToggle from "../01audio/RepeatToggle";
-import { formatTime } from "../10utils/time"
+import { formatTime } from "../10utils/time";
+import SkipButton from "../01audio/SkipButton";
+import MoreMenu from "../01audio/MoreMenu";
+import HeaderBar from "../01audio/HeaderBar";
+import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 
 interface AudioPlayerProps {
   mediaUrl: string;
@@ -68,13 +70,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack }) 
       flexDirection: "column",
       margin: isXs ? 0 : "auto"
     }}>
-      {/* Top header: back button + optional header content */}
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", px: 1, py: 0.5 }}>
-        {onBack && (
-          <BackButton onClick={handleBack} />
-        )}
-        <Box sx={{ flex: 1 }} />
-      </Box>
+      <HeaderBar onBack={onBack ? handleBack : undefined} />
 
       <Visualizer
         isPlaying={isPlaying}
@@ -92,39 +88,20 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack }) 
           display: "flex", 
           alignItems: "center", 
           justifyContent: "space-between", 
-          gap: { xs: 1, sm: 2 },
-          flexWrap: { xs: 'nowrap', sm: 'nowrap' },
-          minHeight: { xs: 48, sm: 56 }
+          gap: { xs: 0.5, sm: 1.5 },
+          flexWrap: { xs: 'wrap', sm: 'nowrap' },
+          minHeight: { xs: 44, sm: 56 }
         }}>
           {/* Left: Time Display */}
           <TimeDisplay currentTime={currentTime} duration={duration} formatTime={formatTime} />
 
           {/* Center: Play Controls */}
           <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 0.5, sm: 1 } }}>
-            {/* Large screens - show skip buttons */}
             {!isMd && (
-              <Tooltip title="Skip -30s">
-                <IconButton 
-                  onClick={() => handleSkip(-30)} 
-                  size="small"
-                  sx={{ width: { xs: 32, sm: 40 }, height: { xs: 32, sm: 40 } }}
-                >
-                  <span style={{ fontSize: '0.6rem', fontWeight: 600 }}>-30</span>
-                </IconButton>
-              </Tooltip>
+              <SkipButton title="Skip -30s" delta={-30} onSkip={handleSkip} />
             )}
-            
-            {/* Medium+ screens - show 10s skip */}
             {!isSm && (
-              <Tooltip title="Skip -10s">
-                <IconButton 
-                  onClick={() => handleSkip(-10)} 
-                  size="small"
-                  sx={{ width: { xs: 32, sm: 40 }, height: { xs: 32, sm: 40 } }}
-                >
-                  <span style={{ fontSize: '0.6rem', fontWeight: 600 }}>-10</span>
-                </IconButton>
-              </Tooltip>
+              <SkipButton title="Skip -10s" delta={-10} onSkip={handleSkip} />
             )}
 
             {/* Always show play/pause */}
@@ -138,30 +115,11 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack }) 
               pulseAnim={isPlaying ? `${pulse} 2s infinite` : 'none'}
             />
 
-            {/* Medium+ screens - show 10s skip */}
             {!isSm && (
-              <Tooltip title="Skip +10s">
-                <IconButton 
-                  onClick={() => handleSkip(10)} 
-                  size="small"
-                  sx={{ width: { xs: 32, sm: 40 }, height: { xs: 32, sm: 40 } }}
-                >
-                  <span style={{ fontSize: '0.6rem', fontWeight: 600 }}>+10</span>
-                </IconButton>
-              </Tooltip>
+              <SkipButton title="Skip +10s" delta={10} onSkip={handleSkip} />
             )}
-            
-            {/* Large screens - show skip buttons */}
             {!isMd && (
-              <Tooltip title="Skip +30s">
-                <IconButton 
-                  onClick={() => handleSkip(30)} 
-                  size="small"
-                  sx={{ width: { xs: 32, sm: 40 }, height: { xs: 32, sm: 40 } }}
-                >
-                  <span style={{ fontSize: '0.6rem', fontWeight: 600 }}>+30</span>
-                </IconButton>
-              </Tooltip>
+              <SkipButton title="Skip +30s" delta={30} onSkip={handleSkip} />
             )}
           </Box>
 
@@ -178,15 +136,15 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack }) 
               pulseAnim={!isMuted && isPlaying ? `${pulse} 3s infinite` : 'none'}
             />
             
-            {/* Show menu for smaller screens */}
-            {(isSm || isXs) && (
+            {/* Show menu up to md screens */}
+            {(isMd || isSm || isXs) && (
               <Tooltip title="More">
                 <IconButton 
                   onClick={(e) => setMenuAnchor(e.currentTarget)} 
                   size="small"
-                  sx={{ width: { xs: 32, sm: 40 }, height: { xs: 32, sm: 40 } }}
+                  sx={{ width: { xs: 28, sm: 36 }, height: { xs: 28, sm: 36 } }}
                 >
-                  <MoreVertIcon sx={{ fontSize: { xs: 18, sm: 24 } }} />
+                  <MoreVertIcon sx={{ fontSize: { xs: 16, sm: 22 } }} />
                 </IconButton>
               </Tooltip>
             )}
@@ -194,52 +152,18 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mediaUrl, onError, onBack }) 
         </Box>
       </Box>
 
-      <Menu
+      <MoreMenu
         anchorEl={menuAnchor}
         open={Boolean(menuAnchor)}
         onClose={() => setMenuAnchor(null)}
-      >
-        {/* XS screens - show all menu items */}
-        {isXs && (
-          <>
-            <MenuItem onClick={() => { handleSkip(-30); setMenuAnchor(null); }}>
-              Skip -30s
-            </MenuItem>
-            <MenuItem onClick={() => { handleSkip(-10); setMenuAnchor(null); }}>
-              Skip -10s
-            </MenuItem>
-            <MenuItem onClick={() => { handleSkip(10); setMenuAnchor(null); }}>
-              Skip +10s
-            </MenuItem>
-            <MenuItem onClick={() => { handleSkip(30); setMenuAnchor(null); }}>
-              Skip +30s
-            </MenuItem>
-            <MenuItem onClick={() => { toggleRepeatMode(); setMenuAnchor(null); }}>
-              Repeat: {isRepeat ? 'On' : 'Off'}
-            </MenuItem>
-            <MenuItem onClick={() => { handleMuteToggle(); setMenuAnchor(null); }}>
-              {isMuted ? 'Unmute' : 'Mute'}
-            </MenuItem>
-          </>
-        )}
-        
-        {/* SM screens - show skip controls + repeat */}
-        {isSm && !isXs && (
-          <>
-            <MenuItem onClick={() => { handleSkip(-30); setMenuAnchor(null); }}>
-              Skip -30s
-            </MenuItem>
-            <MenuItem onClick={() => { handleSkip(30); setMenuAnchor(null); }}>
-              Skip +30s
-            </MenuItem>
-            <MenuItem onClick={() => { toggleRepeatMode(); setMenuAnchor(null); }}>
-              Repeat: {isRepeat ? 'On' : 'Off'}
-            </MenuItem>
-          </>
-        )}
-        
-
-      </Menu>
+        isXs={isXs}
+        isSm={isSm}
+        onSkip={handleSkip}
+        isRepeat={isRepeat}
+        onToggleRepeat={toggleRepeatMode}
+        isMuted={isMuted}
+        onToggleMute={handleMuteToggle}
+      />
 
       <audio ref={audioRef} src={mediaUrl}>
         {t("media.audioNotSupported")}
