@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
-export type RepeatMode = 'off' | 'all' | 'one';
+export type RepeatMode = "off" | "all" | "one";
 
 interface UseVideoPlayerArgs {
   mediaUrl: string;
@@ -8,7 +8,11 @@ interface UseVideoPlayerArgs {
   t: (key: string, opts?: any) => string;
 }
 
-export const useVideoPlayer = ({ mediaUrl, onError, t }: UseVideoPlayerArgs) => {
+export const useVideoPlayer = ({
+  mediaUrl,
+  onError,
+  t,
+}: UseVideoPlayerArgs) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -21,14 +25,14 @@ export const useVideoPlayer = ({ mediaUrl, onError, t }: UseVideoPlayerArgs) => 
   const [isLoading, setIsLoading] = useState(true);
   const [showControls, setShowControls] = useState(true);
   const [playbackRate, setPlaybackRate] = useState(1);
-  const [repeatMode, setRepeatMode] = useState<RepeatMode>('off');
+  const [repeatMode, setRepeatMode] = useState<RepeatMode>("off");
   const [showTimeMarks, setShowTimeMarks] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video) null;
 
     const handleLoadedMetadata = () => {
       setDuration(video.duration);
@@ -40,10 +44,10 @@ export const useVideoPlayer = ({ mediaUrl, onError, t }: UseVideoPlayerArgs) => 
     };
 
     const handleEnded = () => {
-      if (repeatMode === 'one') {
+      if (repeatMode === "one") {
         video.currentTime = 0;
         void video.play();
-      } else if (repeatMode === 'all') {
+      } else if (repeatMode === "all") {
         video.currentTime = 0;
         void video.play();
       } else {
@@ -52,19 +56,19 @@ export const useVideoPlayer = ({ mediaUrl, onError, t }: UseVideoPlayerArgs) => 
     };
 
     const handleError = () => {
-      onError(t('media.failedToLoadVideo', { code: 'unknown' }));
+      onError(t("media.failedToLoadVideo", { code: "unknown" }));
     };
 
-    video.addEventListener('loadedmetadata', handleLoadedMetadata);
-    video.addEventListener('timeupdate', handleTimeUpdate);
-    video.addEventListener('ended', handleEnded);
-    video.addEventListener('error', handleError);
+    video.addEventListener("loadedmetadata", handleLoadedMetadata);
+    video.addEventListener("timeupdate", handleTimeUpdate);
+    video.addEventListener("ended", handleEnded);
+    video.addEventListener("error", handleError);
 
     return () => {
-      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      video.removeEventListener('timeupdate', handleTimeUpdate);
-      video.removeEventListener('ended', handleEnded);
-      video.removeEventListener('error', handleError);
+      video.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      video.removeEventListener("timeupdate", handleTimeUpdate);
+      video.removeEventListener("ended", handleEnded);
+      video.removeEventListener("error", handleError);
     };
   }, [onError, t, repeatMode]);
 
@@ -123,9 +127,9 @@ export const useVideoPlayer = ({ mediaUrl, onError, t }: UseVideoPlayerArgs) => 
   };
 
   const handleDownload = () => {
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = mediaUrl;
-    link.download = 'video.mp4';
+    link.download = "video.mp4";
     link.click();
   };
 
@@ -150,12 +154,12 @@ export const useVideoPlayer = ({ mediaUrl, onError, t }: UseVideoPlayerArgs) => 
     } catch (error) {
       // swallow
       // eslint-disable-next-line no-console
-      console.error('PiP error:', error);
+      console.error("PiP error:", error);
     }
   };
 
   const handleRepeatToggle = () => {
-    const modes: RepeatMode[] = ['off', 'all', 'one'];
+    const modes: RepeatMode[] = ["off", "all", "one"];
     const currentIndex = modes.indexOf(repeatMode);
     setRepeatMode(modes[(currentIndex + 1) % modes.length]);
   };
@@ -164,13 +168,19 @@ export const useVideoPlayer = ({ mediaUrl, onError, t }: UseVideoPlayerArgs) => 
     setShowControls(true);
     if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
     if (isPlaying) {
-      controlsTimeoutRef.current = setTimeout(() => setShowControls(false), 3000);
+      controlsTimeoutRef.current = setTimeout(
+        () => setShowControls(false),
+        3000
+      );
     }
   };
 
-  useEffect(() => () => {
-    if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+    },
+    []
+  );
 
   const seekBy = (delta: number) => {
     const v = videoRef.current;

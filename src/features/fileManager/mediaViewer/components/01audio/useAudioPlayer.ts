@@ -32,7 +32,10 @@ export function useAudioPlayer({ mediaUrl, onError }: UseAudioPlayerArgs) {
     const updateAudioData = () => {
       if (isPlaying) {
         setAudioData((prev) =>
-          prev.map((_, i) => Math.random() * 0.7 + 0.3 + Math.sin(Date.now() / 200 + i) * 0.2)
+          prev.map(
+            (_, i) =>
+              Math.random() * 0.7 + 0.3 + Math.sin(Date.now() / 200 + i) * 0.2
+          )
         );
       }
       animationId = requestAnimationFrame(updateAudioData);

@@ -1,5 +1,6 @@
 import React, { RefObject } from 'react';
 import { Box, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 interface ImageViewerAreaProps {
   containerRef: RefObject<HTMLDivElement>;
@@ -19,6 +20,7 @@ interface ImageViewerAreaProps {
 }
 
 const ImageViewerArea: React.FC<ImageViewerAreaProps> = ({ containerRef, imageBlobUrl, zoom, rotation, flipH, flipV, brightness, contrast, onMouseDown, onMouseMove, onMouseUp, onMouseLeave, onWheel, onError }) => {
+  const { t } = useTranslation();
   return (
     <Box
       ref={containerRef}
@@ -56,7 +58,7 @@ const ImageViewerArea: React.FC<ImageViewerAreaProps> = ({ containerRef, imageBl
         />
       ) : (
         <Typography variant="h6" color="text.secondary">
-          Loading image...
+          {t("files.loadingImage")}
         </Typography>
       )}
     </Box>

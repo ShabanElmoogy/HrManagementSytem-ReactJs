@@ -8,7 +8,12 @@ export interface VisualizerProps {
   waveAnim?: (i: number) => string;
 }
 
-const Visualizer: React.FC<VisualizerProps> = ({ isPlaying, audioData, rotateAnim, waveAnim }) => {
+const Visualizer: React.FC<VisualizerProps> = ({
+  isPlaying,
+  audioData,
+  rotateAnim,
+  waveAnim,
+}) => {
   return (
     <Box
       sx={{
@@ -45,7 +50,16 @@ const Visualizer: React.FC<VisualizerProps> = ({ isPlaying, audioData, rotateAni
         }}
       />
 
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1, height: 120, zIndex: 3, position: "relative" }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          height: 120,
+          zIndex: 3,
+          position: "relative",
+        }}
+      >
         {audioData.map((value, i) => (
           <Box
             key={i}
@@ -57,7 +71,9 @@ const Visualizer: React.FC<VisualizerProps> = ({ isPlaying, audioData, rotateAni
               animation: isPlaying ? waveAnim?.(i) : "none",
               transition: "all 0.2s ease",
               opacity: isPlaying ? 0.8 : 0.3,
-              boxShadow: isPlaying ? `0 0 10px hsl(${200 + i * 5}, 70%, 60%)` : "none",
+              boxShadow: isPlaying
+                ? `0 0 10px hsl(${200 + i * 5}, 70%, 60%)`
+                : "none",
             }}
           />
         ))}

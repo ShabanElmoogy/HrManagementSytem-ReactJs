@@ -22,7 +22,6 @@ const MoreMenu: React.FC<MoreMenuProps> = ({
   open,
   onClose,
   isXs,
-  isSm,
   onSkip,
   isRepeat,
   onToggleRepeat,

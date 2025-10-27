@@ -771,7 +771,10 @@
     "search": "البحث",
     "refresh": "تحديث",
     "print": "طباعة",
-    "more": "المزيد"
+    "more": "المزيد",
+    "pictureInPicture": "صورة مع الفيديو",
+    "notesAndBookmarks": "ملاحظات والعلامات",
+    "loadingImage": "تحميل الصورة ...."
   },
   "media": {
     "unsupportedFormat": "صيغة غير مدعومة",
@@ -812,7 +815,10 @@
     "repeatOne": "إعادة واحدة",
     "speed": "السرعة",
     "on": "مفتوح",
-    "off": "مغلق"
+    "off": "مغلق",
+    "rotate90": "دوران 90",
+    "flipVertical": "عكس الرأسى",
+    "flipHorizontal": "عكس الأفقى"
   },
   "imports": {
     "dragDropText": "اسحب وافلت الملفات هنا او انقر للاختيار",

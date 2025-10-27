@@ -15,7 +15,7 @@ export const VideoContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const VideoElement = styled('video')(({ theme }) => ({
+export const VideoElement = styled('video')(() => ({
   width: '100%',
   height: 'auto',
   maxHeight: '80vh',
@@ -37,7 +37,7 @@ export const ControlsOverlay = styled(Box)(({ theme }) => ({
   backdropFilter: 'blur(4px)',
 }));
 
-export const TimeDisplay = styled(Typography)(({ theme }) => ({
+export const TimeDisplay = styled(Typography)(() => ({
   fontSize: '0.75rem',
   fontWeight: 500,
   color: '#fff',

@@ -822,7 +822,10 @@
     "exitFullscreen": "Exit Full Screen",
     "fullScreen": "Full Screen",
     "searchInSheet": "Search In Sheet",
-    "more": "More"
+    "more": "More",
+    "pictureInPicture": "Picture in Picture",
+    "notesAndBookmarks": "Notes and Bookmarks",
+    "loadingImage": "Loading image..."
   },
   "media": {
     "unsupportedFormat": "Unsupported file format",
@@ -857,13 +860,16 @@
     "prev30": "Prev -30s",
     "next10": "Next +10s",
     "next30": "Next +30s",
-    "repeat" : "Repeat",
+    "repeat": "Repeat",
     "repeatOff": "Repeat Off",
     "repeatAll": "Repeat All",
     "repeatOne": "Repeat One",
     "speed": "Speed",
-    "on" : "On",
-    "off" : "Off"
+    "on": "On",
+    "off": "Off",
+    "rotate90": "Rotate 90°",
+    "flipVertical": "Flip Vertical",
+    "flipHorizontal": "Flip Horizontal"
   },
   "imports": {
     "dragDropText": "Drag and drop your file here or click to browse",
