@@ -224,11 +224,46 @@ const useStateGridLogic = (): UseStateGridLogicReturn => {
         apiRef.current.setRowSelectionModel([lastAddedRowId]);
         setTimeout(() => {
           apiRef.current.scrollToIndexes({ rowIndex: newRowIndex, colIndex: 0 });
-        }, 300);
+        }, 500);
       }
       setNewRowAdded(false);
     }
   }, [newRowAdded, states, lastAddedRowId]);
+
+  // Additional effect to handle row selection when data is refetched
+  useEffect(() => {
+    if (
+      !isFetching &&
+      !loading &&
+      lastAddedRowId &&
+      newRowAdded &&
+      states.length > 0 &&
+      apiRef.current
+    ) {
+      const newRowIndex = states.findIndex((s) => s.id === lastAddedRowId);
+      
+      if (newRowIndex >= 0) {
+        setTimeout(() => {
+          if (apiRef.current) {
+            const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
+            const newPage = Math.floor(newRowIndex / pageSize);
+            
+            apiRef.current.setPage(newPage);
+            apiRef.current.setRowSelectionModel([lastAddedRowId]);
+            
+            setTimeout(() => {
+              if (apiRef.current) {
+                apiRef.current.scrollToIndexes({ rowIndex: newRowIndex, colIndex: 0 });
+              }
+            }, 200);
+          }
+        }, 300);
+        
+        setNewRowAdded(false);
+        setLastAddedRowId(null);
+      }
+    }
+  }, [isFetching, loading, lastAddedRowId, newRowAdded, states]);
 
   useEffect(() => {
     if (rowEdited && states.length > 0 && apiRef.current) {
