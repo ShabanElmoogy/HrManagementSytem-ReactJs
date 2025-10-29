@@ -1,25 +1,27 @@
 import { arabicOnly, englishOnly } from "@/constants";
-import * as yup from "yup";
+import { z } from "zod";
 
-export const getAddressTypeValidationSchema = (t: (key: string, params?: any) => string) => {
-  return yup.object({
+export type AddressTypeValidationSchema = z.infer<ReturnType<typeof getAddressTypeValidationSchema>>;
+
+export const getAddressTypeValidationSchema = (t: (key: string) => string) => {
+  return z.object({
     // Required: Arabic Name
-    nameAr: yup
+    nameAr: z
       .string()
       .trim()
-      .required(t("validation.required"))
-      .min(2, t("validation.minLength", { count: 2 }))
-      .max(100, t("validation.maxLength", { count: 100 }))
-      .matches(arabicOnly, t("validation.invalidArabicName")),
+      .min(1, t("validation.required"))
+      .min(2, t("validation.minLength"))
+      .max(100, t("validation.maxLength"))
+      .regex(arabicOnly, t("validation.invalidArabicName")),
 
     // Required: English Name
-    nameEn: yup
+    nameEn: z
       .string()
       .trim()
-      .required(t("validation.required"))
-      .min(2, t("validation.minLength", { count: 2 }))
-      .max(100, t("validation.maxLength", { count: 100 }))
-      .matches(englishOnly, t("validation.invalidEnglishName")),
+      .min(1, t("validation.required"))
+      .min(2, t("validation.minLength"))
+      .max(100, t("validation.maxLength"))
+      .regex(englishOnly, t("validation.invalidEnglishName")),
   });
 };
 

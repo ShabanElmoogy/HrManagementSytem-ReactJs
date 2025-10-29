@@ -1,9 +1,9 @@
 import { MyForm, MySelectForm, MyTextField } from "@/shared/components";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Casino } from "@mui/icons-material";
 import { Box, Button, TextField } from "@mui/material";
 import { useEffect } from "react";
-import { Resolver, SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useCountries } from "../../countries/hooks/useCountryQueries";
 import { State } from "../types/State";
 import { states } from "../utils/fakeData";
@@ -51,8 +51,8 @@ const StateForm = ({
     setValue,
     watch,
     formState: { errors },
-  } = useForm<StateFormData, any, StateFormData>({
-    resolver: yupResolver<StateFormData, any, StateFormData>(schema) as unknown as Resolver<StateFormData, any, StateFormData>,
+  } = useForm<StateFormData>({
+    resolver: zodResolver(schema),
     mode: "onChange",
     defaultValues: {
       nameAr: "",

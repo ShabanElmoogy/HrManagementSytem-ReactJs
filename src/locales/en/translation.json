@@ -255,7 +255,9 @@
     "number": "Password must contain at least one number",
     "special": "Password must contain at least one special character",
     "fileTooLarge": "File size must be less than 5MB",
-    "invalidFileType": "Invalid file type"
+    "invalidFileType": "Invalid file type",
+    "positiveNumber": "Allowed only positive numbers",
+    "integerNumber": "Allowed only integer numbers"
   },
   "messages": {
     "profileUpdated": "Profile updated successfully",
@@ -367,7 +369,11 @@
     "searchPlaceHolder": "Search address types by name...",
     "addressType": "Address Type",
     "all": "All Address Types",
-    "recent30Days": "Recent (30 days)"
+    "recent30Days": "Recent (30 days)",
+    "viewSubtitle": "Add New AddressType",
+    "editSubtitle": "Edit Current AddressType",
+    "addSubtitle": "Add New AddressType",
+    "generateMockData": "Generate Mock Data"
   },
   "countries": {
     "dashboard": {

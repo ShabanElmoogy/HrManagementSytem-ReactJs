@@ -1,10 +1,13 @@
 import { MyForm, MyTextField } from "@/shared/components";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, TextField } from "@mui/material";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { getAddressTypeValidationSchema } from "../utils/validation";
-import { CreateAddressTypeRequest, AddressTypeFormProps } from "../types/AddressType";
+import {
+  CreateAddressTypeRequest,
+  AddressTypeFormProps,
+} from "../types/AddressType";
 import { Casino } from "@mui/icons-material";
 import { addressTypes } from "../utils/fakeData";
 
@@ -32,7 +35,7 @@ const AddressTypeForm = ({
     control,
     formState: { errors },
   } = useForm<CreateAddressTypeRequest>({
-    resolver: yupResolver(schema) as any,
+    resolver: zodResolver(schema),
     mode: "onChange",
     defaultValues: { nameAr: "", nameEn: "" },
   });
@@ -114,7 +117,7 @@ const AddressTypeForm = ({
 
   return (
     <MyForm
-      maxHeight = "58vh"
+      maxHeight="58vh"
       open={open}
       onClose={onClose}
       title={
@@ -186,9 +189,9 @@ const AddressTypeForm = ({
         control={control}
         placeholder={t("addressTypes.nameEnPlaceholder")}
         showCounter={!isViewMode}
-      readOnly={isViewMode}
-      data-field-name="nameEn"
-    />
+        readOnly={isViewMode}
+        data-field-name="nameEn"
+      />
 
       {(isAddMode || isEditMode) && (
         <Box sx={{ mt: 3, mb: 2 }}>
@@ -201,14 +204,14 @@ const AddressTypeForm = ({
             fullWidth
             sx={{
               py: 1.5,
-              fontSize: '1rem',
-              fontWeight: 'bold',
-              textTransform: 'none',
+              fontSize: "1rem",
+              fontWeight: "bold",
+              textTransform: "none",
               boxShadow: 2,
-              '&:hover': {
+              "&:hover": {
                 boxShadow: 4,
-                transform: 'translateY(-1px)'
-              }
+                transform: "translateY(-1px)",
+              },
             }}
           >
             {t("addressTypes.generateMockData") || "🎲 Generate Mock Data"}

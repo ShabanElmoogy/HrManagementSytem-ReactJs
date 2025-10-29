@@ -1,13 +1,13 @@
 // components/DistrictForm.tsx
 import { MyForm, MyTextField, MySelectForm } from "@/shared/components";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Casino } from "@mui/icons-material";
 import { Box, TextField, Button } from "@mui/material";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import * as yup from "yup";
 import { District } from "../types/District";
 import { useStates } from "../../states/hooks/useStateQueries";
+import { getDistrictValidationSchema } from "../utils/validation";
 
 interface DistrictFormData {
   nameAr: string;
@@ -26,32 +26,7 @@ interface DistrictFormProps {
   t: (key: string) => string;
 }
 
-const getDistrictValidationSchema = (t: (key: string) => string) =>
-  yup.object().shape({
-    nameAr: yup
-      .string()
-      .required(t("general.required"))
-      .min(2, t("validation.minLength", { min: 2 }))
-      .max(100, t("validation.maxLength", { max: 100 }))
-      .matches(/^[\u0600-\u06FF\s]+$/, t("validation.arabicLettersOnly")),
-    nameEn: yup
-      .string()
-      .required(t("general.required"))
-      .min(2, t("validation.minLength", { min: 2 }))
-      .max(100, t("validation.maxLength", { max: 100 }))
-      .matches(/^[A-Za-z\s]+$/, t("validation.englishLettersOnly")),
-    code: yup
-      .string()
-      .required(t("general.required"))
-      .min(2, t("validation.minLength", { min: 2 }))
-      .max(10, t("validation.maxLength", { max: 10 })),
-    stateId: yup
-      .number()
-      .typeError(t("validation.number"))
-      .required(t("general.required"))
-      .positive(t("validation.positiveNumber"))
-      .integer(t("validation.integerNumber")),
-  });
+
 
 const DistrictForm = ({
   open,
@@ -79,7 +54,7 @@ const DistrictForm = ({
     watch,
     formState: { errors },
   } = useForm<DistrictFormData>({
-    resolver: yupResolver(schema),
+    resolver: zodResolver(schema),
     mode: "onChange",
     defaultValues: {
       nameAr: "",

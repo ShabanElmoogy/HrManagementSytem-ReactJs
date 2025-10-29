@@ -245,7 +245,9 @@
     "number": "يجب ان يحتوي كلمة المرور على رقم",
     "special": "يجب ان يحتوي كلمة المرور على رمز خاص",
     "fileTooLarge": "حجم الملف يجب ان يكون اقل من 5 ميجا",
-    "invalidFileType": "نوع الملف غير صحيح"
+    "invalidFileType": "نوع الملف غير صحيح",
+    "positiveNumber": "مسموح أرقام موجبة فقط",
+    "integerNumber": "مسموح أرقام صحيحة فقط"
   },
   "messages": {
     "profileUpdated": "تم تعديل بيانات الحساب بنجاح",
@@ -357,7 +359,11 @@
     "searchPlaceHolder": "ابحث في أنواع العناوين بالاسم...",
     "addressType": "نوع العنوان",
     "all": "كل أنواع العناوين",
-    "recent30Days": "احدث (30 يوما)"
+    "recent30Days": "احدث (30 يوما)",
+    "viewSubtitle": "إضافة نوع عنوان جديد",
+    "editSubtitle": "تعديل نوع العنوان الحالى",
+    "addSubtitle": "إضافة نوع عنوان جديد",
+    "generateMockData": "توليد بيانات تجريبية"
   },
   "countries": {
     "dashboard": {
