@@ -77,12 +77,16 @@ const useStateGridLogic = (): UseStateGridLogicReturn => {
       );
 
       const newId: number = typeof newState.id === 'string' ? parseInt(newState.id as any, 10) : (newState.id as number);
+      console.log("🟢 State created with ID:", newId);
       setLastAddedRowId(newId);
       setNewRowAdded(true);
       setDialogType(null);
       setSelectedState(null);
 
-      setTimeout(() => setLastAddedRowId(null), 4000);
+      setTimeout(() => {
+        console.log("🔄 Clearing lastAddedRowId");
+        setLastAddedRowId(null);
+      }, 4000);
     },
     onError: (error: any) => {
       const errorMessage = extractErrorMessage(error);
@@ -98,12 +102,16 @@ const useStateGridLogic = (): UseStateGridLogicReturn => {
       );
 
       const updatedId: number = typeof updatedState.id === 'string' ? parseInt(updatedState.id as any, 10) : (updatedState.id as number);
+      console.log("🟡 State updated with ID:", updatedId);
       setRowEdited(true);
       setLastEditedRowId(updatedId);
       setDialogType(null);
       setSelectedState(null);
 
-      setTimeout(() => setLastEditedRowId(null), 4000);
+      setTimeout(() => {
+        console.log("🔄 Clearing lastEditedRowId");
+        setLastEditedRowId(null);
+      }, 4000);
     },
     onError: (error: any) => {
       const errorMessage = extractErrorMessage(error);
@@ -114,11 +122,15 @@ const useStateGridLogic = (): UseStateGridLogicReturn => {
   const deleteStateMutation = useDeleteState({
     onSuccess: () => {
       showToast.success(t("states.deleted") || "State deleted successfully!");
+      console.log("🔴 State deleted, lastDeletedRowIndex:", lastDeletedRowIndex);
       setRowDeleted(true);
       setDialogType(null);
       setSelectedState(null);
 
-      setTimeout(() => setLastDeletedRowIndex(null), 4000);
+      setTimeout(() => {
+        console.log("🔄 Clearing lastDeletedRowIndex");
+        setLastDeletedRowIndex(null);
+      }, 4000);
     },
     onError: (error: any) => {
       const errorMessage = extractErrorMessage(error);
@@ -218,13 +230,22 @@ const useStateGridLogic = (): UseStateGridLogicReturn => {
     if (newRowAdded && states.length > 0 && apiRef.current && lastAddedRowId) {
       const newRowIndex = states.findIndex((s) => s.id === lastAddedRowId);
       if (newRowIndex >= 0) {
+        console.log("Found new row at index:", newRowIndex);
+        
         const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
         const newPage = Math.floor(newRowIndex / pageSize);
+        
         apiRef.current.setPage(newPage);
         apiRef.current.setRowSelectionModel([lastAddedRowId]);
+        
         setTimeout(() => {
           apiRef.current.scrollToIndexes({ rowIndex: newRowIndex, colIndex: 0 });
         }, 500);
+        
+        console.log("Row selection and scroll initiated for ID:", lastAddedRowId);
+      } else {
+        console.log("New row not found in states list yet, will retry...");
+        return;
       }
       setNewRowAdded(false);
     }
@@ -243,6 +264,8 @@ const useStateGridLogic = (): UseStateGridLogicReturn => {
       const newRowIndex = states.findIndex((s) => s.id === lastAddedRowId);
       
       if (newRowIndex >= 0) {
+        console.log("Found new row at index:", newRowIndex, "for ID:", lastAddedRowId);
+        
         setTimeout(() => {
           if (apiRef.current) {
             const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
@@ -256,6 +279,8 @@ const useStateGridLogic = (): UseStateGridLogicReturn => {
                 apiRef.current.scrollToIndexes({ rowIndex: newRowIndex, colIndex: 0 });
               }
             }, 200);
+            
+            console.log("Successfully selected and scrolled to new row:", lastAddedRowId);
           }
         }, 300);
         
@@ -281,13 +306,16 @@ const useStateGridLogic = (): UseStateGridLogicReturn => {
 
   useEffect(() => {
     if (rowDeleted && states.length > 0 && apiRef.current) {
-      let prevRowIndex = (lastDeletedRowIndex ?? 0) - 1;
-      if (prevRowIndex < 0) prevRowIndex = 0;
+      let prevRowIndex = lastDeletedRowIndex - 1;
+      if (prevRowIndex < 0) {
+        prevRowIndex = 0;
+      }
 
       if (prevRowIndex >= 0 && prevRowIndex < states.length) {
         const prevRowId = states[prevRowIndex].id;
         const pageSize = apiRef.current.state.pagination.paginationModel.pageSize;
         const newPage = Math.floor(prevRowIndex / pageSize);
+        
         apiRef.current.setPage(newPage);
         apiRef.current.scrollToIndexes({ rowIndex: prevRowIndex, colIndex: 0 });
         apiRef.current.setRowSelectionModel([prevRowId]);
