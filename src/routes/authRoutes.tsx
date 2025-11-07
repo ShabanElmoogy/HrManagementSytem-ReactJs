@@ -1,10 +1,10 @@
-import { appRoutes } from "./appRoutes";
 import { MyLoadingIndicator } from "@/shared/components";
 import { Suspense, lazy } from "react";
 import { Route } from "react-router-dom";
+import Login from "../features/auth/login/login";
 import AuthLayout from "../layouts/authLayout/authLayout";
+import { appRoutes } from "./appRoutes";
 
-const Login = lazy(() => import("../features/auth/login/login"));
 const ProfilePage = lazy(() => import("../features/auth/profile/profilePage"));
 const ChangePassword = lazy(() =>
   import("../features/auth/profile/profileTabs/changePassword/changePassword")

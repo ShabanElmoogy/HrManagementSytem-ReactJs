@@ -1,16 +1,13 @@
 // const FilesGrid = lazy(() => import("@/features/fileManager/FilesGrid"));
-import { appRoutes } from "./appRoutes";
 import { appPermissions } from "@/constants";
 import { MyLoadingIndicator } from "@/shared/components";
 import { Suspense, lazy } from "react";
 import { Route } from "react-router-dom";
-// const MediaViewer = lazy(() => import("@/features/fileManager/mediaViewer/MediaViewer"));
+import RolesPage from "../features/auth/roles/rolesPage";
+import ProtectedRoute from "../shared/components/auth/protectedRoute";
+import { appRoutes } from "./appRoutes";
 
-const ProtectedRoute = lazy(() =>
-  import("../shared/components/auth/protectedRoute")
-);
 const UsersPage = lazy(() => import("@/features/auth/users/UsersPage"));
-const RolesPage = lazy(() => import("@/features/auth/roles/rolesPage"));
 const RolePermissionsPage = lazy(() =>
   import("../features/auth/roles/components/rolePermissionsPage")
 );

@@ -1,9 +1,9 @@
-import { appRoutes } from "./appRoutes";
 import { MyLoadingIndicator } from "@/shared/components";
 import { Suspense, lazy } from "react";
 import { Route } from "react-router-dom";
+import Home from "../features/home/home";
+import { appRoutes } from "./appRoutes";
 
-const Home = lazy(() => import("../features/home/home"));
 const AllKpisPage = lazy(() => import("../features/home/AllKpisPage"));
 const AllTrendsPage = lazy(() => import("../features/home/AllTrendsPage"));
 const AllHealthPipelinePage = lazy(() => import("../features/home/AllHealthPipelinePage"));
