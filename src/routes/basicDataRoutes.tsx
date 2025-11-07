@@ -1,12 +1,10 @@
-import { appRoutes } from "./appRoutes";
 import { appPermissions } from "@/constants";
 import { MyLoadingIndicator } from "@/shared/components";
 import { Suspense, lazy } from "react";
 import { Route } from "react-router-dom";
+import ProtectedRoute from "../shared/components/auth/protectedRoute";
+import { appRoutes } from "./appRoutes";
 
-const ProtectedRoute = lazy(() =>
-  import("../shared/components/auth/protectedRoute")
-);
 const CountriesPage = lazy(() =>
   import("../features/basicData/countries/countriesPage")
 );

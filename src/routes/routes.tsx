@@ -2,12 +2,12 @@ import { MyLoadingIndicator } from "@/shared/components/common/loaders/myLoading
 import { Suspense, lazy } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import MainLayout from "../layouts/mainLayout/mainLayout";
+import { AnalyticsRoutes } from "./analyticsRoutes";
 import { appRoutes } from "./appRoutes";
 import { AuthRoutes } from "./authRoutes";
-import { DashboardRoutes } from "./dashboardRoutes";
 import { BasicDataRoutes } from "./basicDataRoutes";
-import { AnalyticsRoutes } from "./analyticsRoutes";
 import { CommunicationRoutes } from "./communicationRoutes";
+import { DashboardRoutes } from "./dashboardRoutes";
 import { ExtrasRoutes } from "./extrasRoutes";
 
 const ProtectedRoute = lazy(() =>
@@ -26,16 +26,16 @@ const AppRoutes = () => {
           <Route element={<MainLayout />}>
             {/* Dashboard Routes */}
             {DashboardRoutes()}
-            
+
             {/* Basic Data Routes */}
             {BasicDataRoutes()}
-            
+
             {/* Analytics Routes */}
             {AnalyticsRoutes()}
-            
-             {/* Extras Routes */}
-            {ExtrasRoutes()} 
-            
+
+            {/* Extras Routes */}
+            {ExtrasRoutes()}
+
             {/* Communication Routes */}
             {CommunicationRoutes()}
 
